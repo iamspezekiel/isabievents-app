@@ -1,0 +1,100 @@
+'use server';
+/**
+ * @fileOverview An AI content assistant for event organizers to generate engaging event descriptions and clear event policies.
+ *
+ * - generateEventCopy - A function that handles the generation of event description and policies.
+ * - OrganizerAICopyGeneratorInput - The input type for the generateEventCopy function.
+ * - OrganizerAICopyGeneratorOutput - The return type for the generateEventCopy function.
+ */
+
+import {ai} from '@/ai/genkit';
+import {z} from 'genkit';
+
+const OrganizerAICopyGeneratorInputSchema = z.object({
+  eventName: z.string().describe('The name of the event.'),
+  eventType: z
+    .enum([
+      'Concerts',
+      'Festivals',
+      'Conferences',
+      'Nightlife',
+      'Sports',
+      'Religious Events',
+      'Cultural Events',
+      'Exhibitions',
+      'Workshops',
+      'Community Events',
+    ])
+    .describe('The category or type of the event.'),
+  eventSummary: z.string().describe('A brief summary or elevator pitch for the event.'),
+  keyFeatures: z.array(z.string()).describe('A list of key features or highlights of the event.'),
+  targetAudience: z.string().optional().describe('The primary target audience for the event.'),
+  eventDate: z
+    .string()
+    .describe('The date and time of the event (e.g., "YYYY-MM-DD HH:MM").'),
+  eventVenue: z.string().describe('The venue where the event will take place.'),
+  eventPoliciesInstructions: z
+    .string()
+    .optional()
+    .describe('Optional specific instructions or points to include in the event policies.'),
+});
+export type OrganizerAICopyGeneratorInput = z.infer<typeof OrganizerAICopyGeneratorInputSchema>;
+
+const OrganizerAICopyGeneratorOutputSchema = z.object({
+  eventDescription: z.string().describe('An engaging and detailed event description.'),
+  eventPolicies: z.string().describe('Clear and concise event policies.'),
+});
+export type OrganizerAICopyGeneratorOutput = z.infer<typeof OrganizerAICopyGeneratorOutputSchema>;
+
+export async function generateEventCopy(
+  input: OrganizerAICopyGeneratorInput
+): Promise<OrganizerAICopyGeneratorOutput> {
+  return organizerAICopyGeneratorFlow(input);
+}
+
+const prompt = ai.definePrompt({
+  name: 'organizerAICopyGeneratorPrompt',
+  input: {schema: OrganizerAICopyGeneratorInputSchema},
+  output: {schema: OrganizerAICopyGeneratorOutputSchema},
+  prompt: `You are an expert event copywriter and policy generator for a leading event marketplace. Your task is to create an engaging event description and clear, concise event policies based on the provided event details.
+
+---START EVENT DETAILS---
+Event Name: {{{eventName}}}
+Event Type: {{{eventType}}}
+Event Summary: {{{eventSummary}}}
+Key Features:
+{{#each keyFeatures}}- {{{this}}}
+{{/each}}
+Target Audience: {{{targetAudience}}}
+Date & Time: {{{eventDate}}}
+Venue: {{{eventVenue}}}
+{{#if eventPoliciesInstructions}}
+Specific Policy Instructions: {{{eventPoliciesInstructions}}}
+{{/if}}
+---END EVENT DETAILS---
+
+First, generate an engaging event description, suitable for a marketplace listing. It should be compelling, highlight the key features, and appeal to the target audience. Write it in a vibrant and professional tone.
+
+Second, generate clear, concise, and comprehensive event policies. These policies should cover general event rules, refund/cancellation guidelines, age restrictions (if applicable), and any other relevant guidelines. If specific policy instructions were provided, incorporate them appropriately. Keep the language direct and easy to understand.
+
+Ensure your entire output is in JSON format, strictly adhering to the provided schema:
+```json
+{
+  "eventDescription": "...",
+  "eventPolicies": "..."
+}
+```
+`,
+});
+
+const organizerAICopyGeneratorFlow = ai.defineFlow(
+  {
+    name: 'organizerAICopyGeneratorFlow',
+    inputSchema: OrganizerAICopyGeneratorInputSchema,
+    outputSchema: OrganizerAICopyGeneratorOutputSchema,
+  },
+  async input => {
+    const {output} = await prompt(input);
+    return output!;
+  }
+);

@@ -1,3 +1,262 @@
-export default function Home() {
-  return <></>;
+
+"use client";
+
+import React, { useState } from 'react';
+import { Search, MapPin, Calendar, ArrowRight, Star, CheckCircle2, Music, Trophy, Mic2, GlassWater, Dribbble, Church, Palette, Images, Cpu, Users as UsersIcon } from 'lucide-react';
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { CATEGORIES, MOCK_EVENTS, CITIES } from '@/lib/mock-data';
+import Image from 'next/image';
+import Link from 'next/link';
+
+const iconMap: any = {
+  Music, Trophy, Mic2, GlassWater, Dribbble, Church, Palette, Images, Cpu, Users: UsersIcon
+};
+
+export default function HomePage() {
+  const [search, setSearch] = useState('');
+  const [selectedCity, setSelectedCity] = useState('Lagos');
+
+  return (
+    <div className="min-h-screen flex flex-col">
+      {/* Navigation */}
+      <nav className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-50">
+        <div className="container mx-auto px-4 h-20 flex items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center rotate-3">
+              <span className="text-primary-foreground font-black text-2xl tracking-tighter">I</span>
+            </div>
+            <span className="font-headline text-2xl tracking-tight text-white">Isabi<span className="text-primary">Events</span></span>
+          </Link>
+
+          <div className="hidden md:flex items-center gap-8 text-sm font-medium">
+            <Link href="/discover" className="hover:text-primary transition-colors">Discover</Link>
+            <Link href="/organizer" className="hover:text-primary transition-colors">Host an Event</Link>
+            <Link href="/help" className="hover:text-primary transition-colors">Help Center</Link>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <Link href="/login">
+              <Button variant="ghost">Sign In</Button>
+            </Link>
+            <Link href="/signup">
+              <Button className="rounded-full px-6">Get Started</Button>
+            </Link>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="relative pt-20 pb-32 overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
+        <div className="container mx-auto px-4 text-center">
+          <Badge className="mb-6 py-1.5 px-4 bg-primary/20 text-primary border-primary/20 hover:bg-primary/20">
+            Trusted by 50,000+ Nigerians
+          </Badge>
+          <h1 className="font-headline text-5xl md:text-7xl mb-8 leading-[1.1] max-w-4xl mx-auto">
+            Experience the Best of <span className="text-primary">Nigerian</span> Events
+          </h1>
+          <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-12">
+            Secure tickets to concerts, festivals, conferences and more. Built for speed, security, and the Naija spirit.
+          </p>
+
+          <div className="max-w-4xl mx-auto bg-card border border-border p-3 rounded-2xl md:rounded-full flex flex-col md:flex-row items-center gap-3 shadow-2xl">
+            <div className="flex-1 w-full relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
+              <Input 
+                placeholder="Search events, artists, venues..." 
+                className="pl-12 h-14 bg-transparent border-none focus-visible:ring-0 text-lg"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </div>
+            <div className="w-full md:w-auto h-full px-4 border-l border-border hidden md:flex items-center gap-2">
+              <MapPin className="text-primary w-5 h-5" />
+              <select 
+                className="bg-transparent text-foreground focus:outline-none appearance-none cursor-pointer font-medium"
+                value={selectedCity}
+                onChange={(e) => setSelectedCity(e.target.value)}
+              >
+                {CITIES.map(city => <option key={city} value={city}>{city}</option>)}
+              </select>
+            </div>
+            <Button size="lg" className="w-full md:w-auto h-14 px-10 rounded-full text-lg shadow-lg shadow-primary/20">
+              Find Tickets
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Categories */}
+      <section className="pb-20">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="font-headline text-2xl">Browse by Category</h2>
+            <Link href="/categories" className="text-primary flex items-center gap-1 text-sm font-semibold hover:underline">
+              View All <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+            {CATEGORIES.map((cat) => {
+              const IconComp = iconMap[cat.icon] || Music;
+              return (
+                <Link key={cat.id} href={`/category/${cat.id}`}>
+                  <Card className="hover:border-primary transition-all group overflow-hidden cursor-pointer bg-card/50">
+                    <CardContent className="p-6 flex flex-col items-center text-center gap-4">
+                      <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                        <IconComp className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors" />
+                      </div>
+                      <span className="font-medium">{cat.name}</span>
+                    </CardContent>
+                  </Card>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured Events */}
+      <section className="pb-24">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between mb-10">
+            <div>
+              <h2 className="font-headline text-3xl mb-2">Trending Events</h2>
+              <p className="text-muted-foreground">What's hot right now in {selectedCity}</p>
+            </div>
+            <Button variant="outline" className="rounded-full">Explore More</Button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {MOCK_EVENTS.map((event) => (
+              <Link key={event.id} href={`/events/${event.id}`}>
+                <div className="group relative rounded-2xl overflow-hidden bg-card border border-border hover:border-primary/50 transition-all hover:shadow-2xl hover:shadow-primary/5">
+                  <div className="relative aspect-[4/3] overflow-hidden">
+                    <Image 
+                      src={event.image} 
+                      alt={event.title} 
+                      fill 
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      data-ai-hint="event poster"
+                    />
+                    <div className="absolute top-4 left-4">
+                      <Badge className="bg-black/60 backdrop-blur-md text-white border-none py-1.5 px-3">
+                        {event.category.charAt(0).toUpperCase() + event.category.slice(1)}
+                      </Badge>
+                    </div>
+                  </div>
+                  <div className="p-6">
+                    <div className="flex items-center gap-2 text-primary text-sm font-semibold mb-3">
+                      <Calendar className="w-4 h-4" />
+                      {new Date(event.date).toLocaleDateString('en-NG', { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </div>
+                    <h3 className="font-headline text-xl mb-2 group-hover:text-primary transition-colors">{event.title}</h3>
+                    <p className="text-muted-foreground text-sm flex items-center gap-1 mb-6">
+                      <MapPin className="w-4 h-4" /> {event.venue}
+                    </p>
+                    
+                    <div className="flex items-center justify-between pt-4 border-t border-border">
+                      <div className="flex items-center gap-2">
+                        <div className="relative w-8 h-8 rounded-full overflow-hidden">
+                          <Image src={event.organizer.avatar} alt={event.organizer.name} fill className="object-cover" />
+                        </div>
+                        <span className="text-xs font-medium text-muted-foreground">{event.organizer.name}</span>
+                        {event.organizer.verified && <CheckCircle2 className="w-3 h-3 text-accent" />}
+                      </div>
+                      <div className="text-right">
+                        <span className="block text-xs text-muted-foreground uppercase font-bold tracking-wider">Starts from</span>
+                        <span className="text-lg font-bold text-white">
+                          {event.price.min === 0 ? 'FREE' : `₦${event.price.min.toLocaleString()}`}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Trust Section */}
+      <section className="py-24 bg-card/30 border-y border-border">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="font-headline text-3xl mb-16">Why thousands choose IsabiEvents</h2>
+          <div className="grid md:grid-cols-3 gap-12">
+            <div className="space-y-4">
+              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <Star className="w-8 h-8 text-primary" />
+              </div>
+              <h3 className="font-headline text-xl">Verified Organizers</h3>
+              <p className="text-muted-foreground">Every event organizer undergoes strict KYC verification before listing on our platform.</p>
+            </div>
+            <div className="space-y-4">
+              <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <CheckCircle2 className="w-8 h-8 text-accent" />
+              </div>
+              <h3 className="font-headline text-xl">Instant Ticket Delivery</h3>
+              <p className="text-muted-foreground">Receive your unique secure QR code ticket immediately via email and in your wallet after payment.</p>
+            </div>
+            <div className="space-y-4">
+              <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <GlassWater className="w-8 h-8 text-muted-foreground" />
+              </div>
+              <h3 className="font-headline text-xl">Seamless Payouts</h3>
+              <p className="text-muted-foreground">Organizers and vendors receive automated settlements via our robust fintech integrations.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-background border-t border-border pt-20 pb-10">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+            <div className="col-span-1 md:col-span-1">
+               <Link href="/" className="flex items-center gap-2 mb-6">
+                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center rotate-3">
+                  <span className="text-primary-foreground font-black text-xl tracking-tighter">I</span>
+                </div>
+                <span className="font-headline text-xl tracking-tight text-white">Isabi<span className="text-primary">Events</span></span>
+              </Link>
+              <p className="text-muted-foreground text-sm leading-relaxed">
+                The most secure and reliable event ticket marketplace in Nigeria. Connecting people to unforgettable experiences.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-headline text-sm uppercase tracking-widest mb-6">For Attendees</h4>
+              <ul className="space-y-4 text-sm text-muted-foreground">
+                <li><Link href="/discover" className="hover:text-primary transition-colors">Find Events</Link></li>
+                <li><Link href="/help/tickets" className="hover:text-primary transition-colors">Ticket Support</Link></li>
+                <li><Link href="/help/refunds" className="hover:text-primary transition-colors">Refund Policy</Link></li>
+                <li><Link href="/mobile" className="hover:text-primary transition-colors">Get the App</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-headline text-sm uppercase tracking-widest mb-6">For Organizers</h4>
+              <ul className="space-y-4 text-sm text-muted-foreground">
+                <li><Link href="/host" className="hover:text-primary transition-colors">Host an Event</Link></li>
+                <li><Link href="/pricing" className="hover:text-primary transition-colors">Pricing</Link></li>
+                <li><Link href="/docs" className="hover:text-primary transition-colors">Developer API</Link></li>
+                <li><Link href="/case-studies" className="hover:text-primary transition-colors">Success Stories</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="font-headline text-sm uppercase tracking-widest mb-6">Stay Updated</h4>
+              <p className="text-sm text-muted-foreground mb-4">Get curated event alerts delivered to your inbox.</p>
+              <div className="flex gap-2">
+                <Input placeholder="Email address" className="bg-secondary border-none" />
+                <Button size="sm">Join</Button>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-border pt-10 text-center text-xs text-muted-foreground">
+            <p>&copy; {new Date().getFullYear()} IsabiEvents Technologies. All rights reserved. Made in Nigeria.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
 }

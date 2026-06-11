@@ -1,0 +1,41 @@
+
+{
+  "placeholderImages": [
+    {
+      "id": "hero-concert",
+      "description": "A vibrant concert crowd under purple lights",
+      "imageUrl": "https://picsum.photos/seed/concert1/1200/600",
+      "imageHint": "concert crowd"
+    },
+    {
+      "id": "festival-main",
+      "description": "Colorful outdoor festival",
+      "imageUrl": "https://picsum.photos/seed/fest1/800/400",
+      "imageHint": "music festival"
+    },
+    {
+      "id": "conference-tech",
+      "description": "Tech conference with speakers",
+      "imageUrl": "https://picsum.photos/seed/conf1/800/400",
+      "imageHint": "tech conference"
+    },
+    {
+      "id": "nightlife-club",
+      "description": "Nightclub with laser lights",
+      "imageUrl": "https://picsum.photos/seed/night1/800/400",
+      "imageHint": "nightlife party"
+    },
+    {
+      "id": "sports-stadium",
+      "description": "Full sports stadium",
+      "imageUrl": "https://picsum.photos/seed/sports1/800/400",
+      "imageHint": "sports stadium"
+    },
+    {
+      "id": "cultural-dance",
+      "description": "Traditional Nigerian dancers",
+      "imageUrl": "https://picsum.photos/seed/culture1/800/400",
+      "imageHint": "cultural dance"
+    }
+  ]
+}
