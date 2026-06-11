@@ -60,7 +60,7 @@ export default function HomePage() {
               </Select>
             </div>
             <Button size="lg" className="w-full md:w-auto h-14 px-10 rounded-full text-lg shadow-lg shadow-primary/20">
-              Find Tickets
+              Discover Events
             </Button>
           </div>
         </div>
@@ -191,3 +191,4 @@ export default function HomePage() {
     </div>
   );
 }
+
