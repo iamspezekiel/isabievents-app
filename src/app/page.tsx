@@ -182,8 +182,8 @@ export default function HomePage() {
               <p className="text-muted-foreground">Receive your unique secure QR code ticket immediately via email and in your wallet after payment.</p>
             </div>
             <div className="space-y-4">
-              <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <GlassWater className="w-8 h-8 text-muted-foreground" />
+              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <GlassWater className="w-8 h-8 text-primary" />
               </div>
               <h3 className="font-headline text-xl">Seamless Payouts</h3>
               <p className="text-muted-foreground">Organizers and vendors receive automated settlements via our robust fintech integrations.</p>
