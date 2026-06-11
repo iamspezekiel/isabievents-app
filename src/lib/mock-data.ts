@@ -236,6 +236,42 @@ export const MOCK_EVENTS = [
     price: { min: 1000, max: 5000 },
     inventory: 1000,
     tags: ['Art', 'History', 'Museum']
+  },
+  {
+    id: 'e11',
+    title: 'Akure Music Carnival',
+    category: 'festivals',
+    city: 'Akure',
+    venue: 'Adegbemile Cultural Centre',
+    date: '2024-12-20T16:00:00',
+    organizer: {
+      name: 'Sunshine Sounds',
+      verified: true,
+      avatar: 'https://picsum.photos/seed/org11/100/100'
+    },
+    image: 'https://picsum.photos/seed/akure/800/600',
+    description: 'Celebrate the vibrant musical heritage of Ondo State with local and national stars.',
+    price: { min: 3000, max: 15000 },
+    inventory: 1500,
+    tags: ['Music', 'Sunshine State', 'Carnival']
+  },
+  {
+    id: 'e12',
+    title: 'Jos Winter Gala',
+    category: 'nightlife',
+    city: 'Jos',
+    venue: 'Mees Palace',
+    date: '2024-12-24T20:00:00',
+    organizer: {
+      name: 'J-Town Vibes',
+      verified: true,
+      avatar: 'https://picsum.photos/seed/org12/100/100'
+    },
+    image: 'https://picsum.photos/seed/jos/800/600',
+    description: 'Experience the unique cool breeze of Jos with an elegant night of music and class.',
+    price: { min: 7500, max: 30000 },
+    inventory: 600,
+    tags: ['Gala', 'Winter', 'Jos Vibes']
   }
 ];
 
