@@ -46,11 +46,19 @@ export default function MobileAppPage() {
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-              <Button size="lg" className="h-16 px-10 rounded-full text-lg gap-3 shadow-xl shadow-primary/20 hover:scale-105 transition-transform">
-                <Apple className="w-6 h-6 fill-current" /> App Store
+              <Button size="lg" className="h-16 px-8 rounded-full text-lg gap-4 shadow-xl shadow-primary/20 hover:scale-105 transition-transform">
+                <Apple className="w-7 h-7 fill-current" />
+                <div className="flex flex-col items-start leading-none text-left">
+                  <span className="text-[10px] font-bold uppercase tracking-tighter opacity-70">Download on the</span>
+                  <span className="text-lg font-bold">App Store</span>
+                </div>
               </Button>
-              <Button size="lg" variant="outline" className="h-16 px-10 rounded-full text-lg gap-3 hover:bg-secondary transition-colors">
-                <Play className="w-6 h-6 fill-current" /> Google Play
+              <Button size="lg" variant="outline" className="h-16 px-8 rounded-full text-lg gap-4 border-2 hover:bg-secondary transition-all hover:scale-105 shadow-xl shadow-black/5">
+                <Play className="w-7 h-7 fill-current" />
+                <div className="flex flex-col items-start leading-none text-left">
+                  <span className="text-[10px] font-bold uppercase tracking-tighter opacity-70">Get it on</span>
+                  <span className="text-lg font-bold">Google Play</span>
+                </div>
               </Button>
             </div>
 
@@ -161,8 +169,20 @@ export default function MobileAppPage() {
               Join over 150,000+ Nigerians who are already using the mobile app to manage their social lives.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4 pt-6">
-              <Button size="lg" className="rounded-full h-16 px-12 text-lg shadow-xl shadow-primary/20 hover:scale-105 transition-transform">Download for iOS</Button>
-              <Button variant="outline" size="lg" className="rounded-full h-16 px-12 text-lg hover:bg-white/5 transition-colors">Download for Android</Button>
+              <Button size="lg" className="rounded-full h-16 px-12 text-lg shadow-xl shadow-primary/20 hover:scale-105 transition-transform gap-4">
+                <Apple className="w-7 h-7" />
+                <div className="flex flex-col items-start leading-none text-left">
+                  <span className="text-[10px] font-bold uppercase tracking-tighter opacity-70">App Store</span>
+                  <span className="text-lg font-bold">Download Now</span>
+                </div>
+              </Button>
+              <Button variant="outline" size="lg" className="rounded-full h-16 px-12 text-lg hover:bg-white/5 transition-all hover:scale-105 border-2 gap-4">
+                <Play className="w-7 h-7" />
+                <div className="flex flex-col items-start leading-none text-left">
+                  <span className="text-[10px] font-bold uppercase tracking-tighter opacity-70">Google Play</span>
+                  <span className="text-lg font-bold">Get it Free</span>
+                </div>
+              </Button>
             </div>
           </div>
         </div>
