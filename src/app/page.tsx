@@ -110,7 +110,7 @@ export default function HomePage() {
             </Button>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
             {MOCK_EVENTS.map((event) => (
               <Link key={event.id} href={`/events/${event.id}`}>
                 <div className="group relative rounded-2xl overflow-hidden bg-card border border-border hover:border-primary/50 transition-all hover:shadow-2xl hover:shadow-primary/5">
@@ -157,6 +157,14 @@ export default function HomePage() {
                 </div>
               </Link>
             ))}
+          </div>
+
+          <div className="text-center">
+            <Link href="/discover">
+              <Button variant="outline" size="lg" className="rounded-full px-12 h-14 text-lg border-primary/20 hover:bg-primary/5 transition-all">
+                Discover More Events
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
