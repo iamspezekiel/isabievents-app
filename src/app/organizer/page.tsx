@@ -16,34 +16,17 @@ import {
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Navbar } from '@/components/navbar';
 import Link from 'next/link';
 import Image from 'next/image';
 
 export default function OrganizerLandingPage() {
   return (
     <div className="min-h-screen bg-background">
-      {/* Navbar */}
-      <nav className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 h-20 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center rotate-3">
-              <span className="text-primary-foreground font-black text-2xl tracking-tighter">I</span>
-            </div>
-            <span className="font-headline text-2xl tracking-tight text-white">Isabi<span className="text-primary">Events</span></span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Link href="/login">
-              <Button variant="ghost">Sign In</Button>
-            </Link>
-            <Link href="/dashboard/organizer/create">
-              <Button className="rounded-full px-6">Create Event</Button>
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero */}
-      <section className="relative pt-24 pb-32 overflow-hidden">
+      <section className="relative pt-40 pb-32 overflow-hidden">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent/10 blur-[120px] -z-10 rounded-full translate-x-1/2 -translate-y-1/2" />
         <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
@@ -59,9 +42,11 @@ export default function OrganizerLandingPage() {
                   Start Hosting Now <ArrowRight className="w-5 h-5" />
                 </Button>
               </Link>
-              <Button size="lg" variant="outline" className="h-16 px-10 rounded-full text-lg">
-                View Pricing
-              </Button>
+              <Link href="/pricing">
+                <Button size="lg" variant="outline" className="h-16 px-10 rounded-full text-lg">
+                  View Pricing
+                </Button>
+              </Link>
             </div>
             <div className="flex items-center gap-6 pt-4">
               <div className="flex -space-x-3">
@@ -163,7 +148,9 @@ export default function OrganizerLandingPage() {
                 </div>
               </div>
               <div className="pt-8">
-                <Button size="lg" className="rounded-full px-12 h-14 text-lg">Learn More About Fees</Button>
+                <Link href="/pricing">
+                  <Button size="lg" className="rounded-full px-12 h-14 text-lg">Learn More About Fees</Button>
+                </Link>
               </div>
             </div>
           </div>

@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { CATEGORIES, MOCK_EVENTS, CITIES } from '@/lib/mock-data';
+import { Navbar } from '@/components/navbar';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -21,35 +22,10 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Navigation */}
-      <nav className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 h-20 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center rotate-3">
-              <span className="text-primary-foreground font-black text-2xl tracking-tighter">I</span>
-            </div>
-            <span className="font-headline text-2xl tracking-tight text-white">Isabi<span className="text-primary">Events</span></span>
-          </Link>
-
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium">
-            <Link href="/discover" className="hover:text-primary transition-colors">Discover</Link>
-            <Link href="/organizer" className="hover:text-primary transition-colors">Host an Event</Link>
-            <Link href="/help" className="hover:text-primary transition-colors">Help Center</Link>
-          </div>
-
-          <div className="flex items-center gap-4">
-            <Link href="/login">
-              <Button variant="ghost">Sign In</Button>
-            </Link>
-            <Link href="/signup">
-              <Button className="rounded-full px-6">Get Started</Button>
-            </Link>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
       {/* Hero Section */}
-      <section className="relative pt-20 pb-32 overflow-hidden">
+      <section className="relative pt-32 pb-32 overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
         <div className="container mx-auto px-4 text-center">
           <Badge className="mb-6 py-1.5 px-4 bg-primary/20 text-primary border-primary/20 hover:bg-primary/20">
@@ -102,7 +78,7 @@ export default function HomePage() {
             {CATEGORIES.map((cat) => {
               const IconComp = iconMap[cat.icon] || Music;
               return (
-                <Link key={cat.id} href={`/category/${cat.id}`}>
+                <Link key={cat.id} href={`/discover?category=${cat.id}`}>
                   <Card className="hover:border-primary transition-all group overflow-hidden cursor-pointer bg-card/50">
                     <CardContent className="p-6 flex flex-col items-center text-center gap-4">
                       <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center group-hover:bg-primary/20 transition-colors">
@@ -126,7 +102,9 @@ export default function HomePage() {
               <h2 className="font-headline text-3xl mb-2">Trending Events</h2>
               <p className="text-muted-foreground">What's hot right now in {selectedCity}</p>
             </div>
-            <Button variant="outline" className="rounded-full">Explore More</Button>
+            <Button variant="outline" className="rounded-full" asChild>
+              <Link href="/discover">Explore More</Link>
+            </Button>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -237,7 +215,7 @@ export default function HomePage() {
             <div>
               <h4 className="font-headline text-sm uppercase tracking-widest mb-6">For Organizers</h4>
               <ul className="space-y-4 text-sm text-muted-foreground">
-                <li><Link href="/host" className="hover:text-primary transition-colors">Host an Event</Link></li>
+                <li><Link href="/organizer" className="hover:text-primary transition-colors">Host an Event</Link></li>
                 <li><Link href="/pricing" className="hover:text-primary transition-colors">Pricing</Link></li>
                 <li><Link href="/docs" className="hover:text-primary transition-colors">Developer API</Link></li>
                 <li><Link href="/case-studies" className="hover:text-primary transition-colors">Success Stories</Link></li>

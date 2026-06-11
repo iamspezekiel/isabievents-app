@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MOCK_EVENTS, CATEGORIES, CITIES } from '@/lib/mock-data';
+import { Navbar } from '@/components/navbar';
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -27,31 +28,13 @@ export default function DiscoverPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <nav className="border-b border-border bg-background/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center rotate-3">
-              <span className="text-primary-foreground font-black text-xl tracking-tighter">I</span>
-            </div>
-            <span className="font-headline text-xl tracking-tight text-white">Isabi<span className="text-primary">Events</span></span>
-          </Link>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" asChild>
-              <Link href="/login">Sign In</Link>
-            </Button>
-            <Button size="sm" className="rounded-full" asChild>
-              <Link href="/signup">Sign Up</Link>
-            </Button>
-          </div>
-        </div>
-      </nav>
+      <Navbar />
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-4 pt-32 pb-8">
         <div className="flex flex-col md:flex-row gap-8">
           {/* Filters Sidebar */}
           <aside className="w-full md:w-64 space-y-8">
-            <div>
+            <div className="sticky top-32">
               <h3 className="font-headline text-lg mb-4">Filters</h3>
               <div className="space-y-6">
                 <div className="space-y-3">
