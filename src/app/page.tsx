@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CATEGORIES, MOCK_EVENTS, CITIES } from '@/lib/mock-data';
 import { Navbar } from '@/components/navbar';
 import { Logo } from '@/components/logo';
@@ -50,14 +51,17 @@ export default function HomePage() {
               />
             </div>
             <div className="w-full md:w-auto h-full px-4 border-l border-border hidden md:flex items-center gap-2">
-              <MapPin className="text-primary w-5 h-5" />
-              <select 
-                className="bg-transparent text-foreground focus:outline-none appearance-none cursor-pointer font-medium"
-                value={selectedCity}
-                onChange={(e) => setSelectedCity(e.target.value)}
-              >
-                {CITIES.map(city => <option key={city} value={city}>{city}</option>)}
-              </select>
+              <MapPin className="text-primary w-5 h-5 shrink-0" />
+              <Select value={selectedCity} onValueChange={setSelectedCity}>
+                <SelectTrigger className="border-none bg-transparent focus:ring-0 focus:ring-offset-0 h-auto p-0 pr-6 font-medium text-foreground w-[120px]">
+                  <SelectValue placeholder="City" />
+                </SelectTrigger>
+                <SelectContent>
+                  {CITIES.map(city => (
+                    <SelectItem key={city} value={city}>{city}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <Button size="lg" className="w-full md:w-auto h-14 px-10 rounded-full text-lg shadow-lg shadow-primary/20">
               Find Tickets

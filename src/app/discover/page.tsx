@@ -6,6 +6,7 @@ import { Search, MapPin, SlidersHorizontal, ArrowUpDown, X, Filter } from 'lucid
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { MOCK_EVENTS, CATEGORIES, CITIES } from '@/lib/mock-data';
 import { Navbar } from '@/components/navbar';
@@ -31,14 +32,17 @@ export default function DiscoverPage() {
     <div className="space-y-8">
       <div className="space-y-4">
         <label className="text-xs font-black uppercase tracking-widest text-muted-foreground/60">Location</label>
-        <select 
-          className="w-full bg-secondary/50 border border-border rounded-xl h-12 px-4 text-sm focus:outline-none focus:ring-2 focus:ring-primary transition-all"
-          value={selectedCity}
-          onChange={(e) => setSelectedCity(e.target.value)}
-        >
-          <option value="all">All Cities</option>
-          {CITIES.map(city => <option key={city} value={city}>{city}</option>)}
-        </select>
+        <Select value={selectedCity} onValueChange={setSelectedCity}>
+          <SelectTrigger className="w-full bg-secondary/50 border border-border rounded-xl h-12 px-4 text-sm focus:ring-2 focus:ring-primary transition-all">
+            <SelectValue placeholder="All Cities" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Cities</SelectItem>
+            {CITIES.map(city => (
+              <SelectItem key={city} value={city}>{city}</SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="space-y-4">
@@ -136,7 +140,7 @@ export default function DiscoverPage() {
                         fill 
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
                       />
-                      <Badge className="absolute top-4 left-4 bg-black/60 backdrop-blur-md border-none py-1 px-3">
+                      <Badge className="absolute top-4 left-4 bg-black/60 backdrop-blur-md border-none py-1.5 px-3">
                         {event.category}
                       </Badge>
                     </div>
@@ -168,7 +172,7 @@ export default function DiscoverPage() {
               <div className="text-center py-32 bg-card/20 rounded-[3rem] border border-dashed border-border/50">
                 <Search className="w-16 h-16 text-muted-foreground mx-auto mb-6 opacity-20" />
                 <h3 className="text-2xl font-headline mb-3">Nothing matched your search</h3>
-                <p className="text-muted-foreground max-w-sm mx-auto mb-8">Try a different city, category, or broader search term to find experiences.</p>
+                <p className="text-muted-foreground max-sm mx-auto mb-8">Try a different city, category, or broader search term to find experiences.</p>
                 <Button variant="secondary" className="rounded-full px-8" onClick={() => { setSearch(''); setSelectedCategory('all'); setSelectedCity('all'); }}>
                   Clear all filters
                 </Button>
