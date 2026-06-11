@@ -59,9 +59,11 @@ export default function HomePage() {
                 </SelectContent>
               </Select>
             </div>
-            <Button size="lg" className="w-full md:w-auto h-14 px-10 rounded-full text-lg shadow-lg shadow-primary/20">
-              Discover Events
-            </Button>
+            <Link href={`/discover?q=${encodeURIComponent(search)}&city=${encodeURIComponent(selectedCity)}`}>
+              <Button size="lg" className="w-full md:w-auto h-14 px-10 rounded-full text-lg shadow-lg shadow-primary/20">
+                Discover Events
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -191,4 +193,3 @@ export default function HomePage() {
     </div>
   );
 }
-
