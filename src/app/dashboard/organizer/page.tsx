@@ -6,8 +6,8 @@ import { LayoutDashboard, Plus, Users, Ticket, BarChart3, Settings, LogOut, Tren
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { Logo } from '@/components/logo';
 import Link from 'next/link';
 
 const salesData = [
@@ -25,11 +25,8 @@ export default function OrganizerDashboard() {
     <div className="min-h-screen bg-background flex flex-col md:flex-row">
       {/* Side Navigation */}
       <aside className="w-full md:w-64 bg-sidebar border-r border-sidebar-border p-6 flex flex-col">
-        <Link href="/" className="flex items-center gap-2 mb-10">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center rotate-3">
-            <span className="text-primary-foreground font-black text-xl tracking-tighter">I</span>
-          </div>
-          <span className="font-headline text-xl tracking-tight text-white">Isabi<span className="text-primary">Events</span></span>
+        <Link href="/" className="mb-10 block">
+          <Logo size="sm" />
         </Link>
 
         <nav className="flex-1 space-y-2">

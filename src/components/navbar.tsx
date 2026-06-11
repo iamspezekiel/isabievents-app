@@ -4,18 +4,17 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, X, ChevronDown, User, LogOut, LayoutDashboard, Settings, HelpCircle } from 'lucide-react';
+import { Menu, ChevronDown } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
+import { Logo } from '@/components/logo';
 
 const NAV_LINKS = [
   { name: 'Discover', href: '/discover' },
@@ -48,13 +47,8 @@ export function Navbar() {
     )}>
       <div className="container mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center rotate-3 group-hover:rotate-0 transition-transform">
-            <span className="text-primary-foreground font-black text-2xl tracking-tighter">I</span>
-          </div>
-          <span className="font-headline text-2xl tracking-tight text-white">
-            Isabi<span className="text-primary">Events</span>
-          </span>
+        <Link href="/">
+          <Logo />
         </Link>
 
         {/* Desktop Links */}
@@ -110,11 +104,8 @@ export function Navbar() {
             </SheetTrigger>
             <SheetContent side="right" className="bg-card border-border w-[300px]">
               <SheetHeader className="text-left mb-8">
-                <SheetTitle className="font-headline flex items-center gap-2">
-                  <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                    <span className="text-primary-foreground font-black">I</span>
-                  </div>
-                  IsabiEvents
+                <SheetTitle>
+                  <Logo size="sm" />
                 </SheetTitle>
               </SheetHeader>
               <div className="flex flex-col gap-6">

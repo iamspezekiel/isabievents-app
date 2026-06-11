@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import Link from 'next/link';
 import { ArrowLeft, Mail, Lock } from 'lucide-react';
+import { Logo } from '@/components/logo';
 
 export default function LoginPage() {
   return (
@@ -18,12 +19,9 @@ export default function LoginPage() {
 
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center gap-2 mb-4">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center rotate-3">
-              <span className="text-primary-foreground font-black text-2xl tracking-tighter">I</span>
-            </div>
-            <span className="font-headline text-2xl tracking-tight text-white">Isabi<span className="text-primary">Events</span></span>
-          </div>
+          <Link href="/" className="inline-block mb-4">
+            <Logo size="lg" className="mx-auto" />
+          </Link>
           <h1 className="text-3xl font-headline">Welcome Back</h1>
           <p className="text-muted-foreground">Sign in to access your tickets and experiences</p>
         </div>

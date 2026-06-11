@@ -2,12 +2,13 @@
 "use client";
 
 import React from 'react';
-import { Ticket, History, Heart, Bell, Settings, LogOut, QrCode, ArrowRight, Download, Share2, Calendar, MapPin } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Ticket, History, Heart, Bell, Settings, LogOut, QrCode, Download, Share2, Calendar, MapPin } from 'lucide-react';
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MOCK_USER, MOCK_EVENTS } from '@/lib/mock-data';
+import { Logo } from '@/components/logo';
 import Link from 'next/link';
 
 export default function AttendeeDashboard() {
@@ -15,11 +16,8 @@ export default function AttendeeDashboard() {
     <div className="min-h-screen bg-background flex flex-col md:flex-row">
       {/* Side Navigation */}
       <aside className="w-full md:w-64 bg-card border-r border-border p-6 flex flex-col">
-        <Link href="/" className="flex items-center gap-2 mb-10">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center rotate-3">
-            <span className="text-primary-foreground font-black text-xl tracking-tighter">I</span>
-          </div>
-          <span className="font-headline text-xl tracking-tight text-white">Isabi<span className="text-primary">Events</span></span>
+        <Link href="/" className="mb-10 block">
+          <Logo size="sm" />
         </Link>
 
         <nav className="flex-1 space-y-2">

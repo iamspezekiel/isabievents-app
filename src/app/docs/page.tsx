@@ -2,10 +2,11 @@
 "use client";
 
 import React from 'react';
-import { Code2, BookOpen, Terminal, Globe, ShieldCheck, Cpu, Copy, ArrowRight } from 'lucide-react';
+import { Globe, ShieldCheck, Copy, ArrowRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { Logo } from '@/components/logo';
 import Link from 'next/link';
 
 export default function DeveloperApiPage() {
@@ -13,11 +14,8 @@ export default function DeveloperApiPage() {
     <div className="min-h-screen bg-background text-foreground flex">
       {/* Sidebar Nav */}
       <aside className="w-64 border-r border-border hidden lg:block p-8 sticky top-0 h-screen overflow-auto">
-        <Link href="/" className="flex items-center gap-2 mb-12">
-          <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center rotate-3">
-            <span className="text-primary-foreground font-black text-xl tracking-tighter">I</span>
-          </div>
-          <span className="font-headline text-xl tracking-tight text-white">Isabi<span className="text-primary">Docs</span></span>
+        <Link href="/" className="mb-12 block">
+          <Logo size="sm" />
         </Link>
         <nav className="space-y-8">
           <DocNavGroup title="Getting Started" items={['Introduction', 'Authentication', 'Errors']} />

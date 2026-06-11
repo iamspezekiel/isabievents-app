@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { CATEGORIES, MOCK_EVENTS, CITIES } from '@/lib/mock-data';
 import { Navbar } from '@/components/navbar';
+import { Logo } from '@/components/logo';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -193,11 +194,8 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
             <div className="col-span-1 md:col-span-1">
-               <Link href="/" className="flex items-center gap-2 mb-6">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center rotate-3">
-                  <span className="text-primary-foreground font-black text-xl tracking-tighter">I</span>
-                </div>
-                <span className="font-headline text-xl tracking-tight text-white">Isabi<span className="text-primary">Events</span></span>
+               <Link href="/" className="mb-6 block">
+                 <Logo />
               </Link>
               <p className="text-muted-foreground text-sm leading-relaxed">
                 The most secure and reliable event ticket marketplace in Nigeria. Connecting people to unforgettable experiences.

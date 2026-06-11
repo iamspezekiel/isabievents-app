@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import Link from 'next/link';
 import { ArrowLeft, Mail, Lock, User, ShieldCheck } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Logo } from '@/components/logo';
 
 export default function SignupPage() {
   const [role, setRole] = useState('attendee');
@@ -21,12 +22,9 @@ export default function SignupPage() {
 
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-2">
-          <div className="inline-flex items-center gap-2 mb-4">
-            <div className="w-10 h-10 bg-primary rounded-xl flex items-center justify-center rotate-3">
-              <span className="text-primary-foreground font-black text-2xl tracking-tighter">I</span>
-            </div>
-            <span className="font-headline text-2xl tracking-tight text-white">Isabi<span className="text-primary">Events</span></span>
-          </div>
+          <Link href="/" className="inline-block mb-4">
+            <Logo size="lg" className="mx-auto" />
+          </Link>
           <h1 className="text-3xl font-headline">Join IsabiEvents</h1>
           <p className="text-muted-foreground">Experience the best events in Nigeria</p>
         </div>
