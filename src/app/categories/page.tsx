@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -28,7 +27,7 @@ const iconMap: any = {
 export default function AllCategoriesPage() {
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card py-12">
+      <header className="border-b border-border bg-card pt-32 pb-12">
         <div className="container mx-auto px-4">
           <Link href="/" className="flex items-center gap-2 text-muted-foreground hover:text-white mb-8 transition-colors">
             <ArrowLeft className="w-4 h-4" /> Back to Home
