@@ -12,7 +12,49 @@ export const CATEGORIES = [
   { id: 'community', name: 'Community Events', icon: 'Users' },
 ];
 
-export const CITIES = ['Lagos', 'Abuja', 'Port Harcourt', 'Ibadan', 'Enugu', 'Kano'];
+export const CITIES = [
+  'Abakaliki',
+  'Abeokuta',
+  'Abuja',
+  'Ado Ekiti',
+  'Akure',
+  'Asaba',
+  'Awka',
+  'Bauchi',
+  'Benin City',
+  'Birnin Kebbi',
+  'Calabar',
+  'Damaturu',
+  'Dutse',
+  'Enugu',
+  'Gombe',
+  'Gusau',
+  'Ibadan',
+  'Ilorin',
+  'Ikeja',
+  'Jalingo',
+  'Jos',
+  'Kaduna',
+  'Kano',
+  'Katsina',
+  'Lafia',
+  'Lagos',
+  'Lokoja',
+  'Maiduguri',
+  'Makurdi',
+  'Minna',
+  'Onitsha',
+  'Oshogbo',
+  'Owerri',
+  'Port Harcourt',
+  'Sokoto',
+  'Umuahia',
+  'Uyo',
+  'Warri',
+  'Yenagoa',
+  'Yola',
+  'Zaria'
+].sort();
 
 export const MOCK_EVENTS = [
   {
