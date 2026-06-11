@@ -11,7 +11,7 @@ export default function PricingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <header className="py-24 text-center relative overflow-hidden">
+      <header className="pt-40 pb-24 text-center relative overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-primary/5 blur-3xl -z-10 rounded-full" />
         <div className="container mx-auto px-4 space-y-6">
           <h1 className="font-headline text-5xl md:text-7xl">Transparent Pricing</h1>

@@ -13,7 +13,7 @@ export default function SuccessStoriesPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Hero */}
-      <header className="py-24 border-b border-border bg-card/30">
+      <header className="pt-40 pb-24 border-b border-border bg-card/30">
         <div className="container mx-auto px-4 text-center space-y-6">
           <Badge className="bg-accent/20 text-accent border-none py-1.5 px-4 mb-4">SUCCESS STORIES</Badge>
           <h1 className="font-headline text-5xl md:text-7xl">Powering Nigeria&apos;s <br /> Unforgettable Moments</h1>

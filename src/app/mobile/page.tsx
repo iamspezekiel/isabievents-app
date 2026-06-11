@@ -11,7 +11,7 @@ export default function MobileAppPage() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
       {/* Hero Section */}
-      <section className="relative pt-24 pb-32">
+      <section className="relative pt-40 pb-32">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 blur-[100px] rounded-full -z-10 translate-x-1/2 -translate-y-1/2" />
         <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-8 text-center lg:text-left">

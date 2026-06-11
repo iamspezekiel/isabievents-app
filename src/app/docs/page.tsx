@@ -13,7 +13,7 @@ export default function DeveloperApiPage() {
   return (
     <div className="min-h-screen bg-background text-foreground flex">
       {/* Sidebar Nav */}
-      <aside className="w-64 border-r border-border hidden lg:block p-8 sticky top-0 h-screen overflow-auto">
+      <aside className="w-64 border-r border-border hidden lg:block p-8 sticky top-20 h-[calc(100vh-5rem)] overflow-auto">
         <Link href="/" className="mb-12 block">
           <Logo size="sm" />
         </Link>
@@ -25,7 +25,7 @@ export default function DeveloperApiPage() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-8 md:p-16 max-w-5xl">
+      <main className="flex-1 p-8 md:p-16 pt-32 md:pt-40 max-w-5xl">
         <div className="space-y-12">
           <header className="space-y-4">
             <div className="flex items-center gap-3">
