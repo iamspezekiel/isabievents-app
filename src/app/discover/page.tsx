@@ -2,16 +2,15 @@
 "use client";
 
 import React, { useState, useMemo } from 'react';
-import { Search, MapPin, SlidersHorizontal, ArrowUpDown, X, Filter } from 'lucide-react';
+import { Search, MapPin, ArrowUpDown, Filter } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { MOCK_EVENTS, CATEGORIES, CITIES } from '@/lib/mock-data';
-import { Navbar } from '@/components/navbar';
-import Link from 'next/link';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function DiscoverPage() {
   const [search, setSearch] = useState('');
@@ -70,8 +69,6 @@ export default function DiscoverPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-
       <main className="container mx-auto px-4 pt-28 md:pt-36 pb-12">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Desktop Sidebar Filters */}
