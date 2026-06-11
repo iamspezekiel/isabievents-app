@@ -25,7 +25,7 @@ export default function SignupPage() {
         </div>
 
         <Card className="bg-card border-border shadow-2xl overflow-hidden">
-          <CardHeader>
+          <CardHeader className="text-center">
             <CardTitle>Create Account</CardTitle>
             <CardDescription>Join our community today</CardDescription>
           </CardHeader>

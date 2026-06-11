@@ -22,7 +22,7 @@ export default function LoginPage() {
         </div>
 
         <Card className="bg-card border-border shadow-2xl">
-          <CardHeader className="space-y-1">
+          <CardHeader className="space-y-1 text-center">
             <CardTitle className="text-xl">Sign In</CardTitle>
             <CardDescription>Enter your credentials to continue</CardDescription>
           </CardHeader>
