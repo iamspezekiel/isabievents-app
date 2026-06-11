@@ -15,12 +15,12 @@ export default function SignupPage() {
   const [role, setRole] = useState('attendee');
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 py-12">
-      <Link href="/" className="absolute top-8 left-8 flex items-center gap-2 text-muted-foreground hover:text-white transition-colors">
-        <ArrowLeft className="w-4 h-4" /> Back to Home
-      </Link>
-
+    <div className="min-h-screen bg-background flex flex-col items-center justify-start p-4 pt-32 pb-20">
       <div className="w-full max-w-md space-y-8">
+        <Link href="/" className="flex items-center gap-2 text-muted-foreground hover:text-white transition-colors w-fit">
+          <ArrowLeft className="w-4 h-4" /> Back to Home
+        </Link>
+
         <div className="text-center space-y-2">
           <Link href="/" className="inline-block mb-4">
             <Logo size="lg" className="mx-auto" />
