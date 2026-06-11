@@ -13,11 +13,16 @@ export default function SuccessStoriesPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Hero */}
-      <header className="pt-40 pb-24 border-b border-border bg-card/30">
-        <div className="container mx-auto px-4 text-center space-y-6">
-          <Badge className="bg-accent/20 text-accent border-none py-1.5 px-4 mb-4">SUCCESS STORIES</Badge>
-          <h1 className="font-headline text-5xl md:text-7xl">Powering Nigeria&apos;s <br /> Unforgettable Moments</h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+      <header className="pt-40 pb-24 border-b border-border bg-card/30 overflow-hidden">
+        <div className="container mx-auto px-4 text-center space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
+          <Badge className="bg-accent/20 text-accent border-none py-1.5 px-6 mb-4 font-bold tracking-widest">SUCCESS STORIES</Badge>
+          <h1 className="font-headline text-5xl md:text-8xl font-black leading-[1.05] tracking-tighter text-balance">
+            Powering Nigeria&apos;s <br /> 
+            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              Unforgettable Moments
+            </span>
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             From intimate club nights to sold-out stadiums. See how Nigeria&apos;s leading organizers use IsabiEvents to scale their experiences.
           </p>
         </div>
@@ -26,7 +31,7 @@ export default function SuccessStoriesPage() {
       <main className="container mx-auto px-4 py-24">
         {/* Featured Case Study */}
         <section className="mb-32">
-          <div className="grid lg:grid-cols-2 gap-16 items-center bg-card border border-border rounded-[3rem] overflow-hidden">
+          <div className="grid lg:grid-cols-2 gap-16 items-center bg-card border border-border rounded-[3rem] overflow-hidden hover:border-primary/30 transition-colors">
             <div className="relative aspect-video lg:aspect-square">
                <Image 
                   src="https://picsum.photos/seed/case1/800/800" 
@@ -112,7 +117,7 @@ export default function SuccessStoriesPage() {
 
 function CaseCard({ title, stat, metric, img }: any) {
   return (
-    <Card className="bg-card border-border hover:border-primary/50 transition-all group">
+    <Card className="bg-card border-border hover:border-primary/50 transition-all group rounded-[2rem] overflow-hidden">
       <div className="relative aspect-video overflow-hidden">
         <Image 
           src={`https://picsum.photos/seed/${img}/600/400`} 
@@ -136,7 +141,7 @@ function CaseCard({ title, stat, metric, img }: any) {
              <div className="font-bold text-accent">{metric}</div>
            </div>
         </div>
-        <Button variant="ghost" size="sm" className="w-full text-primary hover:text-primary/80 group">
+        <Button variant="ghost" size="sm" className="w-full text-primary hover:text-primary/80 group rounded-full">
           View Details <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
         </Button>
       </CardContent>
