@@ -128,6 +128,114 @@ export const MOCK_EVENTS = [
     price: { min: 0, max: 0 },
     inventory: 20000,
     tags: ['Carnival', 'Culture', 'Free']
+  },
+  {
+    id: 'e5',
+    title: 'Abuja Praise Festival',
+    category: 'religious',
+    city: 'Abuja',
+    venue: 'National Stadium, Abuja',
+    date: '2024-12-10T17:00:00',
+    organizer: {
+      name: 'Faith Impact',
+      verified: true,
+      avatar: 'https://picsum.photos/seed/org5/100/100'
+    },
+    image: 'https://picsum.photos/seed/praise/800/600',
+    description: 'A grand night of worship and gospel music featuring top Nigerian artists.',
+    price: { min: 0, max: 0 },
+    inventory: 15000,
+    tags: ['Gospel', 'Worship', 'Free']
+  },
+  {
+    id: 'e6',
+    title: 'PH Garden City Food Fest',
+    category: 'festivals',
+    city: 'Port Harcourt',
+    venue: 'Port Harcourt Polo Club',
+    date: '2024-11-20T10:00:00',
+    organizer: {
+      name: 'Bole King',
+      verified: true,
+      avatar: 'https://picsum.photos/seed/org6/100/100'
+    },
+    image: 'https://picsum.photos/seed/food/800/600',
+    description: 'Taste the best of Port Harcourt delicacies and international street food.',
+    price: { min: 2000, max: 10000 },
+    inventory: 2500,
+    tags: ['Food', 'Bole', 'Culture']
+  },
+  {
+    id: 'e7',
+    title: 'Ibadan Night Fever',
+    category: 'nightlife',
+    city: 'Ibadan',
+    venue: 'Mauve 21 Event Centre',
+    date: '2024-11-30T22:00:00',
+    organizer: {
+      name: 'IB Party People',
+      verified: false,
+      avatar: 'https://picsum.photos/seed/org7/100/100'
+    },
+    image: 'https://picsum.photos/seed/party/800/600',
+    description: 'The ultimate nightlife experience in the ancient city. Vibes till dawn.',
+    price: { min: 5000, max: 20000 },
+    inventory: 400,
+    tags: ['Nightlife', 'Clubbing', 'Vibes']
+  },
+  {
+    id: 'e8',
+    title: 'Kano Entrepreneurship Workshop',
+    category: 'workshops',
+    city: 'Kano',
+    venue: 'Ado Bayero Mall',
+    date: '2024-12-15T10:00:00',
+    organizer: {
+      name: 'Startup Kano',
+      verified: true,
+      avatar: 'https://picsum.photos/seed/org8/100/100'
+    },
+    image: 'https://picsum.photos/seed/workshop/800/600',
+    description: 'Equipping the next generation of Northern entrepreneurs with digital skills.',
+    price: { min: 2000, max: 5000 },
+    inventory: 300,
+    tags: ['Skills', 'Business', 'Training']
+  },
+  {
+    id: 'e9',
+    title: 'Enugu Coal City Marathon',
+    category: 'sports',
+    city: 'Enugu',
+    venue: 'Nnamdi Azikiwe Stadium',
+    date: '2024-12-20T06:30:00',
+    organizer: {
+      name: 'Enugu Sports Council',
+      verified: true,
+      avatar: 'https://picsum.photos/seed/org9/100/100'
+    },
+    image: 'https://picsum.photos/seed/marathon/800/600',
+    description: 'Run for health and pride through the scenic hills of Enugu.',
+    price: { min: 0, max: 0 },
+    inventory: 5000,
+    tags: ['Running', 'Fitness', 'Sports']
+  },
+  {
+    id: 'e10',
+    title: 'Benin Arts & Culture Expo',
+    category: 'cultural',
+    city: 'Benin City',
+    venue: 'Oba Akenzua Cultural Centre',
+    date: '2024-12-12T09:00:00',
+    organizer: {
+      name: 'Edo State Heritage',
+      verified: true,
+      avatar: 'https://picsum.photos/seed/org10/100/100'
+    },
+    image: 'https://picsum.photos/seed/benin/800/600',
+    description: 'A showcase of ancient Benin bronze casting and contemporary Edo arts.',
+    price: { min: 1000, max: 5000 },
+    inventory: 1000,
+    tags: ['Art', 'History', 'Museum']
   }
 ];
 
