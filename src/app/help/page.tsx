@@ -13,7 +13,7 @@ export default function HelpCenterPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-card border-b border-border py-20 text-center">
+      <header className="bg-card border-b border-border pt-32 pb-20 text-center">
         <div className="container mx-auto px-4 max-w-4xl space-y-8">
           <div className="space-y-2">
             <h1 className="font-headline text-4xl md:text-6xl">How can we help?</h1>
