@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -146,7 +145,7 @@ export default function HomePage() {
                           <Image src={event.organizer.avatar} alt={event.organizer.name} fill className="object-cover" />
                         </div>
                         <span className="text-xs font-medium text-muted-foreground">{event.organizer.name}</span>
-                        {event.organizer.verified && <CheckCircle2 className="w-3 h-3 text-accent" />}
+                        {event.organizer.verified && <CheckCircle2 className="w-3 h-3 text-primary" />}
                       </div>
                       <div className="text-right">
                         <span className="block text-xs text-muted-foreground uppercase font-bold tracking-wider">Starts from</span>
@@ -176,8 +175,8 @@ export default function HomePage() {
               <p className="text-muted-foreground">Every event organizer undergoes strict KYC verification before listing on our platform.</p>
             </div>
             <div className="space-y-4">
-              <div className="w-16 h-16 bg-accent/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                <CheckCircle2 className="w-8 h-8 text-accent" />
+              <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <CheckCircle2 className="w-8 h-8 text-primary" />
               </div>
               <h3 className="font-headline text-xl">Instant Ticket Delivery</h3>
               <p className="text-muted-foreground">Receive your unique secure QR code ticket immediately via email and in your wallet after payment.</p>

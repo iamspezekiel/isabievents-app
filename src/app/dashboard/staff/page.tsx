@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -48,7 +47,7 @@ export default function StaffCheckIn() {
           </Link>
           <h1 className="font-headline text-lg">Gate Check-In</h1>
         </div>
-        <Badge className="bg-accent/20 text-accent border-none">Main Entrance</Badge>
+        <Badge className="bg-primary/20 text-primary border-none">Main Entrance</Badge>
       </header>
 
       <main className="flex-1 overflow-auto p-4 md:p-8">
@@ -57,7 +56,7 @@ export default function StaffCheckIn() {
           <Card className="border-border bg-card overflow-hidden rounded-3xl shadow-2xl">
             <CardContent className="p-0">
               <div className={`aspect-square relative flex flex-col items-center justify-center transition-colors duration-500 ${
-                scanState === 'success' ? 'bg-green-500/20' : 
+                scanState === 'success' ? 'bg-primary/20' : 
                 scanState === 'error' ? 'bg-red-500/20' : 
                 'bg-black/50'
               }`}>
@@ -82,12 +81,12 @@ export default function StaffCheckIn() {
 
                 {scanState === 'success' && (
                   <div className="text-center space-y-4 animate-in zoom-in-90 duration-300">
-                    <CheckCircle className="w-24 h-24 text-green-500 mx-auto" />
+                    <CheckCircle className="w-24 h-24 text-primary mx-auto" />
                     <div>
-                      <h2 className="font-headline text-3xl text-green-500">ACCESS GRANTED</h2>
+                      <h2 className="font-headline text-3xl text-primary">ACCESS GRANTED</h2>
                       <p className="text-lg font-medium mt-2">VIP PASS • ADMIT ONE</p>
                     </div>
-                    <Button onClick={resetScanner} variant="outline" className="mt-6 rounded-full px-10 border-green-500/50 text-green-500 hover:bg-green-500/10">
+                    <Button onClick={resetScanner} variant="outline" className="mt-6 rounded-full px-10 border-primary/50 text-primary hover:bg-primary/10">
                       Next Attendee
                     </Button>
                   </div>
@@ -137,7 +136,7 @@ export default function StaffCheckIn() {
                   </div>
                   <div className="text-right">
                     <div className="text-sm font-medium">{entry.time}</div>
-                    <Badge className="bg-green-500/10 text-green-500 border-none text-[10px]">VERIFIED</Badge>
+                    <Badge className="bg-primary/10 text-primary border-none text-[10px]">VERIFIED</Badge>
                   </div>
                 </div>
               ))}
