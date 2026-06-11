@@ -15,6 +15,7 @@ import {
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { Logo } from '@/components/logo';
+import { ThemeToggle } from '@/components/theme-toggle';
 
 const NAV_LINKS = [
   { name: 'Discover', href: '/discover' },
@@ -86,6 +87,7 @@ export function Navbar() {
 
         {/* Actions */}
         <div className="flex items-center gap-3">
+          <ThemeToggle />
           <div className="hidden sm:flex items-center gap-3">
             <Button variant="ghost" asChild>
               <Link href="/login">Sign In</Link>
