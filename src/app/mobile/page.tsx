@@ -1,7 +1,8 @@
+
 "use client";
 
 import React from 'react';
-import { Smartphone, Download, QrCode, Bell, Zap, ShieldCheck, ArrowRight, Star, Apple, Play } from 'lucide-react';
+import { Smartphone, Download, QrCode, Bell, Zap, ShieldCheck, ArrowRight, Star, Apple, Play, Share2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import Image from 'next/image';
@@ -67,7 +68,7 @@ export default function MobileAppPage() {
             </div>
             
             {/* Floating UI Elements */}
-            <div className="absolute top-1/4 -right-8 md:-right-16 bg-card border border-border p-4 rounded-3xl shadow-2xl animate-bounce duration-[3000ms]">
+            <div className="absolute top-1/4 -right-8 md:-right-16 bg-card border border-border p-4 rounded-3xl shadow-2xl animate-bounce duration-[3000ms] z-20">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
                   <QrCode className="w-6 h-6 text-primary" />
@@ -79,7 +80,19 @@ export default function MobileAppPage() {
               </div>
             </div>
 
-            <div className="absolute bottom-1/4 -left-8 md:-left-16 bg-card border border-border p-4 rounded-3xl shadow-2xl animate-pulse">
+            <div className="absolute top-1/2 -right-12 md:-right-20 bg-card border border-border p-4 rounded-3xl shadow-2xl animate-pulse delay-700 z-20">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
+                  <Share2 className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <div className="text-[10px] font-black uppercase text-muted-foreground">Transfer</div>
+                  <div className="text-xs font-bold">Ticket Sent</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="absolute bottom-1/4 -left-8 md:-left-16 bg-card border border-border p-4 rounded-3xl shadow-2xl animate-pulse z-20">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-accent/10 rounded-xl flex items-center justify-center">
                   <Bell className="w-6 h-6 text-accent" />
@@ -116,7 +129,7 @@ export default function MobileAppPage() {
               color="accent"
             />
             <AppFeature 
-              icon={ShieldCheck} 
+              icon={Share2} 
               title="Secure Transfers" 
               desc="Bought for a friend? Transfer tickets securely via phone number with instant ownership verification."
               color="white"
