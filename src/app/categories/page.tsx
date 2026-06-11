@@ -13,8 +13,7 @@ import {
   Images, 
   Cpu, 
   Users,
-  ChevronRight,
-  ArrowLeft
+  ChevronRight
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
@@ -29,9 +28,6 @@ export default function AllCategoriesPage() {
     <div className="min-h-screen bg-background">
       <header className="border-b border-border bg-card pt-32 pb-12">
         <div className="container mx-auto px-4">
-          <Link href="/" className="flex items-center gap-2 text-muted-foreground hover:text-white mb-8 transition-colors">
-            <ArrowLeft className="w-4 h-4" /> Back to Home
-          </Link>
           <h1 className="font-headline text-4xl md:text-6xl">Browse Everything</h1>
           <p className="text-muted-foreground text-lg mt-4">Discover experiences across every interest in Nigeria.</p>
         </div>

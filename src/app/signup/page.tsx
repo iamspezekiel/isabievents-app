@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -7,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from 'next/link';
-import { ArrowLeft, Mail, Lock, User, ShieldCheck } from 'lucide-react';
+import { Mail, Lock, User, ShieldCheck } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Logo } from '@/components/logo';
 
@@ -17,10 +16,6 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-start p-4 pt-32 pb-20">
       <div className="w-full max-w-md space-y-8">
-        <Link href="/" className="flex items-center gap-2 text-muted-foreground hover:text-white transition-colors w-fit">
-          <ArrowLeft className="w-4 h-4" /> Back to Home
-        </Link>
-
         <div className="text-center space-y-2">
           <Link href="/" className="inline-block mb-4">
             <Logo size="lg" className="mx-auto" />
