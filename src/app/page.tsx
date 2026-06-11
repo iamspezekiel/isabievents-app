@@ -107,8 +107,8 @@ export default function HomePage() {
               <h2 className="font-headline text-3xl mb-2">Trending Events</h2>
               <p className="text-muted-foreground">What's hot right now in {selectedCity}</p>
             </div>
-            <Button variant="outline" className="rounded-full" asChild>
-              <Link href="/discover">Explore More</Link>
+            <Button className="rounded-full px-6 shadow-lg shadow-primary/20 font-semibold gap-2" asChild>
+              <Link href="/discover">Explore More <ArrowRight className="w-4 h-4" /></Link>
             </Button>
           </div>
           
@@ -162,7 +162,7 @@ export default function HomePage() {
 
           <div className="text-center">
             <Link href="/discover">
-              <Button variant="outline" size="lg" className="rounded-full px-12 h-14 text-lg border-primary/20 hover:bg-primary/5 transition-all group">
+              <Button size="lg" className="rounded-full px-12 h-14 text-lg shadow-xl shadow-primary/20 group">
                 Discover More Events <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
