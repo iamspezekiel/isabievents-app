@@ -74,7 +74,7 @@ export default function HomePage() {
           <div className="flex items-center justify-between mb-8">
             <h2 className="font-headline text-2xl">Browse by Category</h2>
             <Link href="/categories">
-              <Button variant="ghost" className="text-primary gap-1 font-semibold hover:bg-primary/5">
+              <Button className="rounded-full px-6 shadow-lg shadow-primary/20 font-semibold gap-2">
                 View All <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
