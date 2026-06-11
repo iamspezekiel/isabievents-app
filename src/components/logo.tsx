@@ -35,14 +35,14 @@ export function Logo({ className, iconOnly = false, size = 'md' }: LogoProps) {
   return (
     <div className={cn("flex items-center gap-2 group cursor-pointer", className)}>
       <div className={cn(
-        "bg-primary flex items-center justify-center rotate-3 group-hover:rotate-0 transition-transform duration-300 shadow-lg shadow-primary/20",
+        "bg-primary/10 border border-primary/20 flex items-center justify-center rotate-3 group-hover:rotate-0 transition-transform duration-300 shadow-xl shadow-primary/5",
         currentSize.container
       )}>
-        <Ticket className={cn("text-primary-foreground fill-primary-foreground/20", currentSize.icon)} />
+        <Ticket className={cn("text-primary fill-primary/20", currentSize.icon)} />
       </div>
       {!iconOnly && (
-        <span className={cn("font-headline tracking-tight text-white", currentSize.text)}>
-          Isabi<span className="text-primary">Events</span>
+        <span className={cn("font-headline tracking-tight text-primary", currentSize.text)}>
+          IsabiEvents
         </span>
       )}
     </div>
