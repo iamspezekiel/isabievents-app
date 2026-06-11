@@ -2,7 +2,21 @@
 "use client";
 
 import React from 'react';
-import { Smartphone, Download, QrCode, Bell, Zap, ShieldCheck, ArrowRight, Star, Apple, Play, Share2 } from 'lucide-react';
+import { 
+  Smartphone, 
+  Download, 
+  QrCode, 
+  Bell, 
+  Zap, 
+  ShieldCheck, 
+  ArrowRight, 
+  Star, 
+  Apple, 
+  Play, 
+  Share2, 
+  Send,
+  Lock
+} from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import Image from 'next/image';
@@ -27,7 +41,7 @@ export default function MobileAppPage() {
                 <span className="text-primary">Everywhere</span> You Go.
               </h1>
               <p className="text-muted-foreground text-xl max-w-xl mx-auto lg:mx-0 leading-relaxed">
-                Experience Nigeria's best events with zero friction. Buy, store, and transfer tickets even when you're offline.
+                Experience Nigeria&apos;s best events with zero friction. Buy, store, and transfer tickets even when you&apos;re offline.
               </p>
             </div>
 
@@ -70,7 +84,7 @@ export default function MobileAppPage() {
             {/* Floating UI Elements */}
             <div className="absolute top-1/4 -right-8 md:-right-16 bg-card border border-border p-4 rounded-3xl shadow-2xl animate-bounce duration-[3000ms] z-20">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center">
+                <div className="w-10 h-10 bg-primary/20 rounded-xl flex items-center justify-center">
                   <QrCode className="w-6 h-6 text-primary" />
                 </div>
                 <div>
@@ -82,8 +96,8 @@ export default function MobileAppPage() {
 
             <div className="absolute top-1/2 -right-12 md:-right-20 bg-card border border-border p-4 rounded-3xl shadow-2xl animate-pulse delay-700 z-20">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white/10 rounded-xl flex items-center justify-center">
-                  <Share2 className="w-6 h-6 text-white" />
+                <div className="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center">
+                  <Send className="w-5 h-5 text-accent" />
                 </div>
                 <div>
                   <div className="text-[10px] font-black uppercase text-muted-foreground">Transfer</div>
@@ -94,8 +108,8 @@ export default function MobileAppPage() {
 
             <div className="absolute bottom-1/4 -left-8 md:-left-16 bg-card border border-border p-4 rounded-3xl shadow-2xl animate-pulse z-20">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-accent/10 rounded-xl flex items-center justify-center">
-                  <Bell className="w-6 h-6 text-accent" />
+                <div className="w-10 h-10 bg-secondary rounded-xl flex items-center justify-center">
+                  <Bell className="w-6 h-6 text-muted-foreground" />
                 </div>
                 <div>
                   <div className="text-[10px] font-black uppercase text-muted-foreground">New Event</div>
@@ -112,12 +126,12 @@ export default function MobileAppPage() {
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
             <h2 className="font-headline text-4xl">Built for the Naija Experience</h2>
-            <p className="text-muted-foreground text-lg">We've solved the common problems of physical ticketing and poor internet.</p>
+            <p className="text-muted-foreground text-lg">We&apos;ve solved the common problems of physical ticketing and poor internet.</p>
           </div>
           
           <div className="grid md:grid-cols-3 gap-12">
             <AppFeature 
-              icon={QrCode} 
+              icon={ShieldCheck} 
               title="True Offline Access" 
               desc="Your tickets are saved locally with encryption. Walk into any venue even without a data connection."
               color="primary"
@@ -129,7 +143,7 @@ export default function MobileAppPage() {
               color="accent"
             />
             <AppFeature 
-              icon={Share2} 
+              icon={Send} 
               title="Secure Transfers" 
               desc="Bought for a friend? Transfer tickets securely via phone number with instant ownership verification."
               color="white"
