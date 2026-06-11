@@ -158,8 +158,7 @@ export default function EventDetailsPage() {
             <div className="sticky top-32 space-y-6">
               <Card className="border-border bg-card shadow-2xl overflow-hidden rounded-2xl">
                 <CardContent className="p-8">
-                  <div className="flex items-center justify-between mb-6">
-                    <span className="text-muted-foreground font-medium">Starts from</span>
+                  <div className="flex items-center justify-center mb-6">
                     <span className="text-3xl font-bold text-white">₦{event.price.min.toLocaleString()}</span>
                   </div>
                   

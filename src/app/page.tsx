@@ -73,8 +73,10 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
             <h2 className="font-headline text-2xl">Browse by Category</h2>
-            <Link href="/categories" className="text-primary flex items-center gap-1 text-sm font-semibold hover:underline">
-              View All <ArrowRight className="w-4 h-4" />
+            <Link href="/categories">
+              <Button variant="ghost" className="text-primary gap-1 font-semibold hover:bg-primary/5">
+                View All <ArrowRight className="w-4 h-4" />
+              </Button>
             </Link>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
@@ -147,7 +149,6 @@ export default function HomePage() {
                         {event.organizer.verified && <CheckCircle2 className="w-3 h-3 text-primary" />}
                       </div>
                       <div className="text-right">
-                        <span className="block text-xs text-muted-foreground uppercase font-bold tracking-wider">Starts from</span>
                         <span className="text-lg font-bold text-white">
                           {event.price.min === 0 ? 'FREE' : `₦${event.price.min.toLocaleString()}`}
                         </span>
@@ -161,8 +162,8 @@ export default function HomePage() {
 
           <div className="text-center">
             <Link href="/discover">
-              <Button variant="outline" size="lg" className="rounded-full px-12 h-14 text-lg border-primary/20 hover:bg-primary/5 transition-all">
-                Discover More Events
+              <Button variant="outline" size="lg" className="rounded-full px-12 h-14 text-lg border-primary/20 hover:bg-primary/5 transition-all group">
+                Discover More Events <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
           </div>
