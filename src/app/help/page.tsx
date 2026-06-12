@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -12,10 +13,10 @@ export default function HelpCenterPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-card border-b border-border pt-32 pb-20 text-center">
+      <header className="bg-card border-b border-border pt-40 pb-20 text-center">
         <div className="container mx-auto px-4 max-w-4xl space-y-8">
           <div className="space-y-2">
-            <h1 className="font-headline text-4xl md:text-6xl">How can we help?</h1>
+            <h1 className="font-headline text-4xl md:text-6xl text-balance">How can we help?</h1>
             <p className="text-muted-foreground text-lg">Search our help center or browse common topics below.</p>
           </div>
           <div className="relative max-w-2xl mx-auto">
@@ -76,14 +77,26 @@ export default function HelpCenterPage() {
                     In most cases, yes. You can update your attendee details once per ticket from your wallet. If you need to change it again, please contact the event organizer or our support team for assistance.
                   </AccordionContent>
                 </AccordionItem>
+                <AccordionItem value="q7">
+                  <AccordionTrigger>Is my transaction secure?</AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground leading-relaxed">
+                    Absolutely. We use industry-standard encryption and partner with licensed payment processors like Paystack and Flutterwave to ensure your financial data is never compromised.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="q8">
+                  <AccordionTrigger>What happens if an event is postponed?</AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground leading-relaxed">
+                    If an event is postponed, your ticket will typically remain valid for the new date. If you cannot attend the new date, you may be eligible for a refund depending on the organizer's policy for that specific event.
+                  </AccordionContent>
+                </AccordionItem>
               </Accordion>
             </section>
 
             <section className="space-y-6">
-              <h2 className="font-headline text-3xl">Latest Articles</h2>
+              <h2 className="font-headline text-2xl">Latest Articles</h2>
               <div className="space-y-4">
                 {[1, 2, 3].map(i => (
-                  <Link key={i} href="#" className="flex items-center justify-between p-6 bg-card border border-border rounded-2xl hover:border-primary transition-all group no-underline">
+                  <Link key={i} href="#" className="flex items-center justify-between p-6 bg-card border border-border rounded-2xl transition-all group no-underline">
                     <div className="space-y-1">
                       <h4 className="font-bold">Protecting your account from ticket scams</h4>
                       <p className="text-sm text-muted-foreground">Safety tips for buying and selling tickets safely.</p>

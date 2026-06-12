@@ -24,8 +24,8 @@ import Image from 'next/image';
 export default function MobileAppPage() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
-      {/* Immersive Hero Header - Inspired by Event Details */}
-      <section className="relative h-[85vh] w-full flex items-end pb-24 overflow-hidden">
+      {/* Immersive Hero Header */}
+      <section className="relative h-[90vh] w-full flex items-end pb-24 pt-44 overflow-hidden">
         <Image 
           src="https://picsum.photos/seed/mobile-v3/1920/1080" 
           alt="IsabiEvents Mobile" 
@@ -41,7 +41,7 @@ export default function MobileAppPage() {
               <Badge className="w-fit bg-primary text-white border-none py-1.5 px-6 font-black tracking-widest uppercase mb-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
                 NIGERIAN EXPERIENCE
               </Badge>
-              <h1 className="animate-in fade-in slide-in-from-bottom-6 duration-1000">
+              <h1 className="text-5xl md:text-8xl leading-none animate-in fade-in slide-in-from-bottom-6 duration-1000">
                 Your Tickets. <br />
                 <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                   Everywhere
@@ -80,7 +80,7 @@ export default function MobileAppPage() {
         
         <div className="container mx-auto px-4">
           <div className="text-center max-w-4xl mx-auto mb-24 space-y-6">
-            <h2 className="text-balance">
+            <h2 className="text-4xl md:text-6xl text-balance">
               Built for the <br />
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Nigerian Experience</span>
             </h2>
