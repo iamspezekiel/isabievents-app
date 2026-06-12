@@ -22,8 +22,10 @@ function DiscoverContent() {
   const [priceFilter, setPriceFilter] = useState(searchParams.get('price') || 'all');
   
   const [displayLimit, setDisplayLimit] = useState(27);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const handleResize = () => {
       if (window.innerWidth < 1024) {
         setDisplayLimit(16);
@@ -237,7 +239,7 @@ function DiscoverContent() {
               <div className="p-3 md:p-8 flex flex-col flex-1 text-left">
                 <div className="text-primary text-[8px] md:text-sm font-black uppercase tracking-[0.1em] md:tracking-[0.2em] mb-1 md:mb-3 flex items-center gap-1">
                   <Calendar className="w-2 h-2 md:w-4 md:h-4" />
-                  {new Date(event.date).toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' })}
+                  {mounted ? new Date(event.date).toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Loading date...'}
                 </div>
                 <h3 className="font-headline text-sm md:text-2xl mb-1 md:mb-2 group-hover:text-primary transition-colors line-clamp-1">{event.title}</h3>
                 <div className="flex items-center gap-1 text-muted-foreground text-[8px] md:text-sm mb-2 md:mb-6">

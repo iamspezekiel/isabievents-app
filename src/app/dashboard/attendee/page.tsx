@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Ticket, History, Heart, Bell, Settings, LogOut, QrCode, Download, Share2, Calendar, MapPin, Menu, X } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,11 @@ import Link from 'next/link';
 
 export default function AttendeeDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const Navigation = () => (
     <nav className="flex-1 space-y-2">
@@ -89,7 +94,7 @@ export default function AttendeeDashboard() {
 
             <TabsContent value="upcoming" className="space-y-6">
               {MOCK_EVENTS.slice(0, 2).map((event) => (
-                <TicketCard key={event.id} event={event} />
+                <TicketCard key={event.id} event={event} mounted={mounted} />
               ))}
             </TabsContent>
 
@@ -127,7 +132,7 @@ function StatBox({ label, value, color }: any) {
   );
 }
 
-function TicketCard({ event }: any) {
+function TicketCard({ event, mounted }: any) {
   return (
     <div className="group relative bg-card border border-border rounded-[2.5rem] overflow-hidden hover:border-primary/50 transition-all flex flex-col md:flex-row hover:shadow-2xl hover:shadow-primary/5">
       <div className="relative w-full md:w-64 aspect-video md:aspect-square shrink-0">
@@ -149,7 +154,7 @@ function TicketCard({ event }: any) {
             <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center">
               <Calendar className="w-4 h-4 text-primary" />
             </div>
-            {new Date(event.date).toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' })}
+            {mounted ? new Date(event.date).toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Loading date...'}
           </div>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center">

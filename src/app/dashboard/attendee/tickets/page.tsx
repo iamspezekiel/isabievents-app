@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Ticket, Search, QrCode, Download, Share2, Calendar, MapPin, ArrowLeft } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,6 +9,12 @@ import { MOCK_EVENTS } from '@/lib/mock-data';
 import Link from 'next/link';
 
 export default function TicketGalleryPage() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background pt-20">
       <header className="border-b border-border bg-card py-10 sticky top-0 z-50">
@@ -50,7 +56,7 @@ export default function TicketGalleryPage() {
                   <div className="space-y-1">
                     <span className="text-[10px] text-muted-foreground uppercase font-bold">Date</span>
                     <div className="text-sm font-medium flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5 text-primary" /> {new Date(event.date).toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' })}
+                      <Calendar className="w-3.5 h-3.5 text-primary" /> {mounted ? new Date(event.date).toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Loading...'}
                     </div>
                   </div>
                   <div className="space-y-1">

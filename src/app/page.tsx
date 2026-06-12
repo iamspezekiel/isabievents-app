@@ -41,8 +41,10 @@ const iconMap: any = {
 export default function HomePage() {
   const [search, setSearch] = useState('');
   const [displayLimit, setDisplayLimit] = useState(27);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const handleResize = () => {
       if (window.innerWidth < 1024) {
         setDisplayLimit(16);
@@ -165,7 +167,7 @@ export default function HomePage() {
                   <div className="p-3 md:p-8 text-left">
                     <div className="flex items-center gap-1 md:gap-2 text-primary text-[8px] md:text-sm font-black uppercase tracking-widest mb-1 md:mb-3">
                       <Calendar className="w-2.5 h-2.5 md:w-4 h-4" />
-                      {new Date(event.date).toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' })}
+                      {mounted ? new Date(event.date).toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Loading date...'}
                     </div>
                     <h3 className="text-sm md:text-2xl mb-1 group-hover:text-primary transition-colors line-clamp-1 font-bold">{event.title}</h3>
                     <p className="text-muted-foreground text-[8px] md:text-sm flex items-center gap-1 mb-2 md:mb-6">

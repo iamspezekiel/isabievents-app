@@ -20,6 +20,7 @@ export default function EventDetailsPage() {
   const [faqs, setFaqs] = useState<any[]>([]);
   const [loadingFaqs, setLoadingFaqs] = useState(true);
   const [faqError, setFaqError] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   // Ticket Selection State
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
@@ -40,6 +41,7 @@ export default function EventDetailsPage() {
   }
 
   useEffect(() => {
+    setMounted(true);
     fetchFaqs();
   }, [event.description]);
 
@@ -74,7 +76,7 @@ export default function EventDetailsPage() {
             <div className="flex flex-wrap items-center gap-6 text-sm md:text-base font-medium">
               <div className="flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-primary" />
-                {new Date(event.date).toLocaleString('en-NG', { dateStyle: 'full', timeStyle: 'short' })}
+                {mounted ? new Date(event.date).toLocaleString('en-NG', { dateStyle: 'full', timeStyle: 'short' }) : 'Loading schedule...'}
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="w-5 h-5 text-primary" />

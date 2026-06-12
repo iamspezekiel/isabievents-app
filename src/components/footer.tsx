@@ -40,8 +40,8 @@ export function Footer() {
         {/* Links Grid */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
           <div className="col-span-1 md:col-span-1 space-y-6">
-             <Link href="/" className="inline-block no-underline">
-               {mounted ? <Logo /> : <div className="h-10 w-40 bg-secondary animate-pulse rounded-xl" />}
+            <Link href="/" className="inline-block no-underline">
+               <Logo size="sm" />
             </Link>
             <p className="text-muted-foreground text-sm leading-relaxed max-w-xs font-medium text-left">
               Connecting people to unforgettable experiences.
@@ -95,7 +95,7 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="border-t border-border pt-10 text-center text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">
-          <p>Copyright &copy; 2026 · IsabiEvents Technology · All Right Reserved</p>
+          <p>Copyright © 2026 · IsabiEvents Technology · All Right Reserved</p>
         </div>
       </div>
     </footer>
