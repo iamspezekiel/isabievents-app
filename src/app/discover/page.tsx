@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useMemo, useEffect, Suspense } from 'react';
@@ -128,7 +129,7 @@ function DiscoverContent() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
-      {/* Page Title moved to top and centered */}
+      {/* Page Title - Centered */}
       <div className="px-2 text-center">
         <h1 className="font-headline text-3xl md:text-4xl">Discover Experiences</h1>
       </div>
@@ -194,25 +195,6 @@ function DiscoverContent() {
               </SheetFooter>
             </SheetContent>
           </Sheet>
-        </div>
-
-        {/* Results Controls */}
-        <div className="flex items-center justify-end px-2">
-          <div className="hidden md:block">
-            <Select value={priceFilter} onValueChange={setPriceFilter}>
-              <SelectTrigger className="h-10 rounded-xl px-4 gap-2 border-border bg-card min-w-[120px] focus:ring-primary font-bold text-xs">
-                <div className="flex items-center gap-2">
-                  <CircleDollarSign className="w-4 h-4" />
-                  <SelectValue placeholder="Price" />
-                </div>
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Prices</SelectItem>
-                <SelectItem value="free">Free Only</SelectItem>
-                <SelectItem value="paid">Paid Only</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
         </div>
       </div>
 
