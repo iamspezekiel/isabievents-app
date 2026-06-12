@@ -87,8 +87,8 @@ export default function DeveloperApiPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col lg:flex-row">
-      {/* Mobile Sticky Section Header */}
-      <div className="lg:hidden sticky top-[84px] z-30 w-full bg-background/80 backdrop-blur-md border-b border-border px-4 py-3 flex items-center justify-between mt-28">
+      {/* Mobile Sticky Section Header - Increased top offset and margin */}
+      <div className="lg:hidden sticky top-[100px] z-30 w-full bg-background/80 backdrop-blur-md border-b border-border px-4 py-3 flex items-center justify-between mt-36">
         <div className="flex items-center gap-2">
           <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Section</span>
           <span className="text-sm font-bold">{currentLabel}</span>
