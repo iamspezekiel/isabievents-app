@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -6,7 +5,7 @@ import { Target, Users, ShieldCheck, Zap, Heart, Sparkles, ArrowRight } from 'lu
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import Link from 'link';
+import Link from 'next/link';
 import Image from 'next/image';
 
 export default function AboutPage() {
