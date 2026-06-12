@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -148,7 +149,7 @@ export default function AboutPage() {
       <section className="py-24 container mx-auto px-4">
         <div className="bg-primary/5 border border-primary/10 rounded-[4rem] p-12 md:p-20 flex flex-col lg:flex-row items-center gap-16">
           <div className="flex-1 space-y-8 text-left">
-             <h2 className="font-headline text-xl md:text-3xl font-black tracking-tighter leading-none">Why IsabiEvents?</h2>
+             <h2 className="font-headline text-2xl md:text-3xl font-black tracking-tighter leading-none">Why IsabiEvents?</h2>
              <div className="space-y-6">
                 <FeatureItem 
                   icon={CreditCard}
