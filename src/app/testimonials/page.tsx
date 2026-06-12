@@ -6,31 +6,44 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
+import Image from 'next/image';
 
 const TESTIMONIALS = [
   {
     name: "Chioma Okereke",
-    quote: "IsabiEvents is a lifesaver. No more worrying about fake tickets outside the venue. The QR system is fast and seamless. I've used it for over 5 concerts this year!"
+    quote: "IsabiEvents is a lifesaver. No more worrying about fake tickets outside the venue. The QR system is fast and seamless. I've used it for over 5 concerts this year!",
+    avatar: "https://picsum.photos/seed/chioma/100/100",
+    rating: 5
   },
   {
     name: "Tunde Bakare",
-    quote: "I love the clean interface. Buying tickets for tech conferences in Abuja has never been easier. The transfer feature is also amazing when I buy for my team."
+    quote: "I love the clean interface. Buying tickets for tech conferences in Abuja has never been easier. The transfer feature is also amazing when I buy for my team.",
+    avatar: "https://picsum.photos/seed/tunde/100/100",
+    rating: 5
   },
   {
     name: "Aisha Bello",
-    quote: "The mobile wallet is great because I don't need data to show my ticket at the gate. Very thoughtful design for the Nigerian market."
+    quote: "The mobile wallet is great because I don't need data to show my ticket at the gate. Very thoughtful design for the Nigerian market.",
+    avatar: "https://picsum.photos/seed/aisha/100/100",
+    rating: 4
   },
   {
     name: "Emeka Nwosu",
-    quote: "Finally, a platform that understands Naija. Payouts for my vendor stall at events are always on time. Highly recommend!"
+    quote: "Finally, a platform that understands Naija. Payouts for my vendor stall at events are always on time. Highly recommend!",
+    avatar: "https://picsum.photos/seed/emeka/100/100",
+    rating: 5
   },
   {
     name: "Fatima Yusuf",
-    quote: "Super easy to use. I found out about a free cultural expo in Benin that I wouldn't have known about otherwise. The discovery feature is top-notch."
+    quote: "Super easy to use. I found out about a free cultural expo in Benin that I wouldn't have known about otherwise. The discovery feature is top-notch.",
+    avatar: "https://picsum.photos/seed/fatima/100/100",
+    rating: 5
   },
   {
     name: "Olumide Williams",
-    quote: "Secure and reliable. I've never had an issue with payments using my local card. The verification for organizers gives me peace of mind."
+    quote: "Secure and reliable. I've never had an issue with payments using my local card. The verification for organizers gives me peace of mind.",
+    avatar: "https://picsum.photos/seed/olumide/100/100",
+    rating: 5
   }
 ];
 
@@ -106,21 +119,44 @@ function StatBox({ icon: Icon, label, value }: any) {
   );
 }
 
-function TestimonialCard({ name, quote }: any) {
+function TestimonialCard({ name, quote, avatar, rating }: any) {
   return (
     <Card className="bg-card border-border hover:border-primary/50 transition-all group rounded-[2.5rem] overflow-hidden flex flex-col h-full">
       <CardContent className="p-10 space-y-6 flex-1 flex flex-col justify-between">
-        <div className="relative">
-          <Quote className="absolute -top-4 -left-6 w-12 h-12 text-primary/5 -z-10" />
-          <p className="text-lg leading-relaxed font-medium italic text-foreground/90">
-            "{quote}"
-          </p>
+        <div className="space-y-4">
+          <div className="flex gap-1">
+            {[...Array(5)].map((_, i) => (
+              <Star 
+                key={i} 
+                className={cn(
+                  "w-4 h-4",
+                  i < rating ? "text-yellow-500 fill-yellow-500" : "text-muted stroke-muted"
+                )} 
+              />
+            ))}
+          </div>
+          <div className="relative">
+            <Quote className="absolute -top-4 -left-6 w-12 h-12 text-primary/5 -z-10" />
+            <p className="text-lg leading-relaxed font-medium italic text-foreground/90">
+              "{quote}"
+            </p>
+          </div>
         </div>
         
-        <div className="pt-8 border-t border-border">
+        <div className="pt-8 border-t border-border flex items-center gap-4">
+          <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 border border-border">
+            <Image 
+              src={avatar} 
+              alt={name} 
+              fill 
+              className="object-cover" 
+            />
+          </div>
           <div className="font-headline text-xl font-black text-foreground">{name}</div>
         </div>
       </CardContent>
     </Card>
   );
 }
+
+import { cn } from "@/lib/utils";
