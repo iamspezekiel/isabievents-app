@@ -16,7 +16,7 @@ export function Logo({ className, iconOnly = false, size = 'md' }: LogoProps) {
     sm: {
       container: "w-8 h-8 rounded-lg",
       icon: "w-4 h-4",
-      text: "text-lg",
+      text: "text-xl",
     },
     md: {
       container: "w-10 h-10 rounded-xl",
@@ -24,26 +24,27 @@ export function Logo({ className, iconOnly = false, size = 'md' }: LogoProps) {
       text: "text-2xl",
     },
     lg: {
-      container: "w-12 h-12 rounded-2xl",
-      icon: "w-6 h-6",
-      text: "text-3xl",
+      container: "w-14 h-14 rounded-2xl",
+      icon: "w-7 h-7",
+      text: "text-4xl",
     }
   };
 
   const currentSize = sizeClasses[size];
 
   return (
-    <div className={cn("flex items-center gap-2 group cursor-pointer", className)}>
+    <div className={cn("flex items-center gap-2.5 group cursor-pointer select-none", className)}>
       <div className={cn(
-        "bg-primary/10 border border-primary/20 flex items-center justify-center rotate-3 group-hover:rotate-0 transition-transform duration-300 shadow-xl shadow-primary/5",
+        "bg-primary flex items-center justify-center -rotate-6 group-hover:rotate-0 transition-all duration-500 shadow-lg shadow-primary/20",
         currentSize.container
       )}>
-        <Ticket className={cn("text-primary fill-primary/20", currentSize.icon)} />
+        <Ticket className={cn("text-primary-foreground fill-primary-foreground/20", currentSize.icon)} />
       </div>
       {!iconOnly && (
-        <span className={cn("font-headline tracking-tight text-primary", currentSize.text)}>
-          IsabiEvents
-        </span>
+        <div className={cn("font-headline font-black tracking-tighter leading-none flex items-center", currentSize.text)}>
+          <span className="text-primary">Isabi</span>
+          <span className="text-foreground">Events</span>
+        </div>
       )}
     </div>
   );
