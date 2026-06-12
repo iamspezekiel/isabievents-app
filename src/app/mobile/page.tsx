@@ -24,8 +24,8 @@ import Image from 'next/image';
 export default function MobileAppPage() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
-      {/* Immersive Hero Header */}
-      <section className="relative min-h-[50vh] w-full flex items-end pb-8 pt-24 overflow-hidden">
+      {/* Immersive Hero Header - Increased top padding */}
+      <section className="relative min-h-[60vh] w-full flex items-end pb-12 pt-60 overflow-hidden">
         <Image 
           src="https://picsum.photos/seed/mobile-v3/1920/1080" 
           alt="IsabiEvents Mobile" 
@@ -36,7 +36,7 @@ export default function MobileAppPage() {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent" />
         <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-4xl space-y-4">
+          <div className="max-w-4xl space-y-6">
             <div className="flex flex-col gap-2">
               <Badge className="w-fit bg-primary text-white border-none py-1 px-4 font-black tracking-widest uppercase mb-1 animate-in fade-in slide-in-from-bottom-4 duration-700">
                 NIGERIAN EXPERIENCE
@@ -74,13 +74,13 @@ export default function MobileAppPage() {
       </section>
 
       {/* Value Prop Section */}
-      <section className="py-8 relative overflow-hidden">
+      <section className="py-12 relative overflow-hidden">
         <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-primary/10 blur-[150px] rounded-full -translate-x-1/2 -z-10" />
         <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-accent/10 blur-[150px] rounded-full translate-x-1/2 -z-10" />
         
         <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto mb-8 space-y-2">
-            <h2 className="text-xl md:text-3xl text-balance font-black tracking-tight">
+          <div className="text-center max-w-3xl mx-auto mb-10 space-y-2">
+            <h2 className="text-xl md:text-2xl text-balance font-black tracking-tight">
               Built for the <br />
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Nigerian Experience</span>
             </h2>
@@ -113,7 +113,7 @@ export default function MobileAppPage() {
       </section>
 
       {/* Featured Preview */}
-      <section className="py-8 bg-card/30 border-y border-border">
+      <section className="py-12 bg-card/30 border-y border-border">
          <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-10 items-center">
             <div className="relative">
                 <div className="relative z-10 mx-auto w-48 md:w-64 aspect-[1/2] bg-card border-[6px] border-border rounded-[2rem] shadow-[0_25px_50px_-12px_rgba(0,0,0,0.3)] overflow-hidden ring-4 ring-primary/5">
@@ -160,14 +160,14 @@ export default function MobileAppPage() {
       </section>
 
       {/* Call to Action */}
-      <section className="py-8">
+      <section className="py-16">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-4xl mx-auto relative group overflow-hidden p-8 md:p-12 bg-primary/5 border border-primary/10 rounded-[2.5rem] shadow-2xl">
             <div className="absolute top-0 left-0 w-64 h-64 bg-primary/10 blur-[80px] rounded-full -translate-x-1/2 -translate-y-1/2" />
             <div className="absolute bottom-0 right-0 w-64 h-64 bg-accent/10 blur-[80px] rounded-full translate-x-1/2 translate-y-1/2" />
             
-            <div className="relative z-10 space-y-4">
-              <h2 className="text-xl md:text-3xl font-black leading-tight tracking-tight">
+            <div className="relative z-10 space-y-6">
+              <h2 className="text-xl md:text-2xl font-black leading-tight tracking-tight">
                 Ready to <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">ditch paper?</span>
               </h2>
               <p className="text-sm md:text-base text-muted-foreground max-w-xl mx-auto font-normal leading-relaxed">
