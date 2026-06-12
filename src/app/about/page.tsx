@@ -39,7 +39,7 @@ export default function AboutPage() {
             />
           </div>
           <div className="space-y-8 text-left">
-            <h2 className="font-headline text-4xl md:text-5xl font-black tracking-tighter leading-none">Our Story</h2>
+            <h4 className="font-headline text-4xl md:text-5xl font-black tracking-tighter leading-none">Our Story</h4>
             <p className="text-lg text-muted-foreground leading-relaxed">
               Founded with the vision to solve the fragmented event landscape in Nigeria, IsabiEvents emerged from a simple observation: there are thousands of incredible experiences happening every day, but finding and accessing them shouldn't be a struggle.
             </p>
