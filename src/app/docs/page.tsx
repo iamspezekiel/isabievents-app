@@ -72,7 +72,7 @@ export default function DeveloperApiPage() {
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      const offset = 120; // Account for fixed header and mobile nav
+      const offset = 140; // Account for fixed header and mobile nav
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - offset;
 
@@ -88,7 +88,7 @@ export default function DeveloperApiPage() {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col lg:flex-row">
       {/* Mobile Sticky Section Header */}
-      <div className="lg:hidden sticky top-[72px] z-30 w-full bg-background/80 backdrop-blur-md border-b border-border px-4 py-3 flex items-center justify-between mt-16">
+      <div className="lg:hidden sticky top-[84px] z-30 w-full bg-background/80 backdrop-blur-md border-b border-border px-4 py-3 flex items-center justify-between mt-28">
         <div className="flex items-center gap-2">
           <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/60">Section</span>
           <span className="text-sm font-bold">{currentLabel}</span>
@@ -157,7 +157,7 @@ export default function DeveloperApiPage() {
       {/* Main Content */}
       <main className="flex-1 p-4 md:p-8 lg:p-16 lg:pt-32 max-w-5xl">
         <div className="space-y-20 md:space-y-24">
-          <header className="space-y-4 pt-12 lg:pt-0">
+          <header className="space-y-4 pt-8 lg:pt-0">
             <div className="flex items-center gap-3">
               <Badge variant="secondary" className="bg-primary/10 text-primary border-none">API V1.2</Badge>
               <span className="text-[10px] md:text-xs text-muted-foreground font-mono">Updated 2 days ago</span>
