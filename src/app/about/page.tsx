@@ -139,7 +139,7 @@ export default function AboutPage() {
       </section>
 
       {/* Why Us Section */}
-      <section className="py-24 md:py-32 container mx-auto px-4">
+      <section className="pt-24 pb-8 md:pt-32 md:pb-12 container mx-auto px-4">
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <h2 className="font-headline text-3xl md:text-4xl font-black tracking-tighter leading-none">Why IsabiEvents?</h2>
         </div>
@@ -176,7 +176,7 @@ export default function AboutPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 md:py-48 container mx-auto px-4 text-center">
+      <section className="pt-8 pb-32 md:pt-12 md:pb-48 container mx-auto px-4 text-center">
         <div className="max-w-4xl mx-auto space-y-12">
           <h2 className="font-headline text-3xl md:text-5xl font-black tracking-tighter leading-none text-balance">
             Ready to join the <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">movement?</span>
