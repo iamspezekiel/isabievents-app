@@ -19,9 +19,11 @@ import {
   Network,
   Activity,
   GraduationCap,
-  HandHeart
+  HandHeart,
+  Sparkles
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -32,47 +34,88 @@ const iconMap: any = {
 
 export default function AllCategoriesPage() {
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card pt-40 pb-12">
-        <div className="container mx-auto px-4">
-          <h1 className="font-headline text-4xl md:text-6xl text-balance">Browse Everything</h1>
-          <p className="text-muted-foreground text-lg mt-4">Discover experiences across every interest in Nigeria.</p>
+    <div className="min-h-screen bg-background text-foreground">
+      {/* Hero Section */}
+      <header className="relative pt-48 pb-20 overflow-hidden border-b border-border bg-card/30">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
+        <div className="container mx-auto px-4 text-center space-y-6">
+          <Badge className="bg-primary/20 text-primary border-none py-1 px-4 font-black tracking-widest uppercase">BROWSE BY VIBE</Badge>
+          <h1 className="font-headline text-4xl md:text-6xl font-black leading-tight tracking-tighter text-balance">
+            Find Your Next <br />
+            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Shared Experience</span>
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-medium">
+            Explore 15 distinct categories of events happening across Nigeria. From tech summits to cultural festivals.
+          </p>
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-16">
+      <main className="container mx-auto px-4 py-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {CATEGORIES.map((cat) => {
             const IconComp = iconMap[cat.icon] || Music;
             return (
-              <Link key={cat.id} href={`/discover?category=${cat.id}`} className="no-underline">
-                <div className="group relative h-64 rounded-3xl overflow-hidden border border-border hover:border-primary/50 transition-all bg-card">
-                  <div className="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity">
+              <Link key={cat.id} href={`/discover?category=${cat.id}`} className="no-underline group">
+                <div className="relative h-72 rounded-[2.5rem] overflow-hidden border border-border bg-card transition-all duration-500 group-hover:border-primary/50 group-hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] group-hover:-translate-y-2">
+                  {/* Background Image Placeholder */}
+                  <div className="absolute inset-0 opacity-10 grayscale group-hover:opacity-20 group-hover:grayscale-0 transition-all duration-700">
                     <Image 
                       src={`https://picsum.photos/seed/${cat.id}/600/400`} 
                       alt="" 
                       fill 
-                      className="object-cover"
+                      className="object-cover scale-110 group-hover:scale-100 transition-transform duration-700"
                     />
                   </div>
-                  <div className="relative h-full p-8 flex flex-col justify-between">
-                    <div className="w-14 h-14 bg-secondary rounded-2xl flex items-center justify-center group-hover:bg-primary transition-colors">
-                      <IconComp className="w-7 h-7 text-muted-foreground group-hover:text-white transition-colors" />
+                  
+                  {/* Content */}
+                  <div className="relative h-full p-10 flex flex-col justify-between z-10">
+                    <div className="flex justify-between items-start">
+                      <div className="w-16 h-16 bg-secondary rounded-2xl flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-lg group-hover:shadow-primary/20">
+                        <IconComp className="w-8 h-8" />
+                      </div>
+                      <Badge variant="outline" className="bg-background/50 backdrop-blur-md border-border/50 font-bold group-hover:border-primary/30 transition-colors">
+                        100+ Events
+                      </Badge>
                     </div>
-                    <div>
-                      <h3 className="font-headline text-2xl mb-1 text-foreground">{cat.name}</h3>
-                      <p className="text-sm text-muted-foreground">Explore 100+ events</p>
+
+                    <div className="space-y-2">
+                      <h3 className="font-headline text-3xl font-black tracking-tighter leading-none">{cat.name}</h3>
+                      <p className="text-muted-foreground font-medium group-hover:text-foreground transition-colors">Discover trending {cat.name.toLowerCase()} events</p>
                     </div>
-                    <div className="absolute bottom-8 right-8 w-10 h-10 rounded-full bg-secondary flex items-center justify-center opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all">
-                      <ChevronRight className="w-5 h-5 text-foreground" />
+
+                    <div className="absolute bottom-10 right-10 w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 shadow-xl shadow-primary/30">
+                      <ChevronRight className="w-6 h-6" />
                     </div>
                   </div>
+
+                  {/* Glass Overlay for Group Hover */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-primary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 </div>
               </Link>
             );
           })}
         </div>
       </main>
+
+      {/* CTA Section */}
+      <section className="container mx-auto px-4 pb-32">
+        <div className="bg-primary/5 border border-primary/10 rounded-[4rem] p-12 md:p-20 text-center space-y-8 relative overflow-hidden group">
+          <div className="absolute top-0 left-0 w-64 h-64 bg-primary/10 blur-[100px] rounded-full -translate-x-1/2 -translate-y-1/2" />
+          <div className="absolute bottom-0 right-0 w-64 h-64 bg-accent/10 blur-[100px] rounded-full translate-x-1/2 translate-y-1/2" />
+          
+          <div className="relative z-10 space-y-6">
+            <h2 className="font-headline text-4xl font-black tracking-tighter">Don't see what you're looking for?</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-medium">
+              Use our advanced search engine to find specific artists, venues, or dates across all categories.
+            </p>
+            <Link href="/discover">
+              <Button size="lg" className="rounded-full px-10 h-16 text-lg shadow-xl shadow-primary/20 font-bold gap-3">
+                <Sparkles className="w-5 h-5" /> Explore All Events
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
