@@ -450,7 +450,38 @@ export const MOCK_EVENTS = [
 
 export const MOCK_USER = {
   name: 'Tunde Afolayan',
-  email: 'tunde@example.com',
+  email: 'attendee@isabievents.ng',
   role: 'attendee',
   wallet: { active: 2, used: 1, transferred: 0 }
 };
+
+export const MOCK_USERS = [
+  {
+    name: 'Admin Master',
+    email: 'admin@isabievents.ng',
+    password: 'password123',
+    role: 'admin',
+    dashboard: '/dashboard/organizer' // Redirecting to organizer for now as placeholder
+  },
+  {
+    name: 'Smooth Events',
+    email: 'organizer@isabievents.ng',
+    password: 'password123',
+    role: 'organizer',
+    dashboard: '/dashboard/organizer'
+  },
+  {
+    name: 'Main Gate Staff',
+    email: 'staff@isabievents.ng',
+    password: 'password123',
+    role: 'staff',
+    dashboard: '/dashboard/staff'
+  },
+  {
+    name: 'Tunde Afolayan',
+    email: 'attendee@isabievents.ng',
+    password: 'password123',
+    role: 'attendee',
+    dashboard: '/dashboard/attendee'
+  }
+];
