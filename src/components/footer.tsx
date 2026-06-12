@@ -46,7 +46,7 @@ export function Footer() {
             <p className="text-muted-foreground text-sm leading-relaxed max-w-xs font-medium text-left">
               Connecting people to unforgettable experiences.
             </p>
-            {/* Social Icons - Rendered consistently to prevent hydration mismatch */}
+            {/* Social Icons */}
             <div className={`flex items-center gap-3 transition-opacity duration-300 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
               <Link href="#" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
                 <Facebook className="w-4 h-4" />
@@ -92,9 +92,9 @@ export function Footer() {
         </div>
 
         {/* Payment Partners Section */}
-        <div className="border-t border-border pt-10 pb-8 flex flex-col items-center gap-6">
-          <div className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40">Secure Payments & Settlement via</div>
-          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-16 opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700">
+        <div className="border-t border-border pt-10 pb-8 flex flex-col lg:flex-row items-center justify-center gap-6 lg:gap-16">
+          <div className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 whitespace-nowrap">Secure Payments & Settlement via</div>
+          <div className="flex flex-wrap items-center justify-center gap-8 md:gap-12 opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700">
             {/* Paystack */}
             <div className="flex items-center gap-2 group cursor-default">
               <svg className="w-5 h-5 text-[#09A5DB]" viewBox="0 0 24 24" fill="currentColor">
