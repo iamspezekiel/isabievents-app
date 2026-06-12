@@ -39,16 +39,12 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-background text-foreground pt-32 pb-12">
       <div className="container mx-auto px-4 max-w-4xl">
-        <button onClick={() => router.back()} className="flex items-center gap-2 text-muted-foreground hover:text-white mb-8 transition-colors">
-          <ChevronLeft className="w-4 h-4" /> Back to Event
-        </button>
-
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
           {/* Main Checkout Section */}
           <div className="lg:col-span-3">
             {step === 1 && (
               <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <h1 className="font-headline text-3xl">Attendee Information</h1>
+                <h1 className="font-headline text-3xl text-left">Attendee Information</h1>
                 <div className="grid gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="fullname">Full Name</Label>
@@ -74,14 +70,14 @@ export default function CheckoutPage() {
 
             {step === 2 && (
               <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
-                <h1 className="font-headline text-3xl">Select Payment Method</h1>
+                <h1 className="font-headline text-3xl text-left">Select Payment Method</h1>
                 <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="grid gap-4">
                   <PaymentOption id="card" label="Card Payment" icon={CreditCard} description="Pay with Visa, Mastercard or Verve" />
                   <PaymentOption id="bank" label="Bank Transfer" icon={Landmark} description="Direct transfer to IsabiEvents escrow" />
                   <PaymentOption id="wallet" label="Isabi Wallet" icon={Wallet} description="Balance: ₦25,000.00" />
                 </RadioGroup>
 
-                <div className="bg-primary/10 border border-primary/20 p-4 rounded-xl flex gap-3 items-start mt-6">
+                <div className="bg-primary/10 border border-primary/20 p-4 rounded-xl flex gap-3 items-start mt-6 text-left">
                   <ShieldCheck className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                   <p className="text-sm text-muted-foreground">
                     Your payment is secure. We use bank-level encryption and do not store your card details.
@@ -127,7 +123,7 @@ export default function CheckoutPage() {
               <div className="aspect-video relative">
                 <img src={event.image} alt="" className="object-cover w-full h-full brightness-75" />
                 <div className="absolute inset-0 bg-gradient-to-t from-card to-transparent" />
-                <div className="absolute bottom-4 left-4">
+                <div className="absolute bottom-4 left-4 text-left">
                   <h3 className="font-headline text-lg text-white">{event.title}</h3>
                   <p className="text-xs text-white/70">{event.venue}</p>
                 </div>
@@ -194,7 +190,7 @@ function PaymentOption({ id, label, icon: Icon, description }: any) {
         <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center peer-data-[state=checked]:bg-primary/20">
           <Icon className="w-6 h-6 text-muted-foreground peer-data-[state=checked]:text-primary" />
         </div>
-        <div className="flex-1">
+        <div className="flex-1 text-left">
           <div className="font-bold text-lg">{label}</div>
           <div className="text-xs text-muted-foreground">{description}</div>
         </div>
