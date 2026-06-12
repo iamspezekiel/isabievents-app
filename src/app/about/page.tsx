@@ -37,11 +37,11 @@ export default function AboutPage() {
               <div className="relative aspect-[4/5] rounded-[3.5rem] overflow-hidden border border-border/50 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] z-10 p-16 md:p-6 bg-card">
                 <div className="relative w-full h-full rounded-[2.5rem] overflow-hidden">
                   <Image 
-                    src="https://picsum.photos/seed/story_v6/800/1000" 
+                    src="https://picsum.photos/seed/story_v12/800/1000" 
                     alt="The IsabiEvents Story" 
                     fill 
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    data-ai-hint="nigerian festival"
+                    data-ai-hint="nigerian party"
                   />
                   {/* Subtle Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
@@ -148,7 +148,7 @@ export default function AboutPage() {
       <section className="py-24 container mx-auto px-4">
         <div className="bg-primary/5 border border-primary/10 rounded-[4rem] p-12 md:p-20 flex flex-col lg:flex-row items-center gap-16">
           <div className="flex-1 space-y-8 text-left">
-             <h2 className="font-headline text-2xl md:text-3xl font-black tracking-tighter leading-none">Why IsabiEvents?</h2>
+             <h2 className="font-headline text-xl md:text-3xl font-black tracking-tighter leading-none">Why IsabiEvents?</h2>
              <div className="space-y-6">
                 <FeatureItem 
                   icon={CreditCard}
@@ -169,11 +169,11 @@ export default function AboutPage() {
           </div>
           <div className="flex-1 relative w-full aspect-video rounded-3xl overflow-hidden shadow-2xl">
             <Image 
-              src="https://picsum.photos/seed/aboutwhy_v2/800/450" 
+              src="https://picsum.photos/seed/why_isabi_v5/800/450" 
               alt="Innovation" 
               fill 
               className="object-cover"
-              data-ai-hint="technology event"
+              data-ai-hint="nigerian tech"
             />
           </div>
         </div>
