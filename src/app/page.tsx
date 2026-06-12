@@ -51,7 +51,7 @@ export default function HomePage() {
           <Badge className="mb-6 py-1.5 px-4 bg-primary/20 text-primary border-primary/20 hover:bg-primary/20 animate-in fade-in slide-in-from-bottom-4 duration-700">
             Trusted by 50,000+ Nigerians
           </Badge>
-          <h1 className="text-4xl md:text-7xl mb-8 leading-[1.05] max-w-4xl mx-auto font-black tracking-tighter text-balance animate-in fade-in slide-in-from-bottom-8 duration-1000">
+          <h1 className="text-3xl md:text-7xl mb-8 leading-[1.05] max-w-4xl mx-auto font-black tracking-tighter text-balance animate-in fade-in slide-in-from-bottom-8 duration-1000">
             Experience the Best of <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Nigerian</span> Events
           </h1>
           <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-12 animate-in fade-in slide-in-from-bottom-12 duration-1000">
@@ -130,8 +130,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-10">
             <div className="text-left">
-              <h2 className="text-3xl md:text-4xl font-black tracking-tighter mb-2">Trending</h2>
-              <p className="text-muted-foreground">What's hot right now</p>
+              <h2 className="text-3xl md:text-4xl font-black tracking-tighter">Trending</h2>
             </div>
             <Button className="rounded-full px-6 shadow-lg shadow-primary/20 font-semibold gap-2" asChild>
               <Link href="/discover">Explore More <ArrowRight className="w-4 h-4" /></Link>
