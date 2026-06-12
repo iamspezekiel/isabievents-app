@@ -38,7 +38,7 @@ export default function HelpCenterPage() {
         <div className="grid lg:grid-cols-3 gap-16">
           <div className="lg:col-span-2 space-y-12">
             <section className="space-y-6">
-              <h2 className="font-headline text-3xl">Popular Questions</h2>
+              <h2 className="font-headline text-2xl">Popular Questions</h2>
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="q1">
                   <AccordionTrigger>How do I receive my ticket after purchase?</AccordionTrigger>
@@ -56,6 +56,24 @@ export default function HelpCenterPage() {
                   <AccordionTrigger>Can I transfer my ticket to a friend?</AccordionTrigger>
                   <AccordionContent className="text-muted-foreground leading-relaxed">
                     Yes! Most events allow ticket transfers. Go to your dashboard, select the ticket you want to transfer, and click "Share/Transfer". You'll just need your friend's email address.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="q4">
+                  <AccordionTrigger>How do I become a verified organizer?</AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground leading-relaxed">
+                    Verification requires a valid government-issued ID and proof of business registration for corporate entities. Head to your <Link href="/dashboard/organizer" className="text-primary no-underline">Organizer Dashboard</Link> and complete the "KYC Verification" section to get started.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="q5">
+                  <AccordionTrigger>What payment methods are supported?</AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground leading-relaxed">
+                    We support all major Nigerian cards (Visa, Mastercard, Verve), Direct Bank Transfers, USSD, and Mobile Money through our secure payment partners, Paystack and Flutterwave.
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="q6">
+                  <AccordionTrigger>Can I change the name on my ticket?</AccordionTrigger>
+                  <AccordionContent className="text-muted-foreground leading-relaxed">
+                    In most cases, yes. You can update your attendee details once per ticket from your wallet. If you need to change it again, please contact the event organizer or our support team for assistance.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
