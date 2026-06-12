@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -44,7 +43,7 @@ export default function HelpCenterPage() {
                 <AccordionItem value="q1">
                   <AccordionTrigger>How do I receive my ticket after purchase?</AccordionTrigger>
                   <AccordionContent className="text-muted-foreground leading-relaxed">
-                    Once your payment is confirmed, you will receive an email with your unique QR code ticket. You can also access all your active tickets directly in your <Link href="/dashboard/attendee" className="text-primary hover:underline">Attendee Dashboard</Link> under "My Tickets".
+                    Once your payment is confirmed, you will receive an email with your unique QR code ticket. You can also access all your active tickets directly in your <Link href="/dashboard/attendee" className="text-primary">Attendee Dashboard</Link> under "My Tickets".
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="q2">

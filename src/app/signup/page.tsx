@@ -78,7 +78,7 @@ export default function SignupPage() {
         </Card>
 
         <p className="text-center text-sm text-muted-foreground">
-          Already have an account? <Link href="/login" className="text-primary font-bold hover:underline">Sign In</Link>
+          Already have an account? <Link href="/login" className="text-primary font-bold">Sign In</Link>
         </p>
       </div>
     </div>

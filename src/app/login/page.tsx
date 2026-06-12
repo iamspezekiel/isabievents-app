@@ -37,7 +37,7 @@ export default function LoginPage() {
             <div className="space-y-2">
               <div className="flex justify-between">
                 <Label htmlFor="password">Password</Label>
-                <Link href="#" className="text-xs text-primary hover:underline">Forgot password?</Link>
+                <Link href="#" className="text-xs text-primary">Forgot password?</Link>
               </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -63,7 +63,7 @@ export default function LoginPage() {
         </Card>
 
         <p className="text-center text-sm text-muted-foreground">
-          Don&apos;t have an account? <Link href="/signup" className="text-primary font-bold hover:underline">Create Account</Link>
+          Don&apos;t have an account? <Link href="/signup" className="text-primary font-bold">Create Account</Link>
         </p>
       </div>
     </div>
