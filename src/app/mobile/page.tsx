@@ -25,7 +25,7 @@ export default function MobileAppPage() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
       {/* Hero Section */}
-      <section className="relative pt-40 pb-32">
+      <section className="relative pt-48 pb-32">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full -z-10 translate-x-1/2 -translate-y-1/2" />
         <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-accent/5 blur-[100px] rounded-full -z-10 -translate-x-1/2" />
         
@@ -36,24 +36,26 @@ export default function MobileAppPage() {
             </div>
             
             <div className="space-y-6">
-              <h1 className="font-headline text-5xl md:text-7xl leading-[1.1]">
+              <h1 className="font-headline text-5xl md:text-8xl font-black leading-[1.05] tracking-tighter text-balance">
                 Your Tickets. <br />
-                <span className="text-primary">Everywhere</span> You Go.
+                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  Everywhere
+                </span> You Go.
               </h1>
-              <p className="text-muted-foreground text-xl max-w-xl mx-auto lg:mx-0 leading-relaxed">
+              <p className="text-muted-foreground text-xl max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
                 Experience Nigeria&apos;s best events with zero friction. Buy, store, and transfer tickets even when you&apos;re offline.
               </p>
             </div>
 
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-              <Button size="lg" className="h-16 px-8 rounded-full text-lg gap-4 shadow-xl shadow-primary/20 hover:scale-105 transition-transform">
+              <Button size="lg" className="h-16 px-8 rounded-full text-lg gap-4 shadow-xl shadow-primary/20 hover:scale-105 hover:-translate-y-0.5 transition-all">
                 <Apple className="w-7 h-7 fill-current" />
                 <div className="flex flex-col items-start leading-none text-left">
                   <span className="text-[10px] font-bold uppercase tracking-tighter opacity-70">Download on the</span>
                   <span className="text-lg font-bold">App Store</span>
                 </div>
               </Button>
-              <Button size="lg" variant="outline" className="h-16 px-8 rounded-full text-lg gap-4 border-2 hover:bg-secondary transition-all hover:scale-105 shadow-xl shadow-black/5">
+              <Button size="lg" variant="outline" className="h-16 px-8 rounded-full text-lg gap-4 border-2 border-border bg-card hover:bg-secondary transition-all hover:scale-105 hover:-translate-y-0.5 shadow-xl shadow-black/5">
                 <Play className="w-7 h-7 fill-current" />
                 <div className="flex flex-col items-start leading-none text-left">
                   <span className="text-[10px] font-bold uppercase tracking-tighter opacity-70">Get it on</span>
@@ -121,7 +123,7 @@ export default function MobileAppPage() {
                 </div>
                 <div>
                   <div className="text-[10px] font-black uppercase text-muted-foreground">New Event</div>
-                  <div className="text-xs font-bold">Jazz Night Live!</div>
+                  <div className="text-xs font-bold">Jazz Night!</div>
                 </div>
               </div>
             </div>
@@ -133,7 +135,7 @@ export default function MobileAppPage() {
       <section className="py-24 bg-card/30 border-y border-border">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
-            <h2 className="font-headline text-4xl">Built for the Naija Experience</h2>
+            <h2 className="font-headline text-4xl font-black">Built for the Naija Experience</h2>
             <p className="text-muted-foreground text-lg">We&apos;ve solved the common problems of physical ticketing and poor internet.</p>
           </div>
           
@@ -172,7 +174,7 @@ export default function MobileAppPage() {
               <h2 className="font-headline text-5xl md:text-7xl font-black leading-tight tracking-tighter">
                 Ready to <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">ditch paper?</span>
               </h2>
-              <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-medium">
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-medium leading-relaxed">
                 Join over 150,000+ Nigerians who have upgraded their social lives. No more queues, no more printed tickets.
               </p>
               
@@ -184,7 +186,7 @@ export default function MobileAppPage() {
                     <span className="text-lg font-bold">Download Now</span>
                   </div>
                 </Button>
-                <Button variant="outline" size="lg" className="rounded-full h-16 px-12 text-lg border-2 hover:bg-secondary hover:scale-105 hover:-translate-y-1 transition-all shadow-xl shadow-black/5 gap-4">
+                <Button variant="outline" size="lg" className="rounded-full h-16 px-12 text-lg border-2 border-border bg-card hover:bg-secondary hover:scale-105 hover:-translate-y-1 transition-all shadow-xl shadow-black/5 gap-4">
                   <Play className="w-7 h-7 fill-current" />
                   <div className="flex flex-col items-start leading-none text-left">
                     <span className="text-[10px] font-black uppercase tracking-tighter opacity-70">Google Play</span>
@@ -209,12 +211,12 @@ function AppFeature({ icon: Icon, title, desc, color }: any) {
 
   return (
     <div className="space-y-6 text-center group">
-      <div className={`w-20 h-20 rounded-[2rem] flex items-center justify-center mx-auto mb-8 transition-transform duration-500 group-hover:rotate-12 ${colorMap[color] || colorMap.primary}`}>
+      <div className={`w-20 h-20 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 transition-all duration-500 group-hover:rotate-12 group-hover:scale-110 ${colorMap[color] || colorMap.primary}`}>
         <Icon className="w-10 h-10" />
       </div>
       <div className="space-y-3">
-        <h3 className="font-headline text-2xl">{title}</h3>
-        <p className="text-muted-foreground leading-relaxed text-sm">{desc}</p>
+        <h3 className="font-headline text-2xl font-bold">{title}</h3>
+        <p className="text-muted-foreground leading-relaxed text-sm font-medium">{desc}</p>
       </div>
     </div>
   );
