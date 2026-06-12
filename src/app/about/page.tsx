@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -5,7 +6,7 @@ import { Target, Users, ShieldCheck, Zap, Heart, Sparkles, ArrowRight } from 'lu
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import Link from 'next/link';
+import Link from 'link';
 import Image from 'next/image';
 
 export default function AboutPage() {
@@ -31,11 +32,11 @@ export default function AboutPage() {
         <div className="grid lg:grid-cols-2 gap-16 items-center">
           <div className="relative aspect-square rounded-[3rem] overflow-hidden border border-border shadow-2xl">
             <Image 
-              src="https://picsum.photos/seed/aboutstory/800/800" 
+              src="https://picsum.photos/seed/story_v2/800/800" 
               alt="The IsabiEvents Story" 
               fill 
               className="object-cover"
-              data-ai-hint="nigerian event"
+              data-ai-hint="nigerian festival"
             />
           </div>
           <div className="space-y-8 text-left">

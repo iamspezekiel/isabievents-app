@@ -42,6 +42,12 @@
       "description": "A diverse team collaborating in a modern space",
       "imageUrl": "https://picsum.photos/seed/abouthero/1200/600",
       "imageHint": "team collaboration"
+    },
+    {
+      "id": "about-story",
+      "description": "A vibrant gathering of people at a Nigerian cultural event",
+      "imageUrl": "https://picsum.photos/seed/story_v2/800/800",
+      "imageHint": "nigerian festival"
     }
   ]
 }
