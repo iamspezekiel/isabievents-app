@@ -39,7 +39,7 @@ export default function AboutPage() {
             />
           </div>
           <div className="space-y-8 text-left">
-            <h4 className="font-headline text-4xl md:text-5xl font-black tracking-tighter leading-none">Our Story</h4>
+            <h5 className="font-headline text-4xl md:text-5xl font-black tracking-tighter leading-none">Our Story</h5>
             <p className="text-lg text-muted-foreground leading-relaxed">
               Founded with the vision to solve the fragmented event landscape in Nigeria, IsabiEvents emerged from a simple observation: there are thousands of incredible experiences happening every day, but finding and accessing them shouldn't be a struggle.
             </p>
@@ -159,7 +159,7 @@ function FeatureItem({ title, desc }: any) {
   return (
     <div className="flex items-start gap-4">
        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-          <Sparkles className="w-5 h-5 text-primary" />
+          <開花 className="w-5 h-5 text-primary" />
        </div>
        <div className="space-y-1">
           <h2 className="font-bold text-xl">{title}</h2>
