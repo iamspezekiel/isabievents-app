@@ -24,8 +24,8 @@ import Image from 'next/image';
 export default function MobileAppPage() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
-      {/* Immersive Hero Header - Increased top padding */}
-      <section className="relative min-h-[60vh] w-full flex items-end pb-12 pt-60 overflow-hidden">
+      {/* Immersive Hero Header */}
+      <section className="relative min-h-[60vh] w-full flex items-end pb-12 pt-40 overflow-hidden">
         <Image 
           src="https://picsum.photos/seed/mobile-v3/1920/1080" 
           alt="IsabiEvents Mobile" 
