@@ -91,7 +91,7 @@ export default function AboutPage() {
           <div className="space-y-12 text-left order-1 lg:order-2">
             <div className="space-y-4">
               <h5 className="font-headline text-xl font-black tracking-tighter leading-none text-primary">Our Story</h5>
-              <h2 className="text-2xl md:text-3xl font-black tracking-tight leading-[1.1]">Built for the <br /><span className="italic">Naija way of life.</span></h2>
+              <h2 className="text-2xl md:text-3xl font-black tracking-tight leading-[1.1]">Built for the <span className="italic">Naija way of life.</span></h2>
             </div>
             
             <div className="space-y-8">
