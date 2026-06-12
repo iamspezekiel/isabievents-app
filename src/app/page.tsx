@@ -103,7 +103,7 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-            {CATEGORIES.slice(0, 10).map((cat) => {
+            {CATEGORIES.map((cat) => {
               const IconComp = iconMap[cat.icon] || Music;
               return (
                 <Link key={cat.id} href={`/discover?category=${cat.id}`}>
@@ -136,7 +136,7 @@ export default function HomePage() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {MOCK_EVENTS.slice(0, 6).map((event) => (
+            {MOCK_EVENTS.slice(0, 9).map((event) => (
               <Link key={event.id} href={`/events/${event.id}`}>
                 <div className="group relative rounded-2xl overflow-hidden bg-card border border-border hover:border-primary/50 transition-all hover:shadow-2xl hover:shadow-primary/5">
                   <div className="relative aspect-[4/3] overflow-hidden">
