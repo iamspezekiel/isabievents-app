@@ -16,7 +16,9 @@ export default function NotificationsPage() {
         <Link href="/" className="mb-12 block"><Logo size="sm" /></Link>
         <nav className="flex-1 space-y-1">
           <SidebarLink icon={Bell} label="Notifications" href="/dashboard/attendee/notifications" active />
-          <Link href="/dashboard/attendee" className="block mt-4 text-xs font-bold text-muted-foreground hover:text-primary transition-colors">← Back to Wallet</Link>
+          <Button variant="ghost" size="sm" className="w-full justify-start text-xs font-bold text-muted-foreground hover:text-primary mt-4 px-4" asChild>
+            <Link href="/dashboard/attendee">← Back to Wallet</Link>
+          </Button>
         </nav>
       </aside>
 

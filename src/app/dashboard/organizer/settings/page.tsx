@@ -18,7 +18,9 @@ export default function OrganizerSettingsPage() {
         <Link href="/" className="mb-10 block"><Logo size="sm" /></Link>
         <nav className="flex-1 space-y-1">
           <SidebarLink icon={Settings} label="Settings" href="/dashboard/organizer/settings" active />
-          <Link href="/dashboard/organizer" className="block mt-4 text-xs font-bold text-muted-foreground hover:text-primary transition-colors">← Back to Overview</Link>
+          <Button variant="ghost" size="sm" className="w-full justify-start text-xs font-bold text-muted-foreground hover:text-primary mt-4 px-4" asChild>
+            <Link href="/dashboard/organizer">← Back to Overview</Link>
+          </Button>
         </nav>
       </aside>
 
