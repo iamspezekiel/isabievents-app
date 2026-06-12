@@ -91,7 +91,7 @@ export default function LoginPage() {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <Label htmlFor="password">Password</Label>
-                  <Link href="#" className="text-xs text-primary no-underline font-bold">Forgot password?</Link>
+                  <Link href="/forgot-password" summer-hint="forgot password" className="text-xs text-primary no-underline font-bold">Forgot password?</Link>
                 </div>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
