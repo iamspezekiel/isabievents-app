@@ -42,7 +42,7 @@ export default function SuccessStoriesPage() {
             </div>
             <div className="p-12 md:p-20 space-y-8">
               <div className="space-y-4">
-                <h2 className="font-headline text-3xl">Lagos Jazz Night 2024</h2>
+                <h2 className="font-headline text-3xl font-bold">Lagos Jazz Night 2024</h2>
                 <p className="text-muted-foreground text-lg leading-relaxed italic">
                   &quot;IsabiEvents transformed our gate management. We processed 5,000 attendees in under 2 hours without a single invalid ticket dispute.&quot;
                 </p>
@@ -73,7 +73,7 @@ export default function SuccessStoriesPage() {
 
         {/* Success Grid */}
         <section className="space-y-16">
-          <h2 className="font-headline text-3xl text-center">More Success Stories</h2>
+          <h2 className="font-headline text-3xl text-center font-bold">More Success Stories</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <CaseCard 
               title="Naija Tech Summit" 
@@ -98,7 +98,7 @@ export default function SuccessStoriesPage() {
 
         {/* Global Impact */}
         <section className="mt-32 py-24 bg-primary/10 rounded-[3rem] border border-primary/20 text-center space-y-12">
-           <h2 className="font-headline text-4xl">Ready to be our next success story?</h2>
+           <h2 className="font-headline text-4xl font-black">Ready to be our next success story?</h2>
            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
              Join 1,200+ Nigerian organizers who are already scaling their businesses with IsabiEvents.
            </p>
@@ -126,7 +126,7 @@ function CaseCard({ title, stat, metric, img }: any) {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
         <div className="absolute bottom-4 left-4">
-          <h3 className="font-headline text-xl text-white">{title}</h3>
+          <h3 className="font-headline text-xl text-white font-bold">{title}</h3>
         </div>
       </div>
       <CardContent className="p-6 space-y-4">

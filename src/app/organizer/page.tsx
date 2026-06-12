@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -24,11 +23,11 @@ export default function OrganizerLandingPage() {
       <section className="relative pt-40 pb-32 overflow-hidden">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent/10 blur-[120px] -z-10 rounded-full translate-x-1/2 -translate-y-1/2" />
         <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-8">
-            <h1 className="font-headline text-5xl md:text-7xl leading-[1.1]">
-              The Easiest Way to Host <span className="text-accent">Legendary</span> Events
+          <div className="space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000">
+            <h1 className="font-headline text-5xl md:text-7xl leading-[1.1] font-black tracking-tighter text-balance">
+              The Easiest Way to Host <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Legendary</span> Events
             </h1>
-            <p className="text-muted-foreground text-xl leading-relaxed">
+            <p className="text-muted-foreground text-xl leading-relaxed max-w-xl">
               From secret beach parties to national tech conferences. IsabiEvents provides the tools you need to sell out fast and manage with ease.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
@@ -56,7 +55,7 @@ export default function OrganizerLandingPage() {
               </p>
             </div>
           </div>
-          <div className="relative">
+          <div className="relative animate-in fade-in zoom-in-95 duration-1000">
             <div className="relative aspect-square rounded-3xl overflow-hidden border border-border shadow-2xl">
               <Image 
                 src="https://picsum.photos/seed/organizer-hero/800/800" 
