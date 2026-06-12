@@ -141,7 +141,7 @@ export default function HomePage() {
               <h2 className="text-xl md:text-4xl font-black tracking-tighter">Trending</h2>
             </div>
             <Button size="lg" className="rounded-full px-8 shadow-lg shadow-primary/20 font-bold gap-2" asChild>
-              <Link href="/discover">Explore More <ArrowRight className="w-4 h-4" /></Link>
+              <Link href="/discover">View More <ArrowRight className="w-4 h-4" /></Link>
             </Button>
           </div>
           

@@ -73,7 +73,7 @@ export default function AttendeeDashboard() {
             </div>
             <div className="flex items-center gap-3">
               <Link href="/discover" className="w-full sm:w-auto">
-                <Button className="w-full rounded-full px-8 shadow-xl shadow-primary/20">Explore More</Button>
+                <Button className="w-full rounded-full px-8 shadow-xl shadow-primary/20">View More</Button>
               </Link>
             </div>
           </header>
