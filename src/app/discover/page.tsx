@@ -130,7 +130,7 @@ function DiscoverContent() {
     <div className="max-w-7xl mx-auto space-y-8">
       {/* Search and Filters Header */}
       <div className="flex flex-col gap-4">
-        <div className="flex flex-col md:flex-row gap-4">
+        <div className="flex items-center gap-2">
           <div className="flex-1 relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
             <Input 
@@ -149,39 +149,37 @@ function DiscoverContent() {
             )}
           </div>
           
-          <div className="flex gap-2 w-full md:w-auto">
-            <Sheet>
-              <SheetTrigger asChild>
-                <Button variant="outline" className="flex-1 md:flex-none h-14 rounded-2xl px-8 gap-3 border-border bg-card font-bold shadow-xl shadow-black/5">
-                  <Filter className="w-5 h-5" /> 
-                  Filters
-                  {(selectedCategory !== 'all' || selectedCity !== 'all' || priceFilter !== 'all') && (
-                    <Badge className="ml-1 w-5 h-5 p-0 flex items-center justify-center bg-primary text-white text-[10px]">
-                      {[selectedCategory, selectedCity, priceFilter].filter(v => v !== 'all').length}
-                    </Badge>
-                  )}
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-full max-w-md bg-card border-border p-0 flex flex-col h-full">
-                <SheetHeader className="p-6 border-b border-border text-left">
-                  <div className="flex items-center justify-between">
-                    <SheetTitle className="font-headline text-2xl">Refine Search</SheetTitle>
-                    <Button variant="ghost" size="sm" onClick={resetFilters} className="text-primary font-bold">Reset All</Button>
-                  </div>
-                </SheetHeader>
-                <div className="flex-1 overflow-y-auto px-6">
-                  <FilterForm />
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" className="h-14 rounded-2xl px-4 md:px-8 gap-2 md:gap-3 border-border bg-card font-bold shadow-xl shadow-black/5">
+                <Filter className="w-5 h-5 shrink-0" /> 
+                <span className="hidden sm:inline">Filters</span>
+                {(selectedCategory !== 'all' || selectedCity !== 'all' || priceFilter !== 'all') && (
+                  <Badge className="ml-1 w-5 h-5 p-0 flex items-center justify-center bg-primary text-white text-[10px]">
+                    {[selectedCategory, selectedCity, priceFilter].filter(v => v !== 'all').length}
+                  </Badge>
+                )}
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="right" className="w-full max-w-md bg-card border-border p-0 flex flex-col h-full">
+              <SheetHeader className="p-6 border-b border-border text-left">
+                <div className="flex items-center justify-between">
+                  <SheetTitle className="font-headline text-2xl">Refine Search</SheetTitle>
+                  <Button variant="ghost" size="sm" onClick={resetFilters} className="text-primary font-bold">Reset All</Button>
                 </div>
-                <SheetFooter className="p-6 border-t border-border mt-auto">
-                  <SheetClose asChild>
-                    <Button className="w-full h-14 rounded-2xl text-lg font-bold shadow-xl shadow-primary/20">
-                      Show {filteredEvents.length} results
-                    </Button>
-                  </SheetClose>
-                </SheetFooter>
-              </SheetContent>
-            </Sheet>
-          </div>
+              </SheetHeader>
+              <div className="flex-1 overflow-y-auto px-6">
+                <FilterForm />
+              </div>
+              <SheetFooter className="p-6 border-t border-border mt-auto">
+                <SheetClose asChild>
+                  <Button className="w-full h-14 rounded-2xl text-lg font-bold shadow-xl shadow-primary/20">
+                    Show {filteredEvents.length} results
+                  </Button>
+                </SheetClose>
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
         </div>
 
         {/* Results Info */}
