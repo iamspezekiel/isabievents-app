@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -67,7 +68,7 @@ export default function OrganizerDashboard() {
         </div>
       </aside>
 
-      {/* Mobile Header with Menu Trigger */}
+      {/* Mobile Header */}
       <header className="md:hidden flex items-center justify-between p-4 bg-card border-b border-border sticky top-0 z-40">
         <Logo size="sm" />
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
@@ -90,7 +91,7 @@ export default function OrganizerDashboard() {
         </Sheet>
       </header>
 
-      {/* Main Content */}
+      {/* Main Content - pt-12 refined from pt-16 for dashboard */}
       <main className="flex-1 p-4 md:p-12 overflow-x-hidden">
         <div className="max-w-6xl mx-auto space-y-8">
           <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">

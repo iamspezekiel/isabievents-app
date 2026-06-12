@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -60,9 +61,8 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Hero Section with extra spacing and blended background */}
+      {/* Hero Section */}
       <div className="relative pt-44 pb-12 overflow-hidden">
-        {/* Extended Background Gradient */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[1200px] bg-primary/10 blur-[150px] -z-10 rounded-full" />
         
         <div className="container mx-auto px-4">
@@ -95,7 +95,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Top Categories Section (10 desktop, 8 mobile) */}
+          {/* Top Categories Section - Refined Top Padding pt-12 */}
           <section className="relative z-10 pt-12">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-xl md:text-2xl font-black tracking-tighter text-left">Top Categories</h2>
@@ -133,7 +133,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Trending Events (3x9 grid desktop, 2x8 mobile) */}
+      {/* Trending Events - Refined Top Padding pt-8 */}
       <section className="pt-8 pb-24">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-12">

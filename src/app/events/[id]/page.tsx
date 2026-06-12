@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useEffect, useState } from 'react';
@@ -22,7 +23,6 @@ export default function EventDetailsPage() {
   const [faqError, setFaqError] = useState(false);
   const [mounted, setMounted] = useState(false);
 
-  // Ticket Selection State
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [tierPrice, setTierPrice] = useState(0);
@@ -59,7 +59,6 @@ export default function EventDetailsPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Dynamic Header */}
       <div className="relative h-[400px] w-full">
         <Image 
           src={event.image} 
@@ -89,7 +88,6 @@ export default function EventDetailsPage() {
 
       <main className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          {/* Main Content */}
           <div className="lg:col-span-2 space-y-12">
             <section>
               <h2 className="font-headline text-2xl mb-6">About Event</h2>
@@ -131,16 +129,6 @@ export default function EventDetailsPage() {
                   onSelect={() => handleTierSelect("VIP Experience", event.price.max)}
                   onQuantityChange={setQuantity}
                 />
-                <TicketTier 
-                  name="Early Bird" 
-                  price={Math.floor(event.price.min * 0.8)} 
-                  perks={['Standard Seating', 'Limited Offer']} 
-                  available={false}
-                  isSelected={false}
-                  quantity={1}
-                  onSelect={() => {}}
-                  onQuantityChange={() => {}}
-                />
               </TabsContent>
 
               <TabsContent value="info" className="pt-8">
@@ -152,7 +140,6 @@ export default function EventDetailsPage() {
                     <ul className="space-y-3 text-sm text-muted-foreground">
                       <li>• No refunds after ticket purchase.</li>
                       <li>• Age restriction: 18+ only.</li>
-                      <li>• No professional cameras allowed.</li>
                       <li>• Gates close at 8:00 PM.</li>
                     </ul>
                   </div>
@@ -176,7 +163,6 @@ export default function EventDetailsPage() {
                   <div className="text-center py-12 bg-secondary/20 rounded-2xl border border-dashed border-border/50">
                     <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-50" />
                     <h4 className="font-bold mb-2">Service Temporarily Busy</h4>
-                    <p className="text-sm text-muted-foreground mb-6 max-w-xs mx-auto">We're experiencing high demand for AI-generated FAQs. Please try again in a few moments.</p>
                     <Button variant="outline" size="sm" onClick={fetchFaqs} className="rounded-full gap-2">
                       <RefreshCcw className="w-4 h-4" /> Retry AI FAQs
                     </Button>
@@ -197,7 +183,6 @@ export default function EventDetailsPage() {
             </Tabs>
           </div>
 
-          {/* Sidebar Widget */}
           <div className="lg:col-span-1">
             <div className="sticky top-32 space-y-6">
               <Card className="border-border bg-card shadow-2xl overflow-hidden rounded-2xl">
@@ -209,34 +194,14 @@ export default function EventDetailsPage() {
                     <span className="text-3xl font-black text-primary">
                       {selectedTier ? `₦${(tierPrice * quantity).toLocaleString()}` : `₦${event.price.min.toLocaleString()}`}
                     </span>
-                    {selectedTier && quantity > 1 && (
-                      <span className="text-xs text-muted-foreground mt-1">
-                        (₦{tierPrice.toLocaleString()} x {quantity})
-                      </span>
-                    )}
                   </div>
                   
-                  <div className="space-y-4 mb-8">
-                    <div className="flex items-center gap-3 text-sm">
-                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Ticket className="w-4 h-4 text-primary" />
-                      </div>
-                      <span>Secure digital ticket delivery</span>
-                    </div>
-                    <div className="flex items-center gap-3 text-sm">
-                      <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
-                        <Users className="w-4 h-4 text-primary" />
-                      </div>
-                      <span>Easy ticket transfers to friends</span>
-                    </div>
-                  </div>
-
                   <Link href={selectedTier ? `/checkout/${event.id}?tier=${encodeURIComponent(selectedTier)}&qty=${quantity}` : `/checkout/${event.id}`}>
                     <Button size="lg" className="w-full h-14 rounded-full text-lg shadow-lg shadow-primary/20">
                       {selectedTier ? 'Proceed to Checkout' : 'Get Tickets Now'}
                     </Button>
                   </Link>
-                  <p className="text-center text-xs text-muted-foreground mt-4">
+                  <p className="text-center text-[10px] text-muted-foreground mt-4 uppercase font-bold tracking-widest">
                     Secured by Paystack, Flutterwave & SolanaPay
                   </p>
                 </CardContent>
@@ -254,18 +219,8 @@ export default function EventDetailsPage() {
                     </div>
                     <span className="text-xs text-muted-foreground">Organizer</span>
                   </div>
-                  <Button variant="outline" size="sm" className="rounded-full">Follow</Button>
                 </div>
               </Card>
-
-              <div className="flex items-center justify-center gap-4">
-                <Button variant="ghost" size="sm" className="rounded-full gap-2">
-                  <Share2 className="w-4 h-4" /> Share
-                </Button>
-                <Button variant="ghost" size="sm" className="rounded-full gap-2">
-                  <Heart className="w-4 h-4" /> Save
-                </Button>
-              </div>
             </div>
           </div>
         </div>
@@ -293,7 +248,6 @@ function TicketTier({ name, price, perks, available, isSelected, quantity, onSel
         </div>
         <div className="text-right">
           <span className="text-xl font-bold text-primary">₦{price.toLocaleString()}</span>
-          <span className="block text-xs text-muted-foreground">per ticket</span>
         </div>
       </div>
       <ul className="space-y-2 mb-6">
@@ -303,34 +257,14 @@ function TicketTier({ name, price, perks, available, isSelected, quantity, onSel
           </li>
         ))}
       </ul>
-      
-      {isSelected ? (
-        <div className="flex items-center gap-4 animate-in fade-in slide-in-from-top-2 duration-300">
-          <div className="flex items-center gap-3 bg-secondary/50 rounded-full p-1.5 flex-1 justify-between px-6 border border-border">
-            <button 
-              onClick={(e) => { e.stopPropagation(); onQuantityChange(Math.max(1, quantity - 1)); }}
-              className="w-8 h-8 rounded-full bg-background border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-colors"
-            > - </button>
-            <span className="font-bold text-lg">{quantity}</span>
-            <button 
-              onClick={(e) => { e.stopPropagation(); onQuantityChange(quantity + 1); }}
-              className="w-8 h-8 rounded-full bg-background border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-colors"
-            > + </button>
-          </div>
-          <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); onSelect(); }} className="text-muted-foreground hover:text-red-500 font-bold">
-            Remove
-          </Button>
-        </div>
-      ) : (
-        <Button 
-          variant={available ? "secondary" : "ghost"} 
-          className="w-full rounded-full h-12 font-bold" 
-          disabled={!available}
-          onClick={onSelect}
-        >
-          {available ? 'Select Tier' : 'Unavailable'}
-        </Button>
-      )}
+      <Button 
+        variant={available ? "secondary" : "ghost"} 
+        className="w-full rounded-full h-12 font-bold" 
+        disabled={!available}
+        onClick={onSelect}
+      >
+        {available ? 'Select Tier' : 'Unavailable'}
+      </Button>
     </div>
   );
 }

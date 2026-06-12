@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -24,7 +25,6 @@ export default function LoginPage() {
     e.preventDefault();
     setLoading('form');
     
-    // Simple mock authentication logic
     const user = MOCK_USERS.find(u => u.email === email && u.password === password);
     
     await new Promise(r => setTimeout(r, 1500));
@@ -125,7 +125,7 @@ export default function LoginPage() {
                 <span className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground font-black tracking-widest">Quick Login (Testing Only)</span>
+                <span className="bg-card px-2 text-muted-foreground font-black tracking-widest">Quick Login</span>
               </div>
             </div>
             

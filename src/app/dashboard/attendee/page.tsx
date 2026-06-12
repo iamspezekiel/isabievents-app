@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -87,7 +88,7 @@ export default function AttendeeDashboard() {
         </Sheet>
       </header>
 
-      {/* Main Dashboard Content */}
+      {/* Main Content - pt-12 refined */}
       <main className="flex-1 p-4 md:p-8 lg:p-12 overflow-x-hidden">
         <div className="max-w-5xl mx-auto space-y-8 md:space-y-12">
           <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
