@@ -25,7 +25,7 @@ export default function MobileAppPage() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
       {/* Immersive Hero Header - Increased top padding for "big spacing" */}
-      <section className="relative h-[80vh] w-full flex items-end pb-8 md:pb-16 pt-80 overflow-hidden">
+      <section className="relative min-h-[90vh] w-full flex items-end pb-12 md:pb-24 pt-[32rem] overflow-hidden">
         <Image 
           src="https://picsum.photos/seed/mobile-v3/1920/1080" 
           alt="IsabiEvents Mobile" 
@@ -74,13 +74,12 @@ export default function MobileAppPage() {
       </section>
 
       {/* Value Prop Section */}
-      <section className="py-8 relative overflow-hidden">
+      <section className="pt-32 pb-12 relative overflow-hidden">
         <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-primary/10 blur-[150px] rounded-full -translate-x-1/2 -z-10" />
         <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-accent/10 blur-[150px] rounded-full translate-x-1/2 -z-10" />
         
         <div className="container mx-auto px-4">
           <div className="text-center max-w-4xl mx-auto mb-12 space-y-6">
-            {/* Reduced size for "Built for the Nigerian Experience" */}
             <h2 className="text-2xl md:text-4xl text-balance">
               Built for the <br />
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Nigerian Experience</span>
@@ -114,7 +113,7 @@ export default function MobileAppPage() {
       </section>
 
       {/* Featured Preview */}
-      <section className="py-8 bg-card/30 border-y border-border">
+      <section className="py-24 bg-card/30 border-y border-border">
          <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-24 items-center">
             <div className="relative">
                 <div className="relative z-10 mx-auto w-72 md:w-96 aspect-[1/2] bg-card border-[12px] border-border rounded-[4rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden ring-8 ring-primary/5">
@@ -136,7 +135,6 @@ export default function MobileAppPage() {
             </div>
 
             <div className="space-y-12">
-               {/* Reduced size for "Fast. Secure. Always with you." */}
                <h2 className="text-left leading-tight text-xl md:text-3xl">Fast. Secure. <br /> Always with you.</h2>
                <div className="space-y-8">
                   <FeatureListItem 
@@ -162,14 +160,13 @@ export default function MobileAppPage() {
       </section>
 
       {/* Call to Action */}
-      <section className="py-8">
+      <section className="py-24">
         <div className="container mx-auto px-4 text-center">
           <div className="max-w-6xl mx-auto relative group overflow-hidden p-16 md:p-24 bg-primary/5 border border-primary/10 rounded-[5rem] shadow-2xl">
             <div className="absolute top-0 left-0 w-96 h-96 bg-primary/10 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2" />
             <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/10 blur-[120px] rounded-full translate-x-1/2 translate-y-1/2" />
             
             <div className="relative z-10 space-y-10">
-              {/* Reduced size for "Ready to ditch paper?" */}
               <h2 className="text-3xl md:text-5xl font-black leading-tight tracking-tighter">
                 Ready to <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">ditch paper?</span>
               </h2>
