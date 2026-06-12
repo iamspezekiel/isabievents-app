@@ -4,14 +4,8 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, ChevronDown, User } from 'lucide-react';
+import { Menu, User } from 'lucide-react';
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
 import { Logo } from '@/components/logo';
@@ -23,6 +17,7 @@ const NAV_LINKS = [
   { name: 'About', href: '/about' },
   { name: 'Host Event', href: '/organizer' },
   { name: 'Pricing', href: '/pricing' },
+  { name: 'Support', href: '/help' },
 ];
 
 export function Navbar() {
@@ -42,8 +37,6 @@ export function Navbar() {
 
   const getIsActive = (path: string) => pathname === path;
 
-  // We keep the container structure identical on server and client
-  // only changing minor visual attributes that are safe for hydration
   return (
     <div className={cn(
       "fixed left-1/2 -translate-x-1/2 z-50 transition-all duration-500 w-full max-w-7xl px-4",
@@ -60,7 +53,7 @@ export function Navbar() {
           <Logo size="sm" />
         </Link>
 
-        {/* Desktop Links - These are static and safe for hydration */}
+        {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-8">
           {NAV_LINKS.map((link) => (
             <Link 
@@ -74,26 +67,9 @@ export function Navbar() {
               {link.name}
             </Link>
           ))}
-          
-          <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-bold tracking-tight text-foreground/70 hover:text-primary transition-colors focus:outline-none no-underline border-none bg-transparent">
-              Support <ChevronDown className="w-4 h-4" />
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-56 mt-4 p-2 bg-card/95 backdrop-blur-xl border-border rounded-3xl">
-              <DropdownMenuItem asChild className="rounded-2xl py-3 cursor-pointer">
-                <Link href="/help" className="no-underline block w-full h-full">Help Center</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild className="rounded-2xl py-3 cursor-pointer">
-                <Link href="/help/tickets" className="no-underline block w-full h-full">Ticket Support</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild className="rounded-2xl py-3 cursor-pointer">
-                <Link href="/help/refunds" className="no-underline block w-full h-full">Refund Policy</Link>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
         </div>
 
-        {/* Actions - We render the dynamic parts only after mount or with hydration-safe fallbacks */}
+        {/* Actions */}
         <div className="flex items-center gap-2 md:gap-4">
           <div className="hidden sm:flex items-center gap-2">
             {mounted && <ThemeToggle />}
@@ -140,7 +116,6 @@ export function Navbar() {
                   </Link>
                 ))}
                 <div className="h-px bg-border/50" />
-                <Link href="/help" onClick={() => setIsOpen(false)} className="text-xl font-black tracking-tighter text-muted-foreground no-underline">Help Center</Link>
                 <div className="flex flex-col gap-3 pt-6">
                   <Button variant="outline" className="w-full rounded-2xl h-12 font-bold no-underline" asChild>
                     <Link href="/login">Sign In</Link>
