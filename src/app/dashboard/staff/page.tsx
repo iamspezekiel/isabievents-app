@@ -1,13 +1,15 @@
+
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { Scan, Search, CheckCircle, AlertCircle, RefreshCcw, History, Users, X, ArrowLeft, User, Ticket, Activity } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Scan, Search, CheckCircle, AlertCircle, RefreshCcw, History, Users, X, ArrowLeft, User, Ticket, Activity, Camera, CameraOff } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import Link from 'next/link';
+import { Html5Qrcode } from 'html5-qrcode';
 
 const MOCK_ATTENDEES = [
   { name: 'Sylvanus P. Ezekiel', type: 'VIP Pass', id: 'TKT-E1-029' },
@@ -23,6 +25,9 @@ export default function StaffCheckIn() {
   const [scanState, setScanState] = useState<'idle' | 'validating' | 'success' | 'error'>('idle');
   const [manualMode, setManualMode] = useState(false);
   const [lookupQuery, setLookupQuery] = useState('');
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  
+  const scannerRef = useRef<Html5Qrcode | null>(null);
   
   // Pre-populate with some recent check-ins for a "live" feel
   const [history, setHistory] = useState<any[]>([
@@ -33,38 +38,112 @@ export default function StaffCheckIn() {
   
   const { toast } = useToast();
 
-  const handleScan = async () => {
+  useEffect(() => {
+    return () => {
+      stopScanner();
+    };
+  }, []);
+
+  const stopScanner = async () => {
+    if (scannerRef.current && scannerRef.current.isScanning) {
+      try {
+        await scannerRef.current.stop();
+      } catch (err) {
+        console.error('Failed to stop scanner', err);
+      }
+    }
+    setIsCameraActive(false);
+  };
+
+  const startScanner = async () => {
+    setIsCameraActive(true);
+    setScanState('idle');
+    
+    // Give react a tick to render the 'reader' div
+    setTimeout(async () => {
+      try {
+        const html5QrCode = new Html5Qrcode("reader");
+        scannerRef.current = html5QrCode;
+        
+        await html5QrCode.start(
+          { facingMode: "environment" },
+          {
+            fps: 10,
+            qrbox: { width: 250, height: 250 },
+          },
+          (decodedText) => {
+            // Success
+            handleValidation(decodedText);
+          },
+          (errorMessage) => {
+            // Silence common errors like "No QR code found"
+          }
+        );
+      } catch (err) {
+        console.error("Camera start error", err);
+        setIsCameraActive(false);
+        toast({
+          variant: "destructive",
+          title: "Camera Error",
+          description: "Could not access camera. Please check permissions."
+        });
+      }
+    }, 100);
+  };
+
+  const handleValidation = async (ticketId: string) => {
+    await stopScanner();
     setScanState('validating');
     
     // Simulate network/validation delay
-    await new Promise(r => setTimeout(r, 1800));
+    await new Promise(r => setTimeout(r, 1500));
     
-    const isSuccess = Math.random() > 0.10; // 90% success rate for simulation
-    
-    if (isSuccess) {
-      const attendee = MOCK_ATTENDEES[Math.floor(Math.random() * MOCK_ATTENDEES.length)];
+    // Simple logic: if the ticketId contains a match in our mock database
+    const attendee = MOCK_ATTENDEES.find(a => 
+      ticketId.toUpperCase().includes(a.id.toUpperCase()) || 
+      a.id.toUpperCase().includes(ticketId.toUpperCase())
+    );
+
+    if (attendee) {
       setScanState('success');
-      
       const entry = {
-        id: attendee.id || Math.random().toString(36).substr(2, 9).toUpperCase(),
+        id: attendee.id,
         name: attendee.name,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         type: attendee.type
       };
-      
       setHistory([entry, ...history]);
-      toast({ 
-        title: "Access Granted", 
-        description: `${attendee.name} has been checked in.` 
-      });
+      toast({ title: "Access Granted", description: `${attendee.name} checked in.` });
     } else {
-      setScanState('error');
-      toast({ 
-        variant: "destructive", 
-        title: "Access Denied", 
-        description: "This ticket has already been used or is invalid." 
-      });
+      // If we don't recognize the ID, it might be a random code, let's still simulate success 80% of time for demo
+      if (Math.random() > 0.2) {
+         const randomAttendee = MOCK_ATTENDEES[Math.floor(Math.random() * MOCK_ATTENDEES.length)];
+         setScanState('success');
+         const entry = {
+           id: ticketId.substring(0, 10).toUpperCase(),
+           name: randomAttendee.name,
+           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+           type: randomAttendee.type
+         };
+         setHistory([entry, ...history]);
+      } else {
+        setScanState('error');
+        toast({ variant: "destructive", title: "Invalid Ticket", description: "This code does not match any valid records." });
+      }
     }
+  };
+
+  const handleSimulate = async () => {
+    setScanState('validating');
+    await new Promise(r => setTimeout(r, 1200));
+    const attendee = MOCK_ATTENDEES[Math.floor(Math.random() * MOCK_ATTENDEES.length)];
+    setScanState('success');
+    setHistory([{
+      id: attendee.id,
+      name: attendee.name,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      type: attendee.type
+    }, ...history]);
   };
 
   const handleManualLookup = async () => {
@@ -75,7 +154,6 @@ export default function StaffCheckIn() {
     
     await new Promise(r => setTimeout(r, 1200));
     
-    // Check if query matches any name or ID in mock list
     const found = MOCK_ATTENDEES.find(a => 
       a.name.toLowerCase().includes(lookupQuery.toLowerCase()) || 
       a.id.toLowerCase().includes(lookupQuery.toLowerCase())
@@ -98,7 +176,10 @@ export default function StaffCheckIn() {
     setLookupQuery('');
   };
 
-  const resetScanner = () => setScanState('idle');
+  const resetScanner = () => {
+    setScanState('idle');
+    setIsCameraActive(false);
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col pt-48">
@@ -120,7 +201,7 @@ export default function StaffCheckIn() {
 
       <main className="flex-1 overflow-auto p-4 md:p-8">
         <div className="max-w-2xl mx-auto space-y-8">
-          {/* Scanner UI */}
+          {/* Scanner Card */}
           <Card className="border-border bg-card overflow-hidden rounded-[2.5rem] shadow-2xl relative">
             <CardContent className="p-0">
               <div className={`aspect-square relative flex flex-col items-center justify-center transition-colors duration-700 ${
@@ -129,31 +210,49 @@ export default function StaffCheckIn() {
                 'bg-black/95'
               }`}>
                 
-                {/* Visual Feedback Overlays */}
-                {scanState === 'idle' && (
-                  <>
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                       <div className="w-72 h-72 border-2 border-primary/40 rounded-[2rem] border-dashed animate-pulse" />
+                {/* Camera View */}
+                {isCameraActive && scanState === 'idle' && (
+                  <div id="reader" className="absolute inset-0 w-full h-full [&_video]:object-cover [&_video]:w-full [&_video]:h-full" />
+                )}
+
+                {/* Overlays and Visual Feedback */}
+                {scanState === 'idle' && !isCameraActive && (
+                  <div className="z-10 text-center space-y-6 p-8">
+                    <div className="w-24 h-24 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-primary/20">
+                      <Scan className="w-12 h-12 text-primary" />
                     </div>
-                    {/* Scanning Line Animation */}
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary to-transparent animate-[scan_2s_ease-in-out_infinite] opacity-50 shadow-[0_0_15px_rgba(126,124,255,0.8)]" />
-                    
-                    <div className="z-10 text-center space-y-6">
-                      <div className="w-24 h-24 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-primary/20">
-                        <Scan className="w-12 h-12 text-primary" />
-                      </div>
-                      <div className="space-y-1">
-                        <p className="text-white font-bold text-xl">Ready to Scan</p>
-                        <p className="text-muted-foreground text-sm">Position QR Code within the frame</p>
-                      </div>
+                    <div className="space-y-1">
+                      <p className="text-white font-bold text-xl">Ready to Scan</p>
+                      <p className="text-muted-foreground text-sm">Open camera to process attendees</p>
+                    </div>
+                    <div className="flex flex-col gap-3">
                       <Button 
-                        onClick={handleScan} 
-                        className="rounded-full px-12 h-16 text-lg shadow-xl shadow-primary/20 font-black hover:scale-105 transition-transform"
+                        onClick={startScanner} 
+                        className="rounded-full px-12 h-16 text-lg shadow-xl shadow-primary/20 font-black hover:scale-105 transition-transform gap-3"
                       >
-                        Simulate Scan
+                        <Camera className="w-6 h-6" /> Open Camera & Scan
+                      </Button>
+                      <Button variant="ghost" onClick={handleSimulate} className="text-muted-foreground hover:text-white">
+                        Simulate Success
                       </Button>
                     </div>
-                  </>
+                  </div>
+                )}
+
+                {isCameraActive && scanState === 'idle' && (
+                  <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-between p-12">
+                    <div className="w-full max-w-[250px] aspect-square border-2 border-primary/60 border-dashed rounded-3xl relative">
+                        {/* Scanning Line */}
+                        <div className="absolute top-0 left-0 w-full h-0.5 bg-primary animate-[scan_2.5s_ease-in-out_infinite] shadow-[0_0_15px_hsl(var(--primary))]" />
+                    </div>
+                    <Button 
+                      onClick={stopScanner} 
+                      variant="destructive" 
+                      className="pointer-events-auto rounded-full px-8 h-12 gap-2"
+                    >
+                      <CameraOff className="w-4 h-4" /> Stop Camera
+                    </Button>
+                  </div>
                 )}
 
                 {scanState === 'validating' && (
@@ -172,7 +271,7 @@ export default function StaffCheckIn() {
                 )}
 
                 {scanState === 'success' && (
-                  <div className="text-center space-y-6 animate-in zoom-in-95 duration-500">
+                  <div className="text-center space-y-6 animate-in zoom-in-95 duration-500 p-8">
                     <div className="w-28 h-28 bg-green-500/20 rounded-full flex items-center justify-center mx-auto border-4 border-green-500/50">
                       <CheckCircle className="w-16 h-16 text-green-500" />
                     </div>
@@ -183,22 +282,22 @@ export default function StaffCheckIn() {
                         <p className="text-xs text-muted-foreground uppercase tracking-widest font-bold">{history[0]?.type}</p>
                       </div>
                     </div>
-                    <Button onClick={resetScanner} className="mt-4 rounded-full px-10 h-12 font-bold">
-                      Next Attendee
+                    <Button onClick={startScanner} className="mt-4 rounded-full px-10 h-12 font-bold">
+                      Scan Next
                     </Button>
                   </div>
                 )}
 
                 {scanState === 'error' && (
-                  <div className="text-center space-y-6 animate-in zoom-in-95 duration-500">
+                  <div className="text-center space-y-6 animate-in zoom-in-95 duration-500 p-8">
                     <div className="w-28 h-28 bg-red-500/20 rounded-full flex items-center justify-center mx-auto border-4 border-red-500/50">
                       <AlertCircle className="w-16 h-16 text-red-500" />
                     </div>
                     <div className="space-y-2">
                       <h2 className="font-headline text-4xl text-red-500 tracking-tighter uppercase italic">Access Denied</h2>
-                      <p className="text-muted-foreground font-medium px-8 leading-relaxed">Invalid or duplicate ticket ID.</p>
+                      <p className="text-muted-foreground font-medium leading-relaxed">Invalid or duplicate ticket ID.</p>
                     </div>
-                    <Button onClick={resetScanner} variant="outline" className="mt-4 rounded-full px-10 h-12 font-bold border-red-500/50 text-red-500 hover:bg-red-500/5">
+                    <Button onClick={startScanner} variant="outline" className="mt-4 rounded-full px-10 h-12 font-bold border-red-500/50 text-red-500 hover:bg-red-500/5">
                       Try Again
                     </Button>
                   </div>
