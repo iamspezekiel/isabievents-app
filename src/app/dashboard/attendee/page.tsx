@@ -26,7 +26,7 @@ export default function AttendeeDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-background flex flex-col lg:flex-row">
+    <div className="min-h-screen bg-background flex flex-col lg:flex-row pt-24 lg:pt-0">
       {/* Sidebar for Desktop */}
       <aside className="hidden lg:flex w-72 bg-card/30 border-r border-border p-8 flex-col sticky top-0 h-screen">
         <Link href="/" className="mb-12 block">
