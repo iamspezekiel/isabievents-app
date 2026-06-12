@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -14,7 +13,6 @@ import {
   Apple, 
   Play, 
   Share2, 
-  Send,
   Lock
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
