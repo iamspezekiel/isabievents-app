@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -48,13 +47,13 @@ export default function AboutPage() {
               We've built a platform that understands the local context—from payment reliability to offline access—ensuring that every attendee and organizer has a world-class experience right here at home.
             </p>
             <div className="grid grid-cols-2 gap-8 pt-8">
-              <div>
-                <div className="text-4xl font-black text-primary">50k+</div>
-                <div className="text-xs uppercase font-black text-muted-foreground tracking-widest">Active Users</div>
+              <div className="space-y-1">
+                <h2 className="text-4xl font-black text-primary">50k+</h2>
+                <p className="text-xs uppercase font-black text-muted-foreground tracking-widest">Active Users</p>
               </div>
-              <div>
-                <div className="text-4xl font-black text-primary">1.2k+</div>
-                <div className="text-xs uppercase font-black text-muted-foreground tracking-widest">Organizers</div>
+              <div className="space-y-1">
+                <h2 className="text-4xl font-black text-primary">1.2k+</h2>
+                <p className="text-xs uppercase font-black text-muted-foreground tracking-widest">Organizers</p>
               </div>
             </div>
           </div>
@@ -62,7 +61,8 @@ export default function AboutPage() {
       </section>
 
       {/* Values Section */}
-      <section className="py-24 bg-card/30 border-y border-border">
+      <section className="py-24 bg-card/30 border-y border-border relative">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 blur-3xl rounded-full -z-10" />
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
             <h2 className="font-headline text-4xl font-black tracking-tighter">What We Stand For</h2>
@@ -115,7 +115,7 @@ export default function AboutPage() {
       {/* CTA Section */}
       <section className="py-32 container mx-auto px-4 text-center">
         <div className="max-w-4xl mx-auto space-y-12">
-          <h2 className="font-headline text-4xl md:text-7xl font-black tracking-tighter leading-none">
+          <h2 className="font-headline text-4xl md:text-7xl font-black tracking-tighter leading-none text-balance">
             Ready to join the <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">movement?</span>
           </h2>
           <p className="text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed">
@@ -147,7 +147,7 @@ function ValueCard({ icon: Icon, title, desc }: any) {
           <Icon className="w-8 h-8 text-primary group-hover:text-white transition-colors" />
         </div>
         <div className="space-y-2">
-          <h3 className="font-headline text-2xl font-bold tracking-tight">{title}</h3>
+          <h2 className="font-headline text-2xl font-bold tracking-tight">{title}</h2>
           <p className="text-muted-foreground leading-relaxed font-medium">{desc}</p>
         </div>
       </CardContent>
@@ -162,7 +162,7 @@ function FeatureItem({ title, desc }: any) {
           <Sparkles className="w-5 h-5 text-primary" />
        </div>
        <div className="space-y-1">
-          <h4 className="font-bold text-lg">{title}</h4>
+          <h2 className="font-bold text-xl">{title}</h2>
           <p className="text-muted-foreground text-sm leading-relaxed">{desc}</p>
        </div>
     </div>
