@@ -118,7 +118,7 @@ export function Footer() {
             </div>
           </div>
           
-          <div className="text-center lg:text-right leading-loose max-w-xs sm:max-w-sm lg:max-w-none px-4 lg:px-0">
+          <div className="text-center lg:text-right leading-relaxed max-w-[280px] sm:max-w-none px-4 lg:px-0 text-balance">
             Copyright © 2026 · IsabiEvents Technology · All Rights Reserved
           </div>
         </div>
