@@ -24,27 +24,27 @@ export default function OrganizerLandingPage() {
       <section className="relative pt-32 pb-8 md:pb-16 overflow-hidden">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent/10 blur-[120px] -z-10 rounded-full translate-x-1/2 -translate-y-1/2" />
         <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
-          <div className="space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000">
-            <h1 className="text-3xl md:text-5xl lg:text-7xl leading-[1.1] font-black tracking-tighter text-left">
-              The Easiest Way to Host <br className="sm:hidden" />
+          <div className="space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000 flex flex-col items-center lg:items-start">
+            <h1 className="text-4xl lg:text-7xl leading-[1.1] font-black tracking-tighter text-center lg:text-left text-balance">
+              The Easiest Way to Host <br className="hidden lg:block" />
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Legendary</span> Events
             </h1>
-            <p className="text-base text-muted-foreground leading-relaxed">
+            <p className="text-base text-muted-foreground leading-relaxed text-center lg:text-left max-w-lg">
               From secret beach parties to national tech conferences. IsabiEvents provides the tools you need to sell out fast and manage with ease.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/signup?role=organizer">
-                <Button size="lg" className="h-16 px-10 rounded-full text-lg gap-2 shadow-xl shadow-primary/20">
+            <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 w-full sm:w-auto">
+              <Link href="/signup?role=organizer" className="w-full sm:w-auto">
+                <Button size="lg" className="h-16 px-10 rounded-full text-lg gap-2 shadow-xl shadow-primary/20 w-full">
                   Start Hosting Now <ArrowRight className="w-5 h-5" />
                 </Button>
               </Link>
-              <Link href="/pricing">
-                <Button size="lg" variant="outline" className="h-16 px-10 rounded-full text-lg">
+              <Link href="/pricing" className="w-full sm:w-auto">
+                <Button size="lg" variant="outline" className="h-16 px-10 rounded-full text-lg w-full">
                   View Pricing
                 </Button>
               </Link>
             </div>
-            <div className="flex items-center gap-6 pt-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6 pt-4">
               <div className="flex -space-x-3">
                 {[1, 2, 3, 4].map(i => (
                   <div key={i} className="w-10 h-10 rounded-full border-2 border-background overflow-hidden relative bg-secondary">
@@ -52,12 +52,12 @@ export default function OrganizerLandingPage() {
                   </div>
                 ))}
               </div>
-              <p className="text-base text-muted-foreground">
+              <p className="text-base text-muted-foreground text-center sm:text-left">
                 Joined by <span className="text-primary font-bold">1,200+</span> Nigerian organizers
               </p>
             </div>
           </div>
-          <div className="relative animate-in fade-in zoom-in-95 duration-1000">
+          <div className="relative animate-in fade-in zoom-in-95 duration-1000 hidden lg:block">
             <div className="relative aspect-square lg:h-[700px] lg:aspect-auto w-full rounded-3xl overflow-hidden border border-border shadow-2xl">
               <Image 
                 src="https://picsum.photos/seed/organizer-hero/800/1000" 
