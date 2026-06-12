@@ -183,7 +183,7 @@ export default function AboutPage() {
       {/* CTA Section */}
       <section className="py-32 container mx-auto px-4 text-center">
         <div className="max-w-4xl mx-auto space-y-12">
-          <h2 className="font-headline text-4xl md:text-7xl font-black tracking-tighter leading-none text-balance">
+          <h2 className="font-headline text-3xl md:text-5xl font-black tracking-tighter leading-none text-balance">
             Ready to join the <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">movement?</span>
           </h2>
           <p className="text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed">
