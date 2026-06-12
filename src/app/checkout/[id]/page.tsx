@@ -16,7 +16,8 @@ import {
   LogIn, 
   Mail, 
   Lock,
-  Smartphone
+  Smartphone,
+  Info
 } from 'lucide-react';
 import { MOCK_EVENTS, MOCK_USERS } from '@/lib/mock-data';
 import { Button } from "@/components/ui/button";
@@ -83,7 +84,7 @@ export default function CheckoutPage() {
       toast({
         variant: "destructive",
         title: "Login failed",
-        description: "Invalid credentials. Try using 'Attendee' and 'password123'.",
+        description: "Invalid credentials. Use 'Attendee' and 'password123'.",
       });
     }
     setLoading(false);
@@ -186,13 +187,22 @@ export default function CheckoutPage() {
                     <TabsContent value="login" className="space-y-6 mt-0">
                       <Card className="border-border bg-card/50">
                         <CardContent className="pt-6 space-y-4">
+                          <div className="bg-primary/5 border border-primary/10 p-3 rounded-xl flex items-start gap-3 mb-2">
+                            <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                            <div className="space-y-1">
+                               <p className="text-[11px] font-bold text-primary uppercase tracking-widest">Demo Credentials</p>
+                               <p className="text-[11px] text-muted-foreground">Username: <span className="font-bold text-foreground">Attendee</span></p>
+                               <p className="text-[11px] text-muted-foreground">Password: <span className="font-bold text-foreground">password123</span></p>
+                            </div>
+                          </div>
+
                           <div className="space-y-2">
                             <Label htmlFor="login-email">Email or Username</Label>
                             <Input 
                               id="login-email" 
                               type="text" 
                               placeholder="Email or 'Attendee'" 
-                              className="bg-background" 
+                              className="bg-background h-11" 
                               value={loginEmail}
                               onChange={(e) => setLoginEmail(e.target.value)}
                             />
@@ -203,13 +213,13 @@ export default function CheckoutPage() {
                               id="login-password" 
                               type="password" 
                               placeholder="••••••••" 
-                              className="bg-background" 
+                              className="bg-background h-11" 
                               value={loginPassword}
                               onChange={(e) => setLoginPassword(e.target.value)}
                             />
                           </div>
                           <Button 
-                            className="w-full h-12 rounded-xl" 
+                            className="w-full h-12 rounded-xl font-bold" 
                             onClick={handleLogin}
                             disabled={loading}
                           >
