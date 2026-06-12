@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -11,7 +10,7 @@ import Link from 'next/link';
 
 export default function TicketGalleryPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pt-20">
       <header className="border-b border-border bg-card py-10 sticky top-0 z-50">
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -38,7 +37,7 @@ export default function TicketGalleryPage() {
                   <div className="text-[10px] uppercase font-black tracking-widest text-primary">Confirmed Access</div>
                   <h3 className="font-headline text-lg line-clamp-1">{event.title}</h3>
                 </div>
-                <div className="w-12 h-12 bg-background rounded-xl border border-border flex items-center justify-center">
+                <div className="w-12 h-12 bg-background rounded-xl border-border flex items-center justify-center">
                    <QrCode className="w-6 h-6 text-muted-foreground" />
                 </div>
                 {/* Ticket Notches */}

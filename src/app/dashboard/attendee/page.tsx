@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -26,7 +25,7 @@ export default function AttendeeDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-background flex flex-col lg:flex-row pt-40">
+    <div className="min-h-screen bg-background flex flex-col lg:flex-row pt-48">
       {/* Sidebar for Desktop */}
       <aside className="hidden lg:flex w-72 bg-card/30 border-r border-border p-8 flex-col sticky top-0 h-screen">
         <Link href="/" className="mb-12 block">
@@ -76,9 +75,9 @@ export default function AttendeeDashboard() {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
-            <StatCard label="Active Tickets" value={MOCK_USER.wallet.active} color="primary" />
-            <StatCard label="Used" value={MOCK_USER.wallet.used} color="accent" />
-            <StatCard label="Favorites" value={5} color="white" />
+            <StatBox label="Active Tickets" value={MOCK_USER.wallet.active} color="primary" />
+            <StatBox label="Used" value={MOCK_USER.wallet.used} color="accent" />
+            <StatBox label="Favorites" value={5} color="white" />
           </div>
 
           {/* Events Tabs */}
@@ -116,7 +115,7 @@ function SidebarLink({ icon: Icon, label, active }: any) {
   );
 }
 
-function StatCard({ label, value, color }: any) {
+function StatBox({ label, value, color }: any) {
   const colorClass = color === 'primary' ? 'text-primary' : color === 'accent' ? 'text-accent' : 'text-white';
   return (
     <Card className="bg-card border-border overflow-hidden rounded-[2rem]">

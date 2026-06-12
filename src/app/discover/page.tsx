@@ -115,7 +115,7 @@ function DiscoverContent() {
                 selectedCategory === cat.id 
                   ? "bg-primary/10 text-primary" 
                   : "text-muted-foreground hover:bg-secondary/30"
-              )}
+            )}
             >
               {cat.name}
               {selectedCategory === cat.id && <Check className="w-4 h-4" />}
@@ -262,7 +262,7 @@ function DiscoverContent() {
 export default function DiscoverPage() {
   return (
     <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-4 pt-40 md:pt-48 pb-8">
+      <main className="container mx-auto px-4 pt-48 md:pt-56 pb-8">
         <Suspense fallback={
           <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
             <Loader2 className="w-10 h-10 animate-spin text-primary" />

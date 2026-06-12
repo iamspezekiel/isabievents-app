@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -40,7 +39,7 @@ export default function StaffCheckIn() {
   const resetScanner = () => setScanState('idle');
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col pt-40">
+    <div className="min-h-screen bg-background text-foreground flex flex-col pt-48">
       <header className="border-b border-border p-4 bg-card flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-4">
           <Link href="/">

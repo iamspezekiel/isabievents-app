@@ -99,7 +99,7 @@ export default function DeveloperApiPage() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-8 md:p-16 pt-40 md:pt-48 max-w-5xl">
+      <main className="flex-1 p-8 md:p-16 pt-48 md:pt-56 max-w-5xl">
         <div className="space-y-24">
           <header className="space-y-4">
             <div className="flex items-center gap-3">

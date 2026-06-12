@@ -12,7 +12,7 @@ export default function SuccessStoriesPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Hero */}
-      <header className="pt-40 pb-8 border-b border-border bg-card/30 overflow-hidden">
+      <header className="pt-48 pb-8 border-b border-border bg-card/30 overflow-hidden">
         <div className="container mx-auto px-4 text-center space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <Badge className="bg-accent/20 text-accent border-none py-1.5 px-6 mb-4 font-bold tracking-widest uppercase">SUCCESS STORIES</Badge>
           <h1 className="font-headline text-4xl md:text-6xl font-black leading-[1.1] tracking-tighter text-balance">

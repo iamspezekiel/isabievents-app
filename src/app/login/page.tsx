@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -12,7 +11,7 @@ import { Logo } from '@/components/logo';
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-start p-4 pt-44 pb-20">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-start p-4 pt-52 pb-20">
       <div className="w-full max-w-md space-y-8 text-left">
         <div className="text-center space-y-2">
           <Link href="/" className="inline-block mb-4 no-underline">

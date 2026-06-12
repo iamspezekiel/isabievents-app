@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -22,7 +21,7 @@ const salesData = [
 
 export default function OrganizerDashboard() {
   return (
-    <div className="min-h-screen bg-background flex flex-col md:flex-row pt-40">
+    <div className="min-h-screen bg-background flex flex-col md:flex-row pt-48">
       {/* Side Navigation */}
       <aside className="w-full md:w-64 bg-sidebar border-r border-sidebar-border p-6 flex flex-col hidden md:flex">
         <Link href="/" className="mb-10 block">

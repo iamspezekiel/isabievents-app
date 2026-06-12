@@ -25,7 +25,7 @@ export default function MobileAppPage() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
       {/* Immersive Hero Header */}
-      <section className="relative h-[80vh] w-full flex items-end pb-8 md:pb-16 pt-32 overflow-hidden">
+      <section className="relative h-[80vh] w-full flex items-end pb-8 md:pb-16 pt-40 overflow-hidden">
         <Image 
           src="https://picsum.photos/seed/mobile-v3/1920/1080" 
           alt="IsabiEvents Mobile" 

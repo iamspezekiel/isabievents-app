@@ -35,7 +35,7 @@ export default function AllCategoriesPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Hero Section */}
-      <header className="relative pt-40 pb-8 overflow-hidden border-b border-border bg-card/30">
+      <header className="relative pt-48 pb-8 overflow-hidden border-b border-border bg-card/30">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
         <div className="container mx-auto px-4 text-center space-y-6">
           <h1 className="font-headline text-4xl md:text-6xl font-black leading-tight tracking-tighter text-balance">
