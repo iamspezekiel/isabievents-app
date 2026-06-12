@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -24,8 +25,9 @@ export default function OrganizerLandingPage() {
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent/10 blur-[120px] -z-10 rounded-full translate-x-1/2 -translate-y-1/2" />
         <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000">
-            <h1 className="text-4xl md:text-5xl lg:text-7xl leading-[1.05] font-black tracking-tighter text-balance">
-              The Easiest Way to Host <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Legendary</span> Events
+            <h1 className="text-3xl md:text-5xl lg:text-7xl leading-[1.1] font-black tracking-tighter text-left">
+              The Easiest Way to Host <br className="sm:hidden" />
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Legendary</span> Events
             </h1>
             <p className="text-base text-muted-foreground leading-relaxed">
               From secret beach parties to national tech conferences. IsabiEvents provides the tools you need to sell out fast and manage with ease.
@@ -56,10 +58,10 @@ export default function OrganizerLandingPage() {
             </div>
           </div>
           <div className="relative animate-in fade-in zoom-in-95 duration-1000">
-            <div className="relative aspect-square lg:h-[700px] w-full rounded-3xl overflow-hidden border border-border shadow-2xl">
+            <div className="relative aspect-square lg:h-[700px] lg:aspect-auto w-full rounded-3xl overflow-hidden border border-border shadow-2xl">
               <Image 
                 src="https://picsum.photos/seed/organizer-hero/800/1000" 
-                alt="Organizer dashboard" 
+                alt="Organizer success" 
                 fill 
                 className="object-cover"
                 data-ai-hint="organizer success"
