@@ -66,7 +66,7 @@ export default function HomePage() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[1200px] bg-primary/10 blur-[150px] -z-10 rounded-full" />
         
         <div className="container mx-auto px-4">
-          <div className="text-center mb-24">
+          <div className="text-center mb-12">
             <Badge className="mb-4 py-1.5 px-4 bg-primary/20 text-primary border-primary/20 hover:bg-primary/20 animate-in fade-in slide-in-from-bottom-4 duration-700">
               Trusted by 50,000+ Nigerians
             </Badge>
@@ -96,7 +96,7 @@ export default function HomePage() {
           </div>
 
           {/* Top Categories Section (10 desktop, 8 mobile) */}
-          <section className="relative z-10 pt-8">
+          <section className="relative z-10 pt-0">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-xl md:text-2xl font-black tracking-tighter text-left">Top Categories</h2>
               <Link href="/categories">
@@ -134,7 +134,7 @@ export default function HomePage() {
       </div>
 
       {/* Trending Events (3x9 grid desktop, 2x8 mobile) */}
-      <section className="py-24">
+      <section className="pt-12 pb-24">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-12">
             <div className="text-left">
