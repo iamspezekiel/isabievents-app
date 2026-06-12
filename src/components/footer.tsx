@@ -45,7 +45,7 @@ export function Footer() {
                {mounted ? <Logo /> : <div className="h-10 w-40 bg-secondary animate-pulse rounded-xl" />}
             </Link>
             <p className="text-muted-foreground text-sm leading-relaxed max-w-xs font-medium text-left">
-              The most secure and reliable event ticket marketplace in Nigeria. Connecting people to unforgettable experiences.
+              The most secure and reliable event ticket marketplace in Nigeria.
             </p>
             {/* Social Icons - Defer rendering to prevent hydration mismatch */}
             {mounted && (
