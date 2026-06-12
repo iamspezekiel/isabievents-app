@@ -28,7 +28,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CATEGORIES, MOCK_EVENTS, CITIES } from '@/lib/mock-data';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -40,7 +39,6 @@ const iconMap: any = {
 
 export default function HomePage() {
   const [search, setSearch] = useState('');
-  const [selectedCity, setSelectedCity] = useState('Lagos');
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -58,7 +56,7 @@ export default function HomePage() {
             Access the pulse of Nigeria. From stadium-shaking concerts to industry-defining summits, discover and secure your spot with zero friction and absolute peace of mind.
           </p>
 
-          <div className="max-w-4xl mx-auto bg-card border border-border p-3 rounded-2xl md:rounded-full flex flex-col md:flex-row items-center gap-3 shadow-2xl animate-in fade-in slide-in-from-bottom-16 duration-1000">
+          <div className="max-w-3xl mx-auto bg-card border border-border p-3 rounded-2xl md:rounded-full flex flex-col md:flex-row items-center gap-3 shadow-2xl animate-in fade-in slide-in-from-bottom-16 duration-1000">
             <div className="flex-1 w-full relative">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
               <Input 
@@ -68,20 +66,7 @@ export default function HomePage() {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
-            <div className="w-full md:w-auto h-full px-4 border-l border-border hidden md:flex items-center gap-2">
-              <MapPin className="text-primary w-5 h-5 shrink-0" />
-              <Select value={selectedCity} onValueChange={setSelectedCity}>
-                <SelectTrigger className="border-none bg-transparent focus:ring-0 focus:ring-offset-0 h-auto p-0 pr-6 font-medium text-foreground w-[120px]">
-                  <SelectValue placeholder="City" />
-                </SelectTrigger>
-                <SelectContent>
-                  {CITIES.map(city => (
-                    <SelectItem key={city} value={city}>{city}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <Link href={`/discover?q=${encodeURIComponent(search)}&city=${encodeURIComponent(selectedCity)}`}>
+            <Link href={`/discover?q=${encodeURIComponent(search)}`}>
               <Button size="lg" className="w-full md:w-auto h-14 px-10 rounded-full text-lg shadow-lg shadow-primary/20">
                 Discover Events
               </Button>
