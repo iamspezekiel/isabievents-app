@@ -67,7 +67,11 @@
     @apply bg-background text-foreground transition-colors duration-300;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
-  h1, h2, h3, h4, h5, h6 {
+  /* Apply Poppins to all header tags and common title classes globally */
+  h1, h2, h3, h4, h5, h6, 
+  [class*="CardTitle"], 
+  [class*="SheetTitle"], 
+  [class*="DialogTitle"] {
     @apply font-headline;
   }
 }
