@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,12 @@ import { Logo } from '@/components/logo';
 import { Mail, Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
 
 export function Footer() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <footer className="bg-background border-t border-border pt-12 pb-8">
       <div className="container mx-auto px-4">
