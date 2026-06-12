@@ -34,12 +34,12 @@ export default function MobileAppPage() {
             </div>
             
             <div className="space-y-6">
-              <h1 className="font-headline text-5xl md:text-8xl font-black leading-[1.05] tracking-tighter text-balance">
+              <h2 className="font-headline text-5xl md:text-8xl font-black leading-[1.05] tracking-tighter text-balance">
                 Your Tickets. <br />
                 <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                   Everywhere
                 </span> You Go.
-              </h1>
+              </h2>
               <p className="text-muted-foreground text-xl max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
                 Experience Nigeria&apos;s best events with zero friction. Buy, store, and transfer tickets even when you&apos;re offline.
               </p>
