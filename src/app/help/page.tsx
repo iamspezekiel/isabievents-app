@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -30,9 +31,9 @@ export default function HelpCenterPage() {
 
       <main className="container mx-auto px-4 py-16">
         <div className="grid md:grid-cols-3 gap-8 mb-20">
-          <HelpCategoryCard icon={Ticket} title="Tickets & Entry" count={12} />
-          <HelpCategoryCard icon={CreditCard} title="Payments & Refunds" count={8} />
-          <HelpCategoryCard icon={User} title="Account & Profile" count={15} />
+          <HelpCategoryCard icon={Ticket} title="Tickets & Entry" count={12} href="/help/tickets" />
+          <HelpCategoryCard icon={CreditCard} title="Payments & Refunds" count={8} href="/help/refunds" />
+          <HelpCategoryCard icon={User} title="Account & Profile" count={15} href="#" />
         </div>
 
         <div className="grid lg:grid-cols-3 gap-16">
@@ -136,9 +137,9 @@ export default function HelpCenterPage() {
   );
 }
 
-function HelpCategoryCard({ icon: Icon, title, count }: any) {
+function HelpCategoryCard({ icon: Icon, title, count, href }: any) {
   return (
-    <Link href="#" className="no-underline">
+    <Link href={href} className="no-underline">
       <Card className="bg-card border-border hover:border-primary/50 transition-all group">
         <CardContent className="p-8 flex items-center gap-6">
           <div className="w-14 h-14 bg-secondary rounded-2xl flex items-center justify-center group-hover:bg-primary/10 transition-colors">
