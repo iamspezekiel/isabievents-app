@@ -16,24 +16,23 @@ export default function AboutPage() {
       <section className="relative pt-48 pb-32 overflow-hidden border-b border-border">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
         <div className="container mx-auto px-4 text-center space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-          <h1 className="font-headline text-3xl md:text-6xl font-black leading-[1.1] tracking-tighter text-balance">
+          <h1 className="font-headline text-3xl md:text-5xl font-black leading-[1.1] tracking-tighter text-balance">
             Connecting Nigeria through <br />
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Shared Experiences</span>
           </h1>
-          <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-base leading-relaxed max-w-2xl mx-auto">
             IsabiEvents is more than just a place to buy tickets. We are a digital bridge Connecting people to unforgettable experiences.
           </p>
         </div>
       </section>
 
-      {/* Our Story Section with Improved Image UI */}
+      {/* Our Story Section */}
       <section className="py-24 md:py-32 container mx-auto px-4 relative">
         <div className="absolute top-1/2 right-0 w-96 h-96 bg-accent/5 blur-[120px] rounded-full -z-10" />
         <div className="absolute -bottom-24 left-0 w-72 h-72 bg-primary/5 blur-[100px] rounded-full -z-10" />
         
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-32 items-center">
           <div className="relative order-2 lg:order-1 space-y-12">
-            {/* Image Container with Padding */}
             <div className="relative group">
               <div className="relative aspect-[4/5] rounded-[3.5rem] overflow-hidden border border-border/50 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] z-10 p-16 md:p-6 bg-card">
                 <div className="relative w-full h-full rounded-[2.5rem] overflow-hidden">
@@ -42,17 +41,14 @@ export default function AboutPage() {
                     alt="The IsabiEvents Story" 
                     fill 
                     className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    data-ai-hint="nigerian party"
+                    data-ai-hint="nigerian festival"
                   />
-                  {/* Subtle Overlay */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
                 </div>
               </div>
 
-              {/* Decorative Frame */}
               <div className="absolute -top-8 -left-8 w-full h-full border-2 border-primary/20 rounded-[3.5rem] -z-0 hidden md:block transition-transform duration-500 group-hover:-translate-y-2 group-hover:-translate-x-2" />
               
-              {/* Floating Achievement Card 1 */}
               <div className="absolute -bottom-10 -right-12 bg-card/80 backdrop-blur-2xl border border-white/20 p-8 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-20 hidden md:block max-w-[280px] animate-in zoom-in-90 duration-700 delay-300">
                 <div className="space-y-4">
                   <div className="w-14 h-14 bg-accent/20 rounded-2xl flex items-center justify-center">
@@ -65,7 +61,6 @@ export default function AboutPage() {
                 </div>
               </div>
 
-              {/* Floating Stat Badge 2 */}
               <div className="absolute top-12 -left-12 bg-primary p-6 rounded-[2rem] shadow-xl z-20 hidden md:flex items-center gap-4 border border-white/10 animate-in slide-in-from-left-8 duration-700 delay-500">
                 <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
                   <Star className="w-5 h-5 text-white fill-white" />
@@ -77,7 +72,6 @@ export default function AboutPage() {
               </div>
             </div>
 
-            {/* Stats Moved Under Image */}
             <div className="grid grid-cols-2 gap-6 pt-8">
               <div className="space-y-2 p-8 bg-secondary/40 rounded-[2.5rem] border border-border/50 text-left">
                 <div className="text-4xl font-black text-primary">50k+</div>
@@ -92,7 +86,6 @@ export default function AboutPage() {
 
           <div className="space-y-12 text-left order-1 lg:order-2">
             <div className="space-y-4">
-              <h5 className="font-headline text-lg font-black tracking-tighter leading-none text-primary uppercase">Our Story</h5>
               <h2 className="text-2xl md:text-3xl font-black tracking-tight leading-none">Built for the Naija way of life.</h2>
             </div>
             
@@ -121,7 +114,7 @@ export default function AboutPage() {
         <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 blur-3xl rounded-full -z-10" />
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
-            <h2 className="font-headline text-2xl md:text-4xl font-black tracking-tighter">What We Stand For</h2>
+            <h2 className="font-headline text-2xl md:text-3xl font-black tracking-tighter">What We Stand For</h2>
             <p className="text-muted-foreground text-lg">Our core values guide every line of code we write and every event we power.</p>
           </div>
 
@@ -147,9 +140,11 @@ export default function AboutPage() {
 
       {/* Why Us Section */}
       <section className="py-24 container mx-auto px-4">
+        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+          <h2 className="font-headline text-3xl md:text-4xl font-black tracking-tighter leading-none">Why IsabiEvents?</h2>
+        </div>
         <div className="bg-primary/5 border border-primary/10 rounded-[4rem] p-12 md:p-20 flex flex-col lg:flex-row items-center gap-16">
           <div className="flex-1 space-y-8 text-left">
-             <h2 className="font-headline text-2xl md:text-3xl font-black tracking-tighter leading-none">Why IsabiEvents?</h2>
              <div className="space-y-6">
                 <FeatureItem 
                   icon={CreditCard}
@@ -170,11 +165,11 @@ export default function AboutPage() {
           </div>
           <div className="flex-1 relative w-full aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl">
             <Image 
-              src="https://picsum.photos/seed/why_isabi_v5/800/600" 
+              src="https://picsum.photos/seed/why_isabi_v10/800/600" 
               alt="Innovation" 
               fill 
               className="object-cover"
-              data-ai-hint="nigerian tech"
+              data-ai-hint="nigerian technology"
             />
           </div>
         </div>
