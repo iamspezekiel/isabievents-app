@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useEffect, useState } from 'react';
@@ -6,7 +5,7 @@ import Link from 'next/link';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Logo } from '@/components/logo';
-import { Mail, Facebook, Twitter, Instagram, Youtube, ShieldCheck, Zap, Wallet } from 'lucide-react';
+import { Mail, Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
 
 export function Footer() {
   const [mounted, setMounted] = useState(false);
@@ -47,23 +46,21 @@ export function Footer() {
             <p className="text-muted-foreground text-sm leading-relaxed max-w-xs font-medium text-left">
               Connecting people to unforgettable experiences.
             </p>
-            {/* Social Icons - Defer rendering to prevent hydration mismatch */}
-            {mounted && (
-              <div className="flex items-center gap-3">
-                <Link href="#" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
-                  <Facebook className="w-4 h-4" />
-                </Link>
-                <Link href="#" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
-                  <Twitter className="w-4 h-4" />
-                </Link>
-                <Link href="#" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
-                  <Instagram className="w-4 h-4" />
-                </Link>
-                <Link href="#" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
-                  <Youtube className="w-4 h-4" />
-                </Link>
-              </div>
-            )}
+            {/* Social Icons - Rendered consistently to prevent hydration mismatch */}
+            <div className={`flex items-center gap-3 transition-opacity duration-300 ${mounted ? 'opacity-100' : 'opacity-0'}`}>
+              <Link href="#" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
+                <Facebook className="w-4 h-4" />
+              </Link>
+              <Link href="#" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
+                <Twitter className="w-4 h-4" />
+              </Link>
+              <Link href="#" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
+                <Instagram className="w-4 h-4" />
+              </Link>
+              <Link href="#" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
+                <Youtube className="w-4 h-4" />
+              </Link>
+            </div>
           </div>
           <div className="text-left">
             <h4 className="font-headline text-xs font-black uppercase tracking-widest text-muted-foreground/50 mb-8">For Attendees</h4>
@@ -131,7 +128,7 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="border-t border-border pt-10 text-center text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">
-          <p>Copyright © 2026 · IsabiEvents Technology · All Right Reserved</p>
+          <p>Copyright © 2026 · IsabiEvents Technology · All Rights Reserved</p>
         </div>
       </div>
     </footer>
