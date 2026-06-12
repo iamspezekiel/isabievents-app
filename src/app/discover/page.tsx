@@ -164,10 +164,10 @@ function DiscoverContent() {
             )}
           </div>
           
-          <div className="flex gap-2 shrink-0">
+          <div className="flex flex-col sm:flex-row gap-2 shrink-0 w-full sm:w-auto">
             <Sheet>
               <SheetTrigger asChild>
-                <Button variant="outline" className="lg:hidden h-14 rounded-2xl px-6 gap-2 border-border bg-card font-bold">
+                <Button variant="outline" className="h-14 rounded-2xl px-6 gap-2 border-border bg-card font-bold w-full sm:w-auto">
                   <Filter className="w-5 h-5" /> Filters
                   {(selectedCategory !== 'all' || selectedCity !== 'all' || priceFilter !== 'all') && (
                     <Badge className="ml-1 w-5 h-5 p-0 flex items-center justify-center bg-primary text-white text-[10px]">
@@ -176,7 +176,7 @@ function DiscoverContent() {
                   )}
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-full sm:w-[400px] bg-card border-border p-0 flex flex-col h-full">
+              <SheetContent side="right" className="w-full bg-card border-border p-0 flex flex-col h-full">
                 <SheetHeader className="p-6 border-b border-border text-left">
                   <div className="flex items-center justify-between">
                     <SheetTitle className="font-headline text-2xl">Refine Search</SheetTitle>
