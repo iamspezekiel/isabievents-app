@@ -21,12 +21,12 @@ export default function OrganizerLandingPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative pt-32 pb-12 overflow-hidden min-h-[85vh] flex items-center">
+      <section className="relative pt-24 pb-8 overflow-hidden min-h-[85vh] flex items-center">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent/10 blur-[120px] -z-10 rounded-full translate-x-1/2 -translate-y-1/2" />
         <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6 animate-in fade-in slide-in-from-left-8 duration-1000 flex flex-col items-center lg:items-start text-center lg:text-left">
-            <h1 className="text-3xl md:text-7xl leading-[1.1] font-black tracking-tighter text-balance whitespace-nowrap lg:whitespace-normal">
-              The Easiest Way to Host <br className="hidden lg:block" />
+            <h1 className="text-3xl md:text-7xl leading-[1.1] font-black tracking-tighter text-balance">
+              <span className="block lg:inline whitespace-nowrap">The Easiest Way to Host</span> <br className="hidden lg:block" />
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Legendary</span> Events
             </h1>
             <p className="text-base text-muted-foreground leading-relaxed max-w-lg">
@@ -85,7 +85,7 @@ export default function OrganizerLandingPage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-12 bg-card/30 border-y border-border">
+      <section className="py-8 bg-card/30 border-y border-border">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-12 space-y-4">
             <h2 className="text-3xl md:text-5xl font-black tracking-tighter">Everything you need to succeed</h2>
@@ -128,7 +128,7 @@ export default function OrganizerLandingPage() {
       </section>
 
       {/* Pricing Teaser */}
-      <section className="py-16">
+      <section className="py-8">
         <div className="container mx-auto px-4">
           <div className="bg-primary/5 border border-primary/10 rounded-[4rem] p-10 md:p-20 text-center space-y-12 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-64 h-64 bg-primary/10 blur-[100px] -translate-x-1/2 -translate-y-1/2 rounded-full" />

@@ -21,7 +21,7 @@ export default function PricingPage() {
             </span>
           </h1>
           <p className="text-base text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            We only win when you do. No setup fees, no monthly subscriptions, and no hidden costs for Nigerian organizers.
+            We only win when you do. No setup fees, no monthly subscriptions, and no hidden<br /> costs for Nigerian organizers.
           </p>
         </div>
       </header>
@@ -39,7 +39,7 @@ export default function PricingPage() {
                     </div>
                     <h2 className="font-headline text-2xl font-bold">Standard Marketplace</h2>
                   </div>
-                  <p className="text-muted-foreground text-base leading-relaxed">
+                  <p className="text-base text-muted-foreground leading-relaxed">
                     Perfect for concerts, festivals, and conferences of all sizes in Nigeria.
                   </p>
                 </div>
@@ -73,7 +73,7 @@ export default function PricingPage() {
                 <div className="space-y-4">
                   <Badge variant="outline" className="border-accent text-accent">ENTERPRISE</Badge>
                   <h3 className="font-headline text-3xl font-black">High Volume?</h3>
-                  <p className="text-muted-foreground text-base leading-relaxed">
+                  <p className="text-base text-muted-foreground leading-relaxed">
                     Planning a stadium-level event or a national tour? Get custom rates and dedicated local support.
                   </p>
                 </div>
@@ -83,14 +83,14 @@ export default function PricingPage() {
                     <ShieldCheck className="w-6 h-6 text-accent shrink-0 mt-1" />
                     <div className="space-y-1">
                       <h4 className="font-bold">On-site Support</h4>
-                      <p className="text-sm text-muted-foreground">Dedicated account managers for large-scale gate management.</p>
+                      <p className="text-base text-muted-foreground">Dedicated account managers for large-scale gate management.</p>
                     </div>
                   </div>
                   <div className="flex gap-4 items-start p-4 rounded-2xl bg-background/50 border border-border">
                     <Globe className="w-6 h-6 text-accent shrink-0 mt-1" />
                     <div className="space-y-1">
                       <h4 className="font-bold">Whitelabel Checkout</h4>
-                      <p className="text-sm text-muted-foreground">Integrate our ticketing engine directly into your own domain.</p>
+                      <p className="text-base text-muted-foreground">Integrate our ticketing engine directly into your own domain.</p>
                     </div>
                   </div>
                 </div>
@@ -105,11 +105,11 @@ export default function PricingPage() {
       </section>
 
       {/* FAQ */}
-      <section className="py-12 bg-card/30 border-y border-border">
+      <section className="py-8 bg-card/30 border-y border-border">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="text-center space-y-4 mb-12">
             <h2 className="font-headline text-3xl md:text-4xl font-black">Frequently Asked Questions</h2>
-            <p className="text-muted-foreground text-base">Everything you need to know about our fees and payouts.</p>
+            <p className="text-base text-muted-foreground">Everything you need to know about our fees and payouts.</p>
           </div>
           
           <div className="grid gap-8">
@@ -172,7 +172,7 @@ function PricingFaq({ q, a }: any) {
         <HelpCircle className="w-5 h-5 text-primary" />
         <h4 className="text-xl font-bold group-hover:text-primary transition-colors">{q}</h4>
       </div>
-      <p className="text-muted-foreground leading-relaxed pl-8 text-base">{a}</p>
+      <p className="text-base text-muted-foreground leading-relaxed pl-8">{a}</p>
     </div>
   );
 }
