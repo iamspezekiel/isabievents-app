@@ -133,7 +133,7 @@ export default function MobileAppPage() {
       <section className="py-24 bg-card/30 border-y border-border">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
-            <h2 className="font-headline text-4xl font-black tracking-tighter">Built for the Naija Experience</h2>
+            <h2 className="font-headline text-4xl font-black tracking-tighter">Built for the Nigerian Experience</h2>
             <p className="text-muted-foreground text-lg">We&apos;ve solved the common problems of physical ticketing and poor internet.</p>
           </div>
           
