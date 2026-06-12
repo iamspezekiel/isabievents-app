@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -132,7 +131,7 @@ export default function HomePage() {
           <div className="flex items-center justify-between mb-10">
             <div className="text-left">
               <h2 className="text-3xl md:text-4xl font-black tracking-tighter mb-2">Trending</h2>
-              <p className="text-muted-foreground">What's hot right now in Nigeria</p>
+              <p className="text-muted-foreground">What's hot right now</p>
             </div>
             <Button className="rounded-full px-6 shadow-lg shadow-primary/20 font-semibold gap-2" asChild>
               <Link href="/discover">Explore More <ArrowRight className="w-4 h-4" /></Link>
