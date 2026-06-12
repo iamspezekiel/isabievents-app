@@ -21,10 +21,10 @@ export default function OrganizerLandingPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="relative pt-32 pb-16 overflow-hidden min-h-[90vh] flex items-center">
+      <section className="relative pt-32 pb-12 overflow-hidden min-h-[85vh] flex items-center">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent/10 blur-[120px] -z-10 rounded-full translate-x-1/2 -translate-y-1/2" />
-        <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
-          <div className="space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000 flex flex-col items-center lg:items-start text-center lg:text-left">
+        <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center">
+          <div className="space-y-6 animate-in fade-in slide-in-from-left-8 duration-1000 flex flex-col items-center lg:items-start text-center lg:text-left">
             <h1 className="text-3xl md:text-7xl leading-[1.1] font-black tracking-tighter text-balance whitespace-nowrap lg:whitespace-normal">
               The Easiest Way to Host <br className="hidden lg:block" />
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Legendary</span> Events
@@ -44,7 +44,7 @@ export default function OrganizerLandingPage() {
                 </Button>
               </Link>
             </div>
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6 pt-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6 pt-2">
               <div className="flex -space-x-3">
                 {[1, 2, 3, 4].map(i => (
                   <div key={i} className="w-10 h-10 rounded-full border-2 border-background overflow-hidden relative bg-secondary">
@@ -58,7 +58,7 @@ export default function OrganizerLandingPage() {
             </div>
           </div>
           
-          <div className="relative animate-in fade-in zoom-in-95 duration-1000 block w-full h-full min-h-[400px] lg:min-h-[600px]">
+          <div className="relative animate-in fade-in zoom-in-95 duration-1000 block w-full h-full min-h-[350px] lg:min-h-[550px]">
             <div className="relative h-full w-full rounded-3xl overflow-hidden border border-border shadow-2xl">
               <Image 
                 src="https://picsum.photos/seed/organizer-hero/800/1000" 
@@ -85,9 +85,9 @@ export default function OrganizerLandingPage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 bg-card/30 border-y border-border">
+      <section className="py-12 bg-card/30 border-y border-border">
         <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+          <div className="text-center max-w-3xl mx-auto mb-12 space-y-4">
             <h2 className="text-3xl md:text-5xl font-black tracking-tighter">Everything you need to succeed</h2>
             <p className="text-base text-muted-foreground">We've built a suite of features specifically for the Nigerian market.</p>
           </div>
@@ -128,9 +128,9 @@ export default function OrganizerLandingPage() {
       </section>
 
       {/* Pricing Teaser */}
-      <section className="py-24">
+      <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="bg-primary/5 border border-primary/10 rounded-[4rem] p-10 md:p-24 text-center space-y-12 relative overflow-hidden">
+          <div className="bg-primary/5 border border-primary/10 rounded-[4rem] p-10 md:p-20 text-center space-y-12 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-64 h-64 bg-primary/10 blur-[100px] -translate-x-1/2 -translate-y-1/2 rounded-full" />
             
             <div className="max-w-3xl mx-auto space-y-8 relative z-10">
@@ -151,7 +151,7 @@ export default function OrganizerLandingPage() {
                 </div>
               </div>
 
-              <div className="pt-8">
+              <div className="pt-4">
                 <Link href="/pricing">
                   <Button size="lg" className="rounded-full px-12 h-16 text-lg shadow-2xl shadow-primary/30 font-bold">
                     Learn More
