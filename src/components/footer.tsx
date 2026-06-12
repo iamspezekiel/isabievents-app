@@ -1,6 +1,7 @@
+
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,12 @@ import { Logo } from '@/components/logo';
 import { Mail } from 'lucide-react';
 
 export function Footer() {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <footer className="bg-background border-t border-border pt-24 pb-12">
       <div className="container mx-auto px-4">
@@ -35,7 +42,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
           <div className="col-span-1 md:col-span-1 space-y-6">
              <Link href="/" className="inline-block no-underline">
-               <Logo />
+               {mounted ? <Logo /> : <div className="h-10 w-40 bg-secondary animate-pulse rounded-xl" />}
             </Link>
             <p className="text-muted-foreground text-sm leading-relaxed max-w-xs font-medium">
               The most secure and reliable event ticket marketplace in Nigeria. Connecting people to unforgettable experiences.
