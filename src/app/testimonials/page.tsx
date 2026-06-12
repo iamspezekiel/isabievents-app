@@ -1,61 +1,36 @@
 "use client";
 
 import React from 'react';
-import { Star, Quote, Users, ArrowRight, MessageSquare } from 'lucide-react';
+import { Star, Quote, Users, MessageSquare } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import Image from 'next/image';
 import Link from 'next/link';
 
 const TESTIMONIALS = [
   {
     name: "Chioma Okereke",
-    role: "Regular Concert Attendee",
-    avatar: "https://picsum.photos/seed/chioma/100/100",
-    rating: 5,
-    quote: "IsabiEvents is a lifesaver. No more worrying about fake tickets outside the venue. The QR system is fast and seamless. I've used it for over 5 concerts this year!",
-    event: "Lagos Jazz Night"
+    quote: "IsabiEvents is a lifesaver. No more worrying about fake tickets outside the venue. The QR system is fast and seamless. I've used it for over 5 concerts this year!"
   },
   {
     name: "Tunde Bakare",
-    role: "Tech Professional",
-    avatar: "https://picsum.photos/seed/tunde/100/100",
-    rating: 5,
-    quote: "I love the clean interface. Buying tickets for tech conferences in Abuja has never been easier. The transfer feature is also amazing when I buy for my team.",
-    event: "Naija Tech Summit"
+    quote: "I love the clean interface. Buying tickets for tech conferences in Abuja has never been easier. The transfer feature is also amazing when I buy for my team."
   },
   {
     name: "Aisha Bello",
-    role: "Festival Lover",
-    avatar: "https://picsum.photos/seed/aisha/100/100",
-    rating: 4,
-    quote: "The mobile wallet is great because I don't need data to show my ticket at the gate. Very thoughtful design for the Nigerian market.",
-    event: "Gidi Festival"
+    quote: "The mobile wallet is great because I don't need data to show my ticket at the gate. Very thoughtful design for the Nigerian market."
   },
   {
     name: "Emeka Nwosu",
-    role: "Party Enthusiast",
-    avatar: "https://picsum.photos/seed/emeka/100/100",
-    rating: 5,
-    quote: "Finally, a platform that understands Naija. Payouts for my vendor stall at events are always on time. Highly recommend!",
-    event: "PH Garden City Food Fest"
+    quote: "Finally, a platform that understands Naija. Payouts for my vendor stall at events are always on time. Highly recommend!"
   },
   {
     name: "Fatima Yusuf",
-    role: "Student",
-    avatar: "https://picsum.photos/seed/fatima/100/100",
-    rating: 5,
-    quote: "Super easy to use. I found out about a free cultural expo in Benin that I wouldn't have known about otherwise. The discovery feature is top-notch.",
-    event: "Benin Arts Expo"
+    quote: "Super easy to use. I found out about a free cultural expo in Benin that I wouldn't have known about otherwise. The discovery feature is top-notch."
   },
   {
     name: "Olumide Williams",
-    role: "Business Traveler",
-    avatar: "https://picsum.photos/seed/olu/100/100",
-    rating: 5,
-    quote: "Secure and reliable. I've never had an issue with payments using my local card. The verification for organizers gives me peace of mind.",
-    event: "Ibadan Night Fever"
+    quote: "Secure and reliable. I've never had an issue with payments using my local card. The verification for organizers gives me peace of mind."
   }
 ];
 
@@ -131,43 +106,19 @@ function StatBox({ icon: Icon, label, value }: any) {
   );
 }
 
-function TestimonialCard({ name, role, avatar, rating, quote, event }: any) {
+function TestimonialCard({ name, quote }: any) {
   return (
-    <Card className="bg-card border-border hover:border-primary/50 transition-all group rounded-[2.5rem] overflow-hidden flex flex-col">
+    <Card className="bg-card border-border hover:border-primary/50 transition-all group rounded-[2.5rem] overflow-hidden flex flex-col h-full">
       <CardContent className="p-10 space-y-6 flex-1 flex flex-col justify-between">
-        <div className="space-y-6">
-          <div className="flex gap-1">
-            {[...Array(5)].map((_, i) => (
-              <Star 
-                key={i} 
-                className={`w-4 h-4 ${i < rating ? 'text-yellow-500 fill-yellow-500' : 'text-muted-foreground/30'}`} 
-              />
-            ))}
-          </div>
-          <div className="relative">
-            <Quote className="absolute -top-4 -left-6 w-12 h-12 text-primary/5 -z-10" />
-            <p className="text-lg leading-relaxed font-medium italic text-foreground/90">
-              "{quote}"
-            </p>
-          </div>
+        <div className="relative">
+          <Quote className="absolute -top-4 -left-6 w-12 h-12 text-primary/5 -z-10" />
+          <p className="text-lg leading-relaxed font-medium italic text-foreground/90">
+            "{quote}"
+          </p>
         </div>
         
-        <div className="pt-8 border-t border-border flex items-center gap-4">
-          <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-primary/20">
-            <Image 
-              src={avatar} 
-              alt={name} 
-              fill 
-              className="object-cover"
-            />
-          </div>
-          <div className="text-left">
-            <div className="font-bold text-foreground">{name}</div>
-            <div className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">{role}</div>
-            <Badge variant="secondary" className="mt-1 text-[8px] h-4 py-0 px-2 font-black uppercase tracking-widest bg-primary/10 text-primary border-none">
-              Attended: {event}
-            </Badge>
-          </div>
+        <div className="pt-8 border-t border-border">
+          <div className="font-headline text-xl font-black text-foreground">{name}</div>
         </div>
       </CardContent>
     </Card>
