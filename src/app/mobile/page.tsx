@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -34,12 +35,12 @@ export default function MobileAppPage() {
             </div>
             
             <div className="space-y-6">
-              <h3 className="font-headline text-3xl md:text-5xl font-black leading-tight tracking-tighter text-balance">
+              <h2 className="font-headline text-3xl md:text-5xl font-black leading-tight tracking-tighter text-balance">
                 Your Tickets. <br />
                 <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                   Everywhere
                 </span> You Go.
-              </h3>
+              </h2>
               <p className="text-muted-foreground text-xl max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium">
                 Experience Nigeria&apos;s best events with zero friction. Buy, store, and transfer tickets even when you&apos;re offline.
               </p>
