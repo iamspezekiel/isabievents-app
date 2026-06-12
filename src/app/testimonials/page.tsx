@@ -68,13 +68,13 @@ export default function TestimonialsPage() {
         <div className="container mx-auto px-4 text-center space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <Badge className="bg-accent/20 text-accent border-none py-1.5 px-6 mb-4 font-bold tracking-widest uppercase">TESTIMONIALS</Badge>
           <h1 className="font-headline text-4xl md:text-7xl font-black leading-[1.1] tracking-tighter text-balance">
-            User <br /> 
+            Real Stories from <br /> 
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Testimonials
+              Our Community
             </span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            See why thousands of Nigerians trust IsabiEvents for their most memorable experiences.
+            See why thousands of Nigerians trust IsabiEvents to discover and share their most memorable experiences.
           </p>
         </div>
       </header>
@@ -97,16 +97,16 @@ export default function TestimonialsPage() {
         {/* Call to Action */}
         <section className="mt-32 py-24 bg-primary/10 rounded-[3rem] border border-primary/20 text-center space-y-12 overflow-hidden relative">
            <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent/20 blur-[100px] rounded-full -translate-x-1/2 translate-y-1/2 -z-10" />
-           <h2 className="font-headline text-4xl font-black">Ready to experience it yourself?</h2>
+           <h2 className="font-headline text-4xl font-black">Ready to join the experience?</h2>
            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-             Join the thousands who have already found their next favorite memory on IsabiEvents.
+             Find your next favorite memory. Explore trending events in Nigeria today.
            </p>
            <div className="flex flex-col sm:flex-row justify-center gap-4">
              <Link href="/discover">
-               <Button size="lg" className="rounded-full h-16 px-12 text-lg shadow-xl shadow-primary/20 hover:-translate-y-1 transition-all">Find My Next Event</Button>
+               <Button size="lg" className="rounded-full h-16 px-12 text-lg shadow-xl shadow-primary/20 hover:-translate-y-1 transition-all">Explore Events</Button>
              </Link>
              <Link href="/signup">
-               <Button variant="outline" size="lg" className="rounded-full h-16 px-12 text-lg hover:-translate-y-1 transition-all">Create An Account</Button>
+               <Button variant="outline" size="lg" className="rounded-full h-16 px-12 text-lg hover:-translate-y-1 transition-all">Get Started Free</Button>
              </Link>
            </div>
         </section>
