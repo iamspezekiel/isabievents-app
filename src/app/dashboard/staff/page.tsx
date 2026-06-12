@@ -223,14 +223,14 @@ export default function StaffCheckIn() {
                     </div>
                     <div className="space-y-1">
                       <p className="text-white font-bold text-xl">Ready to Scan</p>
-                      <p className="text-muted-foreground text-sm">Open camera to process attendees</p>
+                      <p className="text-muted-foreground text-sm">Activate the scanner to process attendees</p>
                     </div>
                     <div className="flex flex-col gap-3">
                       <Button 
                         onClick={startScanner} 
                         className="rounded-full px-12 h-16 text-lg shadow-xl shadow-primary/20 font-black hover:scale-105 transition-transform gap-3"
                       >
-                        <Camera className="w-6 h-6" /> Open Camera & Scan
+                        <Camera className="w-6 h-6" /> Launch Scanner
                       </Button>
                       <Button variant="ghost" onClick={handleSimulate} className="text-muted-foreground hover:text-white">
                         Simulate Success
@@ -250,7 +250,7 @@ export default function StaffCheckIn() {
                       variant="destructive" 
                       className="pointer-events-auto rounded-full px-8 h-12 gap-2"
                     >
-                      <CameraOff className="w-4 h-4" /> Stop Camera
+                      <CameraOff className="w-4 h-4" /> Stop Scanner
                     </Button>
                   </div>
                 )}
