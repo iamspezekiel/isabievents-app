@@ -107,11 +107,11 @@ export default function MobileAppPage() {
             <div className="absolute top-1/2 -right-12 md:-right-20 bg-card border border-border p-4 rounded-3xl shadow-2xl animate-pulse delay-700 z-20">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 bg-accent/20 rounded-xl flex items-center justify-center">
-                  <Send className="w-5 h-5 text-accent" />
+                  <Lock className="w-5 h-5 text-accent" />
                 </div>
                 <div>
                   <div className="text-[10px] font-black uppercase text-muted-foreground">Transfer</div>
-                  <div className="text-xs font-bold">Ticket Sent</div>
+                  <div className="text-xs font-bold">Securely Sent</div>
                 </div>
               </div>
             </div>
@@ -135,7 +135,7 @@ export default function MobileAppPage() {
       <section className="py-24 bg-card/30 border-y border-border">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
-            <h2 className="font-headline text-4xl font-black">Built for the Naija Experience</h2>
+            <h2 className="font-headline text-4xl font-black tracking-tighter">Built for the Naija Experience</h2>
             <p className="text-muted-foreground text-lg">We&apos;ve solved the common problems of physical ticketing and poor internet.</p>
           </div>
           
@@ -153,7 +153,7 @@ export default function MobileAppPage() {
               color="accent"
             />
             <AppFeature 
-              icon={Send} 
+              icon={Lock} 
               title="Secure Transfers" 
               desc="Bought for a friend? Transfer tickets securely via phone number with instant ownership verification."
               color="white"
@@ -215,7 +215,7 @@ function AppFeature({ icon: Icon, title, desc, color }: any) {
         <Icon className="w-10 h-10" />
       </div>
       <div className="space-y-3">
-        <h3 className="font-headline text-2xl font-bold">{title}</h3>
+        <h3 className="font-headline text-2xl font-bold tracking-tight">{title}</h3>
         <p className="text-muted-foreground leading-relaxed text-sm font-medium">{desc}</p>
       </div>
     </div>
