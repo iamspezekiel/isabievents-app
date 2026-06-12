@@ -64,6 +64,7 @@ export function Footer() {
             <ul className="space-y-4 text-sm font-bold">
               <li><Link href="/terms" className="text-foreground/70 hover:text-primary transition-colors no-underline">Terms of Service</Link></li>
               <li><Link href="/privacy" className="text-foreground/70 hover:text-primary transition-colors no-underline">Privacy Policy</Link></li>
+              <li><Link href="/help/refunds" className="text-foreground/70 hover:text-primary transition-colors no-underline">Refund Policy</Link></li>
               <li><Link href="/help" className="text-foreground/70 hover:text-primary transition-colors no-underline">Help Center</Link></li>
             </ul>
           </div>
