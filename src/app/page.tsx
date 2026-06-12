@@ -1,7 +1,30 @@
+
 "use client";
 
 import React, { useState } from 'react';
-import { Search, MapPin, Calendar, ArrowRight, Star, CheckCircle2, Music, Trophy, Mic2, GlassWater, Dribbble, Church, Palette, Images, Cpu, Users as UsersIcon } from 'lucide-react';
+import { 
+  Search, 
+  MapPin, 
+  Calendar, 
+  ArrowRight, 
+  Star, 
+  CheckCircle2, 
+  Music, 
+  Trophy, 
+  Mic2, 
+  GlassWater, 
+  Dribbble, 
+  Church, 
+  Palette, 
+  Images, 
+  Cpu, 
+  Users as UsersIcon,
+  Laptop,
+  Network,
+  Activity,
+  GraduationCap,
+  HandHeart
+} from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,7 +35,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 const iconMap: any = {
-  Music, Trophy, Mic2, GlassWater, Dribbble, Church, Palette, Images, Cpu, Users: UsersIcon
+  Music, Trophy, Mic2, GlassWater, Dribbble, Church, Palette, Images, Cpu, Users: UsersIcon,
+  Laptop, Network, Activity, GraduationCap, HandHeart
 };
 
 export default function HomePage() {
@@ -79,7 +103,7 @@ export default function HomePage() {
             </Link>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-            {CATEGORIES.map((cat) => {
+            {CATEGORIES.slice(0, 10).map((cat) => {
               const IconComp = iconMap[cat.icon] || Music;
               return (
                 <Link key={cat.id} href={`/discover?category=${cat.id}`}>
@@ -112,7 +136,7 @@ export default function HomePage() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {MOCK_EVENTS.map((event) => (
+            {MOCK_EVENTS.slice(0, 6).map((event) => (
               <Link key={event.id} href={`/events/${event.id}`}>
                 <div className="group relative rounded-2xl overflow-hidden bg-card border border-border hover:border-primary/50 transition-all hover:shadow-2xl hover:shadow-primary/5">
                   <div className="relative aspect-[4/3] overflow-hidden">

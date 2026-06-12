@@ -10,6 +10,11 @@ export const CATEGORIES = [
   { id: 'exhibitions', name: 'Exhibitions', icon: 'Images' },
   { id: 'workshops', name: 'Workshops', icon: 'Cpu' },
   { id: 'community', name: 'Community Events', icon: 'Users' },
+  { id: 'technology', name: 'Technology', icon: 'Laptop' },
+  { id: 'networking', name: 'Networking', icon: 'Network' },
+  { id: 'health', name: 'Health & Wellness', icon: 'Activity' },
+  { id: 'education', name: 'Education', icon: 'GraduationCap' },
+  { id: 'charity', name: 'Charity & Causes', icon: 'HandHeart' },
 ];
 
 export const CITIES = [
@@ -272,6 +277,60 @@ export const MOCK_EVENTS = [
     price: { min: 7500, max: 30000 },
     inventory: 600,
     tags: ['Gala', 'Winter', 'Jos Vibes']
+  },
+  {
+    id: 'e13',
+    title: 'Lagos Tech Expo',
+    category: 'technology',
+    city: 'Lagos',
+    venue: 'Landmark Centre',
+    date: '2024-11-25T10:00:00',
+    organizer: {
+      name: 'TechNigeria',
+      verified: true,
+      avatar: 'https://picsum.photos/seed/org2/100/100'
+    },
+    image: 'https://picsum.photos/seed/techexpo/800/600',
+    description: 'Explore the latest gadgets and software innovations in Nigeria\'s tech hub.',
+    price: { min: 2500, max: 10000 },
+    inventory: 1000,
+    tags: ['Gadgets', 'Software', 'Expo']
+  },
+  {
+    id: 'e14',
+    title: 'Founders Networking Night',
+    category: 'networking',
+    city: 'Lagos',
+    venue: 'The Wings, Victoria Island',
+    date: '2024-11-28T18:30:00',
+    organizer: {
+      name: 'Smooth Events',
+      verified: true,
+      avatar: 'https://picsum.photos/seed/org1/100/100'
+    },
+    image: 'https://picsum.photos/seed/network/800/600',
+    description: 'An exclusive evening for startup founders to connect and share experiences.',
+    price: { min: 15000, max: 15000 },
+    inventory: 100,
+    tags: ['Startups', 'Networking', 'Business']
+  },
+  {
+    id: 'e15',
+    title: 'Abuja Wellness Retreat',
+    category: 'health',
+    city: 'Abuja',
+    venue: 'Transcorp Hilton',
+    date: '2024-12-12T08:00:00',
+    organizer: {
+      name: 'Sunshine Sounds',
+      verified: true,
+      avatar: 'https://picsum.photos/seed/org11/100/100'
+    },
+    image: 'https://picsum.photos/seed/wellness/800/600',
+    description: 'A day dedicated to physical and mental well-being with yoga and wellness experts.',
+    price: { min: 5000, max: 20000 },
+    inventory: 200,
+    tags: ['Wellness', 'Yoga', 'Health']
   }
 ];
 

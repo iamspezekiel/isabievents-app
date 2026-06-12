@@ -14,14 +14,20 @@ import {
   Images, 
   Cpu, 
   Users,
-  ChevronRight
+  ChevronRight,
+  Laptop,
+  Network,
+  Activity,
+  GraduationCap,
+  HandHeart
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import Image from 'next/image';
 
 const iconMap: any = {
-  Music, Trophy, Mic2, GlassWater, Dribbble, Church, Palette, Images, Cpu, Users
+  Music, Trophy, Mic2, GlassWater, Dribbble, Church, Palette, Images, Cpu, Users,
+  Laptop, Network, Activity, GraduationCap, HandHeart
 };
 
 export default function AllCategoriesPage() {
