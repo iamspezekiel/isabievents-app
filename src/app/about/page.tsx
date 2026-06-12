@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Target, Users, ShieldCheck, Zap, Heart, Sparkles, ArrowRight, Quote } from 'lucide-react';
+import { Target, Users, ShieldCheck, Zap, Heart, Sparkles, Quote, Globe, Star } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,44 +16,61 @@ export default function AboutPage() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
         <div className="container mx-auto px-4 text-center space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <Badge className="bg-primary/20 text-primary border-none py-1.5 px-6 font-bold tracking-widest uppercase">ABOUT</Badge>
-          <h4 className="font-headline text-3xl md:text-5xl font-black leading-none tracking-tighter text-balance">
+          <h4 className="font-headline text-2xl md:text-3xl font-black leading-none tracking-tighter text-balance">
             Connecting Nigeria through <br />
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Shared Experiences</span>
           </h4>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-medium">
-            IsabiEvents is more than a ticketing platform. We're a bridge between creators and communities, built on the vibrant, unyielding spirit of Naija.
+            IsabiEvents is more than just a place to buy tickets. We are a digital bridge connecting creators to communities, rooted in the vibrant and unyielding Naija spirit.
           </p>
         </div>
       </section>
 
-      {/* Improved Our Story Section */}
+      {/* Our Story Section with Improved Image UI */}
       <section className="py-24 md:py-32 container mx-auto px-4 relative">
-        {/* Background decorative element */}
         <div className="absolute top-1/2 right-0 w-96 h-96 bg-accent/5 blur-[120px] rounded-full -z-10" />
+        <div className="absolute -bottom-24 left-0 w-72 h-72 bg-primary/5 blur-[100px] rounded-full -z-10" />
         
-        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+        <div className="grid lg:grid-cols-2 gap-16 lg:gap-32 items-center">
           <div className="relative order-2 lg:order-1">
-            <div className="relative aspect-[4/5] rounded-[3rem] overflow-hidden border border-border shadow-2xl z-10">
-              <Image 
-                src="https://picsum.photos/seed/story_v5/800/1000" 
-                alt="The IsabiEvents Story" 
-                fill 
-                className="object-cover"
-                data-ai-hint="nigerian festival"
-              />
-            </div>
-            {/* Decorative background frame */}
-            <div className="absolute -top-6 -left-6 w-full h-full border-2 border-primary/20 rounded-[3rem] -z-0 hidden md:block" />
-            
-            {/* Floating Achievement Card */}
-            <div className="absolute -bottom-10 -right-10 bg-card/80 backdrop-blur-xl border border-border p-8 rounded-[2.5rem] shadow-2xl z-20 hidden md:block max-w-[280px]">
-              <div className="space-y-4">
-                <div className="w-12 h-12 bg-accent/20 rounded-2xl flex items-center justify-center">
-                  <Target className="w-6 h-6 text-accent" />
+            {/* Primary Image Container */}
+            <div className="relative group">
+              <div className="relative aspect-[4/5] rounded-[3.5rem] overflow-hidden border border-border/50 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] z-10">
+                <Image 
+                  src="https://picsum.photos/seed/story_v6/800/1000" 
+                  alt="The IsabiEvents Story" 
+                  fill 
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  data-ai-hint="nigerian festival"
+                />
+                {/* Subtle Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
+              </div>
+
+              {/* Decorative Frame */}
+              <div className="absolute -top-8 -left-8 w-full h-full border-2 border-primary/20 rounded-[3.5rem] -z-0 hidden md:block transition-transform duration-500 group-hover:-translate-y-2 group-hover:-translate-x-2" />
+              
+              {/* Floating Achievement Card 1 */}
+              <div className="absolute -bottom-10 -right-12 bg-card/80 backdrop-blur-2xl border border-white/20 p-8 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-20 hidden md:block max-w-[280px] animate-in zoom-in-90 duration-700 delay-300">
+                <div className="space-y-4">
+                  <div className="w-14 h-14 bg-accent/20 rounded-2xl flex items-center justify-center">
+                    <Target className="w-7 h-7 text-accent" />
+                  </div>
+                  <div className="space-y-1">
+                    <div className="text-4xl font-black text-foreground tracking-tighter">1.2k+</div>
+                    <p className="text-[10px] uppercase font-black tracking-widest text-muted-foreground">Trusted Organizers</p>
+                  </div>
                 </div>
-                <div className="space-y-1">
-                  <div className="text-3xl font-black text-foreground tracking-tighter">1.2k+</div>
-                  <p className="text-xs uppercase font-black tracking-widest text-muted-foreground">Successful Organizers</p>
+              </div>
+
+              {/* Floating Stat Badge 2 */}
+              <div className="absolute top-12 -left-12 bg-primary p-6 rounded-[2rem] shadow-xl z-20 hidden md:flex items-center gap-4 border border-white/10 animate-in slide-in-from-left-8 duration-700 delay-500">
+                <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                  <Star className="w-5 h-5 text-white fill-white" />
+                </div>
+                <div className="text-white">
+                  <div className="text-xl font-black leading-none">4.9/5</div>
+                  <p className="text-[8px] uppercase font-bold opacity-80 tracking-tighter">User Satisfaction</p>
                 </div>
               </div>
             </div>
@@ -61,16 +78,16 @@ export default function AboutPage() {
 
           <div className="space-y-12 text-left order-1 lg:order-2">
             <div className="space-y-4">
-              <h5 className="font-headline text-2xl font-black tracking-tighter leading-none text-primary">Our Story</h5>
+              <h5 className="font-headline text-xl font-black tracking-tighter leading-none text-primary">Our Story</h5>
               <h2 className="text-4xl md:text-5xl font-black tracking-tight leading-[1.1]">Built for the <br /><span className="italic">Naija way of life.</span></h2>
             </div>
             
             <div className="space-y-8">
-              <p className="text-lg text-muted-foreground leading-relaxed">
+              <p className="text-lg text-muted-foreground leading-relaxed font-medium">
                 Founded with a vision to revolutionize the fragmented event landscape in Nigeria, IsabiEvents was born from a simple realization: the most incredible experiences are often the hardest to find and access securely.
               </p>
               
-              <div className="relative pl-12">
+              <div className="relative pl-12 py-4">
                 <Quote className="absolute top-0 left-0 w-8 h-8 text-primary/20 rotate-180" />
                 <p className="text-xl md:text-2xl font-bold tracking-tight text-foreground leading-snug">
                   "We didn't just build a ticket shop. We built a system that understands the local context—from bank transfers to offline entry."
@@ -83,12 +100,12 @@ export default function AboutPage() {
             </div>
 
             <div className="grid grid-cols-2 gap-6 pt-4">
-              <div className="space-y-2 p-6 bg-secondary/30 rounded-3xl border border-border/50">
-                <div className="text-3xl font-black text-primary">50k+</div>
+              <div className="space-y-2 p-8 bg-secondary/40 rounded-[2.5rem] border border-border/50">
+                <div className="text-4xl font-black text-primary">50k+</div>
                 <div className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Active Users</div>
               </div>
-              <div className="space-y-2 p-6 bg-primary/5 rounded-3xl border border-primary/10">
-                <div className="text-3xl font-black text-accent">36</div>
+              <div className="space-y-2 p-8 bg-primary/5 rounded-[2.5rem] border border-primary/10">
+                <div className="text-4xl font-black text-accent">36</div>
                 <div className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">States Reached</div>
               </div>
             </div>
