@@ -159,7 +159,7 @@ function FeatureItem({ title, desc }: any) {
   return (
     <div className="flex items-start gap-4">
        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-          <開花 className="w-5 h-5 text-primary" />
+          <Sparkles className="w-5 h-5 text-primary" />
        </div>
        <div className="space-y-1">
           <h2 className="font-bold text-xl">{title}</h2>
