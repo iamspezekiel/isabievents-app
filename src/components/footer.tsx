@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Logo } from '@/components/logo';
-import { Mail } from 'lucide-react';
+import { Mail, Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
 
 export function Footer() {
   const [mounted, setMounted] = useState(false);
@@ -44,11 +44,26 @@ export function Footer() {
              <Link href="/" className="inline-block no-underline">
                {mounted ? <Logo /> : <div className="h-10 w-40 bg-secondary animate-pulse rounded-xl" />}
             </Link>
-            <p className="text-muted-foreground text-sm leading-relaxed max-w-xs font-medium">
+            <p className="text-muted-foreground text-sm leading-relaxed max-w-xs font-medium text-left">
               The most secure and reliable event ticket marketplace in Nigeria. Connecting people to unforgettable experiences.
             </p>
+            {/* Social Icons */}
+            <div className="flex items-center gap-4">
+              <Link href="#" className="p-2.5 rounded-xl bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
+                <Facebook className="w-5 h-5" />
+              </Link>
+              <Link href="#" className="p-2.5 rounded-xl bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
+                <Twitter className="w-5 h-5" />
+              </Link>
+              <Link href="#" className="p-2.5 rounded-xl bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
+                <Instagram className="w-5 h-5" />
+              </Link>
+              <Link href="#" className="p-2.5 rounded-xl bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
+                <Youtube className="w-5 h-5" />
+              </Link>
+            </div>
           </div>
-          <div>
+          <div className="text-left">
             <h4 className="font-headline text-xs font-black uppercase tracking-widest text-muted-foreground/50 mb-8">For Attendees</h4>
             <ul className="space-y-4 text-sm font-bold">
               <li><Link href="/discover" className="text-foreground/70 hover:text-primary transition-colors no-underline">Find Events</Link></li>
@@ -57,7 +72,7 @@ export function Footer() {
               <li><Link href="/mobile" className="text-foreground/70 hover:text-primary transition-colors no-underline">Get the App</Link></li>
             </ul>
           </div>
-          <div>
+          <div className="text-left">
             <h4 className="font-headline text-xs font-black uppercase tracking-widest text-muted-foreground/50 mb-8">For Organizers</h4>
             <ul className="space-y-4 text-sm font-bold">
               <li><Link href="/organizer" className="text-foreground/70 hover:text-primary transition-colors no-underline">Host an Event</Link></li>
@@ -66,7 +81,7 @@ export function Footer() {
               <li><Link href="/case-studies" className="text-foreground/70 hover:text-primary transition-colors no-underline">Success Stories</Link></li>
             </ul>
           </div>
-          <div>
+          <div className="text-left">
             <h4 className="font-headline text-xs font-black uppercase tracking-widest text-muted-foreground/50 mb-8">Legal & Support</h4>
             <ul className="space-y-4 text-sm font-bold">
               <li><Link href="/terms" className="text-foreground/70 hover:text-primary transition-colors no-underline">Terms of Service</Link></li>
