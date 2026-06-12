@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -45,7 +44,7 @@ export default function AllCategoriesPage() {
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Shared Experience</span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-medium">
-            Explore 15 distinct categories of events happening across Nigeria. From tech summits to cultural festivals.
+            Explore 15 distinct categories of events happening across Nigeria.
           </p>
         </div>
       </header>
