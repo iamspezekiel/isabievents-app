@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useMemo, useEffect, Suspense } from 'react';
@@ -22,16 +21,14 @@ function DiscoverContent() {
   const [selectedCity, setSelectedCity] = useState(searchParams.get('city') || 'all');
   const [priceFilter, setPriceFilter] = useState(searchParams.get('price') || 'all');
   
-  // To handle the exact listing count without hydration mismatch
   const [displayLimit, setDisplayLimit] = useState(27);
 
   useEffect(() => {
     const handleResize = () => {
-      // lg breakpoint is 1024px
       if (window.innerWidth < 1024) {
-        setDisplayLimit(16); // 2 columns * 8 rows
+        setDisplayLimit(16);
       } else {
-        setDisplayLimit(27); // 3 columns * 9 rows
+        setDisplayLimit(27);
       }
     };
 
@@ -40,7 +37,6 @@ function DiscoverContent() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Sync state if URL params change externally
   useEffect(() => {
     const q = searchParams.get('q');
     const cat = searchParams.get('category');
@@ -221,7 +217,6 @@ function DiscoverContent() {
         </div>
       </div>
 
-      {/* Grid: 2 columns mobile, 3 columns desktop */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8">
         {filteredEvents.map((event) => (
           <Link key={event.id} href={`/events/${event.id}`}>
@@ -242,7 +237,7 @@ function DiscoverContent() {
               <div className="p-3 md:p-8 flex flex-col flex-1 text-left">
                 <div className="text-primary text-[8px] md:text-sm font-black uppercase tracking-[0.1em] md:tracking-[0.2em] mb-1 md:mb-3 flex items-center gap-1">
                   <Calendar className="w-2 h-2 md:w-4 md:h-4" />
-                  {new Date(event.date).toLocaleDateString('en-NG', { month: 'short', day: 'numeric' })}
+                  {new Date(event.date).toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' })}
                 </div>
                 <h3 className="font-headline text-sm md:text-2xl mb-1 md:mb-2 group-hover:text-primary transition-colors line-clamp-1">{event.title}</h3>
                 <div className="flex items-center gap-1 text-muted-foreground text-[8px] md:text-sm mb-2 md:mb-6">

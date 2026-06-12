@@ -50,7 +50,7 @@ export default function TicketGalleryPage() {
                   <div className="space-y-1">
                     <span className="text-[10px] text-muted-foreground uppercase font-bold">Date</span>
                     <div className="text-sm font-medium flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5 text-primary" /> {new Date(event.date).toLocaleDateString()}
+                      <Calendar className="w-3.5 h-3.5 text-primary" /> {new Date(event.date).toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' })}
                     </div>
                   </div>
                   <div className="space-y-1">

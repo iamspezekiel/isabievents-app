@@ -149,7 +149,7 @@ function TicketCard({ event }: any) {
             <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center">
               <Calendar className="w-4 h-4 text-primary" />
             </div>
-            {new Date(event.date).toLocaleDateString('en-NG', { month: 'short', day: 'numeric' })}
+            {new Date(event.date).toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' })}
           </div>
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center">

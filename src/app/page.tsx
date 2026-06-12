@@ -40,15 +40,14 @@ const iconMap: any = {
 
 export default function HomePage() {
   const [search, setSearch] = useState('');
-  const [displayLimit, setDisplayLimit] = useState(27); // Default to desktop limit
+  const [displayLimit, setDisplayLimit] = useState(27);
 
   useEffect(() => {
     const handleResize = () => {
-      // lg breakpoint is 1024px
       if (window.innerWidth < 1024) {
-        setDisplayLimit(16); // 2 columns * 8 rows
+        setDisplayLimit(16);
       } else {
-        setDisplayLimit(27); // 3 columns * 9 rows
+        setDisplayLimit(27);
       }
     };
 
@@ -59,13 +58,13 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Hero Section */}
-      <div className="relative pt-32 md:pt-48 pb-12 overflow-hidden">
-        {/* Background Gradient */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[800px] bg-primary/10 blur-[150px] -z-10 rounded-full" />
+      {/* Hero Section with extra spacing and blended background */}
+      <div className="relative pt-60 pb-12 overflow-hidden">
+        {/* Extended Background Gradient */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[1200px] bg-primary/10 blur-[150px] -z-10 rounded-full" />
         
         <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
+          <div className="text-center mb-24">
             <Badge className="mb-4 py-1.5 px-4 bg-primary/20 text-primary border-primary/20 hover:bg-primary/20 animate-in fade-in slide-in-from-bottom-4 duration-700">
               Trusted by 50,000+ Nigerians
             </Badge>
@@ -94,9 +93,9 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Top Categories Section (Curated Selection) */}
-          <section className="relative z-10">
-            <div className="flex items-center justify-between mb-6">
+          {/* Top Categories Section (10 desktop, 8 mobile) */}
+          <section className="relative z-10 pt-8">
+            <div className="flex items-center justify-between mb-8">
               <h2 className="text-xl md:text-2xl font-black tracking-tighter text-left">Top Categories</h2>
               <Link href="/categories">
                 <Button variant="ghost" className="rounded-full px-4 font-semibold gap-2 h-9 text-xs">
@@ -104,7 +103,7 @@ export default function HomePage() {
                 </Button>
               </Link>
             </div>
-            <div className="grid grid-cols-4 md:grid-cols-5 gap-3 md:gap-4">
+            <div className="grid grid-cols-4 lg:grid-cols-5 gap-3 md:gap-6">
               {CATEGORIES.slice(0, 10).map((cat, index) => {
                 const IconComp = iconMap[cat.icon] || Music;
                 return (
@@ -113,15 +112,15 @@ export default function HomePage() {
                     href={`/discover?category=${cat.id}`}
                     className={cn(
                       "block group",
-                      index >= 8 && "hidden md:block"
+                      index >= 8 && "hidden lg:block"
                     )}
                   >
                     <Card className="hover:border-primary transition-all group overflow-hidden cursor-pointer bg-card/50 backdrop-blur-sm rounded-2xl border-white/10 h-full">
-                      <CardContent className="p-3 md:p-4 flex flex-col items-center text-center gap-2 md:gap-3 h-full justify-center">
-                        <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-secondary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                          <IconComp className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground group-hover:text-white transition-colors" />
+                      <CardContent className="p-3 md:p-6 flex flex-col items-center text-center gap-3 h-full justify-center">
+                        <div className="w-8 h-8 md:w-12 md:h-12 rounded-full bg-secondary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                          <IconComp className="w-4 h-4 md:w-6 md:h-6 text-muted-foreground group-hover:text-white transition-colors" />
                         </div>
-                        <span className="font-bold tracking-tight text-[10px] md:text-xs line-clamp-1">{cat.name}</span>
+                        <span className="font-bold tracking-tight text-[10px] md:text-sm line-clamp-1">{cat.name}</span>
                       </CardContent>
                     </Card>
                   </Link>
@@ -132,19 +131,20 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Trending Events (Curated Selection) */}
-      <section className="pt-8 pb-12">
+      {/* Trending Events (3x9 grid desktop, 2x8 mobile) */}
+      <section className="py-24">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-12">
             <div className="text-left">
-              <h2 className="text-xl md:text-2xl font-black tracking-tighter">Trending</h2>
+              <h2 className="text-xl md:text-4xl font-black tracking-tighter">Trending</h2>
+              <p className="text-muted-foreground mt-2">The most popular experiences happening right now.</p>
             </div>
-            <Button size="sm" className="rounded-full px-4 shadow-lg shadow-primary/20 font-semibold gap-2" asChild>
-              <Link href="/discover">Explore More <ArrowRight className="w-3 h-3" /></Link>
+            <Button size="lg" className="rounded-full px-8 shadow-lg shadow-primary/20 font-bold gap-2" asChild>
+              <Link href="/discover">Explore More <ArrowRight className="w-4 h-4" /></Link>
             </Button>
           </div>
           
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mb-8">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mb-12">
             {MOCK_EVENTS.slice(0, displayLimit).map((event) => (
               <Link key={event.id} href={`/events/${event.id}`}>
                 <div className="group relative rounded-[1.25rem] md:rounded-[2.5rem] overflow-hidden bg-card border border-border hover:border-primary/50 transition-all hover:shadow-2xl hover:shadow-primary/5">
@@ -165,7 +165,7 @@ export default function HomePage() {
                   <div className="p-3 md:p-8 text-left">
                     <div className="flex items-center gap-1 md:gap-2 text-primary text-[8px] md:text-sm font-black uppercase tracking-widest mb-1 md:mb-3">
                       <Calendar className="w-2.5 h-2.5 md:w-4 h-4" />
-                      {new Date(event.date).toLocaleDateString('en-NG', { month: 'short', day: 'numeric' })}
+                      {new Date(event.date).toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' })}
                     </div>
                     <h3 className="text-sm md:text-2xl mb-1 group-hover:text-primary transition-colors line-clamp-1 font-bold">{event.title}</h3>
                     <p className="text-muted-foreground text-[8px] md:text-sm flex items-center gap-1 mb-2 md:mb-6">
@@ -207,30 +207,30 @@ export default function HomePage() {
       </section>
 
       {/* Trust Section */}
-      <section className="py-16 bg-card/30 border-y border-border">
+      <section className="py-24 bg-card/30 border-y border-border">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-2xl md:text-4xl font-black tracking-tighter mb-12">Why thousands choose IsabiEvents</h2>
+          <h2 className="text-2xl md:text-5xl font-black tracking-tighter mb-16">Why thousands choose IsabiEvents</h2>
           <div className="grid md:grid-cols-3 gap-12">
             <div className="space-y-4">
-              <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-6">
-                <Star className="w-6 h-6 md:w-8 md:h-8 text-primary" />
+              <div className="w-12 h-12 md:w-20 md:h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-8 transition-transform hover:scale-110">
+                <Star className="w-6 h-6 md:w-10 md:h-10 text-primary" />
               </div>
-              <h3 className="text-lg md:text-xl font-bold tracking-tight">Verified Organizers</h3>
-              <p className="text-sm md:text-base text-muted-foreground">Every event organizer undergoes strict KYC verification before listing on our platform.</p>
+              <h3 className="text-lg md:text-2xl font-bold tracking-tight">Verified Organizers</h3>
+              <p className="text-sm md:text-lg text-muted-foreground leading-relaxed">Every event organizer undergoes strict KYC verification before listing on our platform.</p>
             </div>
             <div className="space-y-4">
-              <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-6">
-                <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8 text-primary" />
+              <div className="w-12 h-12 md:w-20 md:h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-8 transition-transform hover:scale-110">
+                <CheckCircle2 className="w-6 h-6 md:w-10 md:h-10 text-primary" />
               </div>
-              <h3 className="text-lg md:text-xl font-bold tracking-tight">Instant Ticket Delivery</h3>
-              <p className="text-sm md:text-base text-muted-foreground">Receive your unique secure QR code ticket immediately via email and in your wallet after payment.</p>
+              <h3 className="text-lg md:text-2xl font-bold tracking-tight">Instant Ticket Delivery</h3>
+              <p className="text-sm md:text-lg text-muted-foreground leading-relaxed">Receive your unique secure QR code ticket immediately via email and in your wallet after payment.</p>
             </div>
             <div className="space-y-4">
-              <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-6">
-                <GlassWater className="w-6 h-6 md:w-8 md:h-8 text-primary" />
+              <div className="w-12 h-12 md:w-20 md:h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-8 transition-transform hover:scale-110">
+                <GlassWater className="w-6 h-6 md:w-10 md:h-10 text-primary" />
               </div>
-              <h3 className="text-lg md:text-xl font-bold tracking-tight">Seamless Payouts</h3>
-              <p className="text-sm md:text-base text-muted-foreground">Organizers and vendors receive automated settlements via our robust fintech integrations.</p>
+              <h3 className="text-lg md:text-2xl font-bold tracking-tight">Seamless Payouts</h3>
+              <p className="text-sm md:text-lg text-muted-foreground leading-relaxed">Organizers and vendors receive automated settlements via our robust fintech integrations.</p>
             </div>
           </div>
         </div>
