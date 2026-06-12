@@ -139,7 +139,6 @@ export default function HomePage() {
           <div className="flex items-center justify-between mb-12">
             <div className="text-left">
               <h2 className="text-xl md:text-4xl font-black tracking-tighter">Trending</h2>
-              <p className="text-muted-foreground mt-2">The most popular experiences happening right now.</p>
             </div>
             <Button size="lg" className="rounded-full px-8 shadow-lg shadow-primary/20 font-bold gap-2" asChild>
               <Link href="/discover">Explore More <ArrowRight className="w-4 h-4" /></Link>
