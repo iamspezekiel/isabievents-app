@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -26,7 +25,7 @@ export default function OrganizerLandingPage() {
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent/10 blur-[120px] -z-10 rounded-full translate-x-1/2 -translate-y-1/2" />
         <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000 flex flex-col items-center lg:items-start text-center lg:text-left">
-            <h1 className="text-3xl md:text-4xl lg:text-7xl leading-[1.1] font-black tracking-tighter text-balance whitespace-nowrap lg:whitespace-normal">
+            <h1 className="text-3xl md:text-7xl leading-[1.1] font-black tracking-tighter text-balance whitespace-nowrap lg:whitespace-normal">
               The Easiest Way to Host <br className="hidden lg:block" />
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Legendary</span> Events
             </h1>
@@ -71,8 +70,8 @@ export default function OrganizerLandingPage() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
               <div className="absolute bottom-4 left-4 right-4 sm:bottom-8 sm:left-8 sm:right-8">
                 <div className="bg-white/10 backdrop-blur-md border border-white/20 p-4 sm:p-6 rounded-2xl flex items-center justify-between">
-                  <div className="space-y-1">
-                    <div className="text-[10px] sm:text-xs text-white/70 uppercase font-black text-left">Gross Revenue</div>
+                  <div className="space-y-1 text-left">
+                    <div className="text-[10px] sm:text-xs text-white/70 uppercase font-black">Gross Revenue</div>
                     <div className="text-xl sm:text-3xl font-black text-white tracking-tight">₦4,250,000</div>
                   </div>
                   <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-accent/20 flex items-center justify-center">
@@ -144,14 +143,10 @@ export default function OrganizerLandingPage() {
                 <div className="flex flex-col sm:inline-flex sm:flex-row items-center gap-4 md:gap-8 bg-background p-10 md:px-12 md:py-10 rounded-[2.5rem] border border-primary/20 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] relative group hover:scale-[1.02] transition-all duration-500">
                   <div className="relative">
                     <span className="text-7xl md:text-8xl font-black text-primary tracking-tighter leading-none">2.5%</span>
-                    <div className="absolute -top-3 -right-3 w-6 h-6 bg-accent rounded-full flex items-center justify-center text-white text-[10px] font-black shadow-lg shadow-accent/40 animate-bounce">
-                      +
-                    </div>
                   </div>
                   <div className="text-center sm:text-left space-y-1">
                     <div className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-muted-foreground/60 mb-2">Service Fee</div>
                     <div className="text-2xl md:text-3xl font-black leading-tight">Per ticket sold</div>
-                    <p className="text-xs text-muted-foreground font-medium pt-1">+ ₦100 per transaction</p>
                   </div>
                 </div>
               </div>

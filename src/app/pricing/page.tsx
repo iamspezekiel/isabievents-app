@@ -32,7 +32,7 @@ export default function PricingPage() {
         <div className="container mx-auto px-4">
           <Card className="max-w-6xl mx-auto bg-card border-border shadow-[0_32px_64px_-12px_rgba(0,0,0,0.1)] rounded-[3rem] overflow-hidden hover:border-primary/20 transition-all duration-500">
             <div className="grid lg:grid-cols-2">
-              <div className="p-10 md:p-20 space-y-12">
+              <div className="p-10 md:p-20 space-y-12 text-left">
                 <div className="space-y-4">
                   <div className="flex items-center gap-2">
                     <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
@@ -49,7 +49,7 @@ export default function PricingPage() {
                    <div className="text-6xl md:text-8xl font-black text-primary tracking-tighter">2.5%</div>
                    <div className="text-left">
                      <div className="text-sm font-black uppercase tracking-widest text-muted-foreground">Service Fee</div>
-                     <div className="text-xs text-muted-foreground font-medium">per ticket sold + ₦100</div>
+                     <div className="text-xs text-muted-foreground font-medium">per ticket sold</div>
                    </div>
                 </div>
 
@@ -70,7 +70,7 @@ export default function PricingPage() {
                 </div>
               </div>
 
-              <div className="bg-secondary/30 p-10 md:p-20 flex flex-col justify-center space-y-10 border-l border-border/50">
+              <div className="bg-secondary/30 p-10 md:p-20 flex flex-col justify-center space-y-10 border-l border-border/50 text-left">
                 <div className="space-y-4">
                   <Badge variant="outline" className="border-accent text-accent">ENTERPRISE</Badge>
                   <h3 className="font-headline text-3xl font-black">High Volume?</h3>
@@ -168,7 +168,7 @@ function FeatureItem({ label }: { label: string }) {
 
 function PricingFaq({ q, a }: any) {
   return (
-    <div className="space-y-4 p-8 rounded-3xl bg-card border border-border hover:border-primary/30 transition-all group">
+    <div className="space-y-4 p-8 rounded-3xl bg-card border border-border hover:border-primary/30 transition-all group text-left">
       <div className="flex items-center gap-3">
         <HelpCircle className="w-5 h-5 text-primary" />
         <h4 className="text-xl font-bold group-hover:text-primary transition-colors">{q}</h4>

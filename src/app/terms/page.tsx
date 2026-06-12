@@ -20,7 +20,7 @@ export default function TermsOfServicePage() {
 
       <main className="container mx-auto px-4 py-16 max-w-4xl">
         <div className="grid gap-16">
-          <section className="space-y-6">
+          <section className="space-y-6 text-left">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                 <Scale className="w-5 h-5 text-primary" />
@@ -32,7 +32,7 @@ export default function TermsOfServicePage() {
             </p>
           </section>
 
-          <section className="space-y-6">
+          <section className="space-y-6 text-left">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                 <Users className="w-5 h-5 text-primary" />
@@ -49,7 +49,7 @@ export default function TermsOfServicePage() {
             </ul>
           </section>
 
-          <section className="space-y-6">
+          <section className="space-y-6 text-left">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                 <FileText className="w-5 h-5 text-primary" />
@@ -57,14 +57,14 @@ export default function TermsOfServicePage() {
               <h2 className="font-headline text-2xl">3. Ticket Purchases & Fees</h2>
             </div>
             <p className="text-muted-foreground leading-relaxed">
-              IsabiEvents facilitates the sale of tickets between organizers and attendees. All ticket prices are set by the organizers. A service fee (standard 2.5% + ₦100) is applied to every paid ticket transaction.
+              IsabiEvents facilitates the sale of tickets between organizers and attendees. All ticket prices are set by the organizers. A service fee (standard 2.5%) is applied to every paid ticket transaction.
             </p>
             <p className="text-muted-foreground leading-relaxed">
               Refunds are subject to the specific organizer's policy as stated on the event page. IsabiEvents only provides 48-hour post-event settlement protection to ensure organizers fulfill their obligations.
             </p>
           </section>
 
-          <section className="space-y-6">
+          <section className="space-y-6 text-left">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                 <Gavel className="w-5 h-5 text-primary" />
@@ -86,7 +86,7 @@ export default function TermsOfServicePage() {
             </div>
           </section>
 
-          <section className="space-y-6">
+          <section className="space-y-6 text-left">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                 <AlertCircle className="w-5 h-5 text-primary" />
