@@ -47,21 +47,23 @@ export function Footer() {
             <p className="text-muted-foreground text-sm leading-relaxed max-w-xs font-medium text-left">
               The most secure and reliable event ticket marketplace in Nigeria. Connecting people to unforgettable experiences.
             </p>
-            {/* Social Icons */}
-            <div className="flex items-center gap-3">
-              <Link href="#" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
-                <Facebook className="w-4 h-4" />
-              </Link>
-              <Link href="#" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
-                <Twitter className="w-4 h-4" />
-              </Link>
-              <Link href="#" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
-                <Instagram className="w-4 h-4" />
-              </Link>
-              <Link href="#" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
-                <Youtube className="w-4 h-4" />
-              </Link>
-            </div>
+            {/* Social Icons - Defer rendering to prevent hydration mismatch */}
+            {mounted && (
+              <div className="flex items-center gap-3">
+                <Link href="#" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
+                  <Facebook className="w-4 h-4" />
+                </Link>
+                <Link href="#" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
+                  <Twitter className="w-4 h-4" />
+                </Link>
+                <Link href="#" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
+                  <Instagram className="w-4 h-4" />
+                </Link>
+                <Link href="#" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
+                  <Youtube className="w-4 h-4" />
+                </Link>
+              </div>
+            )}
           </div>
           <div className="text-left">
             <h4 className="font-headline text-xs font-black uppercase tracking-widest text-muted-foreground/50 mb-8">For Attendees</h4>
