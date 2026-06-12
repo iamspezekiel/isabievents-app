@@ -32,7 +32,6 @@ function SignupForm() {
           <Link href="/" className="inline-block mb-4 no-underline">
             <Logo size="lg" className="mx-auto" />
           </Link>
-          <h1 className="text-3xl font-headline">Join IsabiEvents</h1>
           <p className="text-muted-foreground">Experience the best events in Nigeria</p>
         </div>
 
