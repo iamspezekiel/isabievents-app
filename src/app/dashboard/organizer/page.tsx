@@ -48,10 +48,10 @@ export default function OrganizerDashboard() {
           <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="text-left">
               <h1 className="font-headline text-3xl mb-1">Organizer Overview</h1>
-              <p className="text-muted-foreground text-sm flex items-center gap-2">
+              <div className="text-muted-foreground text-sm flex items-center gap-2">
                 <Badge className="bg-accent/20 text-accent border-none">Verified Merchant</Badge>
-                Account Health: 98%
-              </p>
+                <span>Account Health: 98%</span>
+              </div>
             </div>
             <div className="flex items-center gap-4">
               <Button variant="outline" className="rounded-full gap-2">
