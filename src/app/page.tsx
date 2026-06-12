@@ -149,7 +149,7 @@ export default function HomePage() {
                         {event.organizer.verified && <CheckCircle2 className="w-3 h-3 text-primary" />}
                       </div>
                       <div className="text-right">
-                        <span className="text-lg font-bold text-white">
+                        <span className="text-lg font-bold text-primary">
                           {event.price.min === 0 ? 'FREE' : `₦${event.price.min.toLocaleString()}`}
                         </span>
                       </div>

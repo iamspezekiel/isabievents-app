@@ -164,7 +164,7 @@ function DiscoverContent() {
                   <div className="mt-auto pt-6 border-t border-border flex items-center justify-between">
                     <div className="space-y-0.5">
                       <span className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Entry</span>
-                      <span className="block text-xl font-black text-white leading-none">
+                      <span className="block text-xl font-black text-primary leading-none">
                         {event.price.min === 0 ? 'FREE' : `₦${event.price.min.toLocaleString()}`}
                       </span>
                     </div>

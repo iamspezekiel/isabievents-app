@@ -159,7 +159,7 @@ export default function EventDetailsPage() {
               <Card className="border-border bg-card shadow-2xl overflow-hidden rounded-2xl">
                 <CardContent className="p-8">
                   <div className="flex items-center justify-center mb-6">
-                    <span className="text-3xl font-bold text-white">₦{event.price.min.toLocaleString()}</span>
+                    <span className="text-3xl font-bold text-primary">₦{event.price.min.toLocaleString()}</span>
                   </div>
                   
                   <div className="space-y-4 mb-8">
@@ -229,7 +229,7 @@ function TicketTier({ name, price, perks, available }: any) {
           {!available && <Badge variant="destructive">Sold Out</Badge>}
         </div>
         <div className="text-right">
-          <span className="text-xl font-bold">₦{price.toLocaleString()}</span>
+          <span className="text-xl font-bold text-primary">₦{price.toLocaleString()}</span>
           <span className="block text-xs text-muted-foreground">per ticket</span>
         </div>
       </div>
