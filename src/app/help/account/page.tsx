@@ -4,6 +4,7 @@ import React from 'react';
 import { ArrowLeft, User, Lock, ShieldCheck, Mail, Settings, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import Link from 'next/link';
 
 export default function AccountSupportPage() {
@@ -15,7 +16,7 @@ export default function AccountSupportPage() {
             <ArrowLeft className="w-4 h-4" /> Back to Help Center
           </Link>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="space-y-2">
+            <div className="space-y-2 text-left">
               <h1 className="font-headline text-3xl md:text-4xl text-balance">Account & Profile</h1>
               <p className="text-muted-foreground">Manage your identity, security, and verification status.</p>
             </div>
@@ -59,23 +60,46 @@ export default function AccountSupportPage() {
             <p className="text-muted-foreground leading-relaxed">
               Verified accounts build trust with attendees. To get verified, organizers must provide a valid government-issued ID and proof of business registration (for corporate entities). 
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/dashboard/organizer" className="no-underline w-full flex-1">
+            <div className="flex flex-col gap-4">
+              <Link href="/dashboard/organizer" className="no-underline w-full">
                 <Button className="rounded-xl px-8 h-12 font-bold w-full">Start Verification</Button>
               </Link>
-              <Button variant="outline" className="rounded-xl px-8 h-12 font-bold w-full flex-1">Learn Requirements</Button>
+              <Button variant="outline" className="rounded-xl px-8 h-12 font-bold w-full">Learn Requirements</Button>
             </div>
           </section>
 
-          {/* FAQ/Helpful Articles */}
+          {/* FAQ/Troubleshooting Section */}
           <section className="space-y-6 text-left">
             <h2 className="font-headline text-2xl">Troubleshooting</h2>
-            <div className="space-y-4">
-              <HelpfulArticle title="I can't access my registered email address" />
-              <HelpfulArticle title="My verification request was rejected. What next?" />
-              <HelpfulArticle title="How to delete my IsabiEvents account permanently" />
-              <HelpfulArticle title="Switching from Attendee to Organizer role" />
-            </div>
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="item-1" className="border-border">
+                <AccordionTrigger className="text-left font-medium hover:text-primary">I can't access my registered email address</AccordionTrigger>
+                <AccordionContent className="text-muted-foreground leading-relaxed">
+                  If you've lost access to your registered email, please contact our support team. You will be required to provide alternative proof of identity and potentially your last ticket purchase ID to initiate a secure account recovery process.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-2" className="border-border">
+                <AccordionTrigger className="text-left font-medium hover:text-primary">My verification request was rejected. What next?</AccordionTrigger>
+                <AccordionContent className="text-muted-foreground leading-relaxed">
+                  Common reasons for rejection include blurry document photos, expired IDs, or mismatched names. Please check the automated email we sent for specific details. Ensure your documents are clear and valid, then resubmit via your Organizer Dashboard.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-3" className="border-border">
+                <AccordionTrigger className="text-left font-medium hover:text-primary">How to delete my IsabiEvents account permanently</AccordionTrigger>
+                <AccordionContent className="text-muted-foreground leading-relaxed">
+                  You can request a permanent account deletion under 'Account Settings' in your dashboard. Please note that this action is irreversible; you will lose access to all active tickets, purchase history, and any stored wallet balance.
+                </AccordionContent>
+              </AccordionItem>
+
+              <AccordionItem value="item-4" className="border-border">
+                <AccordionTrigger className="text-left font-medium hover:text-primary">Switching from Attendee to Organizer role</AccordionTrigger>
+                <AccordionContent className="text-muted-foreground leading-relaxed">
+                  Every attendee account can be upgraded to an organizer profile. Simply visit your 'Profile Settings', select 'Become an Organizer', and follow the prompts to provide your business information and complete the KYC verification.
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
           </section>
 
           <section className="text-center pt-12 border-t border-border">
@@ -104,14 +128,5 @@ function SupportCard({ icon: Icon, title, desc }: any) {
         <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
       </CardContent>
     </Card>
-  );
-}
-
-function HelpfulArticle({ title }: { title: string }) {
-  return (
-    <Link href="#" className="flex items-center justify-between p-5 bg-card/50 border border-border rounded-xl hover:border-primary/50 transition-all group no-underline">
-      <span className="font-medium group-hover:text-primary transition-colors text-foreground">{title}</span>
-      <ArrowLeft className="w-4 h-4 rotate-180 text-muted-foreground group-hover:text-primary transition-all group-hover:translate-x-1" />
-    </Link>
   );
 }
