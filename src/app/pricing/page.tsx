@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -140,13 +141,13 @@ export default function PricingPage() {
           <p className="text-base text-muted-foreground max-w-2xl mx-auto">
             Join 1,200+ Nigerian organizers who are already scaling their businesses with IsabiEvents.
           </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link href="/signup?role=organizer">
-              <Button size="lg" className="rounded-full h-16 px-12 text-lg shadow-xl shadow-primary/20 hover:-translate-y-0.5 transition-all">
+          <div className="flex flex-row justify-center items-center gap-4">
+            <Link href="/signup?role=organizer" className="flex-1 sm:flex-none">
+              <Button size="lg" className="w-full rounded-full h-12 md:h-16 px-6 md:px-12 text-sm md:text-lg shadow-xl shadow-primary/20 hover:-translate-y-0.5 transition-all">
                 Get Started Now
               </Button>
             </Link>
-            <Button variant="outline" size="lg" className="rounded-full h-16 px-12 text-lg hover:-translate-y-0.5 transition-all">Book a Demo</Button>
+            <Button variant="outline" size="lg" className="flex-1 sm:flex-none rounded-full h-12 md:h-16 px-6 md:px-12 text-sm md:text-lg hover:-translate-y-0.5 transition-all">Book a Demo</Button>
           </div>
         </div>
       </section>
