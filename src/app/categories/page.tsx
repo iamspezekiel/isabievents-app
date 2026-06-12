@@ -106,9 +106,6 @@ export default function AllCategoriesPage() {
             <h2 className="font-headline text-4xl md:text-5xl font-black tracking-tighter">
               Don't see what <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">you're looking for?</span>
             </h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-medium">
-              Use our advanced search engine to find specific artists, venues, or dates across all categories.
-            </p>
             <Link href="/discover">
               <Button size="lg" className="rounded-full px-10 h-16 text-lg shadow-xl shadow-primary/20 font-bold gap-3">
                 <Sparkles className="w-5 h-5" /> Explore All Events
