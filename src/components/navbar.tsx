@@ -1,10 +1,9 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, ChevronDown } from 'lucide-react';
+import { Menu, ChevronDown, User } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -31,7 +30,7 @@ export function Navbar() {
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
+      setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -40,16 +39,19 @@ export function Navbar() {
   const isActive = (path: string) => pathname === path;
 
   return (
-    <nav className={cn(
-      "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b",
-      isScrolled 
-        ? "bg-background/80 backdrop-blur-md border-border py-3" 
-        : "bg-transparent border-transparent py-5"
+    <div className={cn(
+      "fixed left-1/2 -translate-x-1/2 z-50 transition-all duration-500 w-full max-w-7xl px-4",
+      isScrolled ? "top-4" : "top-6"
     )}>
-      <div className="container mx-auto px-4 flex items-center justify-between">
+      <nav className={cn(
+        "flex items-center justify-between px-6 py-3 rounded-full transition-all duration-500 border shadow-2xl overflow-hidden",
+        isScrolled 
+          ? "bg-background/70 backdrop-blur-xl border-border/50 h-16" 
+          : "bg-background/40 backdrop-blur-md border-white/20 h-20"
+      )}>
         {/* Logo */}
         <Link href="/">
-          <Logo />
+          <Logo size="sm" />
         </Link>
 
         {/* Desktop Links */}
@@ -59,8 +61,8 @@ export function Navbar() {
               key={link.href} 
               href={link.href}
               className={cn(
-                "text-sm font-medium transition-colors hover:text-primary",
-                isActive(link.href) ? "text-primary" : "text-muted-foreground"
+                "text-sm font-bold tracking-tight transition-colors hover:text-primary",
+                isActive(link.href) ? "text-primary" : "text-foreground/70"
               )}
             >
               {link.name}
@@ -68,33 +70,40 @@ export function Navbar() {
           ))}
           
           <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-primary transition-colors focus:outline-none">
+            <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-bold tracking-tight text-foreground/70 hover:text-primary transition-colors focus:outline-none">
               Support <ChevronDown className="w-4 h-4" />
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48 bg-card border-border">
-              <DropdownMenuItem asChild>
-                <Link href="/help" className="cursor-pointer">Help Center</Link>
+            <DropdownMenuContent align="end" className="w-56 mt-4 p-2 bg-card/95 backdrop-blur-xl border-border rounded-3xl">
+              <DropdownMenuItem asChild className="rounded-2xl py-3 cursor-pointer">
+                <Link href="/help">Help Center</Link>
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/help/tickets" className="cursor-pointer">Ticket Support</Link>
+              <DropdownMenuItem asChild className="rounded-2xl py-3 cursor-pointer">
+                <Link href="/help/tickets">Ticket Support</Link>
               </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link href="/help/refunds" className="cursor-pointer">Refund Policy</Link>
+              <DropdownMenuItem asChild className="rounded-2xl py-3 cursor-pointer">
+                <Link href="/help/refunds">Refund Policy</Link>
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-3">
-          <ThemeToggle />
-          <div className="hidden sm:flex items-center gap-3">
-            <Button variant="ghost" asChild>
+        <div className="flex items-center gap-2 md:gap-4">
+          <div className="hidden sm:flex items-center gap-2">
+            <ThemeToggle />
+            <Button variant="ghost" size="sm" className="font-bold px-4" asChild>
               <Link href="/login">Sign In</Link>
             </Button>
-            <Button className="rounded-full px-6 shadow-lg shadow-primary/20" asChild>
+            <Button size="sm" className="rounded-full px-6 shadow-xl shadow-primary/20 font-bold" asChild>
               <Link href="/signup">Get Started</Link>
             </Button>
+          </div>
+
+          <div className="sm:hidden flex items-center gap-2">
+             <ThemeToggle />
+             <Button variant="ghost" size="icon" asChild>
+                <Link href="/login"><User className="w-5 h-5" /></Link>
+             </Button>
           </div>
 
           {/* Mobile Menu Trigger */}
@@ -104,8 +113,8 @@ export function Navbar() {
                 <Menu className="w-6 h-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="right" className="bg-card border-border w-[300px]">
-              <SheetHeader className="text-left mb-8">
+            <SheetContent side="right" className="bg-card/95 backdrop-blur-xl border-border w-[300px] p-8">
+              <SheetHeader className="text-left mb-12">
                 <SheetTitle>
                   <Logo size="sm" />
                 </SheetTitle>
@@ -117,20 +126,20 @@ export function Navbar() {
                     href={link.href} 
                     onClick={() => setIsOpen(false)}
                     className={cn(
-                      "text-lg font-medium",
+                      "text-xl font-black tracking-tighter",
                       isActive(link.href) ? "text-primary" : "text-muted-foreground"
                     )}
                   >
                     {link.name}
                   </Link>
                 ))}
-                <div className="h-px bg-border" />
-                <Link href="/help" onClick={() => setIsOpen(false)} className="text-lg font-medium text-muted-foreground">Help Center</Link>
-                <div className="flex flex-col gap-3 pt-4">
-                  <Button variant="outline" className="w-full rounded-xl" asChild>
+                <div className="h-px bg-border/50" />
+                <Link href="/help" onClick={() => setIsOpen(false)} className="text-xl font-black tracking-tighter text-muted-foreground">Help Center</Link>
+                <div className="flex flex-col gap-3 pt-6">
+                  <Button variant="outline" className="w-full rounded-2xl h-12 font-bold" asChild>
                     <Link href="/login">Sign In</Link>
                   </Button>
-                  <Button className="w-full rounded-xl" asChild>
+                  <Button className="w-full rounded-2xl h-12 font-bold shadow-xl shadow-primary/20" asChild>
                     <Link href="/signup">Create Account</Link>
                   </Button>
                 </div>
@@ -138,7 +147,7 @@ export function Navbar() {
             </SheetContent>
           </Sheet>
         </div>
-      </div>
-    </nav>
+      </nav>
+    </div>
   );
 }
