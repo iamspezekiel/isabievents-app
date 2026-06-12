@@ -36,6 +36,12 @@
       "description": "Traditional Nigerian dancers",
       "imageUrl": "https://picsum.photos/seed/culture1/800/400",
       "imageHint": "cultural dance"
+    },
+    {
+      "id": "about-hero",
+      "description": "A diverse team collaborating in a modern space",
+      "imageUrl": "https://picsum.photos/seed/abouthero/1200/600",
+      "imageHint": "team collaboration"
     }
   ]
 }
