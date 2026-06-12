@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Target, Users, ShieldCheck, Zap, Heart, Sparkles, Quote, Globe, Star } from 'lucide-react';
+import { Target, Users, ShieldCheck, Zap, Heart, Sparkles, Quote, Globe, Star, CreditCard, Lock } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -79,11 +79,11 @@ export default function AboutPage() {
 
             {/* Stats Moved Under Image */}
             <div className="grid grid-cols-2 gap-6 pt-8">
-              <div className="space-y-2 p-8 bg-secondary/40 rounded-[2.5rem] border border-border/50">
+              <div className="space-y-2 p-8 bg-secondary/40 rounded-[2.5rem] border border-border/50 text-left">
                 <div className="text-4xl font-black text-primary">50k+</div>
                 <div className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Active Users</div>
               </div>
-              <div className="space-y-2 p-8 bg-primary/5 rounded-[2.5rem] border border-primary/10">
+              <div className="space-y-2 p-8 bg-primary/5 rounded-[2.5rem] border border-primary/10 text-left">
                 <div className="text-4xl font-black text-accent">36</div>
                 <div className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">States Reached</div>
               </div>
@@ -151,9 +151,21 @@ export default function AboutPage() {
           <div className="flex-1 space-y-8 text-left">
              <h2 className="font-headline text-4xl font-black tracking-tighter leading-none">Why IsabiEvents?</h2>
              <div className="space-y-6">
-                <FeatureItem title="Built for Local Payments" desc="Seamless integration with Paystack & Flutterwave for Card, Transfer, and USSD." />
-                <FeatureItem title="Digital-First Security" desc="Encrypted dynamic QR codes that prevent ticket duplication and fraud." />
-                <FeatureItem title="Data Efficient" desc="Optimized for the Nigerian network landscape, ensuring access even on slow connections." />
+                <FeatureItem 
+                  icon={CreditCard}
+                  title="Built for Local Payments" 
+                  desc="Seamless integration with Paystack & Flutterwave for Card, Transfer, and USSD." 
+                />
+                <FeatureItem 
+                  icon={Lock}
+                  title="Digital-First Security" 
+                  desc="Encrypted dynamic QR codes that prevent ticket duplication and fraud." 
+                />
+                <FeatureItem 
+                  icon={Zap}
+                  title="Data Efficient" 
+                  desc="Optimized for the Nigerian network landscape, ensuring access even on slow connections." 
+                />
              </div>
           </div>
           <div className="flex-1 relative w-full aspect-video rounded-3xl overflow-hidden shadow-2xl">
@@ -211,11 +223,11 @@ function ValueCard({ icon: Icon, title, desc }: any) {
   );
 }
 
-function FeatureItem({ title, desc }: any) {
+function FeatureItem({ title, desc, icon: Icon }: any) {
   return (
     <div className="flex items-start gap-4">
        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-          <Sparkles className="w-5 h-5 text-primary" />
+          <Icon className="w-5 h-5 text-primary" />
        </div>
        <div className="space-y-1">
           <h2 className="font-bold text-xl">{title}</h2>
