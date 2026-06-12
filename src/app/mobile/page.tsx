@@ -178,18 +178,18 @@ export default function MobileAppPage() {
               </p>
               
               <div className="flex flex-col sm:flex-row justify-center gap-6 pt-10">
-                <Button size="lg" className="rounded-full h-20 px-14 text-xl shadow-2xl shadow-primary/40 hover:-translate-y-2 transition-all gap-6">
-                  <Apple className="w-9 h-9 fill-current" />
+                <Button size="lg" className="rounded-full h-16 px-10 text-lg shadow-2xl shadow-primary/40 hover:-translate-y-2 transition-all gap-4">
+                  <Apple className="w-7 h-7 fill-current" />
                   <div className="flex flex-col items-start leading-none text-left">
                     <span className="text-[10px] font-black uppercase tracking-tighter opacity-70">App Store</span>
-                    <span className="text-xl font-bold">Download Now</span>
+                    <span className="text-lg font-bold">Download Now</span>
                   </div>
                 </Button>
-                <Button variant="outline" size="lg" className="rounded-full h-20 px-14 text-xl border-2 border-border bg-card hover:bg-secondary hover:-translate-y-2 transition-all shadow-2xl gap-6">
-                  <Play className="w-8 h-8 fill-current" />
+                <Button variant="outline" size="lg" className="rounded-full h-16 px-10 text-lg border-2 border-border bg-card hover:bg-secondary hover:-translate-y-2 transition-all shadow-2xl gap-4">
+                  <Play className="w-7 h-7 fill-current" />
                   <div className="flex flex-col items-start leading-none text-left">
                     <span className="text-[10px] font-black uppercase tracking-tighter opacity-70">Google Play</span>
-                    <span className="text-xl font-bold">Get it Free</span>
+                    <span className="text-lg font-bold">Get it Free</span>
                   </div>
                 </Button>
               </div>
