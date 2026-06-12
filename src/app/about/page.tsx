@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -13,7 +12,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Hero Section */}
-      <section className="relative pt-48 pb-32 overflow-hidden border-b border-border">
+      <section className="relative pt-40 pb-16 overflow-hidden border-b border-border">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
         <div className="container mx-auto px-4 text-center space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <h1 className="font-headline text-3xl md:text-5xl font-black leading-[1.1] tracking-tighter text-balance">
@@ -27,7 +26,7 @@ export default function AboutPage() {
       </section>
 
       {/* Our Story Section */}
-      <section className="py-24 md:py-40 container mx-auto px-4 relative">
+      <section className="py-16 md:py-24 container mx-auto px-4 relative">
         <div className="absolute top-1/2 right-0 w-96 h-96 bg-accent/5 blur-[120px] rounded-full -z-10" />
         <div className="absolute -bottom-24 left-0 w-72 h-72 bg-primary/5 blur-[100px] rounded-full -z-10" />
         
@@ -110,10 +109,10 @@ export default function AboutPage() {
       </section>
 
       {/* Values Section */}
-      <section className="py-24 md:py-32 bg-card/30 border-y border-border relative">
+      <section className="py-16 md:py-24 bg-card/30 border-y border-border relative">
         <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 blur-3xl rounded-full -z-10" />
         <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
+          <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
             <h2 className="font-headline text-2xl md:text-3xl font-black tracking-tighter">What We Stand For</h2>
             <p className="text-muted-foreground text-lg">Our core values guide every line of code we write and every event we power.</p>
           </div>
@@ -139,8 +138,8 @@ export default function AboutPage() {
       </section>
 
       {/* Why Us Section */}
-      <section className="pt-24 pb-8 md:pt-32 md:pb-12 container mx-auto px-4">
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+      <section className="pt-16 pb-8 md:pt-20 md:pb-8 container mx-auto px-4">
+        <div className="text-center max-w-3xl mx-auto mb-12 space-y-4">
           <h2 className="font-headline text-3xl md:text-4xl font-black tracking-tighter leading-none">Why IsabiEvents?</h2>
         </div>
         <div className="bg-primary/5 border border-primary/10 rounded-[4rem] p-12 md:p-20 flex flex-col lg:flex-row items-center gap-16">
@@ -176,7 +175,7 @@ export default function AboutPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="pt-8 pb-32 md:pt-12 md:pb-48 container mx-auto px-4 text-center">
+      <section className="pt-8 pb-20 md:pt-12 md:pb-32 container mx-auto px-4 text-center">
         <div className="max-w-4xl mx-auto space-y-12">
           <h2 className="font-headline text-3xl md:text-5xl font-black tracking-tighter leading-none text-balance">
             Ready to join the <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">movement?</span>
