@@ -21,7 +21,7 @@ export default function AboutPage() {
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Shared Experiences</span>
           </h3>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-medium">
-            IsabiEvents is more than a ticketing platform. We're a bridge between creators and communities, built on the vibrant spirit of Naija.
+            IsabiEvents transcends simple ticketing. We are the bridge between world-class creators and their communities, fueled by the vibrant, unyielding spirit of Naija.
           </p>
         </div>
       </section>
