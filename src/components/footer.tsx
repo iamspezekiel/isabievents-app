@@ -118,7 +118,7 @@ export function Footer() {
             </div>
           </div>
           
-          <div className="whitespace-nowrap text-center lg:text-right">
+          <div className="text-center lg:text-right leading-loose max-w-xs sm:max-w-sm lg:max-w-none px-4 lg:px-0">
             Copyright © 2026 · IsabiEvents Technology · All Rights Reserved
           </div>
         </div>
