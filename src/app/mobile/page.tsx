@@ -24,8 +24,8 @@ import Image from 'next/image';
 export default function MobileAppPage() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
-      {/* Immersive Hero Header - Optimized spacing */}
-      <section className="relative min-h-[70vh] w-full flex items-end pb-12 pt-40 overflow-hidden">
+      {/* Immersive Hero Header */}
+      <section className="relative min-h-[60vh] w-full flex items-end pb-12 pt-32 overflow-hidden">
         <Image 
           src="https://picsum.photos/seed/mobile-v3/1920/1080" 
           alt="IsabiEvents Mobile" 
@@ -41,7 +41,7 @@ export default function MobileAppPage() {
               <Badge className="w-fit bg-primary text-white border-none py-1 px-4 font-black tracking-widest uppercase mb-2 animate-in fade-in slide-in-from-bottom-4 duration-700">
                 NIGERIAN EXPERIENCE
               </Badge>
-              <h1 className="text-4xl md:text-7xl leading-none animate-in fade-in slide-in-from-bottom-6 duration-1000">
+              <h1 className="text-3xl md:text-6xl leading-none animate-in fade-in slide-in-from-bottom-6 duration-1000 font-black tracking-tighter">
                 Your Tickets. <br />
                 <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                   Everywhere
@@ -49,23 +49,23 @@ export default function MobileAppPage() {
               </h1>
             </div>
             
-            <p className="text-muted-foreground text-lg md:text-xl font-medium max-w-2xl leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000">
+            <p className="text-muted-foreground text-base md:text-lg font-medium max-w-2xl leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000">
               Experience Nigeria's best events with zero friction. Buy, store, and transfer tickets even when you're offline.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center gap-4 pt-2 animate-in fade-in slide-in-from-bottom-10 duration-1000">
-              <Button size="lg" className="h-14 px-8 rounded-full text-base gap-3 shadow-2xl shadow-primary/40 hover:scale-105 transition-all">
-                <Apple className="w-6 h-6 fill-current" />
+            <div className="flex flex-row items-center gap-3 pt-2 animate-in fade-in slide-in-from-bottom-10 duration-1000">
+              <Button size="lg" className="h-12 md:h-14 px-4 md:px-8 rounded-full text-sm md:text-base gap-2 md:gap-3 shadow-2xl shadow-primary/40 hover:scale-105 transition-all flex-1 sm:flex-none">
+                <Apple className="w-5 h-5 md:w-6 md:h-6 fill-current" />
                 <div className="flex flex-col items-start leading-none text-left">
-                  <span className="text-[9px] font-black uppercase tracking-tighter opacity-70">Download on the</span>
-                  <span className="text-base font-bold">App Store</span>
+                  <span className="text-[7px] md:text-[9px] font-black uppercase tracking-tighter opacity-70">Download on the</span>
+                  <span className="text-xs md:text-base font-bold">App Store</span>
                 </div>
               </Button>
-              <Button size="lg" variant="outline" className="h-14 px-8 rounded-full text-base gap-3 border-2 border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-white/10 transition-all hover:scale-105">
-                <Play className="w-6 h-6 fill-current" />
+              <Button size="lg" variant="outline" className="h-12 md:h-14 px-4 md:px-8 rounded-full text-sm md:text-base gap-2 md:gap-3 border-2 border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-white/10 transition-all hover:scale-105 flex-1 sm:flex-none">
+                <Play className="w-5 h-5 md:w-6 md:h-6 fill-current" />
                 <div className="flex flex-col items-start leading-none text-left">
-                  <span className="text-[9px] font-black uppercase tracking-tighter opacity-70">Get it on</span>
-                  <span className="text-base font-bold">Google Play</span>
+                  <span className="text-[7px] md:text-[9px] font-black uppercase tracking-tighter opacity-70">Get it on</span>
+                  <span className="text-xs md:text-base font-bold">Google Play</span>
                 </div>
               </Button>
             </div>
@@ -73,7 +73,7 @@ export default function MobileAppPage() {
         </div>
       </section>
 
-      {/* Value Prop Section - Tightened top spacing */}
+      {/* Value Prop Section */}
       <section className="py-12 relative overflow-hidden">
         <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-primary/10 blur-[150px] rounded-full -translate-x-1/2 -z-10" />
         <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-accent/10 blur-[150px] rounded-full translate-x-1/2 -z-10" />
@@ -174,19 +174,19 @@ export default function MobileAppPage() {
                 Join over 150,000+ Nigerians who have upgraded their social lives. No more queues, no more printed tickets.
               </p>
               
-              <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
-                <Button size="lg" className="h-14 px-8 rounded-full text-base shadow-2xl shadow-primary/40 hover:-translate-y-1 transition-all gap-3">
-                  <Apple className="w-6 h-6 fill-current" />
+              <div className="flex flex-row items-center justify-center gap-3 pt-4">
+                <Button size="lg" className="h-12 md:h-14 px-4 md:px-8 rounded-full text-sm md:text-base shadow-2xl shadow-primary/40 hover:-translate-y-1 transition-all gap-2 md:gap-3 flex-1 sm:flex-none">
+                  <Apple className="w-5 h-5 md:w-6 md:h-6 fill-current" />
                   <div className="flex flex-col items-start leading-none text-left">
-                    <span className="text-[9px] font-black uppercase tracking-tighter opacity-70">App Store</span>
-                    <span className="text-base font-bold">Download Now</span>
+                    <span className="text-[7px] md:text-[9px] font-black uppercase tracking-tighter opacity-70">App Store</span>
+                    <span className="text-xs md:text-base font-bold">Download Now</span>
                   </div>
                 </Button>
-                <Button variant="outline" size="lg" className="h-14 px-8 rounded-full text-base border-2 border-border bg-card hover:bg-secondary hover:-translate-y-1 transition-all shadow-2xl gap-3">
-                  <Play className="w-6 h-6 fill-current" />
+                <Button variant="outline" size="lg" className="h-12 md:h-14 px-4 md:px-8 rounded-full text-sm md:text-base border-2 border-border bg-card hover:bg-secondary hover:-translate-y-1 transition-all shadow-2xl gap-2 md:gap-3 flex-1 sm:flex-none">
+                  <Play className="w-5 h-5 md:w-6 md:h-6 fill-current" />
                   <div className="flex flex-col items-start leading-none text-left">
-                    <span className="text-[9px] font-black uppercase tracking-tighter opacity-70">Google Play</span>
-                    <span className="text-base font-bold">Get it Free</span>
+                    <span className="text-[7px] md:text-[9px] font-black uppercase tracking-tighter opacity-70">Google Play</span>
+                    <span className="text-xs md:text-base font-bold">Get it Free</span>
                   </div>
                 </Button>
               </div>
