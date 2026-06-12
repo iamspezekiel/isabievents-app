@@ -24,8 +24,8 @@ import Image from 'next/image';
 export default function MobileAppPage() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
-      {/* Immersive Hero Header - Fixed contrast for both modes */}
-      <section className="relative min-h-[60vh] w-full flex items-end pb-12 pt-40 overflow-hidden">
+      {/* Immersive Hero Header */}
+      <section className="relative min-h-[50vh] w-full flex items-end pb-10 pt-36 overflow-hidden">
         <Image 
           src="https://picsum.photos/seed/mobile-v3/1920/1080" 
           alt="IsabiEvents Mobile" 
@@ -76,13 +76,13 @@ export default function MobileAppPage() {
       </section>
 
       {/* Value Prop Section */}
-      <section className="py-24 relative overflow-hidden bg-background">
+      <section className="py-16 relative overflow-hidden bg-background">
         <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-primary/5 blur-[150px] rounded-full -translate-x-1/2 -z-10" />
         <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-accent/5 blur-[150px] rounded-full translate-x-1/2 -z-10" />
         
         <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto mb-16 space-y-2">
-            <h2 className="text-xl md:text-3xl text-balance font-black tracking-tight">
+          <div className="text-center max-w-3xl mx-auto mb-12 space-y-2">
+            <h2 className="text-xl md:text-2xl text-balance font-black tracking-tight">
               Built for the <br />
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Nigerian Experience</span>
             </h2>
@@ -115,7 +115,7 @@ export default function MobileAppPage() {
       </section>
 
       {/* Featured Preview */}
-      <section className="py-24 bg-secondary/30 border-y border-border">
+      <section className="py-16 bg-secondary/30 border-y border-border">
          <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
             <div className="relative">
                 <div className="relative z-10 mx-auto w-48 md:w-64 aspect-[1/2] bg-card border-[8px] border-border rounded-[2.5rem] shadow-[0_32px_64px_-12px_rgba(0,0,0,0.3)] overflow-hidden ring-1 ring-white/10">
@@ -137,7 +137,7 @@ export default function MobileAppPage() {
             </div>
 
             <div className="space-y-8 text-left">
-               <h2 className="leading-tight text-xl md:text-3xl font-black">Fast. Secure. <br /> Always with you.</h2>
+               <h2 className="leading-tight text-xl md:text-2xl font-black">Fast. Secure. <br /> Always with you.</h2>
                <div className="space-y-6">
                   <FeatureListItem 
                     title="QR-Ready Entry" 
@@ -162,14 +162,14 @@ export default function MobileAppPage() {
       </section>
 
       {/* Call to Action */}
-      <section className="py-24 bg-background">
+      <section className="py-16 bg-background">
         <div className="container mx-auto px-4 text-center">
-          <div className="max-w-4xl mx-auto relative group overflow-hidden p-10 md:p-16 bg-primary/5 border border-primary/10 rounded-[3rem] shadow-2xl">
+          <div className="max-w-4xl mx-auto relative group overflow-hidden p-10 md:p-14 bg-primary/5 border border-primary/10 rounded-[3rem] shadow-2xl">
             <div className="absolute top-0 left-0 w-64 h-64 bg-primary/10 blur-[80px] rounded-full -translate-x-1/2 -translate-y-1/2" />
             <div className="absolute bottom-0 right-0 w-64 h-64 bg-accent/10 blur-[80px] rounded-full translate-x-1/2 translate-y-1/2" />
             
-            <div className="relative z-10 space-y-8">
-              <h2 className="text-xl md:text-4xl font-black leading-tight tracking-tight">
+            <div className="relative z-10 space-y-6">
+              <h2 className="text-xl md:text-3xl font-black leading-tight tracking-tight">
                 Ready to <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">ditch paper?</span>
               </h2>
               <p className="text-muted-foreground text-sm md:text-base font-normal max-w-xl mx-auto leading-relaxed">
