@@ -72,7 +72,7 @@
     @apply font-headline font-black;
   }
   h1 {
-    @apply text-5xl md:text-8xl tracking-tighter leading-[0.95] font-black text-balance;
+    @apply text-4xl md:text-8xl tracking-tighter leading-[0.95] font-black text-balance;
   }
   h2 {
     @apply text-4xl md:text-6xl tracking-tighter leading-[1] font-black text-balance;
