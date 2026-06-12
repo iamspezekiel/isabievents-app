@@ -31,6 +31,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { CATEGORIES, MOCK_EVENTS } from '@/lib/mock-data';
 import Image from 'next/image';
 import Link from 'next/link';
+import { cn } from "@/lib/utils";
 
 const iconMap: any = {
   Music, Trophy, Mic2, GlassWater, Dribbble, Church, Palette, Images, Cpu, Users: UsersIcon,
@@ -87,21 +88,24 @@ export default function HomePage() {
                 </Button>
               </Link>
             </div>
-            <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
-              {CATEGORIES.slice(0, 5).map((cat) => {
+            <div className="grid grid-cols-4 md:grid-cols-5 gap-3 md:gap-4">
+              {CATEGORIES.slice(0, 10).map((cat, index) => {
                 const IconComp = iconMap[cat.icon] || Music;
                 return (
                   <Link 
                     key={cat.id} 
                     href={`/discover?category=${cat.id}`}
-                    className="block"
+                    className={cn(
+                      "block group",
+                      index >= 8 && "hidden md:block"
+                    )}
                   >
-                    <Card className="hover:border-primary transition-all group overflow-hidden cursor-pointer bg-card/50 backdrop-blur-sm rounded-2xl border-white/10">
-                      <CardContent className="p-4 flex flex-col items-center text-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-300">
-                          <IconComp className="w-5 h-5 text-muted-foreground group-hover:text-white transition-colors" />
+                    <Card className="hover:border-primary transition-all group overflow-hidden cursor-pointer bg-card/50 backdrop-blur-sm rounded-2xl border-white/10 h-full">
+                      <CardContent className="p-3 md:p-4 flex flex-col items-center text-center gap-2 md:gap-3 h-full justify-center">
+                        <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-secondary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                          <IconComp className="w-4 h-4 md:w-5 md:h-5 text-muted-foreground group-hover:text-white transition-colors" />
                         </div>
-                        <span className="font-bold tracking-tight text-xs">{cat.name}</span>
+                        <span className="font-bold tracking-tight text-[10px] md:text-xs line-clamp-1">{cat.name}</span>
                       </CardContent>
                     </Card>
                   </Link>
