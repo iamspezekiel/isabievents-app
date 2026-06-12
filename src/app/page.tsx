@@ -96,7 +96,7 @@ export default function HomePage() {
           </div>
 
           {/* Top Categories Section (10 desktop, 8 mobile) */}
-          <section className="relative z-10 pt-0">
+          <section className="relative z-10 pt-12">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-xl md:text-2xl font-black tracking-tighter text-left">Top Categories</h2>
               <Link href="/categories">
@@ -122,7 +122,7 @@ export default function HomePage() {
                         <div className="w-8 h-8 md:w-12 md:h-12 rounded-full bg-secondary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-300">
                           <IconComp className="w-4 h-4 md:w-6 md:h-6 text-muted-foreground group-hover:text-white transition-colors" />
                         </div>
-                        <span className="font-bold tracking-tight text-[10px] md:text-sm line-clamp-1">{cat.name}</span>
+                        <span className="font-bold tracking-tight text-[10px] md:sm line-clamp-1">{cat.name}</span>
                       </CardContent>
                     </Card>
                   </Link>
