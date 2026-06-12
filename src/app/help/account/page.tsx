@@ -17,7 +17,7 @@ export default function AccountSupportPage() {
           </Link>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-2 text-left">
-              <h1 className="font-headline text-3xl md:text-4xl text-balance">Account & Profile</h1>
+              <h1 className="font-headline text-2xl md:text-3xl text-balance">Account & Profile</h1>
               <p className="text-muted-foreground">Manage your identity, security, and verification status.</p>
             </div>
             <User className="w-16 h-16 text-primary/20 hidden md:block" />
@@ -54,8 +54,8 @@ export default function AccountSupportPage() {
           {/* Account Verification Section */}
           <section className="bg-card border border-border rounded-3xl p-8 space-y-6 text-left">
             <div className="flex items-center gap-3">
-              <CheckCircle2 className="w-8 h-8 text-primary" />
-              <h2 className="font-headline text-2xl">Verified Status</h2>
+              <CheckCircle2 className="w-6 h-6 text-primary" />
+              <h2 className="font-headline text-xl">Verified Status</h2>
             </div>
             <p className="text-muted-foreground leading-relaxed">
               Verified accounts build trust with attendees. To get verified, organizers must provide a valid government-issued ID and proof of business registration (for corporate entities). 
@@ -70,7 +70,7 @@ export default function AccountSupportPage() {
 
           {/* FAQ/Troubleshooting Section */}
           <section className="space-y-6 text-left">
-            <h2 className="font-headline text-2xl">Troubleshooting</h2>
+            <h2 className="font-headline text-xl">Troubleshooting</h2>
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="item-1" className="border-border">
                 <AccordionTrigger className="text-left font-medium hover:text-primary">I can't access my registered email address</AccordionTrigger>

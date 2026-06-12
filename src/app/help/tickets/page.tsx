@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -18,7 +17,7 @@ export default function TicketSupportPage() {
           </Link>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-2">
-              <h1 className="font-headline text-3xl md:text-4xl text-balance">Ticket Support</h1>
+              <h1 className="font-headline text-2xl md:text-3xl text-balance">Ticket Support</h1>
               <p className="text-muted-foreground">Everything you need to know about your digital tickets.</p>
             </div>
             <Ticket className="w-16 h-16 text-primary/20 hidden md:block" />
@@ -29,7 +28,7 @@ export default function TicketSupportPage() {
       <main className="container mx-auto px-4 py-16 max-w-4xl">
         <div className="grid gap-12">
           <section className="space-y-6">
-            <h2 className="font-headline text-2xl text-left">Common Ticket Issues</h2>
+            <h2 className="font-headline text-xl text-left">Common Ticket Issues</h2>
             <div className="grid md:grid-cols-2 gap-6">
               <SupportTopic 
                 icon={Mail} 
@@ -55,7 +54,7 @@ export default function TicketSupportPage() {
           </section>
 
           <section className="bg-card border border-border rounded-3xl p-8 space-y-6 text-left">
-            <h2 className="font-headline text-2xl">Need to resend your ticket?</h2>
+            <h2 className="font-headline text-xl">Need to resend your ticket?</h2>
             <p className="text-muted-foreground leading-relaxed">
               If you can't find your ticket, enter the email address used during purchase and we'll send it back to you instantly.
             </p>
@@ -66,7 +65,7 @@ export default function TicketSupportPage() {
           </section>
 
           <section className="space-y-6 text-left">
-            <h2 className="font-headline text-2xl">Helpful Guides</h2>
+            <h2 className="font-headline text-xl">Helpful Guides</h2>
             <div className="space-y-4">
               <GuideItem title="How to transfer a ticket to a friend" time="2 min read" />
               <GuideItem title="What to do if an event is cancelled" time="3 min read" />

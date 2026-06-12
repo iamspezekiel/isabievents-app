@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -14,7 +13,7 @@ export default function RefundPolicyPage() {
           <Link href="/help" className="flex items-center gap-2 text-muted-foreground hover:text-white mb-6 transition-colors no-underline">
             <ArrowLeft className="w-4 h-4" /> Back to Help Center
           </Link>
-          <h1 className="font-headline text-3xl md:text-4xl text-balance">Refund Policy</h1>
+          <h1 className="font-headline text-2xl md:text-3xl text-balance">Refund Policy</h1>
           <p className="text-muted-foreground mt-2">Last updated: October 20, 2024</p>
         </div>
       </header>
@@ -23,19 +22,19 @@ export default function RefundPolicyPage() {
         <div className="grid gap-12">
           <section className="prose prose-invert max-w-none space-y-8">
             <div className="space-y-4">
-              <h2 className="font-headline text-2xl flex items-center gap-2">
+              <h2 className="font-headline text-xl flex items-center gap-2 text-left">
                 <ShieldAlert className="w-6 h-6 text-accent" /> 1. Overview
               </h2>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed text-left">
                 IsabiEvents is a platform that facilitates ticket sales between event organizers and attendees. Refund policies are primarily determined and managed by the individual event organizers. By purchasing a ticket on IsabiEvents, you agree to the refund policy specific to that event.
               </p>
             </div>
 
             <div className="space-y-4">
-              <h2 className="font-headline text-2xl flex items-center gap-2">
+              <h2 className="font-headline text-xl flex items-center gap-2 text-left">
                 <FileText className="w-6 h-6 text-accent" /> 2. Standard Refund Conditions
               </h2>
-              <ul className="space-y-3 text-muted-foreground">
+              <ul className="space-y-3 text-muted-foreground text-left">
                 <li className="flex gap-3"><CheckCircle2 className="w-5 h-5 text-primary shrink-0" /> Refund requests must be submitted at least 7 days before the event start date.</li>
                 <li className="flex gap-3"><CheckCircle2 className="w-5 h-5 text-primary shrink-0" /> Service fees (2.5%) are non-refundable unless the event is cancelled by the organizer.</li>
                 <li className="flex gap-3"><CheckCircle2 className="w-5 h-5 text-primary shrink-0" /> Refunds are typically processed within 5-10 business days to the original payment method.</li>
@@ -43,10 +42,10 @@ export default function RefundPolicyPage() {
             </div>
 
             <div className="space-y-4">
-              <h2 className="font-headline text-2xl flex items-center gap-2">
+              <h2 className="font-headline text-xl flex items-center gap-2 text-left">
                 <RefreshCcw className="w-6 h-6 text-accent" /> 3. Cancelled or Postponed Events
               </h2>
-              <p className="text-muted-foreground leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed text-left">
                 If an event is cancelled by the organizer, IsabiEvents will work with the organizer to ensure all attendees receive a full refund, including service fees. If an event is postponed, your ticket will remain valid for the new date, and refund options will be provided if you cannot attend the new date.
               </p>
             </div>
