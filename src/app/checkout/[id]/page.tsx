@@ -37,7 +37,7 @@ export default function CheckoutPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground pt-32 pb-12">
+    <div className="min-h-screen bg-background text-foreground pt-40 pb-12">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
           {/* Main Checkout Section */}
@@ -45,7 +45,7 @@ export default function CheckoutPage() {
             {step === 1 && (
               <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <h1 className="font-headline text-3xl text-left">Attendee Information</h1>
-                <div className="grid gap-6">
+                <div className="grid gap-6 text-left">
                   <div className="space-y-2">
                     <Label htmlFor="fullname">Full Name</Label>
                     <Input id="fullname" placeholder="Enter your full name" className="h-12 bg-card" />

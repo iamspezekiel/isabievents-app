@@ -15,7 +15,7 @@ export default function SignupPage() {
   const [role, setRole] = useState('attendee');
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-start p-4 pt-40 pb-20">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-start p-4 pt-44 pb-20">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-2">
           <Link href="/" className="inline-block mb-4">
@@ -79,7 +79,7 @@ export default function SignupPage() {
         </Card>
 
         <p className="text-center text-sm text-muted-foreground">
-          Already have an account? <Link href="/login" className="text-primary font-bold">Sign In</Link>
+          Already have an account? <Link href="/login" className="text-primary font-bold no-underline">Sign In</Link>
         </p>
       </div>
     </div>

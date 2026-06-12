@@ -40,7 +40,7 @@ export default function StaffCheckIn() {
   const resetScanner = () => setScanState('idle');
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col pt-24">
+    <div className="min-h-screen bg-background text-foreground flex flex-col pt-32">
       <header className="border-b border-border p-4 bg-card flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-4">
           <Link href="/">
@@ -84,7 +84,7 @@ export default function StaffCheckIn() {
                   <div className="text-center space-y-4 animate-in zoom-in-90 duration-300">
                     <CheckCircle className="w-24 h-24 text-primary mx-auto" />
                     <div>
-                      <h2 className="font-headline text-3xl text-primary">ACCESS GRANTED</h2>
+                      <h2 className="font-headline text-3xl text-primary text-balance">ACCESS GRANTED</h2>
                       <p className="text-lg font-medium mt-2">VIP PASS • ADMIT ONE</p>
                     </div>
                     <Button onClick={resetScanner} variant="outline" className="mt-6 rounded-full px-10 border-primary/50 text-primary hover:bg-primary/10">
@@ -97,7 +97,7 @@ export default function StaffCheckIn() {
                   <div className="text-center space-y-4 animate-in zoom-in-90 duration-300">
                     <AlertCircle className="w-24 h-24 text-red-500 mx-auto" />
                     <div>
-                      <h2 className="font-headline text-3xl text-red-500">ACCESS DENIED</h2>
+                      <h2 className="font-headline text-3xl text-red-500 text-balance">ACCESS DENIED</h2>
                       <p className="text-lg font-medium mt-2">TICKET ALREADY USED</p>
                     </div>
                     <Button onClick={resetScanner} variant="outline" className="mt-6 rounded-full px-10 border-red-500/50 text-red-500 hover:bg-red-500/10">

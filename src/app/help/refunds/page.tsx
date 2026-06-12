@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -8,12 +9,12 @@ import Link from 'next/link';
 export default function RefundPolicyPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b border-border bg-card pt-32 pb-10">
-        <div className="container mx-auto px-4 max-w-4xl">
-          <Link href="/help" className="flex items-center gap-2 text-muted-foreground hover:text-white mb-6 transition-colors">
+      <header className="border-b border-border bg-card pt-40 pb-10">
+        <div className="container mx-auto px-4 max-w-4xl text-left">
+          <Link href="/help" className="flex items-center gap-2 text-muted-foreground hover:text-white mb-6 transition-colors no-underline">
             <ArrowLeft className="w-4 h-4" /> Back to Help Center
           </Link>
-          <h1 className="font-headline text-3xl md:text-4xl">Refund Policy</h1>
+          <h1 className="font-headline text-3xl md:text-4xl text-balance">Refund Policy</h1>
           <p className="text-muted-foreground mt-2">Last updated: October 20, 2024</p>
         </div>
       </header>
@@ -52,7 +53,7 @@ export default function RefundPolicyPage() {
           </section>
 
           <div className="bg-primary/5 border border-primary/20 rounded-3xl p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="space-y-2">
+            <div className="space-y-2 text-left">
               <h3 className="font-headline text-xl">Ready to request a refund?</h3>
               <p className="text-sm text-muted-foreground">Log in to your dashboard to manage your orders.</p>
             </div>

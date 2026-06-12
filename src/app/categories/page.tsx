@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -26,9 +27,9 @@ const iconMap: any = {
 export default function AllCategoriesPage() {
   return (
     <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card pt-32 pb-12">
+      <header className="border-b border-border bg-card pt-40 pb-12">
         <div className="container mx-auto px-4">
-          <h1 className="font-headline text-4xl md:text-6xl">Browse Everything</h1>
+          <h1 className="font-headline text-4xl md:text-6xl text-balance">Browse Everything</h1>
           <p className="text-muted-foreground text-lg mt-4">Discover experiences across every interest in Nigeria.</p>
         </div>
       </header>
@@ -38,7 +39,7 @@ export default function AllCategoriesPage() {
           {CATEGORIES.map((cat) => {
             const IconComp = iconMap[cat.icon] || Music;
             return (
-              <Link key={cat.id} href={`/discover?category=${cat.id}`}>
+              <Link key={cat.id} href={`/discover?category=${cat.id}`} className="no-underline">
                 <div className="group relative h-64 rounded-3xl overflow-hidden border border-border hover:border-primary/50 transition-all bg-card">
                   <div className="absolute inset-0 opacity-10 group-hover:opacity-20 transition-opacity">
                     <Image 
@@ -53,11 +54,11 @@ export default function AllCategoriesPage() {
                       <IconComp className="w-7 h-7 text-muted-foreground group-hover:text-white transition-colors" />
                     </div>
                     <div>
-                      <h3 className="font-headline text-2xl mb-1">{cat.name}</h3>
+                      <h3 className="font-headline text-2xl mb-1 text-foreground">{cat.name}</h3>
                       <p className="text-sm text-muted-foreground">Explore 100+ events</p>
                     </div>
                     <div className="absolute bottom-8 right-8 w-10 h-10 rounded-full bg-secondary flex items-center justify-center opacity-0 group-hover:opacity-100 -translate-x-4 group-hover:translate-x-0 transition-all">
-                      <ChevronRight className="w-5 h-5" />
+                      <ChevronRight className="w-5 h-5 text-foreground" />
                     </div>
                   </div>
                 </div>

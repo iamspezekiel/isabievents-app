@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -10,14 +11,14 @@ import Link from 'next/link';
 export default function TicketSupportPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <header className="border-b border-border bg-card pt-32 pb-10">
-        <div className="container mx-auto px-4 max-w-4xl">
-          <Link href="/help" className="flex items-center gap-2 text-muted-foreground hover:text-white mb-6 transition-colors">
+      <header className="border-b border-border bg-card pt-40 pb-10">
+        <div className="container mx-auto px-4 max-w-4xl text-left">
+          <Link href="/help" className="flex items-center gap-2 text-muted-foreground hover:text-white mb-6 transition-colors no-underline">
             <ArrowLeft className="w-4 h-4" /> Back to Help Center
           </Link>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-2">
-              <h1 className="font-headline text-3xl md:text-4xl">Ticket Support</h1>
+              <h1 className="font-headline text-3xl md:text-4xl text-balance">Ticket Support</h1>
               <p className="text-muted-foreground">Everything you need to know about your digital tickets.</p>
             </div>
             <Ticket className="w-16 h-16 text-primary/20 hidden md:block" />
@@ -28,7 +29,7 @@ export default function TicketSupportPage() {
       <main className="container mx-auto px-4 py-16 max-w-4xl">
         <div className="grid gap-12">
           <section className="space-y-6">
-            <h2 className="font-headline text-2xl">Common Ticket Issues</h2>
+            <h2 className="font-headline text-2xl text-left">Common Ticket Issues</h2>
             <div className="grid md:grid-cols-2 gap-6">
               <SupportTopic 
                 icon={Mail} 
@@ -53,7 +54,7 @@ export default function TicketSupportPage() {
             </div>
           </section>
 
-          <section className="bg-card border border-border rounded-3xl p-8 space-y-6">
+          <section className="bg-card border border-border rounded-3xl p-8 space-y-6 text-left">
             <h2 className="font-headline text-2xl">Need to resend your ticket?</h2>
             <p className="text-muted-foreground leading-relaxed">
               If you can't find your ticket, enter the email address used during purchase and we'll send it back to you instantly.
@@ -64,7 +65,7 @@ export default function TicketSupportPage() {
             </div>
           </section>
 
-          <section className="space-y-6">
+          <section className="space-y-6 text-left">
             <h2 className="font-headline text-2xl">Helpful Guides</h2>
             <div className="space-y-4">
               <GuideItem title="How to transfer a ticket to a friend" time="2 min read" />
@@ -87,7 +88,7 @@ export default function TicketSupportPage() {
 
 function SupportTopic({ icon: Icon, title, desc }: any) {
   return (
-    <div className="p-6 bg-card border border-border rounded-2xl space-y-3">
+    <div className="p-6 bg-card border border-border rounded-2xl space-y-3 text-left">
       <div className="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center">
         <Icon className="w-5 h-5 text-primary" />
       </div>
@@ -99,8 +100,8 @@ function SupportTopic({ icon: Icon, title, desc }: any) {
 
 function GuideItem({ title, time }: any) {
   return (
-    <Link href="#" className="flex items-center justify-between p-5 bg-card/50 border border-border rounded-xl hover:border-primary/50 transition-all group">
-      <span className="font-medium group-hover:text-primary transition-colors">{title}</span>
+    <Link href="#" className="flex items-center justify-between p-5 bg-card/50 border border-border rounded-xl hover:border-primary/50 transition-all group no-underline">
+      <span className="font-medium group-hover:text-primary transition-colors text-foreground">{title}</span>
       <span className="text-xs text-muted-foreground">{time}</span>
     </Link>
   );

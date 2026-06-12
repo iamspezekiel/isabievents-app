@@ -12,7 +12,7 @@ import { Logo } from '@/components/logo';
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-start p-4 pt-40 pb-20">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-start p-4 pt-44 pb-20">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-2">
           <Link href="/" className="inline-block mb-4">
@@ -38,7 +38,7 @@ export default function LoginPage() {
             <div className="space-y-2">
               <div className="flex justify-between">
                 <Label htmlFor="password">Password</Label>
-                <Link href="#" className="text-xs text-primary">Forgot password?</Link>
+                <Link href="#" className="text-xs text-primary no-underline">Forgot password?</Link>
               </div>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -64,7 +64,7 @@ export default function LoginPage() {
         </Card>
 
         <p className="text-center text-sm text-muted-foreground">
-          Don&apos;t have an account? <Link href="/signup" className="text-primary font-bold">Create Account</Link>
+          Don&apos;t have an account? <Link href="/signup" className="text-primary font-bold no-underline">Create Account</Link>
         </p>
       </div>
     </div>
