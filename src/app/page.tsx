@@ -95,18 +95,22 @@ export default function HomePage() {
       <section className="pb-20">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl md:text-3xl font-black tracking-tighter">Browse by Category</h2>
+            <h2 className="text-2xl md:text-3xl font-black tracking-tighter">Top Category</h2>
             <Link href="/categories">
               <Button className="rounded-full px-6 shadow-lg shadow-primary/20 font-semibold gap-2">
                 View All <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-            {CATEGORIES.map((cat) => {
+          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-4">
+            {CATEGORIES.slice(0, 10).map((cat, index) => {
               const IconComp = iconMap[cat.icon] || Music;
               return (
-                <Link key={cat.id} href={`/discover?category=${cat.id}`}>
+                <Link 
+                  key={cat.id} 
+                  href={`/discover?category=${cat.id}`}
+                  className={index >= 8 ? "hidden lg:block" : "block"}
+                >
                   <Card className="hover:border-primary transition-all group overflow-hidden cursor-pointer bg-card/50">
                     <CardContent className="p-6 flex flex-col items-center text-center gap-4">
                       <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center group-hover:bg-primary/20 transition-colors">
