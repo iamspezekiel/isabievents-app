@@ -43,7 +43,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Hero & Categories Combined Section for Blended Background */}
-      <div className="relative pt-60 pb-16 overflow-hidden">
+      <div className="relative pt-32 md:pt-60 pb-16 overflow-hidden">
         {/* Blended Background Gradient */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[1000px] bg-primary/10 blur-[150px] -z-10 rounded-full" />
         
