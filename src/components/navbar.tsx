@@ -40,25 +40,10 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  if (!mounted) {
-    return (
-      <div className="fixed left-1/2 -translate-x-1/2 z-50 w-full max-w-7xl px-4 top-6">
-        <nav className="flex items-center justify-between px-6 py-3 rounded-full border bg-background/40 backdrop-blur-md border-white/20 h-20">
-          <Logo size="sm" />
-          <div className="hidden md:flex items-center gap-8">
-            {NAV_LINKS.map((link) => (
-              <span key={link.href} className="text-sm font-bold tracking-tight text-foreground/70">
-                {link.name}
-              </span>
-            ))}
-          </div>
-        </nav>
-      </div>
-    );
-  }
-
   const getIsActive = (path: string) => pathname === path;
 
+  // We keep the container structure identical on server and client
+  // only changing minor visual attributes that are safe for hydration
   return (
     <div className={cn(
       "fixed left-1/2 -translate-x-1/2 z-50 transition-all duration-500 w-full max-w-7xl px-4",
@@ -75,7 +60,7 @@ export function Navbar() {
           <Logo size="sm" />
         </Link>
 
-        {/* Desktop Links */}
+        {/* Desktop Links - These are static and safe for hydration */}
         <div className="hidden md:flex items-center gap-8">
           {NAV_LINKS.map((link) => (
             <Link 
@@ -108,10 +93,10 @@ export function Navbar() {
           </DropdownMenu>
         </div>
 
-        {/* Actions */}
+        {/* Actions - We render the dynamic parts only after mount or with hydration-safe fallbacks */}
         <div className="flex items-center gap-2 md:gap-4">
           <div className="hidden sm:flex items-center gap-2">
-            <ThemeToggle />
+            {mounted && <ThemeToggle />}
             <Button variant="ghost" size="sm" className="font-bold px-4 no-underline" asChild>
               <Link href="/login">Sign In</Link>
             </Button>
@@ -121,7 +106,7 @@ export function Navbar() {
           </div>
 
           <div className="sm:hidden flex items-center gap-2">
-             <ThemeToggle />
+             {mounted && <ThemeToggle />}
              <Button variant="ghost" size="icon" asChild className="no-underline">
                 <Link href="/login"><User className="w-5 h-5" /></Link>
              </Button>
