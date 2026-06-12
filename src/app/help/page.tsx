@@ -43,7 +43,7 @@ export default function HelpCenterPage() {
                 <AccordionItem value="q1">
                   <AccordionTrigger>How do I receive my ticket after purchase?</AccordionTrigger>
                   <AccordionContent className="text-muted-foreground leading-relaxed">
-                    Once your payment is confirmed, you will receive an email with your unique QR code ticket. You can also access all your active tickets directly in your <Link href="/dashboard/attendee" className="text-primary">Attendee Dashboard</Link> under "My Tickets".
+                    Once your payment is confirmed, you will receive an email with your unique QR code ticket. You can also access all your active tickets directly in your <Link href="/dashboard/attendee" className="text-primary no-underline">Attendee Dashboard</Link> under "My Tickets".
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="q2">
@@ -65,7 +65,7 @@ export default function HelpCenterPage() {
               <h2 className="font-headline text-3xl">Latest Articles</h2>
               <div className="space-y-4">
                 {[1, 2, 3].map(i => (
-                  <Link key={i} href="#" className="flex items-center justify-between p-6 bg-card border border-border rounded-2xl hover:border-primary transition-all group">
+                  <Link key={i} href="#" className="flex items-center justify-between p-6 bg-card border border-border rounded-2xl hover:border-primary transition-all group no-underline">
                     <div className="space-y-1">
                       <h4 className="font-bold">Protecting your account from ticket scams</h4>
                       <p className="text-sm text-muted-foreground">Safety tips for buying and selling tickets safely.</p>
@@ -94,7 +94,7 @@ export default function HelpCenterPage() {
                     <Mail className="w-4 h-4" /> Email Support
                   </Button>
                 </div>
-                <div className="pt-4 border-t border-primary/10 flex items-center gap-3 text-sm font-medium">
+                <div className="pt-4 border-t border-primary/10 flex items-center justify-center gap-3 text-sm font-medium">
                   <Phone className="w-4 h-4 text-primary" /> +234 (0) 800-ISABI-HELP
                 </div>
               </CardContent>
@@ -108,7 +108,7 @@ export default function HelpCenterPage() {
 
 function HelpCategoryCard({ icon: Icon, title, count }: any) {
   return (
-    <Link href="#">
+    <Link href="#" className="no-underline">
       <Card className="bg-card border-border hover:border-primary/50 transition-all group">
         <CardContent className="p-8 flex items-center gap-6">
           <div className="w-14 h-14 bg-secondary rounded-2xl flex items-center justify-center group-hover:bg-primary/10 transition-colors">
