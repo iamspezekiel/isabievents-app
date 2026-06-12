@@ -11,7 +11,7 @@ export default function PricingPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <header className="pt-40 pb-24 text-center relative overflow-hidden">
+      <header className="pt-32 pb-12 text-center relative overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
         <div className="container mx-auto px-4 space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <Badge className="bg-primary/20 text-primary border-none py-1.5 px-6 mb-4 font-bold tracking-widest uppercase">PRICING</Badge>
@@ -28,7 +28,7 @@ export default function PricingPage() {
       </header>
 
       {/* Main Pricing Card */}
-      <section className="pb-24">
+      <section className="pb-12">
         <div className="container mx-auto px-4">
           <Card className="max-w-6xl mx-auto bg-card border-border shadow-[0_32px_64px_-12px_rgba(0,0,0,0.1)] rounded-[3rem] overflow-hidden hover:border-primary/20 transition-all duration-500">
             <div className="grid lg:grid-cols-2">
@@ -106,9 +106,9 @@ export default function PricingPage() {
       </section>
 
       {/* FAQ */}
-      <section className="py-24 bg-card/30 border-y border-border">
+      <section className="py-12 bg-card/30 border-y border-border">
         <div className="container mx-auto px-4 max-w-4xl">
-          <div className="text-center space-y-4 mb-20">
+          <div className="text-center space-y-4 mb-12">
             <h2 className="font-headline text-3xl md:text-4xl font-black">Frequently Asked Questions</h2>
             <p className="text-muted-foreground">Everything you need to know about our fees and payouts.</p>
           </div>
@@ -135,7 +135,7 @@ export default function PricingPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-24 container mx-auto px-4">
+      <section className="py-12 container mx-auto px-4">
         <div className="bg-primary/10 border border-primary/20 rounded-[3rem] p-12 md:p-20 text-center space-y-10">
           <h2 className="font-headline text-3xl md:text-5xl font-black">Ready to sell out?</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">

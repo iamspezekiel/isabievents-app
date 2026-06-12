@@ -35,7 +35,7 @@ export default function AllCategoriesPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Hero Section */}
-      <header className="relative pt-48 pb-20 overflow-hidden border-b border-border bg-card/30">
+      <header className="relative pt-32 pb-8 overflow-hidden border-b border-border bg-card/30">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
         <div className="container mx-auto px-4 text-center space-y-6">
           <h1 className="font-headline text-4xl md:text-6xl font-black leading-tight tracking-tighter text-balance">
@@ -48,7 +48,7 @@ export default function AllCategoriesPage() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-20 pb-32">
+      <main className="container mx-auto px-4 py-8 pb-20">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {CATEGORIES.map((cat) => {
             const IconComp = iconMap[cat.icon] || Music;

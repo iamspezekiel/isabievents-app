@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from 'image';
 import { cn } from "@/lib/utils";
 
 const TESTIMONIALS = [
@@ -52,7 +52,7 @@ export default function TestimonialsPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Hero Section */}
-      <header className="pt-40 pb-24 border-b border-border bg-card/30 overflow-hidden relative">
+      <header className="pt-32 pb-12 border-b border-border bg-card/30 overflow-hidden relative">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full translate-x-1/2 -translate-y-1/2 -z-10" />
         <div className="container mx-auto px-4 text-center space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <Badge className="bg-accent/20 text-accent border-none py-1.5 px-6 mb-4 font-bold tracking-widest uppercase">TESTIMONIALS</Badge>
@@ -68,9 +68,9 @@ export default function TestimonialsPage() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-24">
+      <main className="container mx-auto px-4 py-12">
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-24">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-12">
           <StatBox icon={Users} label="Happy Attendees" value="50k+" />
           <StatBox icon={Star} label="Average Rating" value="4.8/5" />
           <StatBox icon={MessageSquare} label="Verified Reviews" value="12k+" />
@@ -84,7 +84,7 @@ export default function TestimonialsPage() {
         </div>
 
         {/* Call to Action */}
-        <section className="mt-32 py-24 px-8 bg-card border border-border rounded-[4rem] text-center space-y-10 overflow-hidden relative group">
+        <section className="mt-16 py-16 px-8 bg-card border border-border rounded-[4rem] text-center space-y-10 overflow-hidden relative group">
            {/* Background Glows */}
            <div className="absolute top-0 left-0 w-96 h-96 bg-primary/10 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 transition-transform duration-1000 group-hover:scale-110" />
            <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/10 blur-[120px] rounded-full translate-x-1/2 translate-y-1/2 transition-transform duration-1000 group-hover:scale-110" />

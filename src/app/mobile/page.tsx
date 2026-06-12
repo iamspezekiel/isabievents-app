@@ -25,7 +25,7 @@ export default function MobileAppPage() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
       {/* Immersive Hero Header */}
-      <section className="relative h-[90vh] w-full flex items-end pb-24 pt-44 overflow-hidden">
+      <section className="relative h-[80vh] w-full flex items-end pb-8 md:pb-16 pt-32 overflow-hidden">
         <Image 
           src="https://picsum.photos/seed/mobile-v3/1920/1080" 
           alt="IsabiEvents Mobile" 
@@ -74,12 +74,12 @@ export default function MobileAppPage() {
       </section>
 
       {/* Value Prop Section */}
-      <section className="py-32 relative overflow-hidden">
+      <section className="py-8 relative overflow-hidden">
         <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-primary/10 blur-[150px] rounded-full -translate-x-1/2 -z-10" />
         <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-accent/10 blur-[150px] rounded-full translate-x-1/2 -z-10" />
         
         <div className="container mx-auto px-4">
-          <div className="text-center max-w-4xl mx-auto mb-24 space-y-6">
+          <div className="text-center max-w-4xl mx-auto mb-12 space-y-6">
             <h2 className="text-4xl md:text-6xl text-balance">
               Built for the <br />
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Nigerian Experience</span>
@@ -113,7 +113,7 @@ export default function MobileAppPage() {
       </section>
 
       {/* Featured Preview */}
-      <section className="py-32 bg-card/30 border-y border-border">
+      <section className="py-8 bg-card/30 border-y border-border">
          <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-24 items-center">
             <div className="relative">
                 <div className="relative z-10 mx-auto w-72 md:w-96 aspect-[1/2] bg-card border-[12px] border-border rounded-[4rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] overflow-hidden ring-8 ring-primary/5">
@@ -160,9 +160,9 @@ export default function MobileAppPage() {
       </section>
 
       {/* Call to Action */}
-      <section className="py-32">
+      <section className="py-8">
         <div className="container mx-auto px-4 text-center">
-          <div className="max-w-6xl mx-auto relative group overflow-hidden p-16 md:p-32 bg-primary/5 border border-primary/10 rounded-[5rem] shadow-2xl">
+          <div className="max-w-6xl mx-auto relative group overflow-hidden p-16 md:p-24 bg-primary/5 border border-primary/10 rounded-[5rem] shadow-2xl">
             <div className="absolute top-0 left-0 w-96 h-96 bg-primary/10 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2" />
             <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/10 blur-[120px] rounded-full translate-x-1/2 translate-y-1/2" />
             

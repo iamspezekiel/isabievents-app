@@ -43,16 +43,16 @@ export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Hero Section */}
-      <section className="relative pt-44 pb-32 overflow-hidden">
+      <section className="relative pt-32 pb-8 overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
         <div className="container mx-auto px-4 text-center">
-          <Badge className="mb-6 py-1.5 px-4 bg-primary/20 text-primary border-primary/20 hover:bg-primary/20 animate-in fade-in slide-in-from-bottom-4 duration-700">
+          <Badge className="mb-4 py-1.5 px-4 bg-primary/20 text-primary border-primary/20 hover:bg-primary/20 animate-in fade-in slide-in-from-bottom-4 duration-700">
             Trusted by 50,000+ Nigerians
           </Badge>
-          <h1 className="text-3xl md:text-7xl mb-8 leading-[1.05] max-w-4xl mx-auto font-black tracking-tighter text-balance animate-in fade-in slide-in-from-bottom-8 duration-1000">
+          <h1 className="text-3xl md:text-7xl mb-6 leading-[1.05] max-w-4xl mx-auto font-black tracking-tighter text-balance animate-in fade-in slide-in-from-bottom-8 duration-1000">
             Experience the Best of <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Nigerian</span> Events
           </h1>
-          <p className="text-muted-foreground text-sm md:text-xl max-w-2xl mx-auto mb-12 animate-in fade-in slide-in-from-bottom-12 duration-1000">
+          <p className="text-muted-foreground text-sm md:text-xl max-w-2xl mx-auto mb-8 animate-in fade-in slide-in-from-bottom-12 duration-1000">
             Discover and secure your spot with zero friction.
           </p>
 
@@ -76,9 +76,9 @@ export default function HomePage() {
       </section>
 
       {/* Categories */}
-      <section className="pb-20">
+      <section className="pb-4">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-left">Top Category</h2>
             <Link href="/discover">
               <Button variant="ghost" className="rounded-full px-6 font-semibold gap-2">
@@ -111,9 +111,9 @@ export default function HomePage() {
       </section>
 
       {/* Trending Events */}
-      <section className="pb-24">
+      <section className="pb-8">
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between mb-10">
+          <div className="flex items-center justify-between mb-8">
             <div className="text-left">
               <h2 className="text-2xl md:text-4xl font-black tracking-tighter">Trending</h2>
             </div>
@@ -122,7 +122,7 @@ export default function HomePage() {
             </Button>
           </div>
           
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 mb-12">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 mb-8">
             {MOCK_EVENTS.slice(0, 6).map((event) => (
               <Link key={event.id} href={`/events/${event.id}`}>
                 <div className="group relative rounded-2xl overflow-hidden bg-card border border-border hover:border-primary/50 transition-all hover:shadow-2xl hover:shadow-primary/5">
@@ -181,9 +181,9 @@ export default function HomePage() {
       </section>
 
       {/* Trust Section */}
-      <section className="py-24 bg-card/30 border-y border-border">
+      <section className="py-8 bg-card/30 border-y border-border">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-2xl md:text-5xl font-black tracking-tighter mb-16">Why thousands choose IsabiEvents</h2>
+          <h2 className="text-2xl md:text-5xl font-black tracking-tighter mb-12">Why thousands choose IsabiEvents</h2>
           <div className="grid md:grid-cols-3 gap-12">
             <div className="space-y-4">
               <div className="w-12 h-12 md:w-16 md:h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-6">

@@ -262,7 +262,7 @@ function DiscoverContent() {
 export default function DiscoverPage() {
   return (
     <div className="min-h-screen bg-background">
-      <main className="container mx-auto px-4 pt-36 md:pt-48 pb-12">
+      <main className="container mx-auto px-4 pt-32 md:pt-40 pb-8">
         <Suspense fallback={
           <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
             <Loader2 className="w-10 h-10 animate-spin text-primary" />

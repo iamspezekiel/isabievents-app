@@ -12,7 +12,7 @@ export default function SuccessStoriesPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {/* Hero */}
-      <header className="pt-40 pb-24 border-b border-border bg-card/30 overflow-hidden">
+      <header className="pt-32 pb-8 border-b border-border bg-card/30 overflow-hidden">
         <div className="container mx-auto px-4 text-center space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <Badge className="bg-accent/20 text-accent border-none py-1.5 px-6 mb-4 font-bold tracking-widest uppercase">SUCCESS STORIES</Badge>
           <h1 className="font-headline text-4xl md:text-6xl font-black leading-[1.1] tracking-tighter text-balance">
@@ -27,9 +27,9 @@ export default function SuccessStoriesPage() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-24">
+      <main className="container mx-auto px-4 py-8">
         {/* Featured Case Study */}
-        <section className="mb-32">
+        <section className="mb-12">
           <div className="grid lg:grid-cols-2 gap-16 items-center bg-card border border-border rounded-[3rem] overflow-hidden hover:border-primary/30 transition-colors">
             <div className="relative aspect-video lg:aspect-square">
                <Image 
@@ -72,7 +72,7 @@ export default function SuccessStoriesPage() {
         </section>
 
         {/* Success Grid */}
-        <section className="space-y-16">
+        <section className="space-y-8 mb-12">
           <h2 className="font-headline text-3xl text-center font-bold">More Success Stories</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <CaseCard 
@@ -97,7 +97,7 @@ export default function SuccessStoriesPage() {
         </section>
 
         {/* Global Impact */}
-        <section className="mt-32 py-24 bg-primary/10 rounded-[3rem] border border-primary/20 text-center space-y-12">
+        <section className="mt-8 py-8 bg-primary/10 rounded-[3rem] border border-primary/20 text-center space-y-12">
            <h2 className="font-headline text-4xl font-black">Ready to be our next success story?</h2>
            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
              Join 1,200+ Nigerian organizers who are already scaling their businesses with IsabiEvents.

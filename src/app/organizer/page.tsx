@@ -20,7 +20,7 @@ export default function OrganizerLandingPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
-      <section className="relative pt-48 pb-32 overflow-hidden">
+      <section className="relative pt-32 pb-8 overflow-hidden">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent/10 blur-[120px] -z-10 rounded-full translate-x-1/2 -translate-y-1/2" />
         <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000">
@@ -82,9 +82,9 @@ export default function OrganizerLandingPage() {
       </section>
 
       {/* Features */}
-      <section className="py-24 bg-card/30 border-y border-border">
+      <section className="py-8 bg-card/30 border-y border-border">
         <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
+          <div className="text-center max-w-3xl mx-auto mb-12 space-y-4">
             <h2 className="text-4xl md:text-5xl font-black tracking-tighter">Everything you need to succeed</h2>
             <p className="text-muted-foreground text-lg">We've built a suite of features specifically for the Nigerian market.</p>
           </div>
@@ -125,9 +125,9 @@ export default function OrganizerLandingPage() {
       </section>
 
       {/* Pricing Teaser */}
-      <section className="py-24">
+      <section className="py-8">
         <div className="container mx-auto px-4">
-          <div className="bg-primary/10 border border-primary/20 rounded-[3rem] p-12 md:p-20 text-center space-y-8 relative overflow-hidden">
+          <div className="bg-primary/10 border border-primary/20 rounded-[3rem] p-12 md:p-16 text-center space-y-8 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-32 h-32 bg-primary/20 blur-3xl -translate-x-1/2 -translate-y-1/2 rounded-full" />
             <div className="max-w-2xl mx-auto space-y-6">
               <h2 className="text-4xl md:text-5xl font-black tracking-tighter">Simple, transparent pricing</h2>
@@ -143,7 +143,7 @@ export default function OrganizerLandingPage() {
               </div>
               <div className="pt-8">
                 <Link href="/pricing">
-                  <Button size="lg" className="rounded-full px-12 h-14 text-lg shadow-lg shadow-primary/20">Learn More About Fees</Button>
+                  <Button size="lg" className="rounded-full px-12 h-14 text-lg shadow-lg shadow-primary/20 Learn More About Fees">Learn More About Fees</Button>
                 </Link>
               </div>
             </div>
