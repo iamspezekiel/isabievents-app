@@ -103,7 +103,9 @@ export default function AllCategoriesPage() {
           <div className="absolute bottom-0 right-0 w-64 h-64 bg-accent/10 blur-[100px] rounded-full translate-x-1/2 translate-y-1/2" />
           
           <div className="relative z-10 space-y-6">
-            <h2 className="font-headline text-4xl font-black tracking-tighter">Don't see what you're looking for?</h2>
+            <h2 className="font-headline text-4xl md:text-5xl font-black tracking-tighter">
+              Don't see what <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">you're looking for?</span>
+            </h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-medium">
               Use our advanced search engine to find specific artists, venues, or dates across all categories.
             </p>
