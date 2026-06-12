@@ -127,10 +127,15 @@ function DiscoverContent() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto space-y-8">
-      {/* Page Title - Centered & Increased font size for desktop */}
-      <div className="px-2 text-center">
-        <h1 className="font-headline text-3xl md:text-6xl lg:text-7xl">Discover Experiences</h1>
+    <div className="max-w-7xl mx-auto space-y-12">
+      {/* Page Title & Description */}
+      <div className="px-2 text-center space-y-6">
+        <h1 className="font-headline text-3xl md:text-6xl lg:text-7xl tracking-tighter">
+          Discover <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Experiences</span>
+        </h1>
+        <p className="text-muted-foreground text-sm md:text-xl max-w-2xl mx-auto font-medium">
+          Access the pulse of Nigeria. From stadium-shaking concerts to industry-defining summits, discover and secure your spot with zero friction and absolute peace of mind.
+        </p>
       </div>
 
       {/* Search and Filters Header */}
@@ -197,8 +202,8 @@ function DiscoverContent() {
         </div>
       </div>
 
-      {/* Events Grid - 2 columns on mobile */}
-      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-8">
+      {/* Events Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
         {filteredEvents.map((event) => (
           <Link key={event.id} href={`/events/${event.id}`}>
             <div className="group bg-card border border-border rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden hover:border-primary/50 transition-all flex flex-col h-full hover:shadow-2xl hover:shadow-primary/5">
@@ -215,12 +220,12 @@ function DiscoverContent() {
                   </Badge>
                 </div>
               </div>
-              <div className="p-3 md:p-8 flex flex-col flex-1 text-left">
-                <div className="text-primary text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em] mb-1 md:mb-3">
+              <div className="p-5 md:p-8 flex flex-col flex-1 text-left">
+                <div className="text-primary text-[10px] md:text-sm font-black uppercase tracking-[0.2em] mb-1 md:mb-3">
                   {new Date(event.date).toLocaleDateString('en-NG', { month: 'short', day: 'numeric' })}
                 </div>
-                <h3 className="font-headline text-sm md:text-xl mb-1 md:mb-2 group-hover:text-primary transition-colors line-clamp-1">{event.title}</h3>
-                <div className="flex items-center gap-1 text-muted-foreground text-[10px] md:text-sm mb-3 md:mb-6">
+                <h3 className="font-headline text-xl md:text-2xl mb-1 md:mb-2 group-hover:text-primary transition-colors line-clamp-1">{event.title}</h3>
+                <div className="flex items-center gap-1 text-muted-foreground text-xs md:text-sm mb-3 md:mb-6">
                   <MapPin className="w-3 h-3 md:w-4 md:h-4 text-accent" /> <span className="truncate">{event.venue}</span>
                 </div>
                 <div className="mt-auto pt-3 md:pt-6 border-t border-border flex items-center justify-between">
@@ -230,7 +235,7 @@ function DiscoverContent() {
                       {event.price.min === 0 ? 'FREE' : `₦${event.price.min.toLocaleString()}`}
                     </span>
                   </div>
-                  <Button className="rounded-full px-3 md:px-6 shadow-lg shadow-primary/20 h-7 md:h-10 text-[10px] md:text-sm font-bold">View</Button>
+                  <Button className="rounded-full px-4 md:px-6 shadow-lg shadow-primary/20 h-9 md:h-11 text-xs md:text-sm font-bold">View</Button>
                 </div>
               </div>
             </div>
