@@ -122,7 +122,6 @@ export default function HomePage() {
             </Button>
           </div>
           
-          {/* Grid updated to 2 columns on mobile */}
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 mb-12">
             {MOCK_EVENTS.slice(0, 6).map((event) => (
               <Link key={event.id} href={`/events/${event.id}`}>
@@ -136,22 +135,22 @@ export default function HomePage() {
                       data-ai-hint="event poster"
                     />
                     <div className="absolute top-2 left-2 md:top-4 md:left-4">
-                      <Badge className="bg-black/60 backdrop-blur-md text-white border-none py-1 px-2 md:py-1.5 md:px-3 text-[8px] md:text-xs">
+                      <Badge className="bg-black/60 backdrop-blur-md text-white border-none py-0.5 px-1.5 md:py-1.5 md:px-3 text-[6px] md:text-xs">
                         {event.category.charAt(0).toUpperCase() + event.category.slice(1)}
                       </Badge>
                     </div>
                   </div>
                   <div className="p-3 md:p-6 text-left">
-                    <div className="flex items-center gap-1 md:gap-2 text-primary text-[10px] md:text-sm font-semibold mb-1 md:mb-3">
-                      <Calendar className="w-3 h-3 md:w-4 md:h-4" />
+                    <div className="flex items-center gap-1 md:gap-2 text-primary text-[8px] md:text-sm font-semibold mb-1 md:mb-3">
+                      <Calendar className="w-2 h-2 md:w-4 md:h-4" />
                       {new Date(event.date).toLocaleDateString('en-NG', { month: 'short', day: 'numeric' })}
                     </div>
-                    <h3 className="text-sm md:text-xl mb-1 md:mb-2 group-hover:text-primary transition-colors line-clamp-1">{event.title}</h3>
-                    <p className="text-muted-foreground text-[10px] md:text-sm flex items-center gap-1 mb-4 md:mb-6">
-                      <MapPin className="w-3 h-3 md:w-4 md:h-4 text-accent" /> <span className="truncate">{event.venue}</span>
+                    <h3 className="text-sm md:text-xl mb-1 md:mb-2 group-hover:text-primary transition-colors line-clamp-1 font-bold">{event.title}</h3>
+                    <p className="text-muted-foreground text-[8px] md:text-sm flex items-center gap-1 mb-2 md:mb-6">
+                      <MapPin className="w-2 h-2 md:w-4 md:h-4 text-accent" /> <span className="truncate">{event.venue}</span>
                     </p>
                     
-                    <div className="flex items-center justify-between pt-3 md:pt-4 border-t border-border">
+                    <div className="flex items-center justify-between pt-2 md:pt-4 border-t border-border">
                       <div className="hidden md:flex items-center gap-2">
                         <div className="relative w-8 h-8 rounded-full overflow-hidden">
                           <Image src={event.organizer.avatar} alt={event.organizer.name} fill className="object-cover" />
@@ -160,7 +159,7 @@ export default function HomePage() {
                         {event.organizer.verified && <CheckCircle2 className="w-3 h-3 text-primary" />}
                       </div>
                       <div className="w-full md:w-auto text-right">
-                        <span className="text-sm md:text-xl font-black text-primary">
+                        <span className="text-xs md:text-xl font-black text-primary">
                           {event.price.min === 0 ? 'FREE' : `₦${event.price.min.toLocaleString()}`}
                         </span>
                       </div>
