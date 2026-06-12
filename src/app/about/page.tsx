@@ -20,7 +20,7 @@ export default function AboutPage() {
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Shared Experiences</span>
           </h1>
           <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl mx-auto">
-            IsabiEvents is more than just a place to buy tickets. We are a digital bridge connecting creators to communities, rooted in the vibrant and unyielding Naija spirit.
+            IsabiEvents is more than just a place to buy tickets. We are a digital bridge Connecting people to unforgettable experiences.
           </p>
         </div>
       </section>
