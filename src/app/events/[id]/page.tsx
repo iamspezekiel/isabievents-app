@@ -162,7 +162,7 @@ export default function EventDetailsPage() {
                 ) : faqError ? (
                   <div className="text-center py-12 bg-secondary/20 rounded-2xl border border-dashed border-border/50">
                     <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-50" />
-                    <h4 className="font-bold mb-2">Service Temporarily Busy</h4>
+                    <h4 className="font-bold mb-2 text-sm">Service Temporarily Busy</h4>
                     <Button variant="outline" size="sm" onClick={fetchFaqs} className="rounded-full gap-2">
                       <RefreshCcw className="w-4 h-4" /> Retry AI FAQs
                     </Button>
@@ -171,8 +171,10 @@ export default function EventDetailsPage() {
                   <Accordion type="single" collapsible className="w-full">
                     {faqs.map((faq, idx) => (
                       <AccordionItem key={idx} value={`item-${idx}`} className="border-border">
-                        <AccordionTrigger className="text-left font-medium hover:text-primary">{faq.question}</AccordionTrigger>
-                        <AccordionContent className="text-muted-foreground leading-relaxed">
+                        <AccordionTrigger className="text-left text-sm font-bold hover:text-primary py-3">
+                          {faq.question}
+                        </AccordionTrigger>
+                        <AccordionContent className="text-muted-foreground text-xs leading-relaxed">
                           {faq.answer}
                         </AccordionContent>
                       </AccordionItem>
@@ -257,14 +259,29 @@ function TicketTier({ name, price, perks, available, isSelected, quantity, onSel
           </li>
         ))}
       </ul>
-      <Button 
-        variant={available ? "secondary" : "ghost"} 
-        className="w-full rounded-full h-12 font-bold" 
-        disabled={!available}
-        onClick={onSelect}
-      >
-        {available ? 'Select Tier' : 'Unavailable'}
-      </Button>
+      <div className="flex items-center gap-4">
+        <Button 
+          variant={available ? "secondary" : "ghost"} 
+          className="flex-1 rounded-full h-12 font-bold" 
+          disabled={!available}
+          onClick={onSelect}
+        >
+          {available ? 'Select Tier' : 'Unavailable'}
+        </Button>
+        {isSelected && (
+          <div className="flex items-center gap-3 bg-secondary rounded-full px-4 h-12">
+            <button 
+              onClick={() => onQuantityChange(Math.max(1, quantity - 1))}
+              className="w-6 h-6 flex items-center justify-center hover:text-primary font-bold"
+            >-</button>
+            <span className="font-bold text-sm min-w-[1ch] text-center">{quantity}</span>
+            <button 
+              onClick={() => onQuantityChange(quantity + 1)}
+              className="w-6 h-6 flex items-center justify-center hover:text-primary font-bold"
+            >+</button>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
