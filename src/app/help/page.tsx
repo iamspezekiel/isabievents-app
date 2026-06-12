@@ -41,49 +41,49 @@ export default function HelpCenterPage() {
               <h2 className="font-headline text-2xl">Popular Questions</h2>
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="q1">
-                  <AccordionTrigger>How do I receive my ticket after purchase?</AccordionTrigger>
+                  <AccordionTrigger className="no-underline hover:no-underline">How do I receive my ticket after purchase?</AccordionTrigger>
                   <AccordionContent className="text-muted-foreground leading-relaxed">
-                    Once your payment is confirmed, you will receive an email with your unique QR code ticket. You can also access all your active tickets directly in your <Link href="/dashboard/attendee" className="text-primary no-underline">Attendee Dashboard</Link> under "My Tickets".
+                    Once your payment is confirmed, you will receive an email with your unique QR code ticket. You can also access all your active tickets directly in your <Link href="/dashboard/attendee" className="text-primary no-underline font-bold">Attendee Dashboard</Link> under "My Tickets".
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="q2">
-                  <AccordionTrigger>What is the refund policy for events?</AccordionTrigger>
+                  <AccordionTrigger className="no-underline hover:no-underline">What is the refund policy for events?</AccordionTrigger>
                   <AccordionContent className="text-muted-foreground leading-relaxed">
                     Refund policies are set by individual event organizers. You can find the specific policy for an event on its details page under the "Event Info" tab. Generally, requests made 7 days before an event are processed, subject to organizer approval.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="q3">
-                  <AccordionTrigger>Can I transfer my ticket to a friend?</AccordionTrigger>
+                  <AccordionTrigger className="no-underline hover:no-underline">Can I transfer my ticket to a friend?</AccordionTrigger>
                   <AccordionContent className="text-muted-foreground leading-relaxed">
                     Yes! Most events allow ticket transfers. Go to your dashboard, select the ticket you want to transfer, and click "Share/Transfer". You'll just need your friend's email address.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="q4">
-                  <AccordionTrigger>How do I become a verified organizer?</AccordionTrigger>
+                  <AccordionTrigger className="no-underline hover:no-underline">How do I become a verified organizer?</AccordionTrigger>
                   <AccordionContent className="text-muted-foreground leading-relaxed">
-                    Verification requires a valid government-issued ID and proof of business registration for corporate entities. Head to your <Link href="/dashboard/organizer" className="text-primary no-underline">Organizer Dashboard</Link> and complete the "KYC Verification" section to get started.
+                    Verification requires a valid government-issued ID and proof of business registration for corporate entities. Head to your <Link href="/dashboard/organizer" className="text-primary no-underline font-bold">Organizer Dashboard</Link> and complete the "KYC Verification" section to get started.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="q5">
-                  <AccordionTrigger>What payment methods are supported?</AccordionTrigger>
+                  <AccordionTrigger className="no-underline hover:no-underline">What payment methods are supported?</AccordionTrigger>
                   <AccordionContent className="text-muted-foreground leading-relaxed">
                     We support all major Nigerian cards (Visa, Mastercard, Verve), Direct Bank Transfers, USSD, and Mobile Money through our secure payment partners, Paystack and Flutterwave.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="q6">
-                  <AccordionTrigger>Can I change the name on my ticket?</AccordionTrigger>
+                  <AccordionTrigger className="no-underline hover:no-underline">Can I change the name on my ticket?</AccordionTrigger>
                   <AccordionContent className="text-muted-foreground leading-relaxed">
                     In most cases, yes. You can update your attendee details once per ticket from your wallet. If you need to change it again, please contact the event organizer or our support team for assistance.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="q7">
-                  <AccordionTrigger>Is my transaction secure?</AccordionTrigger>
+                  <AccordionTrigger className="no-underline hover:no-underline">Is my transaction secure?</AccordionTrigger>
                   <AccordionContent className="text-muted-foreground leading-relaxed">
                     Absolutely. We use industry-standard encryption and partner with licensed payment processors like Paystack and Flutterwave to ensure your financial data is never compromised.
                   </AccordionContent>
                 </AccordionItem>
                 <AccordionItem value="q8">
-                  <AccordionTrigger>What happens if an event is postponed?</AccordionTrigger>
+                  <AccordionTrigger className="no-underline hover:no-underline">What happens if an event is postponed?</AccordionTrigger>
                   <AccordionContent className="text-muted-foreground leading-relaxed">
                     If an event is postponed, your ticket will typically remain valid for the new date. If you cannot attend the new date, you may be eligible for a refund depending on the organizer's policy for that specific event.
                   </AccordionContent>
@@ -112,19 +112,19 @@ export default function HelpCenterPage() {
               <CardHeader>
                 <CardTitle className="font-headline text-xl">Still need help?</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-6 text-center">
                 <p className="text-sm text-muted-foreground leading-relaxed">
                   Our support team is available 24/7 to assist you with any issues or questions.
                 </p>
                 <div className="space-y-3">
-                  <Button className="w-full gap-2 rounded-full h-12">
+                  <Button className="w-full gap-2 rounded-full h-12 no-underline">
                     <MessageCircle className="w-4 h-4" /> Live Chat
                   </Button>
-                  <Button variant="outline" className="w-full gap-2 rounded-full h-12">
+                  <Button variant="outline" className="w-full gap-2 rounded-full h-12 no-underline">
                     <Mail className="w-4 h-4" /> Email Support
                   </Button>
                 </div>
-                <div className="pt-4 border-t border-primary/10 flex items-center justify-center gap-3 text-sm font-medium">
+                <div className="pt-4 border-t border-primary/10 flex items-center justify-center gap-3 text-sm font-bold">
                   <Phone className="w-4 h-4 text-primary" /> +234 (0) 800-ISABI-HELP
                 </div>
               </CardContent>
@@ -144,7 +144,7 @@ function HelpCategoryCard({ icon: Icon, title, count }: any) {
           <div className="w-14 h-14 bg-secondary rounded-2xl flex items-center justify-center group-hover:bg-primary/10 transition-colors">
             <Icon className="w-7 h-7 text-muted-foreground group-hover:text-primary transition-colors" />
           </div>
-          <div>
+          <div className="text-left">
             <h3 className="font-bold text-lg">{title}</h3>
             <p className="text-sm text-muted-foreground">{count} Articles</p>
           </div>

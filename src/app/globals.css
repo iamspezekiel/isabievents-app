@@ -69,7 +69,7 @@
   [class*="CardTitle"], 
   [class*="SheetTitle"], 
   [class*="DialogTitle"] {
-    @apply font-headline;
+    @apply font-headline font-black;
   }
   h1 {
     @apply text-5xl md:text-8xl tracking-tighter leading-[0.95] font-black text-balance;

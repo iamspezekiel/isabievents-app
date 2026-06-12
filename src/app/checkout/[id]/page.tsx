@@ -1,9 +1,8 @@
-
 "use client";
 
 import React, { useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ChevronLeft, ShieldCheck, CreditCard, Wallet, Landmark, CheckCircle2, Loader2, ArrowRight } from 'lucide-react';
+import { ShieldCheck, CreditCard, Wallet, Landmark, CheckCircle2, Loader2, ArrowRight } from 'lucide-react';
 import { MOCK_EVENTS } from '@/lib/mock-data';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -41,11 +40,11 @@ export default function CheckoutPage() {
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
           {/* Main Checkout Section */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-3 text-left">
             {step === 1 && (
               <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <h1 className="font-headline text-3xl text-left">Attendee Information</h1>
-                <div className="grid gap-6 text-left">
+                <h1 className="font-headline text-3xl">Attendee Information</h1>
+                <div className="grid gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="fullname">Full Name</Label>
                     <Input id="fullname" placeholder="Enter your full name" className="h-12 bg-card" />
@@ -61,7 +60,7 @@ export default function CheckoutPage() {
                 </div>
 
                 <div className="pt-6">
-                  <Button onClick={() => setStep(2)} className="w-full h-14 rounded-full text-lg gap-2">
+                  <Button onClick={() => setStep(2)} className="w-full h-14 rounded-full text-lg gap-2 no-underline">
                     Proceed to Payment <ArrowRight className="w-5 h-5" />
                   </Button>
                 </div>
@@ -70,14 +69,14 @@ export default function CheckoutPage() {
 
             {step === 2 && (
               <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
-                <h1 className="font-headline text-3xl text-left">Select Payment Method</h1>
+                <h1 className="font-headline text-3xl">Select Payment Method</h1>
                 <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="grid gap-4">
                   <PaymentOption id="card" label="Card Payment" icon={CreditCard} description="Pay with Visa, Mastercard or Verve" />
                   <PaymentOption id="bank" label="Bank Transfer" icon={Landmark} description="Direct transfer to IsabiEvents escrow" />
                   <PaymentOption id="wallet" label="Isabi Wallet" icon={Wallet} description="Balance: ₦25,000.00" />
                 </RadioGroup>
 
-                <div className="bg-primary/10 border border-primary/20 p-4 rounded-xl flex gap-3 items-start mt-6 text-left">
+                <div className="bg-primary/10 border border-primary/20 p-4 rounded-xl flex gap-3 items-start mt-6">
                   <ShieldCheck className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                   <p className="text-sm text-muted-foreground">
                     Your payment is secure. We use bank-level encryption and do not store your card details.
@@ -88,7 +87,7 @@ export default function CheckoutPage() {
                   <Button 
                     onClick={handlePayment} 
                     disabled={loading}
-                    className="w-full h-14 rounded-full text-lg"
+                    className="w-full h-14 rounded-full text-lg no-underline"
                   >
                     {loading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : `Pay ₦${(event.price.min * quantity).toLocaleString()}`}
                   </Button>
@@ -97,7 +96,7 @@ export default function CheckoutPage() {
             )}
 
             {step === 3 && (
-              <div className="text-left py-12 space-y-6 animate-in zoom-in-95 duration-500">
+              <div className="py-12 space-y-6 animate-in zoom-in-95 duration-500">
                 <div className="w-20 h-20 bg-accent/20 rounded-full flex items-center justify-center mb-4">
                   <CheckCircle2 className="w-12 h-12 text-accent" />
                 </div>
@@ -106,10 +105,10 @@ export default function CheckoutPage() {
                   Thank you for your purchase. Your ticket QR code has been sent to your email and is now available in your wallet.
                 </p>
                 <div className="pt-8 flex flex-col sm:flex-row gap-4">
-                  <Button onClick={() => router.push('/dashboard/attendee')} variant="outline" className="rounded-full px-10 h-12">
+                  <Button onClick={() => router.push('/dashboard/attendee')} variant="outline" className="rounded-full px-10 h-12 no-underline">
                     Go to Wallet
                   </Button>
-                  <Button onClick={() => router.push('/')} className="rounded-full px-10 h-12">
+                  <Button onClick={() => router.push('/')} className="rounded-full px-10 h-12 no-underline">
                     Back to Home
                   </Button>
                 </div>
@@ -132,11 +131,11 @@ export default function CheckoutPage() {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-muted-foreground">Ticket Type</span>
-                    <span className="font-medium">Standard Access</span>
+                    <span className="font-bold">Standard Access</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-muted-foreground">Price</span>
-                    <span className="font-medium">₦{event.price.min.toLocaleString()}</span>
+                    <span className="font-bold">₦{event.price.min.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-muted-foreground">Quantity</span>
@@ -162,11 +161,11 @@ export default function CheckoutPage() {
                 </div>
 
                 {step < 3 && (
-                  <div className="space-y-3">
+                  <div className="space-y-3 text-left">
                     <Label className="text-xs uppercase tracking-widest text-muted-foreground font-bold">Promo Code</Label>
                     <div className="flex gap-2">
                       <Input placeholder="Enter code" className="h-10 bg-secondary border-none" />
-                      <Button variant="outline" className="h-10 rounded-lg">Apply</Button>
+                      <Button variant="outline" className="h-10 rounded-lg no-underline">Apply</Button>
                     </div>
                   </div>
                 )}
