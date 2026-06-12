@@ -76,8 +76,8 @@ export function Footer() {
           <div className="text-left">
             <h4 className="font-headline text-xs font-black uppercase tracking-widest text-muted-foreground/50 mb-8">For Organizers</h4>
             <ul className="space-y-4 text-sm font-bold">
-              <li><Link href="/organizer" className="text-foreground/70 hover:text-primary transition-colors no-underline">Host an Event</Link></li>
               <li><Link href="/pricing" className="text-foreground/70 hover:text-primary transition-colors no-underline">Pricing</Link></li>
+              <li><Link href="/organizer" className="text-foreground/70 hover:text-primary transition-colors no-underline">Host an Event</Link></li>
               <li><Link href="/docs" className="text-foreground/70 hover:text-primary transition-colors no-underline">Developer API</Link></li>
               <li><Link href="/case-studies" className="text-foreground/70 hover:text-primary transition-colors no-underline">Success Stories</Link></li>
             </ul>
