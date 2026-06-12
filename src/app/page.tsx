@@ -76,7 +76,7 @@ export default function HomePage() {
       </section>
 
       {/* Categories */}
-      <section className="pb-4">
+      <section className="pt-12 pb-4">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-left">Top Category</h2>
@@ -111,7 +111,7 @@ export default function HomePage() {
       </section>
 
       {/* Trending Events */}
-      <section className="pb-8">
+      <section className="pt-12 pb-8">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
             <div className="text-left">
