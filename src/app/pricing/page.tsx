@@ -38,7 +38,7 @@ export default function PricingPage() {
                     <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
                       <Zap className="w-4 h-4 text-primary fill-primary" />
                     </div>
-                    <h2 className="font-headline text-2xl font-bold">Standard Marketplace</h2>
+                    <h2 className="font-headline text-2xl font-bold">Flat pricing</h2>
                   </div>
                   <p className="text-base text-muted-foreground leading-relaxed">
                     Perfect for concerts, festivals, and conferences of all sizes in Nigeria.
