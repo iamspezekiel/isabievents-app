@@ -32,8 +32,8 @@ export default function AboutPage() {
         <div className="absolute -bottom-24 left-0 w-72 h-72 bg-primary/5 blur-[100px] rounded-full -z-10" />
         
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-32 items-center">
-          <div className="relative order-2 lg:order-1">
-            {/* Primary Image Container */}
+          <div className="relative order-2 lg:order-1 space-y-16">
+            {/* Image Container */}
             <div className="relative group">
               <div className="relative aspect-[4/5] rounded-[3.5rem] overflow-hidden border border-border/50 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] z-10">
                 <Image 
@@ -74,6 +74,18 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
+
+            {/* Stats Moved Under Image */}
+            <div className="grid grid-cols-2 gap-6 pt-4">
+              <div className="space-y-2 p-8 bg-secondary/40 rounded-[2.5rem] border border-border/50">
+                <div className="text-4xl font-black text-primary">50k+</div>
+                <div className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Active Users</div>
+              </div>
+              <div className="space-y-2 p-8 bg-primary/5 rounded-[2.5rem] border border-primary/10">
+                <div className="text-4xl font-black text-accent">36</div>
+                <div className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">States Reached</div>
+              </div>
+            </div>
           </div>
 
           <div className="space-y-12 text-left order-1 lg:order-2">
@@ -97,17 +109,6 @@ export default function AboutPage() {
               <p className="text-lg text-muted-foreground leading-relaxed">
                 Today, we empower thousands of creators across the federation, providing them with the professional tools they need to scale their visions while ensuring every attendee enjoys a seamless, fraud-free journey.
               </p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-6 pt-4">
-              <div className="space-y-2 p-8 bg-secondary/40 rounded-[2.5rem] border border-border/50">
-                <div className="text-4xl font-black text-primary">50k+</div>
-                <div className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Active Users</div>
-              </div>
-              <div className="space-y-2 p-8 bg-primary/5 rounded-[2.5rem] border border-primary/10">
-                <div className="text-4xl font-black text-accent">36</div>
-                <div className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">States Reached</div>
-              </div>
             </div>
           </div>
         </div>
