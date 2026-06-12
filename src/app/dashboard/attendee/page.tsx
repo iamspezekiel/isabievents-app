@@ -28,10 +28,12 @@ import { MOCK_USER, MOCK_EVENTS } from '@/lib/mock-data';
 import { Logo } from '@/components/logo';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function AttendeeDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const pathname = usePathname();
 
   useEffect(() => {
     setMounted(true);
@@ -40,11 +42,11 @@ export default function AttendeeDashboard() {
   const Navigation = () => (
     <nav className="flex-1 space-y-1">
       <div className="pb-4">
-        <SidebarLink icon={Ticket} label="My Tickets" active />
-        <SidebarLink icon={History} label="Order History" />
-        <SidebarLink icon={Heart} label="Favorites" />
-        <SidebarLink icon={Bell} label="Notifications" />
-        <SidebarLink icon={Settings} label="Account Settings" />
+        <SidebarLink icon={Ticket} label="My Tickets" href="/dashboard/attendee" active={pathname === '/dashboard/attendee'} />
+        <SidebarLink icon={History} label="Order History" href="/dashboard/attendee/history" active={pathname === '/dashboard/attendee/history'} />
+        <SidebarLink icon={Heart} label="Favorites" href="/dashboard/attendee/favorites" active={pathname === '/dashboard/attendee/favorites'} />
+        <SidebarLink icon={Bell} label="Notifications" href="/dashboard/attendee/notifications" active={pathname === '/dashboard/attendee/notifications'} />
+        <SidebarLink icon={Settings} label="Account Settings" href="/dashboard/attendee/settings" active={pathname === '/dashboard/attendee/settings'} />
       </div>
     </nav>
   );
@@ -133,7 +135,7 @@ export default function AttendeeDashboard() {
   );
 }
 
-function SidebarLink({ icon: Icon, label, active, href = "#" }: any) {
+export function SidebarLink({ icon: Icon, label, active, href = "#" }: any) {
   return (
     <Link 
       href={href} 

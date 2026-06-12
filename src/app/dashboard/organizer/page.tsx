@@ -25,6 +25,7 @@ import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Toolti
 import { Logo } from '@/components/logo';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 const salesData = [
   { day: 'Mon', sales: 45000 },
@@ -38,16 +39,17 @@ const salesData = [
 
 export default function OrganizerDashboard() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   const NavigationLinks = () => (
     <nav className="flex-1 space-y-1">
       <div className="pb-2">
-        <SidebarLink icon={LayoutDashboard} label="Dashboard" active />
-        <SidebarLink icon={Plus} label="Create Event" href="/dashboard/organizer/create" />
-        <SidebarLink icon={Ticket} label="My Events" />
-        <SidebarLink icon={Users} label="Vendors" />
-        <SidebarLink icon={BarChart3} label="Analytics" />
-        <SidebarLink icon={Settings} label="Settings" />
+        <SidebarLink icon={LayoutDashboard} label="Dashboard" href="/dashboard/organizer" active={pathname === '/dashboard/organizer'} />
+        <SidebarLink icon={Plus} label="Create Event" href="/dashboard/organizer/create" active={pathname === '/dashboard/organizer/create'} />
+        <SidebarLink icon={Ticket} label="My Events" href="/dashboard/organizer/events" active={pathname === '/dashboard/organizer/events'} />
+        <SidebarLink icon={Users} label="Vendors" href="/dashboard/organizer/vendors" active={pathname === '/dashboard/organizer/vendors'} />
+        <SidebarLink icon={BarChart3} label="Analytics" href="/dashboard/organizer/analytics" active={pathname === '/dashboard/organizer/analytics'} />
+        <SidebarLink icon={Settings} label="Settings" href="/dashboard/organizer/settings" active={pathname === '/dashboard/organizer/settings'} />
       </div>
     </nav>
   );
@@ -167,7 +169,7 @@ export default function OrganizerDashboard() {
   );
 }
 
-function SidebarLink({ icon: Icon, label, active, href = "#" }: any) {
+export function SidebarLink({ icon: Icon, label, active, href = "#" }: any) {
   return (
     <Link 
       href={href} 
