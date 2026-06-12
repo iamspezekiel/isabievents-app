@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useMemo, useEffect, Suspense } from 'react';
@@ -167,7 +168,7 @@ function DiscoverContent() {
                         {event.price.min === 0 ? 'FREE' : `₦${event.price.min.toLocaleString()}`}
                       </span>
                     </div>
-                    <Button className="rounded-full px-6 shadow-lg shadow-primary/20">Book Now</Button>
+                    <Button className="rounded-full px-6 shadow-lg shadow-primary/20">View</Button>
                   </div>
                 </div>
               </div>
