@@ -95,7 +95,7 @@ export function Footer() {
 
         {/* Bottom Bar */}
         <div className="border-t border-border pt-10 text-center text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">
-          <p>&copy; {new Date().getFullYear()} IsabiEvents Technologies. Built with Naija Spirit.</p>
+          <p>Copyright &copy; 2026 · IsabiEvents Technology · All Right Reserved</p>
         </div>
       </div>
     </footer>
