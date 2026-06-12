@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -35,7 +34,7 @@ export default function MobileAppPage() {
             </div>
             
             <div className="space-y-6">
-              <h2 className="font-headline text-3xl md:text-5xl font-black leading-tight tracking-tighter text-balance">
+              <h2 className="animate-in fade-in slide-in-from-left-4 duration-700">
                 Your Tickets. <br />
                 <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                   Everywhere

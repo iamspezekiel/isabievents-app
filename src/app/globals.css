@@ -74,12 +74,12 @@
     @apply font-headline;
   }
   h1 {
-    @apply tracking-tighter leading-[1.1] font-black text-balance;
+    @apply text-4xl md:text-6xl tracking-tighter leading-[1.1] font-black text-balance;
   }
   h2 {
-    @apply tracking-tighter leading-tight font-black text-balance;
+    @apply text-3xl md:text-5xl tracking-tighter leading-tight font-black text-balance;
   }
   h3 {
-    @apply tracking-tight leading-snug font-bold;
+    @apply text-2xl md:text-3xl tracking-tight leading-snug font-bold;
   }
 }
