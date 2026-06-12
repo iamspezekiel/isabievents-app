@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Scan, Search, CheckCircle, AlertCircle, RefreshCcw, History, Users, X, ArrowLeft, User, Ticket } from 'lucide-react';
+import { Scan, Search, CheckCircle, AlertCircle, RefreshCcw, History, Users, X, ArrowLeft, User, Ticket, Activity } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -23,7 +23,14 @@ export default function StaffCheckIn() {
   const [scanState, setScanState] = useState<'idle' | 'validating' | 'success' | 'error'>('idle');
   const [manualMode, setManualMode] = useState(false);
   const [lookupQuery, setLookupQuery] = useState('');
-  const [history, setHistory] = useState<any[]>([]);
+  
+  // Pre-populate with some recent check-ins for a "live" feel
+  const [history, setHistory] = useState<any[]>([
+    { id: 'TKT-E1-029', name: 'Sylvanus P. Ezekiel', time: '10:45 AM', type: 'VIP Pass' },
+    { id: 'TKT-E3-112', name: 'Chioma Okereke', time: '10:42 AM', type: 'Standard Entry' },
+    { id: 'TKT-E2-005', name: 'Tunde Bakare', time: '10:35 AM', type: 'Early Bird' },
+  ]);
+  
   const { toast } = useToast();
 
   const handleScan = async () => {
@@ -32,7 +39,7 @@ export default function StaffCheckIn() {
     // Simulate network/validation delay
     await new Promise(r => setTimeout(r, 1800));
     
-    const isSuccess = Math.random() > 0.15; // 85% success rate for simulation
+    const isSuccess = Math.random() > 0.10; // 90% success rate for simulation
     
     if (isSuccess) {
       const attendee = MOCK_ATTENDEES[Math.floor(Math.random() * MOCK_ATTENDEES.length)];
@@ -41,7 +48,7 @@ export default function StaffCheckIn() {
       const entry = {
         id: attendee.id || Math.random().toString(36).substr(2, 9).toUpperCase(),
         name: attendee.name,
-        time: new Date().toLocaleTimeString(),
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         type: attendee.type
       };
       
@@ -79,7 +86,7 @@ export default function StaffCheckIn() {
       const entry = {
         id: found.id,
         name: found.name,
-        time: new Date().toLocaleTimeString(),
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
         type: found.type
       };
       setHistory([entry, ...history]);
@@ -100,7 +107,10 @@ export default function StaffCheckIn() {
           <Link href="/">
              <ArrowLeft className="w-5 h-5 text-muted-foreground" />
           </Link>
-          <h1 className="font-headline text-lg">Gate Check-In</h1>
+          <div className="flex flex-col items-start">
+            <h1 className="font-headline text-lg">Gate Check-In</h1>
+            <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">Session Active</p>
+          </div>
         </div>
         <div className="flex items-center gap-2">
            <Badge className="bg-primary/20 text-primary border-none hidden sm:inline-flex">Main Entrance</Badge>
@@ -116,7 +126,7 @@ export default function StaffCheckIn() {
               <div className={`aspect-square relative flex flex-col items-center justify-center transition-colors duration-700 ${
                 scanState === 'success' ? 'bg-green-500/10' : 
                 scanState === 'error' ? 'bg-red-500/10' : 
-                'bg-black/90'
+                'bg-black/95'
               }`}>
                 
                 {/* Visual Feedback Overlays */}
@@ -156,7 +166,7 @@ export default function StaffCheckIn() {
                     </div>
                     <div className="space-y-2">
                       <p className="font-headline text-2xl tracking-tight">Validating...</p>
-                      <p className="text-muted-foreground text-xs uppercase font-black tracking-widest">Checking Blockchain Ledger</p>
+                      <p className="text-muted-foreground text-xs uppercase font-black tracking-widest">Checking Ledger</p>
                     </div>
                   </div>
                 )}
@@ -167,7 +177,7 @@ export default function StaffCheckIn() {
                       <CheckCircle className="w-16 h-16 text-green-500" />
                     </div>
                     <div className="space-y-2">
-                      <h2 className="font-headline text-4xl text-green-500 tracking-tighter">ACCESS GRANTED</h2>
+                      <h2 className="font-headline text-4xl text-green-500 tracking-tighter uppercase italic">Access Granted</h2>
                       <div className="bg-background/80 backdrop-blur-sm border border-border p-4 rounded-2xl inline-block min-w-[240px]">
                         <p className="text-lg font-black">{history[0]?.name}</p>
                         <p className="text-xs text-muted-foreground uppercase tracking-widest font-bold">{history[0]?.type}</p>
@@ -185,8 +195,8 @@ export default function StaffCheckIn() {
                       <AlertCircle className="w-16 h-16 text-red-500" />
                     </div>
                     <div className="space-y-2">
-                      <h2 className="font-headline text-4xl text-red-500 tracking-tighter">ACCESS DENIED</h2>
-                      <p className="text-muted-foreground font-medium px-8 leading-relaxed">This ticket ID is already marked as checked-in or has been voided.</p>
+                      <h2 className="font-headline text-4xl text-red-500 tracking-tighter uppercase italic">Access Denied</h2>
+                      <p className="text-muted-foreground font-medium px-8 leading-relaxed">Invalid or duplicate ticket ID.</p>
                     </div>
                     <Button onClick={resetScanner} variant="outline" className="mt-4 rounded-full px-10 h-12 font-bold border-red-500/50 text-red-500 hover:bg-red-500/5">
                       Try Again
@@ -197,70 +207,81 @@ export default function StaffCheckIn() {
             </CardContent>
           </Card>
 
-          {/* Quick Actions */}
+          {/* Quick Stats & Search */}
           <div className="grid grid-cols-2 gap-4">
-            <Button onClick={() => setManualMode(true)} variant="secondary" className="h-20 rounded-[1.5rem] gap-3 flex-col sm:flex-row">
-              <Search className="w-5 h-5 text-primary" /> 
+            <Button onClick={() => setManualMode(true)} variant="secondary" className="h-24 rounded-[1.5rem] gap-3 flex-col sm:flex-row border-border border">
+              <Search className="w-6 h-6 text-primary" /> 
               <div className="text-left leading-none">
                 <div className="font-bold text-sm">Manual Lookup</div>
-                <div className="text-[10px] text-muted-foreground mt-1">Search by ID/Name</div>
+                <div className="text-[10px] text-muted-foreground mt-1 uppercase font-bold tracking-tight">Search by ID/Name</div>
               </div>
             </Button>
-            <div className="h-20 rounded-[1.5rem] bg-card border border-border flex items-center justify-center gap-4">
+            <div className="h-24 rounded-[1.5rem] bg-card border border-border flex items-center justify-center gap-4 shadow-sm">
               <div className="p-3 bg-primary/10 rounded-xl">
-                <Users className="w-5 h-5 text-primary" />
+                <Users className="w-6 h-6 text-primary" />
               </div>
               <div className="text-left leading-tight">
-                <div className="font-black text-2xl">{history.length + 124}</div>
-                <div className="text-[10px] text-muted-foreground uppercase font-black tracking-tighter">Verified Entries</div>
+                <div className="font-black text-3xl">{history.length + 42}</div>
+                <div className="text-[10px] text-muted-foreground uppercase font-black tracking-tighter">Entries Today</div>
               </div>
             </div>
           </div>
 
-          {/* Recent History */}
-          <div className="space-y-4 text-left pt-4">
+          {/* Recent Check-ins List */}
+          <section className="space-y-6 text-left pt-4">
             <div className="flex items-center justify-between">
-              <h3 className="font-headline text-lg flex items-center gap-2">
-                <History className="w-5 h-5 text-muted-foreground" /> Recent Check-ins
-              </h3>
-              <Button variant="ghost" size="sm" className="text-xs font-bold text-primary">View All</Button>
+              <div className="space-y-1">
+                <h3 className="font-headline text-xl flex items-center gap-2 leading-none">
+                  <Activity className="w-5 h-5 text-primary" /> Recent Check-ins
+                </h3>
+                <p className="text-xs text-muted-foreground font-medium">Activity from your current gate</p>
+              </div>
+              <Button variant="ghost" size="sm" className="text-xs font-bold text-primary rounded-full hover:bg-primary/5">
+                View Full Log
+              </Button>
             </div>
             
             <div className="space-y-3">
               {history.map((entry, idx) => (
                 <div 
                   key={idx} 
-                  className="bg-card border border-border p-4 rounded-2xl flex items-center justify-between animate-in slide-in-from-top-4 duration-500"
+                  className="bg-card border border-border p-5 rounded-2xl flex items-center justify-between animate-in slide-in-from-top-4 duration-500 shadow-sm hover:border-primary/30 transition-colors"
                   style={{ animationDelay: `${idx * 100}ms` }}
                 >
                   <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-secondary flex items-center justify-center">
-                       <User className="w-5 h-5 text-muted-foreground" />
+                    <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center shrink-0">
+                       <User className="w-6 h-6 text-muted-foreground" />
                     </div>
                     <div className="text-left">
-                      <div className="font-bold text-sm">{entry.name}</div>
-                      <div className="text-[10px] text-muted-foreground font-mono flex items-center gap-1 uppercase">
-                        <Ticket className="w-3 h-3" /> {entry.id}
+                      <div className="font-bold text-base leading-tight">{entry.name}</div>
+                      <div className="flex flex-wrap items-center gap-2 mt-1">
+                        <span className="text-[10px] text-muted-foreground font-mono flex items-center gap-1 uppercase font-bold">
+                          <Ticket className="w-3 h-3" /> {entry.id}
+                        </span>
+                        <Badge variant="secondary" className="bg-secondary/80 text-[9px] h-4 py-0 px-2 font-bold uppercase tracking-widest">{entry.type}</Badge>
                       </div>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="text-right shrink-0">
                     <div className="text-xs font-black text-foreground">{entry.time}</div>
-                    <Badge className="bg-green-500/10 text-green-600 border-none text-[8px] font-black h-5 mt-1">VERIFIED</Badge>
+                    <div className="flex items-center gap-1 justify-end mt-1">
+                       <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                       <span className="text-[8px] font-black uppercase text-green-600 tracking-tighter">Verified</span>
+                    </div>
                   </div>
                 </div>
               ))}
               
               {history.length === 0 && (
-                <div className="text-center py-16 bg-card/40 rounded-[2rem] border border-dashed border-border/50">
-                  <div className="w-12 h-12 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4 opacity-30">
-                    <Scan className="w-6 h-6" />
+                <div className="text-center py-20 bg-card/40 rounded-[2.5rem] border border-dashed border-border/50">
+                  <div className="w-14 h-14 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4 opacity-30">
+                    <History className="w-7 h-7" />
                   </div>
                   <p className="text-muted-foreground text-sm font-medium">No check-ins recorded for this session yet.</p>
                 </div>
               )}
             </div>
-          </div>
+          </section>
         </div>
       </main>
 
@@ -271,14 +292,14 @@ export default function StaffCheckIn() {
             <Button variant="ghost" size="icon" className="absolute top-4 right-4 rounded-full" onClick={() => setManualMode(false)}>
               <X className="w-5 h-5" />
             </Button>
-            <CardHeader className="pt-8 px-8">
-              <CardTitle className="font-headline text-2xl text-left">Manual Attendee Lookup</CardTitle>
-              <p className="text-muted-foreground text-sm text-left">Search the digital register by ticket ID or name.</p>
+            <CardHeader className="pt-8 px-8 text-left">
+              <CardTitle className="font-headline text-2xl">Manual Entry</CardTitle>
+              <p className="text-muted-foreground text-sm">Search the digital register by ticket ID or name.</p>
             </CardHeader>
             <CardContent className="space-y-6 p-8">
               <div className="space-y-2 text-left">
                 <Input 
-                  placeholder="Enter Ticket ID (e.g. TKT-E1-029) or Name" 
+                  placeholder="ID (e.g. TKT-E1-029) or Name" 
                   className="h-14 bg-secondary border-none text-lg rounded-xl"
                   value={lookupQuery}
                   onChange={(e) => setLookupQuery(e.target.value)}
@@ -293,7 +314,7 @@ export default function StaffCheckIn() {
                 </Button>
               </div>
               <p className="text-[10px] text-center text-muted-foreground uppercase tracking-widest font-black">
-                Tip: Try searching for "Sylvanus" or "TKT-E1-029"
+                Pro Tip: Search for "Sylvanus" or "TKT-E1-029"
               </p>
             </CardContent>
           </Card>
