@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -24,22 +23,22 @@ export default function OrganizerLandingPage() {
       <section className="relative pt-32 pb-8 md:pb-16 overflow-hidden">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent/10 blur-[120px] -z-10 rounded-full translate-x-1/2 -translate-y-1/2" />
         <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
-          <div className="space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000 flex flex-col items-center lg:items-start">
-            <h1 className="text-4xl lg:text-7xl leading-[1.1] font-black tracking-tighter text-center lg:text-left text-balance">
-              The Easiest Way to Host <br className="hidden lg:block" />
+          <div className="space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000 flex flex-col items-center lg:items-start text-center lg:text-left">
+            <h1 className="text-4xl lg:text-7xl leading-[1.1] font-black tracking-tighter text-balance">
+              The Easiest Way to Host <br />
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Legendary</span> Events
             </h1>
-            <p className="text-base text-muted-foreground leading-relaxed text-center lg:text-left max-w-lg">
+            <p className="text-base text-muted-foreground leading-relaxed max-w-lg">
               From secret beach parties to national tech conferences. IsabiEvents provides the tools you need to sell out fast and manage with ease.
             </p>
-            <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 w-full sm:w-auto">
-              <Link href="/signup?role=organizer" className="w-full sm:w-auto">
-                <Button size="lg" className="h-16 px-10 rounded-full text-lg gap-2 shadow-xl shadow-primary/20 w-full">
-                  Start Hosting Now <ArrowRight className="w-5 h-5" />
+            <div className="flex flex-row justify-center lg:justify-start gap-3 w-full max-w-sm sm:max-w-md lg:w-auto">
+              <Link href="/signup?role=organizer" className="flex-1 lg:flex-none">
+                <Button size="lg" className="h-12 md:h-16 px-4 md:px-10 rounded-full text-sm md:text-lg gap-1 md:gap-2 shadow-xl shadow-primary/20 w-full">
+                  Host Now <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
                 </Button>
               </Link>
-              <Link href="/pricing" className="w-full sm:w-auto">
-                <Button size="lg" variant="outline" className="h-16 px-10 rounded-full text-lg w-full">
+              <Link href="/pricing" className="flex-1 lg:flex-none">
+                <Button size="lg" variant="outline" className="h-12 md:h-16 px-4 md:px-10 rounded-full text-sm md:text-lg w-full">
                   View Pricing
                 </Button>
               </Link>
