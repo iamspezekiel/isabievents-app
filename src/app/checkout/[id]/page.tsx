@@ -18,7 +18,9 @@ import {
   Lock,
   Smartphone,
   Info,
-  UserPlus
+  UserPlus,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { MOCK_EVENTS, MOCK_USERS } from '@/lib/mock-data';
 import { Button } from "@/components/ui/button";
@@ -55,6 +57,7 @@ export default function CheckoutPage() {
   // Login form state
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+  const [showLoginPassword, setShowLoginPassword] = useState(false);
 
   // Signup form state
   const [signupInfo, setSignupInfo] = useState({
@@ -62,6 +65,7 @@ export default function CheckoutPage() {
     email: '',
     password: ''
   });
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
 
   const totalNaira = event.price.min * quantity;
   const totalUsd = (totalNaira / NGN_TO_USD_RATE).toFixed(2);
@@ -246,14 +250,23 @@ export default function CheckoutPage() {
                           </div>
                           <div className="space-y-2">
                             <Label htmlFor="login-password">Password</Label>
-                            <Input 
-                              id="login-password" 
-                              type="password" 
-                              placeholder="••••••••" 
-                              className="bg-background h-11" 
-                              value={loginPassword}
-                              onChange={(e) => setLoginPassword(e.target.value)}
-                            />
+                            <div className="relative">
+                              <Input 
+                                id="login-password" 
+                                type={showLoginPassword ? "text" : "password"} 
+                                placeholder="••••••••" 
+                                className="bg-background h-11 pr-10" 
+                                value={loginPassword}
+                                onChange={(e) => setLoginPassword(e.target.value)}
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setShowLoginPassword(!showLoginPassword)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                              >
+                                {showLoginPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                              </button>
+                            </div>
                           </div>
                           <Button 
                             className="w-full h-12 rounded-xl font-bold" 
@@ -304,12 +317,19 @@ export default function CheckoutPage() {
                             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                             <Input 
                               id="signup-password" 
-                              type="password" 
+                              type={showSignupPassword ? "text" : "password"} 
                               placeholder="Create a password" 
-                              className="h-12 bg-card pl-10" 
+                              className="h-12 bg-card pl-10 pr-10" 
                               value={signupInfo.password}
                               onChange={(e) => setSignupInfo({...signupInfo, password: e.target.value})}
                             />
+                            <button
+                              type="button"
+                              onClick={() => setShowSignupPassword(!showSignupPassword)}
+                              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                            >
+                              {showSignupPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                            </button>
                           </div>
                         </div>
                       </div>

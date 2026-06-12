@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -8,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardDescription, CardFooter } from "@/components/ui/card";
 import Link from 'next/link';
-import { Mail, Lock, Loader2, ShieldCheck, User, LayoutDashboard } from 'lucide-react';
+import { Mail, Lock, Loader2, ShieldCheck, User, LayoutDashboard, Eye, EyeOff } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { MOCK_USERS } from '@/lib/mock-data';
 import { useToast } from "@/hooks/use-toast";
@@ -19,6 +18,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState<string | null>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -97,13 +97,20 @@ export default function LoginPage() {
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input 
                     id="password" 
-                    type="password" 
+                    type={showPassword ? "text" : "password"} 
                     placeholder="••••••••" 
-                    className="pl-10 h-11 bg-secondary/50" 
+                    className="pl-10 pr-10 h-11 bg-secondary/50" 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
                 </div>
               </div>
               <Button type="submit" className="w-full h-11 rounded-xl mt-4 no-underline" disabled={!!loading}>
