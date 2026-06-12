@@ -165,7 +165,16 @@ function DiscoverContent() {
               <SheetHeader className="p-6 border-b border-border text-left">
                 <div className="flex items-center justify-between">
                   <SheetTitle className="font-headline text-2xl">Refine Search</SheetTitle>
-                  <Button variant="ghost" size="sm" onClick={resetFilters} className="text-primary font-bold">Reset All</Button>
+                  <div className="flex items-center gap-2">
+                    <Button variant="ghost" size="sm" onClick={resetFilters} className="text-primary font-bold hover:bg-primary/10 rounded-full h-9 px-4">
+                      Reset All
+                    </Button>
+                    <SheetClose asChild>
+                      <Button variant="ghost" size="icon" className="rounded-full h-9 w-9">
+                        <X className="w-5 h-5" />
+                      </Button>
+                    </SheetClose>
+                  </div>
                 </div>
               </SheetHeader>
               <div className="flex-1 overflow-y-auto px-6">
