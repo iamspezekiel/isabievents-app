@@ -27,7 +27,7 @@ export default function OrganizerLandingPage() {
             <h1 className="text-5xl md:text-7xl leading-[1.05] font-black tracking-tighter text-balance">
               The Easiest Way to Host <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Legendary</span> Events
             </h1>
-            <p className="text-muted-foreground text-xl leading-relaxed max-w-xl">
+            <p className="text-muted-foreground leading-relaxed max-w-xl">
               From secret beach parties to national tech conferences. IsabiEvents provides the tools you need to sell out fast and manage with ease.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
@@ -50,8 +50,8 @@ export default function OrganizerLandingPage() {
                   </div>
                 ))}
               </div>
-              <p className="text-sm text-muted-foreground font-bold tracking-tight">
-                Joined by <span className="text-primary">1,200+</span> Nigerian organizers
+              <p className="text-sm text-muted-foreground">
+                Joined by <span className="text-primary font-bold">1,200+</span> Nigerian organizers
               </p>
             </div>
           </div>
@@ -86,7 +86,7 @@ export default function OrganizerLandingPage() {
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-12 space-y-4">
             <h2 className="text-4xl md:text-5xl font-black tracking-tighter">Everything you need to succeed</h2>
-            <p className="text-muted-foreground text-lg">We've built a suite of features specifically for the Nigerian market.</p>
+            <p className="text-muted-foreground">We've built a suite of features specifically for the Nigerian market.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -131,7 +131,7 @@ export default function OrganizerLandingPage() {
             <div className="absolute top-0 left-0 w-32 h-32 bg-primary/20 blur-3xl -translate-x-1/2 -translate-y-1/2 rounded-full" />
             <div className="max-w-2xl mx-auto space-y-6">
               <h2 className="text-4xl md:text-5xl font-black tracking-tighter">Simple, transparent pricing</h2>
-              <p className="text-xl text-muted-foreground leading-relaxed">
+              <p className="text-muted-foreground leading-relaxed">
                 No setup fees. No monthly subscriptions. <br />
                 We only win when you do.
               </p>
@@ -143,7 +143,7 @@ export default function OrganizerLandingPage() {
               </div>
               <div className="pt-8">
                 <Link href="/pricing">
-                  <Button size="lg" className="rounded-full px-12 h-14 text-lg shadow-lg shadow-primary/20 Learn More About Fees">Learn More About Fees</Button>
+                  <Button size="lg" className="rounded-full px-12 h-14 text-lg shadow-lg shadow-primary/20">Learn More About Fees</Button>
                 </Link>
               </div>
             </div>
@@ -161,7 +161,7 @@ function FeatureCard({ icon: Icon, title, description }: any) {
         <div className="w-14 h-14 bg-secondary rounded-2xl flex items-center justify-center">
           <Icon className="w-7 h-7 text-primary" />
         </div>
-        <div className="space-y-2">
+        <div className="space-y-2 text-left">
           <h3 className="text-xl font-bold tracking-tight">{title}</h3>
           <p className="text-muted-foreground leading-relaxed">{description}</p>
         </div>
