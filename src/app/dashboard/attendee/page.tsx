@@ -26,7 +26,7 @@ export default function AttendeeDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-background flex flex-col lg:flex-row pt-32">
+    <div className="min-h-screen bg-background flex flex-col lg:flex-row pt-40">
       {/* Sidebar for Desktop */}
       <aside className="hidden lg:flex w-72 bg-card/30 border-r border-border p-8 flex-col sticky top-0 h-screen">
         <Link href="/" className="mb-12 block">
@@ -63,7 +63,7 @@ export default function AttendeeDashboard() {
       <main className="flex-1 p-4 md:p-8 lg:p-12">
         <div className="max-w-5xl mx-auto space-y-8 md:space-y-12">
           <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="space-y-1">
+            <div className="space-y-1 text-left">
               <h1 className="font-headline text-3xl md:text-4xl">Hi, {MOCK_USER.name} 👋</h1>
               <p className="text-muted-foreground font-medium">You have {MOCK_USER.wallet.active} upcoming experiences.</p>
             </div>
@@ -139,7 +139,7 @@ function TicketCard({ event }: any) {
         </div>
       </div>
       
-      <div className="flex-1 p-8 flex flex-col">
+      <div className="flex-1 p-8 flex flex-col text-left">
         <div className="flex items-center justify-between mb-6">
           <Badge className="bg-primary/10 text-primary border-none py-1 px-4 font-bold text-[10px] tracking-widest uppercase">CONFIRMED</Badge>
           <span className="text-[10px] text-muted-foreground font-black font-mono tracking-widest">#TKT-{event.id.toUpperCase()}</span>

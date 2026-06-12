@@ -40,7 +40,7 @@ export default function StaffCheckIn() {
   const resetScanner = () => setScanState('idle');
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col pt-32">
+    <div className="min-h-screen bg-background text-foreground flex flex-col pt-40">
       <header className="border-b border-border p-4 bg-card flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-4">
           <Link href="/">
@@ -124,14 +124,14 @@ export default function StaffCheckIn() {
           </div>
 
           {/* Recent History */}
-          <div className="space-y-4">
+          <div className="space-y-4 text-left">
             <h3 className="font-headline text-lg flex items-center gap-2">
               <History className="w-5 h-5 text-muted-foreground" /> Recent Check-ins
             </h3>
             <div className="space-y-3">
               {history.map((entry) => (
                 <div key={entry.id} className="bg-card border border-border p-4 rounded-xl flex items-center justify-between animate-in slide-in-from-top-2">
-                  <div>
+                  <div className="text-left">
                     <div className="font-bold">{entry.name}</div>
                     <div className="text-xs text-muted-foreground">{entry.type} • {entry.id}</div>
                   </div>
@@ -157,10 +157,10 @@ export default function StaffCheckIn() {
               <X className="w-5 h-5" />
             </Button>
             <CardHeader>
-              <CardTitle className="font-headline">Attendee Lookup</CardTitle>
+              <CardTitle className="font-headline text-left">Attendee Lookup</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="space-y-2">
+              <div className="space-y-2 text-left">
                 <Input placeholder="Enter Ticket ID or Email" className="h-12 bg-secondary" />
               </div>
               <Button className="w-full h-12 rounded-full">Search Attendee</Button>

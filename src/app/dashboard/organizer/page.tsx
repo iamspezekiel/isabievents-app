@@ -22,7 +22,7 @@ const salesData = [
 
 export default function OrganizerDashboard() {
   return (
-    <div className="min-h-screen bg-background flex flex-col md:flex-row pt-32">
+    <div className="min-h-screen bg-background flex flex-col md:flex-row pt-40">
       {/* Side Navigation */}
       <aside className="w-full md:w-64 bg-sidebar border-r border-sidebar-border p-6 flex flex-col hidden md:flex">
         <Link href="/" className="mb-10 block">
@@ -47,7 +47,7 @@ export default function OrganizerDashboard() {
       <main className="flex-1 p-6 md:p-12 overflow-auto">
         <div className="max-w-6xl mx-auto space-y-8">
           <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div>
+            <div className="text-left">
               <h1 className="font-headline text-3xl mb-1">Organizer Overview</h1>
               <p className="text-muted-foreground text-sm flex items-center gap-2">
                 <Badge className="bg-accent/20 text-accent border-none">Verified Merchant</Badge>
@@ -76,7 +76,7 @@ export default function OrganizerDashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <Card className="lg:col-span-2 border-border bg-card">
               <CardHeader>
-                <CardTitle className="text-lg font-headline">Weekly Revenue Flow</CardTitle>
+                <CardTitle className="text-lg font-headline text-left">Weekly Revenue Flow</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="h-[300px] w-full mt-4">
@@ -98,7 +98,7 @@ export default function OrganizerDashboard() {
 
             <Card className="border-border bg-card">
               <CardHeader>
-                <CardTitle className="text-lg font-headline">Recent Payouts</CardTitle>
+                <CardTitle className="text-lg font-headline text-left">Recent Payouts</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6">
                 <PayoutItem date="24 Oct 2024" amount="₦450,000" status="COMPLETED" />
@@ -110,8 +110,8 @@ export default function OrganizerDashboard() {
           </div>
 
           <div className="space-y-6">
-             <h2 className="font-headline text-xl">Active Events</h2>
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+             <h2 className="font-headline text-xl text-left">Active Events</h2>
+             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
                <EventStatusCard title="Lagos Jazz Night" sold={420} total={500} revenue={2100000} />
                <EventStatusCard title="Naija Tech Summit" sold={62} total={1200} revenue={930000} />
              </div>
@@ -135,7 +135,7 @@ function AnalyticCard({ label, value, icon: Icon, trend }: any) {
   const isUp = trend.startsWith('+');
   return (
     <Card className="bg-card border-border">
-      <CardContent className="p-6">
+      <CardContent className="p-6 text-left">
         <div className="flex items-center justify-between mb-4">
           <div className="p-2 bg-secondary rounded-lg">
             <Icon className="w-5 h-5 text-primary" />
@@ -152,7 +152,7 @@ function AnalyticCard({ label, value, icon: Icon, trend }: any) {
 function PayoutItem({ date, amount, status }: any) {
   return (
     <div className="flex items-center justify-between">
-      <div>
+      <div className="text-left">
         <div className="text-sm font-medium">{amount}</div>
         <div className="text-xs text-muted-foreground">{date}</div>
       </div>
