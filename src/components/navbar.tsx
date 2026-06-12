@@ -38,7 +38,9 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const isActive = (path: string) => mounted && pathname === path;
+  // Use pathname directly to avoid hydration mismatch, as usePathname is SSR-compatible.
+  // We only check mounted for client-only logic if needed, but styling can be stable.
+  const getIsActive = (path: string) => pathname === path;
 
   return (
     <div className={cn(
@@ -52,7 +54,7 @@ export function Navbar() {
           : "bg-background/40 backdrop-blur-md border-white/20 h-20"
       )}>
         {/* Logo */}
-        <Link href="/">
+        <Link href="/" className="no-underline">
           <Logo size="sm" />
         </Link>
 
@@ -64,7 +66,7 @@ export function Navbar() {
               href={link.href}
               className={cn(
                 "text-sm font-bold tracking-tight transition-colors hover:text-primary no-underline",
-                isActive(link.href) ? "text-primary" : "text-foreground/70"
+                getIsActive(link.href) ? "text-primary" : "text-foreground/70"
               )}
             >
               {link.name}
@@ -72,7 +74,7 @@ export function Navbar() {
           ))}
           
           <DropdownMenu>
-            <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-bold tracking-tight text-foreground/70 hover:text-primary transition-colors focus:outline-none no-underline">
+            <DropdownMenuTrigger className="flex items-center gap-1 text-sm font-bold tracking-tight text-foreground/70 hover:text-primary transition-colors focus:outline-none no-underline border-none bg-transparent">
               Support <ChevronDown className="w-4 h-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 mt-4 p-2 bg-card/95 backdrop-blur-xl border-border rounded-3xl">
@@ -129,7 +131,7 @@ export function Navbar() {
                     onClick={() => setIsOpen(false)}
                     className={cn(
                       "text-xl font-black tracking-tighter no-underline",
-                      isActive(link.href) ? "text-primary" : "text-muted-foreground"
+                      getIsActive(link.href) ? "text-primary" : "text-muted-foreground"
                     )}
                   >
                     {link.name}
