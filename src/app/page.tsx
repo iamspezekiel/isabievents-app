@@ -42,13 +42,12 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Hero & Categories Combined Section for Blended Background */}
+      {/* Hero Section */}
       <div className="relative pt-32 md:pt-48 pb-12 overflow-hidden">
-        {/* Blended Background Gradient */}
+        {/* Background Gradient */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[800px] bg-primary/10 blur-[150px] -z-10 rounded-full" />
         
         <div className="container mx-auto px-4">
-          {/* Hero Content */}
           <div className="text-center mb-16">
             <Badge className="mb-4 py-1.5 px-4 bg-primary/20 text-primary border-primary/20 hover:bg-primary/20 animate-in fade-in slide-in-from-bottom-4 duration-700">
               Trusted by 50,000+ Nigerians
@@ -78,11 +77,11 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Top Categories Section (Reduced Selection) */}
+          {/* Top Categories Section (Curated Selection) */}
           <section className="relative z-10">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-xl md:text-2xl font-black tracking-tighter text-left">Top Categories</h2>
-              <Link href="/discover">
+              <Link href="/categories">
                 <Button variant="ghost" className="rounded-full px-4 font-semibold gap-2 h-9 text-xs">
                   View All <ArrowRight className="w-3 h-3" />
                 </Button>
@@ -113,7 +112,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Trending Events (Reduced Selection) */}
+      {/* Trending Events (Curated Selection) */}
       <section className="pt-8 pb-12">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-6">
