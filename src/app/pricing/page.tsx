@@ -20,7 +20,7 @@ export default function PricingPage() {
               Built for Scale
             </span>
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-base text-muted-foreground max-w-3xl mx-auto leading-relaxed">
             We only win when you do. No setup fees, no monthly subscriptions, and no hidden costs for Nigerian organizers.
           </p>
         </div>
@@ -39,7 +39,7 @@ export default function PricingPage() {
                     </div>
                     <h2 className="font-headline text-2xl font-bold">Standard Marketplace</h2>
                   </div>
-                  <p className="text-muted-foreground text-lg leading-relaxed">
+                  <p className="text-muted-foreground text-base leading-relaxed">
                     Perfect for concerts, festivals, and conferences of all sizes in Nigeria.
                   </p>
                 </div>
@@ -73,7 +73,7 @@ export default function PricingPage() {
                 <div className="space-y-4">
                   <Badge variant="outline" className="border-accent text-accent">ENTERPRISE</Badge>
                   <h3 className="font-headline text-3xl font-black">High Volume?</h3>
-                  <p className="text-muted-foreground text-lg leading-relaxed">
+                  <p className="text-muted-foreground text-base leading-relaxed">
                     Planning a stadium-level event or a national tour? Get custom rates and dedicated local support.
                   </p>
                 </div>
@@ -109,7 +109,7 @@ export default function PricingPage() {
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="text-center space-y-4 mb-12">
             <h2 className="font-headline text-3xl md:text-4xl font-black">Frequently Asked Questions</h2>
-            <p className="text-muted-foreground">Everything you need to know about our fees and payouts.</p>
+            <p className="text-muted-foreground text-base">Everything you need to know about our fees and payouts.</p>
           </div>
           
           <div className="grid gap-8">
@@ -137,7 +137,7 @@ export default function PricingPage() {
       <section className="py-12 container mx-auto px-4">
         <div className="bg-primary/10 border border-primary/20 rounded-[3rem] p-12 md:p-20 text-center space-y-10">
           <h2 className="font-headline text-3xl md:text-5xl font-black">Ready to sell out?</h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-base text-muted-foreground max-w-2xl mx-auto">
             Join 1,200+ Nigerian organizers who are already scaling their businesses with IsabiEvents.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
@@ -172,7 +172,7 @@ function PricingFaq({ q, a }: any) {
         <HelpCircle className="w-5 h-5 text-primary" />
         <h4 className="text-xl font-bold group-hover:text-primary transition-colors">{q}</h4>
       </div>
-      <p className="text-muted-foreground leading-relaxed pl-8">{a}</p>
+      <p className="text-muted-foreground leading-relaxed pl-8 text-base">{a}</p>
     </div>
   );
 }
