@@ -251,19 +251,20 @@ export default function CheckoutPage() {
                           <span className="text-muted-foreground">Account Status</span>
                           <span className="font-bold text-primary">Verified Attendee</span>
                         </div>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          className="h-auto p-0 text-xs text-muted-foreground hover:text-foreground"
-                          onClick={() => setIsLoggedIn(false)}
-                        >
-                          Switch account or checkout as guest
-                        </Button>
                       </div>
                     </Card>
-                    <Button onClick={() => setStep(2)} className="w-full h-14 rounded-full text-lg gap-2 no-underline">
-                      Continue to Payment <ArrowRight className="w-5 h-5" />
-                    </Button>
+                    <div className="space-y-3">
+                      <Button onClick={() => setStep(2)} className="w-full h-14 rounded-full text-lg gap-2 no-underline">
+                        Continue to Payment <ArrowRight className="w-5 h-5" />
+                      </Button>
+                      <Button 
+                        variant="ghost" 
+                        className="w-full font-bold text-muted-foreground hover:text-foreground h-12 rounded-xl"
+                        onClick={() => setIsLoggedIn(false)}
+                      >
+                        Switch account or checkout as guest
+                      </Button>
+                    </div>
                   </div>
                 )}
               </div>
