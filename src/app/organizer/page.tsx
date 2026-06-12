@@ -25,7 +25,7 @@ export default function OrganizerLandingPage() {
         <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000 flex flex-col items-center lg:items-start text-center lg:text-left">
             <h1 className="text-4xl lg:text-7xl leading-[1.1] font-black tracking-tighter text-balance">
-              The Easiest Way to Host <br />
+              The Easiest Way to Host <br className="hidden sm:block" />
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Legendary</span> Events
             </h1>
             <p className="text-base text-muted-foreground leading-relaxed max-w-lg">
@@ -56,8 +56,8 @@ export default function OrganizerLandingPage() {
               </p>
             </div>
           </div>
-          <div className="relative animate-in fade-in zoom-in-95 duration-1000 hidden lg:block">
-            <div className="relative aspect-square lg:h-[700px] lg:aspect-auto w-full rounded-3xl overflow-hidden border border-border shadow-2xl">
+          <div className="relative animate-in fade-in zoom-in-95 duration-1000 block">
+            <div className="relative aspect-[4/3] sm:aspect-square lg:h-[700px] lg:aspect-auto w-full rounded-3xl overflow-hidden border border-border shadow-2xl">
               <Image 
                 src="https://picsum.photos/seed/organizer-hero/800/1000" 
                 alt="Organizer success" 
@@ -66,14 +66,14 @@ export default function OrganizerLandingPage() {
                 data-ai-hint="organizer success"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-              <div className="absolute bottom-8 left-8 right-8">
-                <div className="bg-white/10 backdrop-blur-md border border-white/20 p-6 rounded-2xl flex items-center justify-between">
+              <div className="absolute bottom-4 left-4 right-4 sm:bottom-8 sm:left-8 sm:right-8">
+                <div className="bg-white/10 backdrop-blur-md border border-white/20 p-4 sm:p-6 rounded-2xl flex items-center justify-between">
                   <div className="space-y-1">
-                    <div className="text-xs text-white/70 uppercase font-black">Gross Revenue</div>
-                    <div className="text-3xl font-black text-white tracking-tight">₦4,250,000</div>
+                    <div className="text-[10px] sm:text-xs text-white/70 uppercase font-black">Gross Revenue</div>
+                    <div className="text-xl sm:text-3xl font-black text-white tracking-tight">₦4,250,000</div>
                   </div>
-                  <div className="w-12 h-12 rounded-full bg-accent/20 flex items-center justify-center">
-                    <Zap className="text-accent w-6 h-6 fill-accent" />
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-accent/20 flex items-center justify-center">
+                    <Zap className="text-accent w-5 h-5 sm:w-6 sm:h-6 fill-accent" />
                   </div>
                 </div>
               </div>
