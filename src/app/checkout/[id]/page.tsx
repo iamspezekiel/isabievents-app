@@ -81,7 +81,7 @@ export default function CheckoutPage() {
                   <PaymentOption id="wallet" label="Isabi Wallet" icon={Wallet} description="Balance: ₦25,000.00" />
                 </RadioGroup>
 
-                <div className="bg-primary/10 border border-primary/20 p-4 rounded-xl flex gap-3 items-start">
+                <div className="bg-primary/10 border border-primary/20 p-4 rounded-xl flex gap-3 items-start mt-6">
                   <ShieldCheck className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                   <p className="text-sm text-muted-foreground">
                     Your payment is secure. We use bank-level encryption and do not store your card details.
@@ -101,15 +101,15 @@ export default function CheckoutPage() {
             )}
 
             {step === 3 && (
-              <div className="text-center py-12 space-y-6 animate-in zoom-in-95 duration-500">
-                <div className="w-20 h-20 bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="text-left py-12 space-y-6 animate-in zoom-in-95 duration-500">
+                <div className="w-20 h-20 bg-accent/20 rounded-full flex items-center justify-center mb-4">
                   <CheckCircle2 className="w-12 h-12 text-accent" />
                 </div>
                 <h1 className="font-headline text-3xl">Payment Confirmed!</h1>
-                <p className="text-muted-foreground text-lg max-w-md mx-auto">
+                <p className="text-muted-foreground text-lg max-w-md">
                   Thank you for your purchase. Your ticket QR code has been sent to your email and is now available in your wallet.
                 </p>
-                <div className="pt-8 flex flex-col sm:flex-row gap-4 justify-center">
+                <div className="pt-8 flex flex-col sm:flex-row gap-4">
                   <Button onClick={() => router.push('/dashboard/attendee')} variant="outline" className="rounded-full px-10 h-12">
                     Go to Wallet
                   </Button>

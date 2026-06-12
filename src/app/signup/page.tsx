@@ -69,12 +69,12 @@ export default function SignupPage() {
               </div>
             </div>
 
-            <div className="flex items-start gap-2 text-xs text-muted-foreground">
+            <div className="flex items-start gap-2 text-xs text-muted-foreground mt-4">
               <ShieldCheck className="w-4 h-4 text-primary shrink-0" />
               <span>By creating an account, you agree to our Terms of Service and Privacy Policy.</span>
             </div>
 
-            <Button className="w-full h-11 rounded-xl">Create Account</Button>
+            <Button className="w-full h-11 rounded-xl mt-6">Create Account</Button>
           </CardContent>
         </Card>
 
