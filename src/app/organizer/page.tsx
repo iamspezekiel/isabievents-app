@@ -25,11 +25,12 @@ export default function OrganizerLandingPage() {
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent/10 blur-[120px] -z-10 rounded-full translate-x-1/2 -translate-y-1/2" />
         <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6 animate-in fade-in slide-in-from-left-8 duration-1000 flex flex-col items-center lg:items-start text-center lg:text-left">
-            <h1 className="text-3xl md:text-7xl leading-[1.1] font-black tracking-tighter text-balance">
-              <span className="block lg:inline whitespace-nowrap">The Easiest Way to Host</span> <br className="hidden lg:block" />
-              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Legendary</span> Events
+            <h1 className="text-4xl md:text-7xl lg:text-8xl xl:text-9xl leading-[0.9] font-black tracking-tighter text-balance">
+              <span className="block">The Easiest</span>
+              <span className="block">Way to Host</span>
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Legendary</span> Events
             </h1>
-            <p className="text-base text-muted-foreground leading-relaxed max-w-lg">
+            <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-lg">
               From secret beach parties to national tech conferences. IsabiEvents provides the tools you need to sell out fast and manage with ease.
             </p>
             <div className="flex flex-row justify-center lg:justify-start gap-4 w-full">
