@@ -26,7 +26,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { MOCK_USER, MOCK_EVENTS } from '@/lib/mock-data';
 import { Logo } from '@/components/logo';
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import Link from 'next/link';
 
 export default function AttendeeDashboard() {
@@ -72,9 +72,11 @@ export default function AttendeeDashboard() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-72 bg-card border-border p-8 flex flex-col overflow-y-auto">
-            <div className="mb-10">
-              <Logo size="sm" />
-            </div>
+            <SheetHeader className="text-left mb-10">
+              <SheetTitle>
+                <Logo size="sm" />
+              </SheetTitle>
+            </SheetHeader>
             <Navigation />
             <div className="pt-8 border-t border-border mt-auto">
               <SidebarLink icon={LogOut} label="Log Out" href="/login" />

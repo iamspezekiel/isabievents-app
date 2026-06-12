@@ -23,7 +23,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import { Logo } from '@/components/logo';
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import Link from 'next/link';
 
 const salesData = [
@@ -75,9 +75,11 @@ export default function OrganizerDashboard() {
             </Button>
           </SheetTrigger>
           <SheetContent side="left" className="w-72 bg-card border-border p-6 flex flex-col overflow-y-auto">
-            <div className="mb-10">
-              <Logo size="sm" />
-            </div>
+            <SheetHeader className="text-left mb-10">
+              <SheetTitle>
+                <Logo size="sm" />
+              </SheetTitle>
+            </SheetHeader>
             <NavigationLinks />
             <div className="pt-6 border-t border-border mt-auto">
               <SidebarLink icon={LogOut} label="Log Out" href="/login" />
@@ -217,7 +219,7 @@ function EventStatusCard({ title, sold, total, revenue }: any) {
     <Card className="bg-card border-border shadow-sm overflow-hidden">
       <CardContent className="p-6 space-y-4">
         <div className="flex justify-between items-start">
-          <h3 className="font-bold text-lg">{title}</h3>
+          h3 className="font-bold text-lg">{title}</h3>
           <Button variant="ghost" size="sm" className="font-bold">Edit</Button>
         </div>
         <div className="space-y-2">
