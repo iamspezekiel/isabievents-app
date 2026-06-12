@@ -120,7 +120,7 @@ export default function AboutPage() {
         <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 blur-3xl rounded-full -z-10" />
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
-            <h2 className="font-headline text-4xl font-black tracking-tighter">What We Stand For</h2>
+            <h2 className="font-headline text-2xl md:text-4xl font-black tracking-tighter">What We Stand For</h2>
             <p className="text-muted-foreground text-lg">Our core values guide every line of code we write and every event we power.</p>
           </div>
 
