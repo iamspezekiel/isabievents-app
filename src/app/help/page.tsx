@@ -15,7 +15,9 @@ export default function HelpCenterPage() {
       <header className="bg-card border-b border-border pt-40 pb-20 text-center">
         <div className="container mx-auto px-4 max-w-4xl space-y-8">
           <div className="space-y-2">
-            <h1 className="font-headline text-4xl md:text-6xl text-balance">How can we help?</h1>
+            <h1 className="font-headline text-4xl md:text-6xl text-balance">
+              How can we <span className="text-primary">help?</span>
+            </h1>
             <p className="text-muted-foreground text-lg">Search our help center or browse common topics below.</p>
           </div>
           <div className="relative max-w-2xl mx-auto">
