@@ -49,25 +49,25 @@ export default function HomePage() {
           <Badge className="mb-6 py-1.5 px-4 bg-primary/20 text-primary border-primary/20 hover:bg-primary/20 animate-in fade-in slide-in-from-bottom-4 duration-700">
             Trusted by 50,000+ Nigerians
           </Badge>
-          <h1 className="text-3xl md:text-7xl mb-8 leading-[1.05] max-w-4xl mx-auto font-black tracking-tighter text-balance animate-in fade-in slide-in-from-bottom-8 duration-1000">
+          <h1 className="text-4xl md:text-7xl mb-8 leading-[1.05] max-w-4xl mx-auto font-black tracking-tighter text-balance animate-in fade-in slide-in-from-bottom-8 duration-1000">
             Experience the Best of <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Nigerian</span> Events
           </h1>
           <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-12 animate-in fade-in slide-in-from-bottom-12 duration-1000">
             Access the pulse of Nigeria. From stadium-shaking concerts to industry-defining summits, discover and secure your spot with zero friction and absolute peace of mind.
           </p>
 
-          <div className="max-w-3xl mx-auto bg-card border border-border p-3 rounded-2xl md:rounded-full flex flex-col md:flex-row items-center gap-3 shadow-2xl animate-in fade-in slide-in-from-bottom-16 duration-1000">
+          <div className="max-w-3xl mx-auto bg-card border border-border p-2 md:p-3 rounded-[2.5rem] md:rounded-full flex flex-col md:flex-row items-center gap-2 md:gap-3 shadow-2xl animate-in fade-in slide-in-from-bottom-16 duration-1000">
             <div className="flex-1 w-full relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
+              <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
               <Input 
                 placeholder="Search events, artists, venues..." 
-                className="pl-12 h-14 bg-transparent border-none focus-visible:ring-0 text-lg"
+                className="pl-14 h-14 bg-secondary/50 md:bg-transparent border-none focus-visible:ring-0 text-lg rounded-[2rem] md:rounded-full"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
-            <Link href={`/discover?q=${encodeURIComponent(search)}`}>
-              <Button size="lg" className="w-full md:w-auto h-14 px-10 rounded-full text-lg shadow-lg shadow-primary/20">
+            <Link href={`/discover?q=${encodeURIComponent(search)}`} className="w-full md:w-auto">
+              <Button size="lg" className="w-full md:w-auto h-14 px-10 rounded-full text-lg shadow-lg shadow-primary/20 font-bold transition-transform hover:scale-[1.02] active:scale-95">
                 Discover Events
               </Button>
             </Link>
@@ -115,7 +115,8 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-10">
             <div className="text-left">
-              <h2 className="text-3xl md:text-4xl font-black tracking-tighter">Trending</h2>
+              <h2 className="text-3xl md:text-4xl font-black tracking-tighter">Trending Events</h2>
+              <p className="text-muted-foreground text-sm">What&apos;s hot right now in Lagos</p>
             </div>
             <Button className="rounded-full px-6 shadow-lg shadow-primary/20 font-semibold gap-2" asChild>
               <Link href="/discover">Explore More <ArrowRight className="w-4 h-4" /></Link>
@@ -123,7 +124,7 @@ export default function HomePage() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-            {MOCK_EVENTS.slice(0, 9).map((event) => (
+            {MOCK_EVENTS.slice(0, 6).map((event) => (
               <Link key={event.id} href={`/events/${event.id}`}>
                 <div className="group relative rounded-2xl overflow-hidden bg-card border border-border hover:border-primary/50 transition-all hover:shadow-2xl hover:shadow-primary/5">
                   <div className="relative aspect-[4/3] overflow-hidden">
