@@ -154,7 +154,7 @@ export default function OrganizerLandingPage() {
               <div className="pt-8">
                 <Link href="/pricing">
                   <Button size="lg" className="rounded-full px-12 h-16 text-lg shadow-2xl shadow-primary/30 font-bold">
-                    Learn More About Fees
+                    Learn More
                   </Button>
                 </Link>
               </div>
