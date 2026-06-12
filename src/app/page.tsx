@@ -28,7 +28,7 @@ export default function HomePage() {
           <Badge className="mb-6 py-1.5 px-4 bg-primary/20 text-primary border-primary/20 hover:bg-primary/20 animate-in fade-in slide-in-from-bottom-4 duration-700">
             Trusted by 50,000+ Nigerians
           </Badge>
-          <h1 className="font-headline text-5xl md:text-7xl mb-8 leading-[1.1] max-w-4xl mx-auto font-black tracking-tighter text-balance animate-in fade-in slide-in-from-bottom-8 duration-1000">
+          <h1 className="text-5xl md:text-7xl mb-8 leading-[1.05] max-w-4xl mx-auto font-black tracking-tighter text-balance animate-in fade-in slide-in-from-bottom-8 duration-1000">
             Experience the Best of <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Nigerian</span> Events
           </h1>
           <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-12 animate-in fade-in slide-in-from-bottom-12 duration-1000">
@@ -71,7 +71,7 @@ export default function HomePage() {
       <section className="pb-20">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="font-headline text-2xl">Browse by Category</h2>
+            <h2 className="text-2xl md:text-3xl font-black tracking-tighter">Browse by Category</h2>
             <Link href="/categories">
               <Button className="rounded-full px-6 shadow-lg shadow-primary/20 font-semibold gap-2">
                 View All <ArrowRight className="w-4 h-4" />
@@ -88,7 +88,7 @@ export default function HomePage() {
                       <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center group-hover:bg-primary/20 transition-colors">
                         <IconComp className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors" />
                       </div>
-                      <span className="font-medium">{cat.name}</span>
+                      <span className="font-bold tracking-tight">{cat.name}</span>
                     </CardContent>
                   </Card>
                 </Link>
@@ -103,7 +103,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-10">
             <div>
-              <h2 className="font-headline text-3xl mb-2">Trending Events</h2>
+              <h2 className="text-3xl md:text-4xl font-black tracking-tighter mb-2">Trending Events</h2>
               <p className="text-muted-foreground">What's hot right now in {selectedCity}</p>
             </div>
             <Button className="rounded-full px-6 shadow-lg shadow-primary/20 font-semibold gap-2" asChild>
@@ -134,9 +134,9 @@ export default function HomePage() {
                       <Calendar className="w-4 h-4" />
                       {new Date(event.date).toLocaleDateString('en-NG', { month: 'short', day: 'numeric', year: 'numeric' })}
                     </div>
-                    <h3 className="font-headline text-xl mb-2 group-hover:text-primary transition-colors">{event.title}</h3>
+                    <h3 className="text-xl mb-2 group-hover:text-primary transition-colors line-clamp-1">{event.title}</h3>
                     <p className="text-muted-foreground text-sm flex items-center gap-1 mb-6">
-                      <MapPin className="w-4 h-4" /> {event.venue}
+                      <MapPin className="w-4 h-4 text-accent" /> {event.venue}
                     </p>
                     
                     <div className="flex items-center justify-between pt-4 border-t border-border">
@@ -144,11 +144,11 @@ export default function HomePage() {
                         <div className="relative w-8 h-8 rounded-full overflow-hidden">
                           <Image src={event.organizer.avatar} alt={event.organizer.name} fill className="object-cover" />
                         </div>
-                        <span className="text-xs font-medium text-muted-foreground">{event.organizer.name}</span>
+                        <span className="text-xs font-bold text-muted-foreground">{event.organizer.name}</span>
                         {event.organizer.verified && <CheckCircle2 className="w-3 h-3 text-primary" />}
                       </div>
                       <div className="text-right">
-                        <span className="text-lg font-bold text-primary">
+                        <span className="text-xl font-black text-primary">
                           {event.price.min === 0 ? 'FREE' : `₦${event.price.min.toLocaleString()}`}
                         </span>
                       </div>
@@ -172,27 +172,27 @@ export default function HomePage() {
       {/* Trust Section */}
       <section className="py-24 bg-card/30 border-y border-border">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="font-headline text-3xl mb-16">Why thousands choose IsabiEvents</h2>
+          <h2 className="text-3xl md:text-5xl font-black tracking-tighter mb-16">Why thousands choose IsabiEvents</h2>
           <div className="grid md:grid-cols-3 gap-12">
             <div className="space-y-4">
               <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <Star className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="font-headline text-xl">Verified Organizers</h3>
+              <h3 className="text-xl font-bold tracking-tight">Verified Organizers</h3>
               <p className="text-muted-foreground">Every event organizer undergoes strict KYC verification before listing on our platform.</p>
             </div>
             <div className="space-y-4">
               <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <CheckCircle2 className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="font-headline text-xl">Instant Ticket Delivery</h3>
+              <h3 className="text-xl font-bold tracking-tight">Instant Ticket Delivery</h3>
               <p className="text-muted-foreground">Receive your unique secure QR code ticket immediately via email and in your wallet after payment.</p>
             </div>
             <div className="space-y-4">
               <div className="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-6">
                 <GlassWater className="w-8 h-8 text-primary" />
               </div>
-              <h3 className="font-headline text-xl">Seamless Payouts</h3>
+              <h3 className="text-xl font-bold tracking-tight">Seamless Payouts</h3>
               <p className="text-muted-foreground">Organizers and vendors receive automated settlements via our robust fintech integrations.</p>
             </div>
           </div>
