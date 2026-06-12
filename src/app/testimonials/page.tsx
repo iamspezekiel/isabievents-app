@@ -84,19 +84,32 @@ export default function TestimonialsPage() {
         </div>
 
         {/* Call to Action */}
-        <section className="mt-32 py-24 bg-primary/10 rounded-[3rem] border border-primary/20 text-center space-y-12 overflow-hidden relative">
-           <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent/20 blur-[100px] rounded-full -translate-x-1/2 translate-y-1/2 -z-10" />
-           <h2 className="font-headline text-4xl font-black">Ready to join the experience?</h2>
-           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-             Find your next favorite memory. Explore trending events in Nigeria today.
-           </p>
-           <div className="flex flex-col sm:flex-row justify-center gap-4">
-             <Link href="/discover">
-               <Button size="lg" className="rounded-full h-16 px-12 text-lg shadow-xl shadow-primary/20 hover:-translate-y-1 transition-all">Explore Events</Button>
-             </Link>
-             <Link href="/signup">
-               <Button variant="outline" size="lg" className="rounded-full h-16 px-12 text-lg hover:-translate-y-1 transition-all">Get Started Free</Button>
-             </Link>
+        <section className="mt-32 py-24 px-8 bg-card border border-border rounded-[4rem] text-center space-y-10 overflow-hidden relative group">
+           {/* Background Glows */}
+           <div className="absolute top-0 left-0 w-96 h-96 bg-primary/10 blur-[120px] rounded-full -translate-x-1/2 -translate-y-1/2 transition-transform duration-1000 group-hover:scale-110" />
+           <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/10 blur-[120px] rounded-full translate-x-1/2 translate-y-1/2 transition-transform duration-1000 group-hover:scale-110" />
+           
+           <div className="relative z-10 max-w-4xl mx-auto space-y-8">
+             <h2 className="font-headline text-4xl md:text-7xl font-black tracking-tighter leading-none">
+               Don't just read about it. <br />
+               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Live it.</span>
+             </h2>
+             <p className="text-xl md:text-2xl text-muted-foreground font-medium leading-relaxed max-w-2xl mx-auto">
+               Find your next favorite memory. Explore trending events in Nigeria today.
+             </p>
+             
+             <div className="flex flex-col sm:flex-row justify-center items-center gap-6 pt-10">
+               <Link href="/discover" className="w-full sm:w-auto no-underline">
+                 <Button size="lg" className="w-full sm:w-auto rounded-full h-20 px-14 text-xl shadow-2xl shadow-primary/30 hover:-translate-y-2 transition-all duration-300 font-black">
+                   Explore Events
+                 </Button>
+               </Link>
+               <Link href="/signup" className="w-full sm:w-auto no-underline">
+                 <Button variant="outline" size="lg" className="w-full sm:w-auto rounded-full h-20 px-14 text-xl border-2 bg-background/50 backdrop-blur-sm hover:bg-secondary hover:-translate-y-2 transition-all duration-300 font-black">
+                   Join Community
+                 </Button>
+               </Link>
+             </div>
            </div>
         </section>
       </main>
