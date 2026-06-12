@@ -24,8 +24,8 @@ import Image from 'next/image';
 export default function MobileAppPage() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
-      {/* Immersive Hero Header */}
-      <section className="relative h-[80vh] w-full flex items-end pb-8 md:pb-16 pt-56 overflow-hidden">
+      {/* Immersive Hero Header - Increased top padding for "big spacing" */}
+      <section className="relative h-[80vh] w-full flex items-end pb-8 md:pb-16 pt-80 overflow-hidden">
         <Image 
           src="https://picsum.photos/seed/mobile-v3/1920/1080" 
           alt="IsabiEvents Mobile" 
@@ -80,7 +80,8 @@ export default function MobileAppPage() {
         
         <div className="container mx-auto px-4">
           <div className="text-center max-w-4xl mx-auto mb-12 space-y-6">
-            <h2 className="text-3xl md:text-5xl text-balance">
+            {/* Reduced size for "Built for the Nigerian Experience" */}
+            <h2 className="text-2xl md:text-4xl text-balance">
               Built for the <br />
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Nigerian Experience</span>
             </h2>
@@ -135,7 +136,8 @@ export default function MobileAppPage() {
             </div>
 
             <div className="space-y-12">
-               <h2 className="text-left leading-tight text-2xl md:text-4xl">Fast. Secure. <br /> Always with you.</h2>
+               {/* Reduced size for "Fast. Secure. Always with you." */}
+               <h2 className="text-left leading-tight text-xl md:text-3xl">Fast. Secure. <br /> Always with you.</h2>
                <div className="space-y-8">
                   <FeatureListItem 
                     title="QR-Ready Entry" 
@@ -167,7 +169,8 @@ export default function MobileAppPage() {
             <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/10 blur-[120px] rounded-full translate-x-1/2 translate-y-1/2" />
             
             <div className="relative z-10 space-y-10">
-              <h2 className="text-5xl md:text-7xl font-black leading-tight tracking-tighter">
+              {/* Reduced size for "Ready to ditch paper?" */}
+              <h2 className="text-3xl md:text-5xl font-black leading-tight tracking-tighter">
                 Ready to <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">ditch paper?</span>
               </h2>
               <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto font-medium leading-relaxed">
