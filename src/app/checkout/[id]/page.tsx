@@ -306,7 +306,7 @@ export default function CheckoutPage() {
                 
                 <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="grid gap-4">
                   <PaymentOption id="card" label="Card Payment" icon={CreditCard} description="Visa, Mastercard, Verve" />
-                  <PaymentOption id="bank" label="Bank Transfer" icon={Landmark} description="Direct transfer to Escrow" />
+                  <PaymentOption id="bank" label="Bank Transfer" icon={Landmark} description="Direct bank transfer" />
                   <PaymentOption 
                     id="solana" 
                     label="SolanaPay" 
