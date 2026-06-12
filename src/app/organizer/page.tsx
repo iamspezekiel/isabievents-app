@@ -25,7 +25,7 @@ export default function OrganizerLandingPage() {
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent/10 blur-[120px] -z-10 rounded-full translate-x-1/2 -translate-y-1/2" />
         <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6 animate-in fade-in slide-in-from-left-8 duration-1000 flex flex-col items-center lg:items-start text-center lg:text-left">
-            <h1 className="text-4xl md:text-7xl lg:text-8xl xl:text-9xl leading-[0.9] font-black tracking-tighter text-balance">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl leading-[0.9] font-black tracking-tighter text-balance">
               <span className="block">The Easiest</span>
               <span className="block">Way to Host</span>
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Legendary</span> Events
