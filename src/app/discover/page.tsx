@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useMemo, useEffect, Suspense } from 'react';
@@ -129,9 +128,9 @@ function DiscoverContent() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
-      {/* Page Title - Centered */}
+      {/* Page Title - Centered & Increased font size for desktop */}
       <div className="px-2 text-center">
-        <h1 className="font-headline text-3xl md:text-4xl">Discover Experiences</h1>
+        <h1 className="font-headline text-3xl md:text-6xl lg:text-7xl">Discover Experiences</h1>
       </div>
 
       {/* Search and Filters Header */}
