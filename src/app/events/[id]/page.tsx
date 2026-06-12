@@ -16,9 +16,15 @@ import Link from 'next/link';
 export default function EventDetailsPage() {
   const { id } = useParams();
   const event = MOCK_EVENTS.find(e => e.id === id) || MOCK_EVENTS[0];
+  
   const [faqs, setFaqs] = useState<any[]>([]);
   const [loadingFaqs, setLoadingFaqs] = useState(true);
   const [faqError, setFaqError] = useState(false);
+
+  // Ticket Selection State
+  const [selectedTier, setSelectedTier] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState(1);
+  const [tierPrice, setTierPrice] = useState(0);
 
   async function fetchFaqs() {
     setLoadingFaqs(true);
@@ -27,7 +33,6 @@ export default function EventDetailsPage() {
       const generated = await generateFaqs({ description: event.description });
       setFaqs(generated);
     } catch (err: any) {
-      console.error("Failed to generate FAQs", err);
       setFaqError(true);
     } finally {
       setLoadingFaqs(false);
@@ -37,6 +42,18 @@ export default function EventDetailsPage() {
   useEffect(() => {
     fetchFaqs();
   }, [event.description]);
+
+  const handleTierSelect = (name: string | null, price: number = 0) => {
+    if (selectedTier === name) {
+      setSelectedTier(null);
+      setTierPrice(0);
+      setQuantity(1);
+    } else {
+      setSelectedTier(name);
+      setTierPrice(price);
+      setQuantity(1);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -97,18 +114,30 @@ export default function EventDetailsPage() {
                   price={event.price.min} 
                   perks={['Standard Seating', 'Gate Entry']} 
                   available={true}
+                  isSelected={selectedTier === "Standard Access"}
+                  quantity={quantity}
+                  onSelect={() => handleTierSelect("Standard Access", event.price.min)}
+                  onQuantityChange={setQuantity}
                 />
                 <TicketTier 
                   name="VIP Experience" 
                   price={event.price.max} 
                   perks={['Front Row Seating', 'VIP Lounge Access', 'Complimentary Drinks', 'Meet & Greet']} 
                   available={true}
+                  isSelected={selectedTier === "VIP Experience"}
+                  quantity={quantity}
+                  onSelect={() => handleTierSelect("VIP Experience", event.price.max)}
+                  onQuantityChange={setQuantity}
                 />
                 <TicketTier 
                   name="Early Bird" 
                   price={Math.floor(event.price.min * 0.8)} 
                   perks={['Standard Seating', 'Limited Offer']} 
                   available={false}
+                  isSelected={false}
+                  quantity={1}
+                  onSelect={() => {}}
+                  onQuantityChange={() => {}}
                 />
               </TabsContent>
 
@@ -171,8 +200,18 @@ export default function EventDetailsPage() {
             <div className="sticky top-32 space-y-6">
               <Card className="border-border bg-card shadow-2xl overflow-hidden rounded-2xl">
                 <CardContent className="p-8">
-                  <div className="flex items-center justify-center mb-6">
-                    <span className="text-3xl font-bold text-primary">₦{event.price.min.toLocaleString()}</span>
+                  <div className="flex flex-col items-center justify-center mb-6 text-center">
+                    <span className="text-sm text-muted-foreground font-medium mb-1">
+                      {selectedTier ? `Selected: ${selectedTier}` : 'Tickets Starting At'}
+                    </span>
+                    <span className="text-3xl font-black text-primary">
+                      {selectedTier ? `₦${(tierPrice * quantity).toLocaleString()}` : `₦${event.price.min.toLocaleString()}`}
+                    </span>
+                    {selectedTier && quantity > 1 && (
+                      <span className="text-xs text-muted-foreground mt-1">
+                        (₦{tierPrice.toLocaleString()} x {quantity})
+                      </span>
+                    )}
                   </div>
                   
                   <div className="space-y-4 mb-8">
@@ -190,9 +229,9 @@ export default function EventDetailsPage() {
                     </div>
                   </div>
 
-                  <Link href={`/checkout/${event.id}`}>
+                  <Link href={selectedTier ? `/checkout/${event.id}?tier=${encodeURIComponent(selectedTier)}&qty=${quantity}` : `/checkout/${event.id}`}>
                     <Button size="lg" className="w-full h-14 rounded-full text-lg shadow-lg shadow-primary/20">
-                      Get Tickets Now
+                      {selectedTier ? 'Proceed to Checkout' : 'Get Tickets Now'}
                     </Button>
                   </Link>
                   <p className="text-center text-xs text-muted-foreground mt-4">
@@ -233,13 +272,22 @@ export default function EventDetailsPage() {
   );
 }
 
-function TicketTier({ name, price, perks, available }: any) {
+function TicketTier({ name, price, perks, available, isSelected, quantity, onSelect, onQuantityChange }: any) {
   return (
-    <div className={`p-6 border rounded-2xl transition-all ${available ? 'bg-card/50 border-border hover:border-primary/50' : 'bg-secondary/20 border-border opacity-60 pointer-events-none'}`}>
+    <div className={`p-6 border rounded-2xl transition-all duration-300 ${
+      available 
+        ? (isSelected ? 'border-primary bg-primary/5 shadow-lg ring-1 ring-primary/20' : 'bg-card/50 border-border hover:border-primary/50') 
+        : 'bg-secondary/20 border-border opacity-60 pointer-events-none'
+    }`}>
       <div className="flex items-center justify-between mb-4">
-        <div>
-          <h3 className="font-headline text-lg">{name}</h3>
-          {!available && <Badge variant="destructive">Sold Out</Badge>}
+        <div className="flex items-center gap-3">
+          <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${isSelected ? 'border-primary bg-primary' : 'border-muted'}`}>
+            {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
+          </div>
+          <div>
+            <h3 className="font-headline text-lg">{name}</h3>
+            {!available && <Badge variant="destructive">Sold Out</Badge>}
+          </div>
         </div>
         <div className="text-right">
           <span className="text-xl font-bold text-primary">₦{price.toLocaleString()}</span>
@@ -253,9 +301,34 @@ function TicketTier({ name, price, perks, available }: any) {
           </li>
         ))}
       </ul>
-      <Button variant={available ? "secondary" : "ghost"} className="w-full rounded-full" disabled={!available}>
-        {available ? 'Select Quantity' : 'Unavailable'}
-      </Button>
+      
+      {isSelected ? (
+        <div className="flex items-center gap-4 animate-in fade-in slide-in-from-top-2 duration-300">
+          <div className="flex items-center gap-3 bg-secondary/50 rounded-full p-1.5 flex-1 justify-between px-6 border border-border">
+            <button 
+              onClick={(e) => { e.stopPropagation(); onQuantityChange(Math.max(1, quantity - 1)); }}
+              className="w-8 h-8 rounded-full bg-background border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-colors"
+            > - </button>
+            <span className="font-bold text-lg">{quantity}</span>
+            <button 
+              onClick={(e) => { e.stopPropagation(); onQuantityChange(quantity + 1); }}
+              className="w-8 h-8 rounded-full bg-background border border-border flex items-center justify-center hover:bg-primary hover:text-white transition-colors"
+            > + </button>
+          </div>
+          <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); onSelect(); }} className="text-muted-foreground hover:text-red-500 font-bold">
+            Remove
+          </Button>
+        </div>
+      ) : (
+        <Button 
+          variant={available ? "secondary" : "ghost"} 
+          className="w-full rounded-full h-12 font-bold" 
+          disabled={!available}
+          onClick={onSelect}
+        >
+          {available ? 'Select Tier' : 'Unavailable'}
+        </Button>
+      )}
     </div>
   );
 }
