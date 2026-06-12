@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -15,8 +14,8 @@ export default function SuccessStoriesPage() {
       {/* Hero */}
       <header className="pt-40 pb-24 border-b border-border bg-card/30 overflow-hidden">
         <div className="container mx-auto px-4 text-center space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-          <Badge className="bg-accent/20 text-accent border-none py-1.5 px-6 mb-4 font-bold tracking-widest">SUCCESS STORIES</Badge>
-          <h1 className="font-headline text-5xl md:text-8xl font-black leading-[1.05] tracking-tighter text-balance">
+          <Badge className="bg-accent/20 text-accent border-none py-1.5 px-6 mb-4 font-bold tracking-widest uppercase">SUCCESS STORIES</Badge>
+          <h1 className="font-headline text-4xl md:text-6xl font-black leading-[1.1] tracking-tighter text-balance">
             Powering Nigeria&apos;s <br /> 
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               Unforgettable Moments
@@ -43,7 +42,7 @@ export default function SuccessStoriesPage() {
             </div>
             <div className="p-12 md:p-20 space-y-8">
               <div className="space-y-4">
-                <h2 className="font-headline text-4xl">Lagos Jazz Night 2024</h2>
+                <h2 className="font-headline text-3xl">Lagos Jazz Night 2024</h2>
                 <p className="text-muted-foreground text-lg leading-relaxed italic">
                   &quot;IsabiEvents transformed our gate management. We processed 5,000 attendees in under 2 hours without a single invalid ticket dispute.&quot;
                 </p>
@@ -74,7 +73,7 @@ export default function SuccessStoriesPage() {
 
         {/* Success Grid */}
         <section className="space-y-16">
-          <h2 className="font-headline text-4xl text-center">More Success Stories</h2>
+          <h2 className="font-headline text-3xl text-center">More Success Stories</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <CaseCard 
               title="Naija Tech Summit" 
@@ -105,9 +104,9 @@ export default function SuccessStoriesPage() {
            </p>
            <div className="flex flex-col sm:flex-row justify-center gap-4">
              <Link href="/signup?role=organizer">
-               <Button size="lg" className="rounded-full h-16 px-12 text-lg shadow-xl shadow-primary/20">Create My First Event</Button>
+               <Button size="lg" className="rounded-full h-16 px-12 text-lg shadow-xl shadow-primary/20 hover:-translate-y-0.5 transition-all">Create My First Event</Button>
              </Link>
-             <Button variant="outline" size="lg" className="rounded-full h-16 px-12 text-lg">Book a Demo</Button>
+             <Button variant="outline" size="lg" className="rounded-full h-16 px-12 text-lg hover:-translate-y-0.5 transition-all">Book a Demo</Button>
            </div>
         </section>
       </main>
@@ -133,11 +132,11 @@ function CaseCard({ title, stat, metric, img }: any) {
       <CardContent className="p-6 space-y-4">
         <div className="flex items-center justify-between">
            <div className="space-y-1">
-             <div className="text-xs text-muted-foreground font-black uppercase tracking-widest">Scale</div>
+             <div className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Scale</div>
              <div className="font-bold text-primary">{stat}</div>
            </div>
            <div className="space-y-1 text-right">
-             <div className="text-xs text-muted-foreground font-black uppercase tracking-widest">Growth</div>
+             <div className="text-[10px] text-muted-foreground font-black uppercase tracking-widest">Growth</div>
              <div className="font-bold text-accent">{metric}</div>
            </div>
         </div>

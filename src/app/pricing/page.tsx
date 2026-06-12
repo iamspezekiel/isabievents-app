@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -16,7 +15,7 @@ export default function PricingPage() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
         <div className="container mx-auto px-4 space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <Badge className="bg-primary/20 text-primary border-none py-1.5 px-6 mb-4 font-bold tracking-widest">PRICING</Badge>
-          <h1 className="font-headline text-5xl md:text-8xl font-black leading-[1.05] tracking-tighter text-balance">
+          <h1 className="font-headline text-4xl md:text-6xl font-black leading-[1.1] tracking-tighter text-balance">
             Transparent Pricing <br /> 
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               Built for Scale
@@ -47,7 +46,7 @@ export default function PricingPage() {
                 </div>
                 
                 <div className="flex items-center gap-6 py-6 border-y border-border">
-                   <div className="text-8xl font-black text-primary tracking-tighter">2.5%</div>
+                   <div className="text-6xl md:text-8xl font-black text-primary tracking-tighter">2.5%</div>
                    <div className="text-left">
                      <div className="text-sm font-black uppercase tracking-widest text-muted-foreground">Service Fee</div>
                      <div className="text-xs text-muted-foreground font-medium">per ticket sold + ₦100</div>
@@ -64,7 +63,7 @@ export default function PricingPage() {
 
                 <div className="pt-6">
                   <Link href="/signup?role=organizer">
-                    <Button size="lg" className="w-full h-16 rounded-full text-lg shadow-xl shadow-primary/20 hover:scale-[1.02] transition-transform">
+                    <Button size="lg" className="w-full h-16 rounded-full text-lg shadow-xl shadow-primary/20 hover:-translate-y-0.5 transition-all">
                       Create Your First Event
                     </Button>
                   </Link>
@@ -97,7 +96,7 @@ export default function PricingPage() {
                   </div>
                 </div>
 
-                <Button variant="outline" size="lg" className="rounded-full h-16 text-lg border-2 hover:bg-secondary">
+                <Button variant="outline" size="lg" className="rounded-full h-16 text-lg border-2 hover:bg-secondary hover:-translate-y-0.5 transition-all">
                   Contact Our Sales Team
                 </Button>
               </div>
@@ -110,7 +109,7 @@ export default function PricingPage() {
       <section className="py-24 bg-card/30 border-y border-border">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="text-center space-y-4 mb-20">
-            <h2 className="font-headline text-4xl font-black">Frequently Asked Questions</h2>
+            <h2 className="font-headline text-3xl md:text-4xl font-black">Frequently Asked Questions</h2>
             <p className="text-muted-foreground">Everything you need to know about our fees and payouts.</p>
           </div>
           
@@ -138,17 +137,17 @@ export default function PricingPage() {
       {/* CTA */}
       <section className="py-24 container mx-auto px-4">
         <div className="bg-primary/10 border border-primary/20 rounded-[3rem] p-12 md:p-20 text-center space-y-10">
-          <h2 className="font-headline text-4xl md:text-6xl font-black">Ready to sell out?</h2>
+          <h2 className="font-headline text-3xl md:text-5xl font-black">Ready to sell out?</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Join 1,200+ Nigerian organizers who are already scaling their businesses with IsabiEvents.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
             <Link href="/signup?role=organizer">
-              <Button size="lg" className="rounded-full h-16 px-12 text-lg shadow-xl shadow-primary/20 hover:scale-105 transition-transform">
+              <Button size="lg" className="rounded-full h-16 px-12 text-lg shadow-xl shadow-primary/20 hover:-translate-y-0.5 transition-all">
                 Get Started Now
               </Button>
             </Link>
-            <Button variant="outline" size="lg" className="rounded-full h-16 px-12 text-lg">Book a Demo</Button>
+            <Button variant="outline" size="lg" className="rounded-full h-16 px-12 text-lg hover:-translate-y-0.5 transition-all">Book a Demo</Button>
           </div>
         </div>
       </section>
