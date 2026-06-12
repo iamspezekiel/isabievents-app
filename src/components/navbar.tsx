@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -38,8 +39,6 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Use pathname directly to avoid hydration mismatch, as usePathname is SSR-compatible.
-  // We only check mounted for client-only logic if needed, but styling can be stable.
   const getIsActive = (path: string) => pathname === path;
 
   return (

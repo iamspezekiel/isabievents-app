@@ -1,24 +1,35 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from 'next/link';
-import { Mail, Lock, User, ShieldCheck } from 'lucide-react';
+import { Mail, Lock, User, ShieldCheck, Loader2 } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Logo } from '@/components/logo';
 
-export default function SignupPage() {
+function SignupForm() {
+  const searchParams = useSearchParams();
   const [role, setRole] = useState('attendee');
+
+  useEffect(() => {
+    const roleParam = searchParams.get('role');
+    if (roleParam === 'organizer') {
+      setRole('organizer');
+    } else if (roleParam === 'attendee') {
+      setRole('attendee');
+    }
+  }, [searchParams]);
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-start p-4 pt-44 pb-20">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-2">
-          <Link href="/" className="inline-block mb-4">
+          <Link href="/" className="inline-block mb-4 no-underline">
             <Logo size="lg" className="mx-auto" />
           </Link>
           <h1 className="text-3xl font-headline">Join IsabiEvents</h1>
@@ -74,7 +85,7 @@ export default function SignupPage() {
               <span>By creating an account, you agree to our Terms of Service and Privacy Policy.</span>
             </div>
 
-            <Button className="w-full h-11 rounded-xl mt-6">Create Account</Button>
+            <Button className="w-full h-11 rounded-xl mt-6 no-underline">Create Account</Button>
           </CardContent>
         </Card>
 
@@ -83,5 +94,17 @@ export default function SignupPage() {
         </p>
       </div>
     </div>
+  );
+}
+
+export default function SignupPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    }>
+      <SignupForm />
+    </Suspense>
   );
 }
