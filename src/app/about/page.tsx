@@ -27,7 +27,7 @@ export default function AboutPage() {
       </section>
 
       {/* Our Story Section */}
-      <section className="py-24 md:py-32 container mx-auto px-4 relative">
+      <section className="py-24 md:py-40 container mx-auto px-4 relative">
         <div className="absolute top-1/2 right-0 w-96 h-96 bg-accent/5 blur-[120px] rounded-full -z-10" />
         <div className="absolute -bottom-24 left-0 w-72 h-72 bg-primary/5 blur-[100px] rounded-full -z-10" />
         
@@ -96,7 +96,7 @@ export default function AboutPage() {
               
               <div className="relative pl-12 py-4">
                 <Quote className="absolute top-0 left-0 w-8 h-8 text-primary/20 rotate-180" />
-                <p className="text-xl md:text-2xl font-bold tracking-tight text-foreground leading-snug">
+                <p className="text-xl md:text-2xl font-bold tracking-tight text-foreground font-headline leading-snug">
                   "We didn't just build a ticket shop. We built a system that understands the local context—from bank transfers to offline entry."
                 </p>
               </div>
@@ -110,7 +110,7 @@ export default function AboutPage() {
       </section>
 
       {/* Values Section */}
-      <section className="py-24 bg-card/30 border-y border-border relative">
+      <section className="py-24 md:py-32 bg-card/30 border-y border-border relative">
         <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 blur-3xl rounded-full -z-10" />
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
@@ -139,13 +139,13 @@ export default function AboutPage() {
       </section>
 
       {/* Why Us Section */}
-      <section className="py-24 container mx-auto px-4">
+      <section className="py-24 md:py-32 container mx-auto px-4">
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <h2 className="font-headline text-3xl md:text-4xl font-black tracking-tighter leading-none">Why IsabiEvents?</h2>
         </div>
         <div className="bg-primary/5 border border-primary/10 rounded-[4rem] p-12 md:p-20 flex flex-col lg:flex-row items-center gap-16">
           <div className="flex-1 space-y-8 text-left">
-             <div className="space-y-6">
+             <div className="space-y-10">
                 <FeatureItem 
                   icon={CreditCard}
                   title="Built for Local Payments" 
@@ -176,22 +176,22 @@ export default function AboutPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-32 container mx-auto px-4 text-center">
+      <section className="py-32 md:py-48 container mx-auto px-4 text-center">
         <div className="max-w-4xl mx-auto space-y-12">
           <h2 className="font-headline text-3xl md:text-5xl font-black tracking-tighter leading-none text-balance">
             Ready to join the <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">movement?</span>
           </h2>
-          <p className="text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed px-4">
             Whether you're looking for your next favorite memory or hosting the event of the year, we're here to help you make it happen.
           </p>
-          <div className="flex flex-row justify-center items-center gap-4 md:gap-6">
+          <div className="flex flex-row justify-center items-center gap-4 md:gap-8 px-2 md:px-0">
             <Link href="/discover" className="no-underline flex-1 sm:flex-none">
-              <Button size="lg" className="rounded-full h-12 md:h-16 px-6 md:px-12 text-sm md:text-lg shadow-2xl shadow-primary/30 font-bold w-full">
+              <Button size="lg" className="rounded-full h-12 md:h-16 px-6 md:px-16 text-sm md:text-lg shadow-2xl shadow-primary/30 font-bold w-full">
                 Explore Events
               </Button>
             </Link>
             <Link href="/signup?role=organizer" className="no-underline flex-1 sm:flex-none">
-              <Button variant="outline" size="lg" className="rounded-full h-12 md:h-16 px-6 md:px-12 text-sm md:text-lg border-2 bg-background/50 backdrop-blur-sm font-bold w-full">
+              <Button variant="outline" size="lg" className="rounded-full h-12 md:h-16 px-6 md:px-16 text-sm md:text-lg border-2 bg-background/50 backdrop-blur-sm font-bold w-full">
                 Host an Event
               </Button>
             </Link>
