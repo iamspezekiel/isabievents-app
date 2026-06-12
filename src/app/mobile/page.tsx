@@ -163,26 +163,35 @@ export default function MobileAppPage() {
       {/* Call to Action */}
       <section className="py-24">
         <div className="container mx-auto px-4 text-center">
-          <div className="max-w-4xl mx-auto space-y-10 p-12 md:p-20 bg-primary/10 border border-primary/20 rounded-[3rem] shadow-2xl shadow-primary/5">
-            <h2 className="font-headline text-4xl md:text-6xl">Ready to ditch paper?</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Join over 150,000+ Nigerians who are already using the mobile app to manage their social lives.
-            </p>
-            <div className="flex flex-col sm:flex-row justify-center gap-4 pt-6">
-              <Button size="lg" className="rounded-full h-16 px-12 text-lg shadow-xl shadow-primary/20 hover:scale-105 transition-transform gap-4">
-                <Apple className="w-7 h-7" />
-                <div className="flex flex-col items-start leading-none text-left">
-                  <span className="text-[10px] font-bold uppercase tracking-tighter opacity-70">App Store</span>
-                  <span className="text-lg font-bold">Download Now</span>
-                </div>
-              </Button>
-              <Button variant="outline" size="lg" className="rounded-full h-16 px-12 text-lg hover:bg-secondary transition-all hover:scale-105 border-2 gap-4">
-                <Play className="w-7 h-7" />
-                <div className="flex flex-col items-start leading-none text-left">
-                  <span className="text-[10px] font-bold uppercase tracking-tighter opacity-70">Google Play</span>
-                  <span className="text-lg font-bold">Get it Free</span>
-                </div>
-              </Button>
+          <div className="max-w-4xl mx-auto relative group overflow-hidden p-12 md:p-24 bg-primary/10 border border-primary/20 rounded-[4rem] shadow-2xl shadow-primary/5">
+            {/* Background Glows */}
+            <div className="absolute top-0 left-0 w-64 h-64 bg-primary/20 blur-[100px] rounded-full -translate-x-1/2 -translate-y-1/2" />
+            <div className="absolute bottom-0 right-0 w-64 h-64 bg-accent/10 blur-[100px] rounded-full translate-x-1/2 translate-y-1/2" />
+            
+            <div className="relative z-10 space-y-10">
+              <h2 className="font-headline text-5xl md:text-7xl font-black leading-tight tracking-tighter">
+                Ready to <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">ditch paper?</span>
+              </h2>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto font-medium">
+                Join over 150,000+ Nigerians who have upgraded their social lives. No more queues, no more printed tickets.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row justify-center gap-6 pt-8">
+                <Button size="lg" className="rounded-full h-16 px-12 text-lg shadow-xl shadow-primary/20 hover:scale-105 hover:-translate-y-1 transition-all gap-4">
+                  <Apple className="w-8 h-8 fill-current" />
+                  <div className="flex flex-col items-start leading-none text-left">
+                    <span className="text-[10px] font-black uppercase tracking-tighter opacity-70">App Store</span>
+                    <span className="text-lg font-bold">Download Now</span>
+                  </div>
+                </Button>
+                <Button variant="outline" size="lg" className="rounded-full h-16 px-12 text-lg border-2 hover:bg-secondary hover:scale-105 hover:-translate-y-1 transition-all shadow-xl shadow-black/5 gap-4">
+                  <Play className="w-7 h-7 fill-current" />
+                  <div className="flex flex-col items-start leading-none text-left">
+                    <span className="text-[10px] font-black uppercase tracking-tighter opacity-70">Google Play</span>
+                    <span className="text-lg font-bold">Get it Free</span>
+                  </div>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
