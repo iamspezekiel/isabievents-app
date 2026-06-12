@@ -41,7 +41,10 @@ export function Logo({ className, iconOnly = false, size = 'md' }: LogoProps) {
         <Ticket className={cn("text-primary-foreground fill-primary-foreground/20", currentSize.icon)} />
       </div>
       {!iconOnly && (
-        <div className={cn("font-headline font-black tracking-tighter leading-none flex items-center text-primary", currentSize.text)}>
+        <div className={cn(
+          "font-headline font-black tracking-tighter leading-none flex items-center text-primary", 
+          currentSize.text
+        )}>
           IsabiEvents
         </div>
       )}
