@@ -167,9 +167,9 @@ export default function AboutPage() {
                 />
              </div>
           </div>
-          <div className="flex-1 relative w-full aspect-video rounded-3xl overflow-hidden shadow-2xl">
+          <div className="flex-1 relative w-full aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl">
             <Image 
-              src="https://picsum.photos/seed/why_isabi_v5/800/450" 
+              src="https://picsum.photos/seed/why_isabi_v5/800/600" 
               alt="Innovation" 
               fill 
               className="object-cover"
