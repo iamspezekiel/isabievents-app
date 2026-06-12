@@ -219,7 +219,7 @@ function EventStatusCard({ title, sold, total, revenue }: any) {
     <Card className="bg-card border-border shadow-sm overflow-hidden">
       <CardContent className="p-6 space-y-4">
         <div className="flex justify-between items-start">
-          h3 className="font-bold text-lg">{title}</h3>
+          <h3 className="font-bold text-lg">{title}</h3>
           <Button variant="ghost" size="sm" className="font-bold">Edit</Button>
         </div>
         <div className="space-y-2">
