@@ -107,7 +107,7 @@ export default function OrganizerLandingPage() {
             <FeatureCard 
               icon={ShieldCheck} 
               title="Secure Payments" 
-              description="Instant settlements via Paystack, Flutterwave & SolanaPay. We handle the security."
+              description="Instant settlements via Paystack, Flutterwave & SolanaPay."
             />
             <FeatureCard 
               icon={Users} 
