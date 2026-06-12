@@ -134,7 +134,7 @@ function DiscoverContent() {
           Discover <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Experiences</span>
         </h1>
         <p className="text-muted-foreground text-sm md:text-xl max-w-2xl mx-auto font-medium">
-          Access the pulse of Nigeria. From stadium-shaking concerts to industry-defining summits, discover and secure your spot with zero friction.
+          Discover and secure your spot with zero friction.
         </p>
       </div>
 

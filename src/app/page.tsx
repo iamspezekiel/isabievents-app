@@ -53,7 +53,7 @@ export default function HomePage() {
             Experience the Best of <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Nigerian</span> Events
           </h1>
           <p className="text-muted-foreground text-sm md:text-xl max-w-2xl mx-auto mb-12 animate-in fade-in slide-in-from-bottom-12 duration-1000">
-            Access the pulse of Nigeria. From stadium-shaking concerts to industry-defining summits, discover and secure your spot with zero friction and absolute peace of mind.
+            Discover and secure your spot with zero friction.
           </p>
 
           <div className="max-w-3xl mx-auto bg-card border border-border p-2 md:p-3 rounded-[1.5rem] md:rounded-full flex flex-col md:flex-row items-center gap-2 md:gap-3 shadow-2xl animate-in fade-in slide-in-from-bottom-16 duration-1000">
