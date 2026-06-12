@@ -53,7 +53,7 @@ export default function OrganizerDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-background flex flex-col md:flex-row pt-48">
+    <div className="min-h-screen bg-background flex flex-col md:flex-row pt-32">
       {/* Desktop Side Navigation */}
       <aside className="w-64 bg-sidebar border-r border-sidebar-border p-6 flex flex-col hidden md:flex sticky top-0 h-screen overflow-y-auto">
         <Link href="/" className="mb-10 block">
