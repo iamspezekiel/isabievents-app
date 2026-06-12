@@ -128,6 +128,11 @@ function DiscoverContent() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
+      {/* Page Title moved to top */}
+      <div className="px-2 text-left">
+        <h1 className="font-headline text-3xl md:text-4xl">Discover Experiences</h1>
+      </div>
+
       {/* Search and Filters Header */}
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-2">
@@ -191,15 +196,8 @@ function DiscoverContent() {
           </Sheet>
         </div>
 
-        {/* Results Info */}
-        <div className="flex items-center justify-between px-2">
-          <div className="space-y-1 text-left">
-            <h1 className="font-headline text-2xl">Discover Experiences</h1>
-            <p className="text-muted-foreground text-sm font-medium">
-              {filteredEvents.length === 0 ? 'No results found' : `Showing ${filteredEvents.length} events`}
-            </p>
-          </div>
-          
+        {/* Results Controls */}
+        <div className="flex items-center justify-end px-2">
           <div className="hidden md:block">
             <Select value={priceFilter} onValueChange={setPriceFilter}>
               <SelectTrigger className="h-10 rounded-xl px-4 gap-2 border-border bg-card min-w-[120px] focus:ring-primary font-bold text-xs">
