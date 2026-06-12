@@ -97,13 +97,13 @@ export default function AllCategoriesPage() {
       </main>
 
       {/* CTA Section */}
-      <section className="container mx-auto px-4 pb-32">
+      <section className="container mx-auto px-4 pt-12 pb-32">
         <div className="bg-primary/5 border border-primary/10 rounded-[4rem] p-12 md:p-20 text-center space-y-8 relative overflow-hidden group">
           <div className="absolute top-0 left-0 w-64 h-64 bg-primary/10 blur-[100px] rounded-full -translate-x-1/2 -translate-y-1/2" />
           <div className="absolute bottom-0 right-0 w-64 h-64 bg-accent/10 blur-[100px] rounded-full translate-x-1/2 translate-y-1/2" />
           
-          <div className="relative z-10 space-y-6">
-            <h2 className="font-headline text-4xl md:text-5xl font-black tracking-tighter">
+          <div className="relative z-10 space-y-8">
+            <h2 className="font-headline text-2xl md:text-5xl font-black tracking-tighter">
               Don't see what <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">you're looking for?</span>
             </h2>
             <Link href="/discover">
