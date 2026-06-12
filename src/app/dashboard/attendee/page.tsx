@@ -39,21 +39,12 @@ export default function AttendeeDashboard() {
 
   const Navigation = () => (
     <nav className="flex-1 space-y-1">
-      <div className="pb-4 mb-4 border-b border-border/50">
+      <div className="pb-4">
         <SidebarLink icon={Ticket} label="My Tickets" active />
         <SidebarLink icon={History} label="Order History" />
         <SidebarLink icon={Heart} label="Favorites" />
         <SidebarLink icon={Bell} label="Notifications" />
         <SidebarLink icon={Settings} label="Account Settings" />
-      </div>
-
-      {/* Management Roles Switcher */}
-      <div className="pt-2">
-        <h4 className="px-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-3">Management Portal</h4>
-        <div className="space-y-1">
-          <SidebarLink icon={ShieldCheck} label="Admin/Organizer" href="/dashboard/organizer" />
-          <SidebarLink icon={Smartphone} label="Staff Entrance App" href="/dashboard/staff" />
-        </div>
       </div>
     </nav>
   );

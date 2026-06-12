@@ -41,23 +41,13 @@ export default function OrganizerDashboard() {
 
   const NavigationLinks = () => (
     <nav className="flex-1 space-y-1">
-      <div className="pb-2 mb-2 border-b border-sidebar-border/50">
+      <div className="pb-2">
         <SidebarLink icon={LayoutDashboard} label="Dashboard" active />
         <SidebarLink icon={Plus} label="Create Event" href="/dashboard/organizer/create" />
         <SidebarLink icon={Ticket} label="My Events" />
         <SidebarLink icon={Users} label="Vendors" />
         <SidebarLink icon={BarChart3} label="Analytics" />
         <SidebarLink icon={Settings} label="Settings" />
-      </div>
-      
-      {/* Role Switcher Section */}
-      <div className="pt-4">
-        <h4 className="px-4 text-[10px] font-black uppercase tracking-widest text-muted-foreground/60 mb-3">Management Roles</h4>
-        <div className="space-y-1">
-          <SidebarLink icon={ShieldCheck} label="Admin Portal" href="/dashboard/organizer" />
-          <SidebarLink icon={Smartphone} label="Staff Gate App" href="/dashboard/staff" />
-          <SidebarLink icon={User} label="Attendee View" href="/dashboard/attendee" />
-        </div>
       </div>
     </nav>
   );
