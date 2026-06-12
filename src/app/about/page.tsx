@@ -19,7 +19,7 @@ export default function AboutPage() {
             Connecting Nigeria through <br />
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Shared Experiences</span>
           </h1>
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-medium">
+          <p className="text-muted-foreground text-lg leading-relaxed max-w-2xl mx-auto">
             IsabiEvents is more than just a place to buy tickets. We are a digital bridge connecting creators to communities, rooted in the vibrant and unyielding Naija spirit.
           </p>
         </div>
