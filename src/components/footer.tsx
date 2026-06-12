@@ -120,7 +120,7 @@ export function Footer() {
           </div>
           
           {/* Responsive Copyright */}
-          <div className="text-center lg:text-right text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 leading-relaxed text-balance">
+          <div className="text-center lg:text-right text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 leading-relaxed text-balance max-w-xs md:max-w-none mx-auto lg:mx-0">
             Copyright © 2026 · IsabiEvents Technology · All Rights Reserved
           </div>
         </div>
