@@ -10,7 +10,8 @@ import {
   Users, 
   ArrowRight, 
   Globe,
-  MessageSquare
+  MessageSquare,
+  CheckCircle2
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -20,26 +21,26 @@ import Image from 'next/image';
 export default function OrganizerLandingPage() {
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero */}
-      <section className="relative pt-32 pb-16 overflow-hidden">
+      {/* Hero Section */}
+      <section className="relative pt-32 pb-16 overflow-hidden min-h-[90vh] flex items-center">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent/10 blur-[120px] -z-10 rounded-full translate-x-1/2 -translate-y-1/2" />
         <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000 flex flex-col items-center lg:items-start text-center lg:text-left">
-            <h1 className="text-3xl md:text-4xl lg:text-7xl leading-[1.1] font-black tracking-tighter text-balance">
-              The Easiest Way to Host <br className="hidden sm:block" />
+            <h1 className="text-3xl md:text-4xl lg:text-7xl leading-[1.1] font-black tracking-tighter text-balance whitespace-nowrap lg:whitespace-normal">
+              The Easiest Way to Host <br className="hidden lg:block" />
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Legendary</span> Events
             </h1>
             <p className="text-base text-muted-foreground leading-relaxed max-w-lg">
               From secret beach parties to national tech conferences. IsabiEvents provides the tools you need to sell out fast and manage with ease.
             </p>
-            <div className="flex flex-row justify-center lg:justify-start gap-3 w-full max-w-sm sm:max-w-md lg:w-auto">
+            <div className="flex flex-row justify-center lg:justify-start gap-4 w-full">
               <Link href="/signup?role=organizer" className="flex-1 lg:flex-none">
-                <Button size="lg" className="h-12 md:h-16 px-4 md:px-10 rounded-full text-sm md:text-lg gap-1 md:gap-2 shadow-xl shadow-primary/20 w-full">
+                <Button size="lg" className="h-12 md:h-16 px-6 md:px-10 rounded-full text-sm md:text-lg gap-2 shadow-xl shadow-primary/20 w-full">
                   Host Now <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
                 </Button>
               </Link>
               <Link href="/pricing" className="flex-1 lg:flex-none">
-                <Button size="lg" variant="outline" className="h-12 md:h-16 px-4 md:px-10 rounded-full text-sm md:text-lg w-full">
+                <Button size="lg" variant="outline" className="h-12 md:h-16 px-6 md:px-10 rounded-full text-sm md:text-lg w-full">
                   View Pricing
                 </Button>
               </Link>
@@ -57,8 +58,9 @@ export default function OrganizerLandingPage() {
               </p>
             </div>
           </div>
-          <div className="relative animate-in fade-in zoom-in-95 duration-1000 block">
-            <div className="relative aspect-[4/3] sm:aspect-square lg:h-[700px] lg:aspect-auto w-full rounded-3xl overflow-hidden border border-border shadow-2xl">
+          
+          <div className="relative animate-in fade-in zoom-in-95 duration-1000 block w-full h-full min-h-[400px] lg:min-h-[600px]">
+            <div className="relative h-full w-full rounded-3xl overflow-hidden border border-border shadow-2xl">
               <Image 
                 src="https://picsum.photos/seed/organizer-hero/800/1000" 
                 alt="Organizer success" 
@@ -70,7 +72,7 @@ export default function OrganizerLandingPage() {
               <div className="absolute bottom-4 left-4 right-4 sm:bottom-8 sm:left-8 sm:right-8">
                 <div className="bg-white/10 backdrop-blur-md border border-white/20 p-4 sm:p-6 rounded-2xl flex items-center justify-between">
                   <div className="space-y-1">
-                    <div className="text-[10px] sm:text-xs text-white/70 uppercase font-black">Gross Revenue</div>
+                    <div className="text-[10px] sm:text-xs text-white/70 uppercase font-black text-left">Gross Revenue</div>
                     <div className="text-xl sm:text-3xl font-black text-white tracking-tight">₦4,250,000</div>
                   </div>
                   <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-accent/20 flex items-center justify-center">
@@ -83,7 +85,7 @@ export default function OrganizerLandingPage() {
         </div>
       </section>
 
-      {/* Features */}
+      {/* Features Section */}
       <section className="py-16 bg-card/30 border-y border-border">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
@@ -127,25 +129,38 @@ export default function OrganizerLandingPage() {
       </section>
 
       {/* Pricing Teaser */}
-      <section className="py-16">
+      <section className="py-24">
         <div className="container mx-auto px-4">
-          <div className="bg-primary/10 border border-primary/20 rounded-[3rem] p-12 md:p-20 text-center space-y-8 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-32 h-32 bg-primary/20 blur-3xl -translate-x-1/2 -translate-y-1/2 rounded-full" />
-            <div className="max-w-2xl mx-auto space-y-6">
-              <h2 className="text-3xl md:text-5xl font-black tracking-tighter">Simple, transparent pricing</h2>
+          <div className="bg-primary/5 border border-primary/10 rounded-[4rem] p-10 md:p-24 text-center space-y-12 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-64 h-64 bg-primary/10 blur-[100px] -translate-x-1/2 -translate-y-1/2 rounded-full" />
+            
+            <div className="max-w-3xl mx-auto space-y-8 relative z-10">
+              <h2 className="text-3xl md:text-5xl font-black tracking-tighter leading-tight">Simple, transparent pricing</h2>
               <p className="text-base text-muted-foreground leading-relaxed">
-                No setup fees. No monthly subscriptions. <br />
-                We only win when you do.
+                No setup fees. No monthly subscriptions. We only win when you do.
               </p>
-              <div className="inline-flex items-center gap-4 bg-background px-8 py-6 rounded-2xl border border-border shadow-2xl">
-                <span className="text-5xl md:text-6xl font-black text-primary tracking-tighter">2.5%</span>
-                <div className="text-left text-sm leading-tight text-muted-foreground uppercase font-black">
-                  Service Fee <br /> per ticket
+              
+              <div className="flex justify-center">
+                <div className="flex flex-col sm:inline-flex sm:flex-row items-center gap-4 md:gap-8 bg-background p-10 md:px-12 md:py-10 rounded-[2.5rem] border border-primary/20 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.15)] relative group hover:scale-[1.02] transition-all duration-500">
+                  <div className="relative">
+                    <span className="text-7xl md:text-8xl font-black text-primary tracking-tighter leading-none">2.5%</span>
+                    <div className="absolute -top-3 -right-3 w-6 h-6 bg-accent rounded-full flex items-center justify-center text-white text-[10px] font-black shadow-lg shadow-accent/40 animate-bounce">
+                      +
+                    </div>
+                  </div>
+                  <div className="text-center sm:text-left space-y-1">
+                    <div className="text-[10px] md:text-xs font-black uppercase tracking-[0.3em] text-muted-foreground/60 mb-2">Service Fee</div>
+                    <div className="text-2xl md:text-3xl font-black leading-tight">Per ticket sold</div>
+                    <p className="text-xs text-muted-foreground font-medium pt-1">+ ₦100 per transaction</p>
+                  </div>
                 </div>
               </div>
+
               <div className="pt-8">
                 <Link href="/pricing">
-                  <Button size="lg" className="rounded-full px-12 h-14 text-lg shadow-lg shadow-primary/20">Learn More About Fees</Button>
+                  <Button size="lg" className="rounded-full px-12 h-16 text-lg shadow-2xl shadow-primary/30 font-bold">
+                    Learn More About Fees
+                  </Button>
                 </Link>
               </div>
             </div>
