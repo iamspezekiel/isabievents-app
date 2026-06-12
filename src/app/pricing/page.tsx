@@ -14,7 +14,6 @@ export default function PricingPage() {
       <header className="pt-32 pb-12 text-center relative overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
         <div className="container mx-auto px-4 space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-          <Badge className="bg-primary/20 text-primary border-none py-1.5 px-6 mb-4 font-bold tracking-widest uppercase">PRICING</Badge>
           <h1 className="font-headline text-4xl md:text-6xl font-black leading-[1.1] tracking-tighter text-balance">
             Transparent Pricing <br /> 
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
