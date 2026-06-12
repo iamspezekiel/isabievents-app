@@ -176,7 +176,7 @@ export default function MobileAppPage() {
                   <span className="text-lg font-bold">Download Now</span>
                 </div>
               </Button>
-              <Button variant="outline" size="lg" className="rounded-full h-16 px-12 text-lg hover:bg-white/5 transition-all hover:scale-105 border-2 gap-4">
+              <Button variant="outline" size="lg" className="rounded-full h-16 px-12 text-lg hover:bg-secondary transition-all hover:scale-105 border-2 gap-4">
                 <Play className="w-7 h-7" />
                 <div className="flex flex-col items-start leading-none text-left">
                   <span className="text-[10px] font-bold uppercase tracking-tighter opacity-70">Google Play</span>
