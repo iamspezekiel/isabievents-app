@@ -42,76 +42,79 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Hero Section */}
-      <section className="relative pt-48 pb-8 overflow-hidden">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
-        <div className="container mx-auto px-4 text-center">
-          <Badge className="mb-4 py-1.5 px-4 bg-primary/20 text-primary border-primary/20 hover:bg-primary/20 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            Trusted by 50,000+ Nigerians
-          </Badge>
-          <h1 className="text-3xl md:text-7xl mb-6 leading-[1.05] max-w-4xl mx-auto font-black tracking-tighter text-balance animate-in fade-in slide-in-from-bottom-8 duration-1000">
-            Experience the Best of <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Nigerian</span> Events
-          </h1>
-          <p className="text-muted-foreground text-sm md:text-xl max-w-2xl mx-auto mb-8 animate-in fade-in slide-in-from-bottom-12 duration-1000">
-            Discover and secure your spot with zero friction.
-          </p>
-
-          <div className="max-w-3xl mx-auto bg-card border border-border p-2 md:p-3 rounded-[1.5rem] md:rounded-full flex flex-col md:flex-row items-center gap-2 md:gap-3 shadow-2xl animate-in fade-in slide-in-from-bottom-16 duration-1000">
-            <div className="flex-1 w-full relative">
-              <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
-              <Input 
-                placeholder="Search events, artists, venues..." 
-                className="pl-14 h-14 bg-secondary/30 md:bg-transparent border-none focus-visible:ring-0 text-base md:text-lg rounded-xl md:rounded-full"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
-            <Link href={`/discover?q=${encodeURIComponent(search)}`} className="w-full md:w-auto">
-              <Button size="lg" className="w-full md:w-auto h-14 px-10 rounded-full text-lg shadow-lg shadow-primary/20 font-bold transition-transform hover:scale-[1.02] active:scale-95">
-                Discover Events
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Categories */}
-      <section className="pt-12 pb-4">
+      {/* Hero & Categories Combined Section for Blended Background */}
+      <div className="relative pt-60 pb-16 overflow-hidden">
+        {/* Blended Background Gradient */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[1000px] bg-primary/10 blur-[150px] -z-10 rounded-full" />
+        
         <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-left">Top Category</h2>
-            <Link href="/discover">
-              <Button variant="ghost" className="rounded-full px-6 font-semibold gap-2">
-                View All <ArrowRight className="w-4 h-4" />
-              </Button>
-            </Link>
+          {/* Hero Content */}
+          <div className="text-center mb-24">
+            <Badge className="mb-4 py-1.5 px-4 bg-primary/20 text-primary border-primary/20 hover:bg-primary/20 animate-in fade-in slide-in-from-bottom-4 duration-700">
+              Trusted by 50,000+ Nigerians
+            </Badge>
+            <h1 className="text-3xl md:text-7xl mb-6 leading-[1.05] max-w-4xl mx-auto font-black tracking-tighter text-balance animate-in fade-in slide-in-from-bottom-8 duration-1000">
+              Experience the Best of <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Nigerian</span> Events
+            </h1>
+            <p className="text-muted-foreground text-sm md:text-xl max-w-2xl mx-auto mb-8 animate-in fade-in slide-in-from-bottom-12 duration-1000">
+              Discover and secure your spot with zero friction.
+            </p>
+
+            <div className="max-w-3xl mx-auto bg-card border border-border p-2 md:p-3 rounded-[1.5rem] md:rounded-full flex flex-col md:flex-row items-center gap-2 md:gap-3 shadow-2xl animate-in fade-in slide-in-from-bottom-16 duration-1000">
+              <div className="flex-1 w-full relative">
+                <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
+                <Input 
+                  placeholder="Search events, artists, venues..." 
+                  className="pl-14 h-14 bg-secondary/30 md:bg-transparent border-none focus-visible:ring-0 text-base md:text-lg rounded-xl md:rounded-full"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+              <Link href={`/discover?q=${encodeURIComponent(search)}`} className="w-full md:w-auto">
+                <Button size="lg" className="w-full md:w-auto h-14 px-10 rounded-full text-lg shadow-lg shadow-primary/20 font-bold transition-transform hover:scale-[1.02] active:scale-95">
+                  Discover Events
+                </Button>
+              </Link>
+            </div>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-4">
-            {CATEGORIES.slice(0, 10).map((cat, index) => {
-              const IconComp = iconMap[cat.icon] || Music;
-              return (
-                <Link 
-                  key={cat.id} 
-                  href={`/discover?category=${cat.id}`}
-                  className={index >= 8 ? "hidden lg:block" : "block"}
-                >
-                  <Card className="hover:border-primary transition-all group overflow-hidden cursor-pointer bg-card/50 rounded-2xl">
-                    <CardContent className="p-4 md:p-6 flex flex-col items-center text-center gap-3 md:gap-4">
-                      <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-secondary flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                        <IconComp className="w-5 h-5 md:w-6 md:h-6 text-muted-foreground group-hover:text-primary transition-colors" />
-                      </div>
-                      <span className="font-bold tracking-tight text-xs md:text-sm">{cat.name}</span>
-                    </CardContent>
-                  </Card>
-                </Link>
-              );
-            })}
-          </div>
+
+          {/* Top Categories Section (Blended) */}
+          <section className="relative z-10">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-left">Top Categories</h2>
+              <Link href="/discover">
+                <Button variant="ghost" className="rounded-full px-6 font-semibold gap-2">
+                  View All <ArrowRight className="w-4 h-4" />
+                </Button>
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-5 gap-4">
+              {CATEGORIES.slice(0, 10).map((cat, index) => {
+                const IconComp = iconMap[cat.icon] || Music;
+                return (
+                  <Link 
+                    key={cat.id} 
+                    href={`/discover?category=${cat.id}`}
+                    className={index >= 8 ? "hidden lg:block" : "block"}
+                  >
+                    <Card className="hover:border-primary transition-all group overflow-hidden cursor-pointer bg-card/50 backdrop-blur-sm rounded-2xl border-white/10">
+                      <CardContent className="p-4 md:p-6 flex flex-col items-center text-center gap-3 md:gap-4">
+                        <div className="w-10 h-10 md:w-12 md:h-12 rounded-full bg-secondary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-300">
+                          <IconComp className="w-5 h-5 md:w-6 md:h-6 text-muted-foreground group-hover:text-white transition-colors" />
+                        </div>
+                        <span className="font-bold tracking-tight text-xs md:text-sm">{cat.name}</span>
+                      </CardContent>
+                    </Card>
+                  </Link>
+                );
+              })}
+            </div>
+          </section>
         </div>
-      </section>
+      </div>
 
       {/* Trending Events */}
-      <section className="pt-12 pb-8">
+      <section className="pt-20 pb-8">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
             <div className="text-left">
@@ -181,7 +184,7 @@ export default function HomePage() {
       </section>
 
       {/* Trust Section */}
-      <section className="py-8 bg-card/30 border-y border-border">
+      <section className="py-20 bg-card/30 border-y border-border">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-2xl md:text-5xl font-black tracking-tighter mb-12">Why thousands choose IsabiEvents</h2>
           <div className="grid md:grid-cols-3 gap-12">
