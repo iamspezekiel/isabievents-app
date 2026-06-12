@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -33,13 +32,13 @@ export default function HelpCenterPage() {
         <div className="grid md:grid-cols-3 gap-8 mb-20">
           <HelpCategoryCard icon={Ticket} title="Tickets & Entry" count={12} href="/help/tickets" />
           <HelpCategoryCard icon={CreditCard} title="Payments & Refunds" count={8} href="/help/refunds" />
-          <HelpCategoryCard icon={User} title="Account & Profile" count={15} href="#" />
+          <HelpCategoryCard icon={User} title="Account & Profile" count={15} href="/help/account" />
         </div>
 
         <div className="grid lg:grid-cols-3 gap-16">
           <div className="lg:col-span-2 space-y-12">
             <section className="space-y-6">
-              <h4 className="font-bold">Popular Questions</h4>
+              <h4 className="font-bold text-xl">Popular Questions</h4>
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="q1">
                   <AccordionTrigger className="no-underline hover:no-underline text-sm text-left">How do I receive my ticket after purchase?</AccordionTrigger>
@@ -92,8 +91,8 @@ export default function HelpCenterPage() {
               </Accordion>
             </section>
 
-            <section className="space-y-6">
-              <h4 className="font-bold">Latest Articles</h4>
+            <section className="space-y-6 text-left">
+              <h4 className="font-bold text-xl">Latest Articles</h4>
               <div className="space-y-4">
                 {[1, 2, 3].map(i => (
                   <Link key={i} href="#" className="flex items-center justify-between p-6 bg-card border border-border rounded-2xl transition-all group no-underline">
@@ -111,17 +110,17 @@ export default function HelpCenterPage() {
           <div className="space-y-8">
             <Card className="bg-primary/5 border-primary/20">
               <CardHeader>
-                <CardTitle className="font-headline text-xl">Still need help?</CardTitle>
+                <CardTitle className="font-headline text-xl text-left">Still need help?</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6 text-center">
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed text-left">
                   Our support team is available 24/7 to assist you with any issues or questions.
                 </p>
                 <div className="space-y-3">
-                  <Button className="w-full gap-2 rounded-full h-12 no-underline">
+                  <Button className="w-full gap-2 rounded-full h-12 no-underline font-bold">
                     <MessageCircle className="w-4 h-4" /> Live Chat
                   </Button>
-                  <Button variant="outline" className="w-full gap-2 rounded-full h-12 no-underline">
+                  <Button variant="outline" className="w-full gap-2 rounded-full h-12 no-underline font-bold">
                     <Mail className="w-4 h-4" /> Email Support
                   </Button>
                 </div>
