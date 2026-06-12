@@ -1,9 +1,24 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { ShieldCheck, CreditCard, Wallet, Landmark, CheckCircle2, Loader2, ArrowRight, Coins, CircleDollarSign, Zap } from 'lucide-react';
-import { MOCK_EVENTS } from '@/lib/mock-data';
+import { 
+  ShieldCheck, 
+  CreditCard, 
+  Wallet, 
+  Landmark, 
+  CheckCircle2, 
+  Loader2, 
+  ArrowRight, 
+  Coins, 
+  Zap, 
+  User, 
+  LogIn, 
+  Mail, 
+  Lock,
+  Smartphone
+} from 'lucide-react';
+import { MOCK_EVENTS, MOCK_USERS } from '@/lib/mock-data';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,6 +26,7 @@ import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 const NGN_TO_USD_RATE = 1550; // Mock exchange rate
 
@@ -24,9 +40,48 @@ export default function CheckoutPage() {
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('card');
+  
+  // Attendee Info State
+  const [checkoutMode, setCheckoutMode] = useState<'guest' | 'login'>('guest');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [attendeeInfo, setAttendeeInfo] = useState({
+    fullname: '',
+    email: '',
+    phone: ''
+  });
+
+  // Login form state
+  const [loginEmail, setLoginEmail] = useState('');
+  const [loginPassword, setLoginPassword] = useState('');
 
   const totalNaira = event.price.min * quantity;
   const totalUsd = (totalNaira / NGN_TO_USD_RATE).toFixed(2);
+
+  const handleLogin = async () => {
+    setLoading(true);
+    await new Promise(r => setTimeout(r, 1000));
+    const user = MOCK_USERS.find(u => u.email === loginEmail && u.password === loginPassword);
+    
+    if (user) {
+      setIsLoggedIn(true);
+      setAttendeeInfo({
+        fullname: user.name,
+        email: user.email,
+        phone: '+234 812 345 6789' // Mock phone
+      });
+      toast({
+        title: "Logged in successfully",
+        description: `Welcome back, ${user.name}!`,
+      });
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Login failed",
+        description: "Invalid email or password.",
+      });
+    }
+    setLoading(false);
+  };
 
   const handlePayment = async () => {
     setLoading(true);
@@ -42,6 +97,18 @@ export default function CheckoutPage() {
     });
   };
 
+  const handleContinueToPayment = () => {
+    if (!attendeeInfo.fullname || !attendeeInfo.email) {
+      toast({
+        variant: "destructive",
+        title: "Missing Information",
+        description: "Please provide your name and email address.",
+      });
+      return;
+    }
+    setStep(2);
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground pt-48 pb-12">
       <div className="container mx-auto px-4 max-w-4xl">
@@ -50,34 +117,149 @@ export default function CheckoutPage() {
           <div className="lg:col-span-3 text-left">
             {step === 1 && (
               <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                <h1 className="font-headline text-3xl">Attendee Information</h1>
-                <div className="grid gap-6">
-                  <div className="space-y-2">
-                    <Label htmlFor="fullname">Full Name</Label>
-                    <Input id="fullname" placeholder="Enter your full name" className="h-12 bg-card" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email Address</Label>
-                    <Input id="email" type="email" placeholder="Enter your email" className="h-12 bg-card" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Phone Number</Label>
-                    <Input id="phone" placeholder="+234..." className="h-12 bg-card" />
-                  </div>
+                <div className="space-y-2">
+                  <h1 className="font-headline text-3xl">Attendee Information</h1>
+                  <p className="text-muted-foreground text-sm">Choose how you want to proceed with your ticket purchase.</p>
                 </div>
 
-                <div className="pt-6">
-                  <Button onClick={() => setStep(2)} className="w-full h-14 rounded-full text-lg gap-2 no-underline">
-                    Proceed to Payment <ArrowRight className="w-5 h-5" />
-                  </Button>
-                </div>
+                {!isLoggedIn ? (
+                  <Tabs value={checkoutMode} onValueChange={(v: any) => setCheckoutMode(v)} className="w-full">
+                    <TabsList className="grid grid-cols-2 bg-secondary/50 p-1 rounded-2xl mb-8">
+                      <TabsTrigger value="guest" className="rounded-xl font-bold py-3">Guest Checkout</TabsTrigger>
+                      <TabsTrigger value="login" className="rounded-xl font-bold py-3">Sign In</TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="guest" className="space-y-6 mt-0">
+                      <div className="grid gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="fullname">Full Name</Label>
+                          <div className="relative">
+                            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                            <Input 
+                              id="fullname" 
+                              placeholder="Enter your full name" 
+                              className="h-12 bg-card pl-10" 
+                              value={attendeeInfo.fullname}
+                              onChange={(e) => setAttendeeInfo({...attendeeInfo, fullname: e.target.value})}
+                            />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="email">Email Address</Label>
+                          <div className="relative">
+                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                            <Input 
+                              id="email" 
+                              type="email" 
+                              placeholder="Enter your email" 
+                              className="h-12 bg-card pl-10" 
+                              value={attendeeInfo.email}
+                              onChange={(e) => setAttendeeInfo({...attendeeInfo, email: e.target.value})}
+                            />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="phone">Phone Number</Label>
+                          <div className="relative">
+                            <Smartphone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                            <Input 
+                              id="phone" 
+                              placeholder="+234..." 
+                              className="h-12 bg-card pl-10" 
+                              value={attendeeInfo.phone}
+                              onChange={(e) => setAttendeeInfo({...attendeeInfo, phone: e.target.value})}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <Button onClick={handleContinueToPayment} className="w-full h-14 rounded-full text-lg gap-2 no-underline">
+                        Continue as Guest <ArrowRight className="w-5 h-5" />
+                      </Button>
+                    </TabsContent>
+
+                    <TabsContent value="login" className="space-y-6 mt-0">
+                      <Card className="border-border bg-card/50">
+                        <CardContent className="pt-6 space-y-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="login-email">Email</Label>
+                            <Input 
+                              id="login-email" 
+                              type="email" 
+                              placeholder="name@example.com" 
+                              className="bg-background" 
+                              value={loginEmail}
+                              onChange={(e) => setLoginEmail(e.target.value)}
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="login-password">Password</Label>
+                            <Input 
+                              id="login-password" 
+                              type="password" 
+                              placeholder="••••••••" 
+                              className="bg-background" 
+                              value={loginPassword}
+                              onChange={(e) => setLoginPassword(e.target.value)}
+                            />
+                          </div>
+                          <Button 
+                            className="w-full h-12 rounded-xl" 
+                            onClick={handleLogin}
+                            disabled={loading}
+                          >
+                            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Sign In & Continue"}
+                          </Button>
+                        </CardContent>
+                      </Card>
+                      <p className="text-center text-xs text-muted-foreground">
+                        Signing in allows you to save this ticket to your digital wallet and track your orders.
+                      </p>
+                    </TabsContent>
+                  </Tabs>
+                ) : (
+                  <div className="space-y-6">
+                    <Card className="border-primary/20 bg-primary/5 p-6 rounded-3xl">
+                      <div className="flex items-center gap-4">
+                        <div className="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center">
+                          <User className="w-7 h-7 text-primary" />
+                        </div>
+                        <div className="text-left">
+                          <p className="text-xs text-muted-foreground uppercase font-black tracking-widest">Logged in as</p>
+                          <h3 className="font-headline text-xl">{attendeeInfo.fullname}</h3>
+                          <p className="text-sm text-muted-foreground">{attendeeInfo.email}</p>
+                        </div>
+                      </div>
+                      <Separator className="my-6 bg-primary/10" />
+                      <div className="space-y-4">
+                        <div className="flex justify-between text-sm">
+                          <span className="text-muted-foreground">Account Status</span>
+                          <span className="font-bold text-primary">Verified Attendee</span>
+                        </div>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="h-auto p-0 text-xs text-muted-foreground hover:text-foreground"
+                          onClick={() => setIsLoggedIn(false)}
+                        >
+                          Switch account or checkout as guest
+                        </Button>
+                      </div>
+                    </Card>
+                    <Button onClick={() => setStep(2)} className="w-full h-14 rounded-full text-lg gap-2 no-underline">
+                      Continue to Payment <ArrowRight className="w-5 h-5" />
+                    </Button>
+                  </div>
+                )}
               </div>
             )}
 
             {step === 2 && (
               <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
                 <div className="flex items-center justify-between">
-                  <h1 className="font-headline text-3xl">Select Payment</h1>
+                  <div className="text-left">
+                    <h1 className="font-headline text-3xl">Select Payment</h1>
+                    <p className="text-xs text-muted-foreground mt-1">Paying as: {attendeeInfo.fullname}</p>
+                  </div>
                   {paymentMethod === 'solana' && (
                     <div className="flex items-center gap-2 text-xs font-black text-primary animate-pulse">
                       <Zap className="w-3 h-3 fill-current" />
@@ -111,7 +293,7 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                <div className="pt-6">
+                <div className="pt-6 flex flex-col gap-3">
                   <Button 
                     onClick={handlePayment} 
                     disabled={loading}
@@ -127,6 +309,9 @@ export default function CheckoutPage() {
                         ? `Pay ${totalUsd} USDC` 
                         : `Pay ₦${totalNaira.toLocaleString()}`
                     )}
+                  </Button>
+                  <Button variant="ghost" onClick={() => setStep(1)} className="font-bold">
+                    Back to Attendee Details
                   </Button>
                   {paymentMethod === 'solana' && (
                     <p className="text-[10px] text-center text-muted-foreground mt-4 uppercase font-black tracking-widest">
