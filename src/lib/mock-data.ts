@@ -449,7 +449,7 @@ export const MOCK_EVENTS = [
 ];
 
 export const MOCK_USER = {
-  name: 'Tunde Afolayan',
+  name: 'Sylvanus P. Ezekiel',
   email: 'attendee@isabievents.ng',
   role: 'attendee',
   wallet: { active: 2, used: 1, transferred: 0 }
@@ -478,7 +478,7 @@ export const MOCK_USERS = [
     dashboard: '/dashboard/staff'
   },
   {
-    name: 'Tunde Afolayan',
+    name: 'Sylvanus P. Ezekiel',
     email: 'attendee@isabievents.ng',
     password: 'password123',
     role: 'attendee',
