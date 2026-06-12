@@ -18,13 +18,12 @@ export default function LoginPage() {
           <Link href="/" className="inline-block mb-4">
             <Logo size="lg" className="mx-auto" />
           </Link>
-          <h1 className="text-3xl font-headline">Welcome Back</h1>
           <p className="text-muted-foreground">Sign in to access your tickets and experiences</p>
         </div>
 
         <Card className="bg-card border-border shadow-2xl">
           <CardHeader className="space-y-1 text-center">
-            <CardTitle className="text-xl">Sign In</CardTitle>
+            <CardTitle className="text-xl font-headline">Sign In</CardTitle>
             <CardDescription>Enter your credentials to continue</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
