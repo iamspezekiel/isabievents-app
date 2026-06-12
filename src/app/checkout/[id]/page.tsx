@@ -31,6 +31,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Link from 'next/link';
 
 const NGN_TO_USD_RATE = 1550; // Mock exchange rate
 
@@ -46,7 +47,7 @@ export default function CheckoutPage() {
   const [paymentMethod, setPaymentMethod] = useState('card');
   
   // Attendee Info State
-  const [checkoutMode, setCheckoutMode] = useState<'guest' | 'login' | 'signup'>('guest');
+  const [checkoutMode, setCheckoutMode] = useState<'guest' | 'login'>('login');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [attendeeInfo, setAttendeeInfo] = useState({
     fullname: '',
@@ -58,14 +59,6 @@ export default function CheckoutPage() {
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
   const [showLoginPassword, setShowLoginPassword] = useState(false);
-
-  // Signup form state
-  const [signupInfo, setSignupInfo] = useState({
-    fullname: '',
-    email: '',
-    password: ''
-  });
-  const [showSignupPassword, setShowSignupPassword] = useState(false);
 
   const totalNaira = event.price.min * quantity;
   const totalUsd = (totalNaira / NGN_TO_USD_RATE).toFixed(2);
@@ -100,34 +93,6 @@ export default function CheckoutPage() {
       });
     }
     setLoading(false);
-  };
-
-  const handleSignup = async () => {
-    if (!signupInfo.fullname || !signupInfo.email || !signupInfo.password) {
-      toast({
-        variant: "destructive",
-        title: "Missing Information",
-        description: "Please fill in all fields to create your account.",
-      });
-      return;
-    }
-
-    setLoading(true);
-    await new Promise(r => setTimeout(r, 1500));
-    
-    setIsLoggedIn(true);
-    setAttendeeInfo({
-      fullname: signupInfo.fullname,
-      email: signupInfo.email,
-      phone: ''
-    });
-
-    toast({
-      title: "Account Created!",
-      description: `Welcome to IsabiEvents, ${signupInfo.fullname}!`,
-    });
-    setLoading(false);
-    setStep(2);
   };
 
   const handlePayment = async () => {
@@ -171,59 +136,10 @@ export default function CheckoutPage() {
 
                 {!isLoggedIn ? (
                   <Tabs value={checkoutMode} onValueChange={(v: any) => setCheckoutMode(v)} className="w-full">
-                    <TabsList className="grid grid-cols-3 bg-secondary/50 p-1 rounded-2xl mb-8">
-                      <TabsTrigger value="guest" className="rounded-xl font-bold py-3">Guest</TabsTrigger>
+                    <TabsList className="grid grid-cols-2 bg-secondary/50 p-1 rounded-2xl mb-8">
                       <TabsTrigger value="login" className="rounded-xl font-bold py-3">Sign In</TabsTrigger>
-                      <TabsTrigger value="signup" className="rounded-xl font-bold py-3">Sign Up</TabsTrigger>
+                      <TabsTrigger value="guest" className="rounded-xl font-bold py-3">Guest</TabsTrigger>
                     </TabsList>
-
-                    <TabsContent value="guest" className="space-y-6 mt-0">
-                      <div className="grid gap-6">
-                        <div className="space-y-2">
-                          <Label htmlFor="fullname">Full Name</Label>
-                          <div className="relative">
-                            <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                            <Input 
-                              id="fullname" 
-                              placeholder="Enter your full name" 
-                              className="h-12 bg-card pl-10" 
-                              value={attendeeInfo.fullname}
-                              onChange={(e) => setAttendeeInfo({...attendeeInfo, fullname: e.target.value})}
-                            />
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="email">Email Address</Label>
-                          <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                            <Input 
-                              id="email" 
-                              type="email" 
-                              placeholder="Enter your email" 
-                              className="h-12 bg-card pl-10" 
-                              value={attendeeInfo.email}
-                              onChange={(e) => setAttendeeInfo({...attendeeInfo, email: e.target.value})}
-                            />
-                          </div>
-                        </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="phone">Phone Number</Label>
-                          <div className="relative">
-                            <Smartphone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                            <Input 
-                              id="phone" 
-                              placeholder="+234..." 
-                              className="h-12 bg-card pl-10" 
-                              value={attendeeInfo.phone}
-                              onChange={(e) => setAttendeeInfo({...attendeeInfo, phone: e.target.value})}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <Button onClick={handleContinueToPayment} className="w-full h-14 rounded-full text-lg gap-2 no-underline mt-4">
-                        Continue as Guest <ArrowRight className="w-5 h-5" />
-                      </Button>
-                    </TabsContent>
 
                     <TabsContent value="login" className="space-y-6 mt-0">
                       <Card className="border-border bg-card/50">
@@ -277,68 +193,62 @@ export default function CheckoutPage() {
                           </Button>
                         </CardContent>
                       </Card>
-                      <p className="text-center text-xs text-muted-foreground">
-                        Signing in allows you to save this ticket to your digital wallet and track your orders.
-                      </p>
+                      <div className="space-y-4">
+                        <p className="text-center text-xs text-muted-foreground">
+                          Signing in allows you to save this ticket to your digital wallet and track your orders.
+                        </p>
+                        <p className="text-center text-sm">
+                          Don&apos;t have an account? <Link href="/signup" className="text-primary font-bold hover:underline">Sign Up</Link>
+                        </p>
+                      </div>
                     </TabsContent>
 
-                    <TabsContent value="signup" className="space-y-6 mt-0">
+                    <TabsContent value="guest" className="space-y-6 mt-0">
                       <div className="grid gap-6">
                         <div className="space-y-2">
-                          <Label htmlFor="signup-fullname">Full Name</Label>
+                          <Label htmlFor="fullname">Full Name</Label>
                           <div className="relative">
                             <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                             <Input 
-                              id="signup-fullname" 
+                              id="fullname" 
                               placeholder="Enter your full name" 
                               className="h-12 bg-card pl-10" 
-                              value={signupInfo.fullname}
-                              onChange={(e) => setSignupInfo({...signupInfo, fullname: e.target.value})}
+                              value={attendeeInfo.fullname}
+                              onChange={(e) => setAttendeeInfo({...attendeeInfo, fullname: e.target.value})}
                             />
                           </div>
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="signup-email">Email Address</Label>
+                          <Label htmlFor="email">Email Address</Label>
                           <div className="relative">
                             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                             <Input 
-                              id="signup-email" 
+                              id="email" 
                               type="email" 
-                              placeholder="name@example.com" 
+                              placeholder="Enter your email" 
                               className="h-12 bg-card pl-10" 
-                              value={signupInfo.email}
-                              onChange={(e) => setSignupInfo({...signupInfo, email: e.target.value})}
+                              value={attendeeInfo.email}
+                              onChange={(e) => setAttendeeInfo({...attendeeInfo, email: e.target.value})}
                             />
                           </div>
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="signup-password">Password</Label>
+                          <Label htmlFor="phone">Phone Number</Label>
                           <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                            <Smartphone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                             <Input 
-                              id="signup-password" 
-                              type={showSignupPassword ? "text" : "password"} 
-                              placeholder="Create a password" 
-                              className="h-12 bg-card pl-10 pr-10" 
-                              value={signupInfo.password}
-                              onChange={(e) => setSignupInfo({...signupInfo, password: e.target.value})}
+                              id="phone" 
+                              placeholder="+234..." 
+                              className="h-12 bg-card pl-10" 
+                              value={attendeeInfo.phone}
+                              onChange={(e) => setAttendeeInfo({...attendeeInfo, phone: e.target.value})}
                             />
-                            <button
-                              type="button"
-                              onClick={() => setShowSignupPassword(!showSignupPassword)}
-                              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
-                            >
-                              {showSignupPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                            </button>
                           </div>
                         </div>
                       </div>
-                      <Button onClick={handleSignup} disabled={loading} className="w-full h-14 rounded-full text-lg gap-2 no-underline mt-4">
-                        {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <><UserPlus className="w-5 h-5" /> Create Account & Continue</>}
+                      <Button onClick={handleContinueToPayment} className="w-full h-14 rounded-full text-lg gap-2 no-underline mt-4">
+                        Continue as Guest <ArrowRight className="w-5 h-5" />
                       </Button>
-                      <p className="text-center text-xs text-muted-foreground px-4">
-                        By signing up, you agree to our Terms of Service and Privacy Policy.
-                      </p>
                     </TabsContent>
                   </Tabs>
                 ) : (
