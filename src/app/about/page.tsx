@@ -21,40 +21,72 @@ export default function AboutPage() {
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Shared Experiences</span>
           </h4>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-medium">
-            IsabiEvents transcends simple ticketing. We are the bridge between world-class creators and their communities, fueled by the vibrant, unyielding spirit of Naija.
+            IsabiEvents is more than a ticketing platform. We're a bridge between creators and communities, built on the vibrant, unyielding spirit of Naija.
           </p>
         </div>
       </section>
 
-      {/* Story Section */}
-      <section className="py-24 container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          <div className="relative aspect-square rounded-[3rem] overflow-hidden border border-border shadow-2xl">
-            <Image 
-              src="https://picsum.photos/seed/story_v2/800/800" 
-              alt="The IsabiEvents Story" 
-              fill 
-              className="object-cover"
-              data-ai-hint="nigerian festival"
-            />
+      {/* Improved Story Section */}
+      <section className="py-24 container mx-auto px-4 relative overflow-hidden">
+        <div className="absolute top-1/2 left-0 w-64 h-64 bg-accent/5 blur-3xl -z-10 rounded-full" />
+        <div className="grid lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+          <div className="relative">
+            <div className="relative aspect-square rounded-[3rem] overflow-hidden border border-border shadow-2xl z-10">
+              <Image 
+                src="https://picsum.photos/seed/story_v3/800/800" 
+                alt="The IsabiEvents Story" 
+                fill 
+                className="object-cover"
+                data-ai-hint="nigerian festival"
+              />
+            </div>
+            {/* Decorative background element */}
+            <div className="absolute -bottom-6 -right-6 w-full h-full border-2 border-primary/20 rounded-[3rem] -z-0 hidden md:block" />
+            
+            {/* Floating Stat Overlay */}
+            <div className="absolute -bottom-10 -left-10 bg-card/80 backdrop-blur-xl border border-border p-8 rounded-3xl shadow-2xl z-20 hidden md:block">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-primary/20 rounded-xl flex items-center justify-center">
+                  <Sparkles className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <div className="text-2xl font-black text-foreground">100%</div>
+                  <div className="text-[10px] uppercase font-black tracking-widest text-muted-foreground">Digital-First</div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div className="space-y-8 text-left">
-            <h5 className="font-headline text-2xl md:text-3xl font-black tracking-tighter leading-none">Our Story</h5>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              Founded with the vision to solve the fragmented event landscape in Nigeria, IsabiEvents emerged from a simple observation: there are thousands of incredible experiences happening every day, but finding and accessing them shouldn't be a struggle.
-            </p>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              We've built a platform that understands the local context—from payment reliability to offline access—ensuring that every attendee and organizer has a world-class experience right here at home.
-            </p>
-            <div className="grid grid-cols-2 gap-8 pt-8">
-              <div className="space-y-1">
-                <h2 className="text-4xl font-black text-primary">50k+</h2>
-                <p className="text-xs uppercase font-black text-muted-foreground tracking-widest">Active Users</p>
-              </div>
-              <div className="space-y-1">
-                <h2 className="text-4xl font-black text-primary">1.2k+</h2>
-                <p className="text-xs uppercase font-black text-muted-foreground tracking-widest">Organizers</p>
-              </div>
+
+          <div className="space-y-10 text-left">
+            <div className="space-y-4">
+              <h5 className="font-headline text-2xl font-black tracking-tighter leading-none text-primary">Our Story</h5>
+              <h2 className="text-3xl md:text-4xl font-black tracking-tight leading-[1.1]">Born from a need for <span className="italic">seamless connection.</span></h2>
+            </div>
+            
+            <div className="space-y-6">
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                Founded with the vision to solve the fragmented event landscape in Nigeria, IsabiEvents emerged from a simple observation: there are thousands of incredible experiences happening every day, but finding and accessing them shouldn't be a struggle.
+              </p>
+              <p className="text-lg text-muted-foreground leading-relaxed font-medium italic border-l-4 border-accent pl-6">
+                "We've built a platform that understands the local context—from payment reliability to offline access—ensuring that every attendee and organizer has a world-class experience right here at home."
+              </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6 pt-4">
+              <Card className="bg-secondary/30 border-none rounded-3xl">
+                <CardContent className="p-6 space-y-2">
+                  <Users className="w-6 h-6 text-primary mb-2" />
+                  <h2 className="text-3xl font-black text-foreground">50k+</h2>
+                  <p className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Active Seekers</p>
+                </CardContent>
+              </Card>
+              <Card className="bg-primary/5 border-none rounded-3xl">
+                <CardContent className="p-6 space-y-2">
+                  <Target className="w-6 h-6 text-accent mb-2" />
+                  <h2 className="text-3xl font-black text-foreground">1.2k+</h2>
+                  <p className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Visionaries</p>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
