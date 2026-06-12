@@ -46,7 +46,7 @@ export function Footer() {
             <ul className="space-y-4 text-sm font-bold">
               <li><Link href="/discover" className="text-foreground/70 hover:text-primary transition-colors no-underline">Find Events</Link></li>
               <li><Link href="/help/tickets" className="text-foreground/70 hover:text-primary transition-colors no-underline">Ticket Support</Link></li>
-              <li><Link href="/testimonials" className="text-foreground/70 hover:text-primary transition-colors no-underline">Attendees testimonial and reviews</Link></li>
+              <li><Link href="/testimonials" className="text-foreground/70 hover:text-primary transition-colors no-underline">User Testimonials</Link></li>
               <li><Link href="/mobile" className="text-foreground/70 hover:text-primary transition-colors no-underline">Get the App</Link></li>
             </ul>
           </div>

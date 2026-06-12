@@ -68,9 +68,9 @@ export default function TestimonialsPage() {
         <div className="container mx-auto px-4 text-center space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <Badge className="bg-accent/20 text-accent border-none py-1.5 px-6 mb-4 font-bold tracking-widest uppercase">TESTIMONIALS</Badge>
           <h1 className="font-headline text-4xl md:text-7xl font-black leading-[1.1] tracking-tighter text-balance">
-            Voices of the <br /> 
+            User <br /> 
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Community
+              Testimonials
             </span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
