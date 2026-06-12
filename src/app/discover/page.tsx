@@ -128,8 +128,8 @@ function DiscoverContent() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-8">
-      {/* Page Title moved to top */}
-      <div className="px-2 text-left">
+      {/* Page Title moved to top and centered */}
+      <div className="px-2 text-center">
         <h1 className="font-headline text-3xl md:text-4xl">Discover Experiences</h1>
       </div>
 
