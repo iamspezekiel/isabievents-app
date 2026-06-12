@@ -16,7 +16,7 @@ export default function AboutPage() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
         <div className="container mx-auto px-4 text-center space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <Badge className="bg-primary/20 text-primary border-none py-1.5 px-6 font-bold tracking-widest uppercase">ABOUT</Badge>
-          <h1 className="font-headline text-4xl md:text-6xl font-black leading-[1.1] tracking-tighter text-balance">
+          <h1 className="font-headline text-5xl md:text-8xl font-black leading-[1.1] tracking-tighter text-balance">
             Connecting Nigeria through <br />
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Shared Experiences</span>
           </h1>
@@ -35,7 +35,7 @@ export default function AboutPage() {
           <div className="relative order-2 lg:order-1 space-y-12">
             {/* Image Container with Padding */}
             <div className="relative group">
-              <div className="relative aspect-[4/5] rounded-[3.5rem] overflow-hidden border border-border/50 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] z-10 p-4 bg-card">
+              <div className="relative aspect-[4/5] rounded-[3.5rem] overflow-hidden border border-border/50 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] z-10 p-10 md:p-6 bg-card">
                 <div className="relative w-full h-full rounded-[2.5rem] overflow-hidden">
                   <Image 
                     src="https://picsum.photos/seed/story_v6/800/1000" 
@@ -93,7 +93,7 @@ export default function AboutPage() {
           <div className="space-y-12 text-left order-1 lg:order-2">
             <div className="space-y-4">
               <h5 className="font-headline text-lg font-black tracking-tighter leading-none text-primary uppercase">Our Story</h5>
-              <h2 className="text-2xl md:text-3xl font-black tracking-tight leading-[1.1]">Built for the Naija way of life.</h2>
+              <h2 className="text-2xl md:text-3xl font-black tracking-tight leading-none">Built for the Naija way of life.</h2>
             </div>
             
             <div className="space-y-8">
