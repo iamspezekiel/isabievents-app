@@ -237,7 +237,7 @@ export default function EventDetailsPage() {
                     </Button>
                   </Link>
                   <p className="text-center text-xs text-muted-foreground mt-4">
-                    Secured by Paystack & Flutterwave
+                    Secured by Paystack, Flutterwave & SolanaPay
                   </p>
                 </CardContent>
               </Card>
