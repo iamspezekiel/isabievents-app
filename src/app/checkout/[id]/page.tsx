@@ -60,7 +60,13 @@ export default function CheckoutPage() {
   const handleLogin = async () => {
     setLoading(true);
     await new Promise(r => setTimeout(r, 1000));
-    const user = MOCK_USERS.find(u => u.email === loginEmail && u.password === loginPassword);
+    
+    // Support "Attendee" or the attendee's email for the loginEmail field
+    const user = MOCK_USERS.find(u => 
+      (u.email === loginEmail || loginEmail.toLowerCase() === 'attendee') && 
+      u.password === loginPassword &&
+      (u.role === 'attendee')
+    );
     
     if (user) {
       setIsLoggedIn(true);
@@ -77,7 +83,7 @@ export default function CheckoutPage() {
       toast({
         variant: "destructive",
         title: "Login failed",
-        description: "Invalid email or password.",
+        description: "Invalid credentials. Try using 'Attendee' and 'password123'.",
       });
     }
     setLoading(false);
@@ -181,11 +187,11 @@ export default function CheckoutPage() {
                       <Card className="border-border bg-card/50">
                         <CardContent className="pt-6 space-y-4">
                           <div className="space-y-2">
-                            <Label htmlFor="login-email">Email</Label>
+                            <Label htmlFor="login-email">Email or Username</Label>
                             <Input 
                               id="login-email" 
-                              type="email" 
-                              placeholder="name@example.com" 
+                              type="text" 
+                              placeholder="Email or 'Attendee'" 
                               className="bg-background" 
                               value={loginEmail}
                               onChange={(e) => setLoginEmail(e.target.value)}
