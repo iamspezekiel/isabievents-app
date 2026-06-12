@@ -1,8 +1,9 @@
+
 "use client";
 
 import React, { useState, useMemo, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Search, MapPin, Filter, Loader2, CircleDollarSign, X, Check, Calendar } from 'lucide-react';
+import { Search, MapPin, Filter, Loader2, X, Check, Calendar } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -20,6 +21,24 @@ function DiscoverContent() {
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'all');
   const [selectedCity, setSelectedCity] = useState(searchParams.get('city') || 'all');
   const [priceFilter, setPriceFilter] = useState(searchParams.get('price') || 'all');
+  
+  // To handle the exact listing count without hydration mismatch
+  const [displayLimit, setDisplayLimit] = useState(27);
+
+  useEffect(() => {
+    const handleResize = () => {
+      // lg breakpoint is 1024px
+      if (window.innerWidth < 1024) {
+        setDisplayLimit(16); // 2 columns * 8 rows
+      } else {
+        setDisplayLimit(27); // 3 columns * 9 rows
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Sync state if URL params change externally
   useEffect(() => {
@@ -35,7 +54,7 @@ function DiscoverContent() {
   }, [searchParams]);
 
   const filteredEvents = useMemo(() => {
-    return MOCK_EVENTS.filter(event => {
+    const filtered = MOCK_EVENTS.filter(event => {
       const matchesSearch = event.title.toLowerCase().includes(search.toLowerCase()) || 
                            event.description.toLowerCase().includes(search.toLowerCase());
       const matchesCategory = selectedCategory === 'all' || event.category === selectedCategory;
@@ -45,7 +64,9 @@ function DiscoverContent() {
                           (priceFilter === 'paid' && event.price.min > 0);
       return matchesSearch && matchesCategory && matchesCity && matchesPrice;
     });
-  }, [search, selectedCategory, selectedCity, priceFilter]);
+
+    return filtered.slice(0, displayLimit);
+  }, [search, selectedCategory, selectedCity, priceFilter, displayLimit]);
 
   const resetFilters = () => {
     setSearch('');
@@ -128,7 +149,6 @@ function DiscoverContent() {
 
   return (
     <div className="max-w-7xl mx-auto space-y-12">
-      {/* Page Title & Description */}
       <div className="px-2 text-center space-y-6">
         <h1 className="font-headline text-3xl md:text-7xl lg:text-8xl tracking-tighter">
           Discover <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Experiences</span>
@@ -138,7 +158,6 @@ function DiscoverContent() {
         </p>
       </div>
 
-      {/* Search and Filters Header */}
       <div className="flex flex-col gap-4">
         <div className="flex items-center gap-2">
           <div className="flex-1 relative">
@@ -202,8 +221,8 @@ function DiscoverContent() {
         </div>
       </div>
 
-      {/* Events Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 md:gap-8">
+      {/* Grid: 2 columns mobile, 3 columns desktop */}
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8">
         {filteredEvents.map((event) => (
           <Link key={event.id} href={`/events/${event.id}`}>
             <div className="group bg-card border border-border rounded-[1.25rem] md:rounded-[2.5rem] overflow-hidden hover:border-primary/50 transition-all flex flex-col h-full hover:shadow-2xl hover:shadow-primary/5">
@@ -244,7 +263,6 @@ function DiscoverContent() {
         ))}
       </div>
 
-      {/* Empty State */}
       {filteredEvents.length === 0 && (
         <div className="text-center py-32 bg-card/20 rounded-[3rem] border border-dashed border-border/50">
           <Search className="w-16 h-16 text-muted-foreground mx-auto mb-6 opacity-20" />

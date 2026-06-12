@@ -18,47 +18,11 @@ export const CATEGORIES = [
 ];
 
 export const CITIES = [
-  'Abakaliki',
-  'Abeokuta',
-  'Abuja',
-  'Ado Ekiti',
-  'Akure',
-  'Asaba',
-  'Awka',
-  'Bauchi',
-  'Benin City',
-  'Birnin Kebbi',
-  'Calabar',
-  'Damaturu',
-  'Dutse',
-  'Enugu',
-  'Gombe',
-  'Gusau',
-  'Ibadan',
-  'Ilorin',
-  'Ikeja',
-  'Jalingo',
-  'Jos',
-  'Kaduna',
-  'Kano',
-  'Katsina',
-  'Lafia',
-  'Lagos',
-  'Lokoja',
-  'Maiduguri',
-  'Makurdi',
-  'Minna',
-  'Onitsha',
-  'Oshogbo',
-  'Owerri',
-  'Port Harcourt',
-  'Sokoto',
-  'Umuahia',
-  'Uyo',
-  'Warri',
-  'Yenagoa',
-  'Yola',
-  'Zaria'
+  'Abakaliki', 'Abeokuta', 'Abuja', 'Ado Ekiti', 'Akure', 'Asaba', 'Awka', 'Bauchi',
+  'Benin City', 'Birnin Kebbi', 'Calabar', 'Damaturu', 'Dutse', 'Enugu', 'Gombe',
+  'Gusau', 'Ibadan', 'Ilorin', 'Ikeja', 'Jalingo', 'Jos', 'Kaduna', 'Kano', 'Katsina',
+  'Lafia', 'Lagos', 'Lokoja', 'Maiduguri', 'Makurdi', 'Minna', 'Onitsha', 'Oshogbo',
+  'Owerri', 'Port Harcourt', 'Sokoto', 'Umuahia', 'Uyo', 'Warri', 'Yenagoa', 'Yola', 'Zaria'
 ].sort();
 
 export const MOCK_EVENTS = [
@@ -69,11 +33,7 @@ export const MOCK_EVENTS = [
     city: 'Lagos',
     venue: 'Muson Center, Onikan',
     date: '2024-11-15T19:00:00',
-    organizer: {
-      name: 'Smooth Events',
-      verified: true,
-      avatar: 'https://picsum.photos/seed/org1/100/100'
-    },
+    organizer: { name: 'Smooth Events', verified: true, avatar: 'https://picsum.photos/seed/org1/100/100' },
     image: 'https://picsum.photos/seed/jazz/800/600',
     description: 'Experience a night of soulful melodies and smooth rhythms in the heart of Lagos.',
     price: { min: 5000, max: 25000 },
@@ -87,11 +47,7 @@ export const MOCK_EVENTS = [
     city: 'Abuja',
     venue: 'ICC Abuja',
     date: '2024-12-05T09:00:00',
-    organizer: {
-      name: 'TechNigeria',
-      verified: true,
-      avatar: 'https://picsum.photos/seed/org2/100/100'
-    },
+    organizer: { name: 'TechNigeria', verified: true, avatar: 'https://picsum.photos/seed/org2/100/100' },
     image: 'https://picsum.photos/seed/tech/800/600',
     description: 'The largest gathering of innovators, developers, and tech enthusiasts in Nigeria.',
     price: { min: 0, max: 15000 },
@@ -105,11 +61,7 @@ export const MOCK_EVENTS = [
     city: 'Lagos',
     venue: 'Hard Rock Beach',
     date: '2024-12-28T12:00:00',
-    organizer: {
-      name: 'Eclipse Live',
-      verified: true,
-      avatar: 'https://picsum.photos/seed/org3/100/100'
-    },
+    organizer: { name: 'Eclipse Live', verified: true, avatar: 'https://picsum.photos/seed/org3/100/100' },
     image: 'https://picsum.photos/seed/gidi/800/600',
     description: 'A celebration of African culture, music, and arts on the beautiful shores of Lagos.',
     price: { min: 10000, max: 50000 },
@@ -123,13 +75,9 @@ export const MOCK_EVENTS = [
     city: 'Calabar',
     venue: 'U.J. Esuene Stadium',
     date: '2024-12-27T08:00:00',
-    organizer: {
-      name: 'Cross River Tourism',
-      verified: true,
-      avatar: 'https://picsum.photos/seed/org4/100/100'
-    },
+    organizer: { name: 'Cross River Tourism', verified: true, avatar: 'https://picsum.photos/seed/org4/100/100' },
     image: 'https://picsum.photos/seed/calabar/800/600',
-    description: 'Africa\'s biggest street party. A display of heritage and creativity.',
+    description: "Africa's biggest street party. A display of heritage and creativity.",
     price: { min: 0, max: 0 },
     inventory: 20000,
     tags: ['Carnival', 'Culture', 'Free']
@@ -141,11 +89,7 @@ export const MOCK_EVENTS = [
     city: 'Abuja',
     venue: 'National Stadium, Abuja',
     date: '2024-12-10T17:00:00',
-    organizer: {
-      name: 'Faith Impact',
-      verified: true,
-      avatar: 'https://picsum.photos/seed/org5/100/100'
-    },
+    organizer: { name: 'Faith Impact', verified: true, avatar: 'https://picsum.photos/seed/org5/100/100' },
     image: 'https://picsum.photos/seed/praise/800/600',
     description: 'A grand night of worship and gospel music featuring top Nigerian artists.',
     price: { min: 0, max: 0 },
@@ -159,11 +103,7 @@ export const MOCK_EVENTS = [
     city: 'Port Harcourt',
     venue: 'Port Harcourt Polo Club',
     date: '2024-11-20T10:00:00',
-    organizer: {
-      name: 'Bole King',
-      verified: true,
-      avatar: 'https://picsum.photos/seed/org6/100/100'
-    },
+    organizer: { name: 'Bole King', verified: true, avatar: 'https://picsum.photos/seed/org6/100/100' },
     image: 'https://picsum.photos/seed/food/800/600',
     description: 'Taste the best of Port Harcourt delicacies and international street food.',
     price: { min: 2000, max: 10000 },
@@ -177,11 +117,7 @@ export const MOCK_EVENTS = [
     city: 'Ibadan',
     venue: 'Mauve 21 Event Centre',
     date: '2024-11-30T22:00:00',
-    organizer: {
-      name: 'IB Party People',
-      verified: false,
-      avatar: 'https://picsum.photos/seed/org7/100/100'
-    },
+    organizer: { name: 'IB Party People', verified: false, avatar: 'https://picsum.photos/seed/org7/100/100' },
     image: 'https://picsum.photos/seed/party/800/600',
     description: 'The ultimate nightlife experience in the ancient city. Vibes till dawn.',
     price: { min: 5000, max: 20000 },
@@ -195,11 +131,7 @@ export const MOCK_EVENTS = [
     city: 'Kano',
     venue: 'Ado Bayero Mall',
     date: '2024-12-15T10:00:00',
-    organizer: {
-      name: 'Startup Kano',
-      verified: true,
-      avatar: 'https://picsum.photos/seed/org8/100/100'
-    },
+    organizer: { name: 'Startup Kano', verified: true, avatar: 'https://picsum.photos/seed/org8/100/100' },
     image: 'https://picsum.photos/seed/workshop/800/600',
     description: 'Equipping the next generation of Northern entrepreneurs with digital skills.',
     price: { min: 2000, max: 5000 },
@@ -213,11 +145,7 @@ export const MOCK_EVENTS = [
     city: 'Enugu',
     venue: 'Nnamdi Azikiwe Stadium',
     date: '2024-12-20T06:30:00',
-    organizer: {
-      name: 'Enugu Sports Council',
-      verified: true,
-      avatar: 'https://picsum.photos/seed/org9/100/100'
-    },
+    organizer: { name: 'Enugu Sports Council', verified: true, avatar: 'https://picsum.photos/seed/org9/100/100' },
     image: 'https://picsum.photos/seed/marathon/800/600',
     description: 'Run for health and pride through the scenic hills of Enugu.',
     price: { min: 0, max: 0 },
@@ -231,11 +159,7 @@ export const MOCK_EVENTS = [
     city: 'Benin City',
     venue: 'Oba Akenzua Cultural Centre',
     date: '2024-12-12T09:00:00',
-    organizer: {
-      name: 'Edo State Heritage',
-      verified: true,
-      avatar: 'https://picsum.photos/seed/org10/100/100'
-    },
+    organizer: { name: 'Edo State Heritage', verified: true, avatar: 'https://picsum.photos/seed/org10/100/100' },
     image: 'https://picsum.photos/seed/benin/800/600',
     description: 'A showcase of ancient Benin bronze casting and contemporary Edo arts.',
     price: { min: 1000, max: 5000 },
@@ -249,11 +173,7 @@ export const MOCK_EVENTS = [
     city: 'Akure',
     venue: 'Adegbemile Cultural Centre',
     date: '2024-12-20T16:00:00',
-    organizer: {
-      name: 'Sunshine Sounds',
-      verified: true,
-      avatar: 'https://picsum.photos/seed/org11/100/100'
-    },
+    organizer: { name: 'Sunshine Sounds', verified: true, avatar: 'https://picsum.photos/seed/org11/100/100' },
     image: 'https://picsum.photos/seed/akure/800/600',
     description: 'Celebrate the vibrant musical heritage of Ondo State with local and national stars.',
     price: { min: 3000, max: 15000 },
@@ -267,11 +187,7 @@ export const MOCK_EVENTS = [
     city: 'Jos',
     venue: 'Mees Palace',
     date: '2024-12-24T20:00:00',
-    organizer: {
-      name: 'J-Town Vibes',
-      verified: true,
-      avatar: 'https://picsum.photos/seed/org12/100/100'
-    },
+    organizer: { name: 'J-Town Vibes', verified: true, avatar: 'https://picsum.photos/seed/org12/100/100' },
     image: 'https://picsum.photos/seed/jos/800/600',
     description: 'Experience the unique cool breeze of Jos with an elegant night of music and class.',
     price: { min: 7500, max: 30000 },
@@ -285,13 +201,9 @@ export const MOCK_EVENTS = [
     city: 'Lagos',
     venue: 'Landmark Centre',
     date: '2024-11-25T10:00:00',
-    organizer: {
-      name: 'TechNigeria',
-      verified: true,
-      avatar: 'https://picsum.photos/seed/org2/100/100'
-    },
+    organizer: { name: 'TechNigeria', verified: true, avatar: 'https://picsum.photos/seed/org2/100/100' },
     image: 'https://picsum.photos/seed/techexpo/800/600',
-    description: 'Explore the latest gadgets and software innovations in Nigeria\'s tech hub.',
+    description: "Explore the latest gadgets and software innovations in Nigeria's tech hub.",
     price: { min: 2500, max: 10000 },
     inventory: 1000,
     tags: ['Gadgets', 'Software', 'Expo']
@@ -303,11 +215,7 @@ export const MOCK_EVENTS = [
     city: 'Lagos',
     venue: 'The Wings, Victoria Island',
     date: '2024-11-28T18:30:00',
-    organizer: {
-      name: 'Smooth Events',
-      verified: true,
-      avatar: 'https://picsum.photos/seed/org1/100/100'
-    },
+    organizer: { name: 'Smooth Events', verified: true, avatar: 'https://picsum.photos/seed/org1/100/100' },
     image: 'https://picsum.photos/seed/network/800/600',
     description: 'An exclusive evening for startup founders to connect and share experiences.',
     price: { min: 15000, max: 15000 },
@@ -321,16 +229,222 @@ export const MOCK_EVENTS = [
     city: 'Abuja',
     venue: 'Transcorp Hilton',
     date: '2024-12-12T08:00:00',
-    organizer: {
-      name: 'Sunshine Sounds',
-      verified: true,
-      avatar: 'https://picsum.photos/seed/org11/100/100'
-    },
+    organizer: { name: 'Sunshine Sounds', verified: true, avatar: 'https://picsum.photos/seed/org11/100/100' },
     image: 'https://picsum.photos/seed/wellness/800/600',
     description: 'A day dedicated to physical and mental well-being with yoga and wellness experts.',
     price: { min: 5000, max: 20000 },
     inventory: 200,
     tags: ['Wellness', 'Yoga', 'Health']
+  },
+  {
+    id: 'e16',
+    title: 'Owerri Comedy Jam',
+    category: 'concerts',
+    city: 'Owerri',
+    venue: 'Imo Concorde Hotel',
+    date: '2024-12-26T19:00:00',
+    organizer: { name: 'Laugh Factory', verified: true, avatar: 'https://picsum.photos/seed/org16/100/100' },
+    image: 'https://picsum.photos/seed/comedy/800/600',
+    description: 'The biggest names in Nigerian comedy are coming to Owerri.',
+    price: { min: 2000, max: 10000 },
+    inventory: 800,
+    tags: ['Comedy', 'Fun', 'Laughter']
+  },
+  {
+    id: 'e17',
+    title: 'Warri Street Dance',
+    category: 'cultural',
+    city: 'Warri',
+    venue: 'Airport Road',
+    date: '2024-12-25T10:00:00',
+    organizer: { name: 'Wafi Events', verified: false, avatar: 'https://picsum.photos/seed/org17/100/100' },
+    image: 'https://picsum.photos/seed/dance/800/600',
+    description: 'A vibrant display of street dancing and urban culture in Warri.',
+    price: { min: 0, max: 0 },
+    inventory: 3000,
+    tags: ['Dance', 'Street', 'Delta']
+  },
+  {
+    id: 'e18',
+    title: 'Bauchi Polo Tournament',
+    category: 'sports',
+    city: 'Bauchi',
+    venue: 'Bauchi Polo Club',
+    date: '2024-11-28T14:00:00',
+    organizer: { name: 'Polo Kings', verified: true, avatar: 'https://picsum.photos/seed/org18/100/100' },
+    image: 'https://picsum.photos/seed/polo/800/600',
+    description: 'Experience the prestige and excitement of the annual Bauchi Polo tournament.',
+    price: { min: 1000, max: 5000 },
+    inventory: 1500,
+    tags: ['Sports', 'Polo', 'Prestige']
+  },
+  {
+    id: 'e19',
+    title: 'Ilorin Food Expo',
+    category: 'festivals',
+    city: 'Ilorin',
+    venue: 'Kwara State Stadium',
+    date: '2024-12-02T11:00:00',
+    organizer: { name: 'Taste Of Kwara', verified: true, avatar: 'https://picsum.photos/seed/org19/100/100' },
+    image: 'https://picsum.photos/seed/foodexpo/800/600',
+    description: 'Sample the finest traditional Kwara dishes and modern culinary fusion.',
+    price: { min: 1000, max: 3000 },
+    inventory: 2000,
+    tags: ['Food', 'Taste', 'Festival']
+  },
+  {
+    id: 'e20',
+    title: 'Minna Youth Summit',
+    category: 'education',
+    city: 'Minna',
+    venue: 'Justice Idris Legbo Hall',
+    date: '2024-12-14T09:00:00',
+    organizer: { name: 'Youth Lead', verified: true, avatar: 'https://picsum.photos/seed/org20/100/100' },
+    image: 'https://picsum.photos/seed/youth/800/600',
+    description: 'Empowering Niger State youth through leadership and vocational training.',
+    price: { min: 0, max: 0 },
+    inventory: 1000,
+    tags: ['Leadership', 'Youth', 'Niger']
+  },
+  {
+    id: 'e21',
+    title: 'Abeokuta Rock Fest',
+    category: 'cultural',
+    city: 'Abeokuta',
+    venue: 'Olumo Rock Plaza',
+    date: '2024-12-20T10:00:00',
+    organizer: { name: 'Rock Heritage', verified: true, avatar: 'https://picsum.photos/seed/org21/100/100' },
+    image: 'https://picsum.photos/seed/rock/800/600',
+    description: 'A celebration of Egba history and the iconic Olumo Rock.',
+    price: { min: 2000, max: 10000 },
+    inventory: 500,
+    tags: ['History', 'Rock', 'Egba']
+  },
+  {
+    id: 'e22',
+    title: 'Asaba Movie Night',
+    category: 'nightlife',
+    city: 'Asaba',
+    venue: 'Asaba Mall Cinema',
+    date: '2024-11-22T20:00:00',
+    organizer: { name: 'Nollywood Hub', verified: true, avatar: 'https://picsum.photos/seed/org22/100/100' },
+    image: 'https://picsum.photos/seed/movie/800/600',
+    description: 'Premiere screening of the latest Nollywood blockbuster with stars in attendance.',
+    price: { min: 5000, max: 15000 },
+    inventory: 200,
+    tags: ['Cinema', 'Nollywood', 'Delta']
+  },
+  {
+    id: 'e23',
+    title: 'Uyo Christmas Concert',
+    category: 'concerts',
+    city: 'Uyo',
+    venue: 'Ibom Hall',
+    date: '2024-12-25T18:00:00',
+    organizer: { name: 'Ibom Vibes', verified: true, avatar: 'https://picsum.photos/seed/org23/100/100' },
+    image: 'https://picsum.photos/seed/christmas/800/600',
+    description: 'Celebrate Christmas with soulful carols and uplifting gospel music in Uyo.',
+    price: { min: 0, max: 0 },
+    inventory: 3000,
+    tags: ['Music', 'Christmas', 'Uyo']
+  },
+  {
+    id: 'e24',
+    title: 'Kaduna Book Fair',
+    category: 'education',
+    city: 'Kaduna',
+    venue: 'Kaduna State University',
+    date: '2024-12-01T10:00:00',
+    organizer: { name: 'Kada Books', verified: true, avatar: 'https://picsum.photos/seed/org24/100/100' },
+    image: 'https://picsum.photos/seed/books/800/600',
+    description: 'Discover the latest African literature and attend author reading sessions.',
+    price: { min: 0, max: 2000 },
+    inventory: 5000,
+    tags: ['Books', 'Literature', 'Education']
+  },
+  {
+    id: 'e25',
+    title: 'Makurdi River Fest',
+    category: 'festivals',
+    city: 'Makurdi',
+    venue: 'Benue River Bank',
+    date: '2024-12-22T10:00:00',
+    organizer: { name: 'Food Basket', verified: true, avatar: 'https://picsum.photos/seed/org25/100/100' },
+    image: 'https://picsum.photos/seed/river/800/600',
+    description: 'Boat regattas, fishing competitions, and live music on the banks of River Benue.',
+    price: { min: 1000, max: 5000 },
+    inventory: 2000,
+    tags: ['River', 'Regatta', 'Benue']
+  },
+  {
+    id: 'e26',
+    title: 'Onitsha Business Summit',
+    category: 'networking',
+    city: 'Onitsha',
+    venue: 'Sharon House',
+    date: '2024-11-27T09:00:00',
+    organizer: { name: 'Traders Union', verified: true, avatar: 'https://picsum.photos/seed/org26/100/100' },
+    image: 'https://picsum.photos/seed/summit/800/600',
+    description: 'Connecting the giants of Onitsha trade with global e-commerce opportunities.',
+    price: { min: 10000, max: 10000 },
+    inventory: 300,
+    tags: ['Trade', 'Onitsha', 'Business']
+  },
+  {
+    id: 'e27',
+    title: 'Sokoto Cultural Night',
+    category: 'cultural',
+    city: 'Sokoto',
+    venue: 'Sultan Palace Grounds',
+    date: '2024-12-05T20:00:00',
+    organizer: { name: 'Caliphate Heritage', verified: true, avatar: 'https://picsum.photos/seed/org27/100/100' },
+    image: 'https://picsum.photos/seed/sokoto/800/600',
+    description: 'Experience the rich history and traditions of the Sokoto Caliphate.',
+    price: { min: 0, max: 0 },
+    inventory: 5000,
+    tags: ['Culture', 'Sokoto', 'Heritage']
+  },
+  {
+    id: 'e28',
+    title: 'Zaria Art Gallery Open',
+    category: 'exhibitions',
+    city: 'Zaria',
+    venue: 'ABU Fine Arts',
+    date: '2024-12-10T09:00:00',
+    organizer: { name: 'ABU Arts', verified: true, avatar: 'https://picsum.photos/seed/org28/100/100' },
+    image: 'https://picsum.photos/seed/gallery/800/600',
+    description: 'Showcasing contemporary art from the prestigious Zaria school.',
+    price: { min: 500, max: 2000 },
+    inventory: 400,
+    tags: ['Art', 'Gallery', 'Zaria']
+  },
+  {
+    id: 'e29',
+    title: 'Yenagoa Beach Bash',
+    category: 'nightlife',
+    city: 'Yenagoa',
+    venue: 'Oxbow Lake',
+    date: '2024-12-29T22:00:00',
+    organizer: { name: 'Bayelsa Vibes', verified: false, avatar: 'https://picsum.photos/seed/org29/100/100' },
+    image: 'https://picsum.photos/seed/beach/800/600',
+    description: 'The ultimate year-end party on the shores of Oxbow Lake.',
+    price: { min: 2000, max: 10000 },
+    inventory: 1000,
+    tags: ['Party', 'Bayelsa', 'Nightlife']
+  },
+  {
+    id: 'e30',
+    title: 'Maiduguri Peace Fest',
+    category: 'community',
+    city: 'Maiduguri',
+    venue: 'El-Kanemi Stadium',
+    date: '2024-12-01T10:00:00',
+    organizer: { name: 'Hope Foundation', verified: true, avatar: 'https://picsum.photos/seed/org30/100/100' },
+    image: 'https://picsum.photos/seed/peace/800/600',
+    description: 'A community gathering to celebrate peace and resilience in Borno.',
+    price: { min: 0, max: 0 },
+    inventory: 10000,
+    tags: ['Peace', 'Community', 'Borno']
   }
 ];
 
@@ -338,9 +452,5 @@ export const MOCK_USER = {
   name: 'Tunde Afolayan',
   email: 'tunde@example.com',
   role: 'attendee',
-  wallet: {
-    active: 2,
-    used: 1,
-    transferred: 0
-  }
+  wallet: { active: 2, used: 1, transferred: 0 }
 };
