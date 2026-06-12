@@ -24,8 +24,8 @@ import Image from 'next/image';
 export default function MobileAppPage() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
-      {/* Immersive Hero Header - Increased top padding for "big spacing" */}
-      <section className="relative min-h-[90vh] w-full flex items-end pb-12 md:pb-24 pt-[32rem] overflow-hidden">
+      {/* Immersive Hero Header - Balanced spacing */}
+      <section className="relative min-h-[90vh] w-full flex items-end pb-12 md:pb-24 pt-64 overflow-hidden">
         <Image 
           src="https://picsum.photos/seed/mobile-v3/1920/1080" 
           alt="IsabiEvents Mobile" 
@@ -73,8 +73,8 @@ export default function MobileAppPage() {
         </div>
       </section>
 
-      {/* Value Prop Section */}
-      <section className="pt-32 pb-12 relative overflow-hidden">
+      {/* Value Prop Section - Reduced top padding */}
+      <section className="pt-20 pb-12 relative overflow-hidden">
         <div className="absolute top-1/2 left-0 w-[500px] h-[500px] bg-primary/10 blur-[150px] rounded-full -translate-x-1/2 -z-10" />
         <div className="absolute top-1/2 right-0 w-[500px] h-[500px] bg-accent/10 blur-[150px] rounded-full translate-x-1/2 -z-10" />
         
