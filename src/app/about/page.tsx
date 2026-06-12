@@ -184,14 +184,14 @@ export default function AboutPage() {
           <p className="text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed">
             Whether you're looking for your next favorite memory or hosting the event of the year, we're here to help you make it happen.
           </p>
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-6">
-            <Link href="/discover" className="no-underline w-full sm:w-auto">
-              <Button size="lg" className="rounded-full h-16 px-12 text-lg shadow-2xl shadow-primary/30 font-bold w-full">
+          <div className="flex flex-row justify-center items-center gap-4 md:gap-6">
+            <Link href="/discover" className="no-underline flex-1 sm:flex-none">
+              <Button size="lg" className="rounded-full h-12 md:h-16 px-6 md:px-12 text-sm md:text-lg shadow-2xl shadow-primary/30 font-bold w-full">
                 Explore Events
               </Button>
             </Link>
-            <Link href="/signup?role=organizer" className="no-underline w-full sm:w-auto">
-              <Button variant="outline" size="lg" className="rounded-full h-16 px-12 text-lg border-2 bg-background/50 backdrop-blur-sm font-bold w-full">
+            <Link href="/signup?role=organizer" className="no-underline flex-1 sm:flex-none">
+              <Button variant="outline" size="lg" className="rounded-full h-12 md:h-16 px-6 md:px-12 text-sm md:text-lg border-2 bg-background/50 backdrop-blur-sm font-bold w-full">
                 Host an Event
               </Button>
             </Link>
