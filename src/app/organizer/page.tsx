@@ -21,14 +21,14 @@ export default function OrganizerLandingPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
-      <section className="relative pt-32 pb-8 overflow-hidden">
+      <section className="relative pt-32 pb-8 md:pb-16 overflow-hidden">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent/10 blur-[120px] -z-10 rounded-full translate-x-1/2 -translate-y-1/2" />
-        <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center">
+        <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-16 items-center">
           <div className="space-y-8 animate-in fade-in slide-in-from-left-8 duration-1000">
-            <h1 className="text-3xl md:text-7xl leading-[1.05] font-black tracking-tighter text-balance">
+            <h1 className="text-3xl md:text-5xl lg:text-7xl leading-[1.05] font-black tracking-tighter text-balance">
               The Easiest Way to Host <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Legendary</span> Events
             </h1>
-            <p className="text-base text-muted-foreground leading-relaxed max-w-xl">
+            <p className="text-base text-muted-foreground leading-relaxed max-w-xl font-normal">
               From secret beach parties to national tech conferences. IsabiEvents provides the tools you need to sell out fast and manage with ease.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
@@ -51,15 +51,15 @@ export default function OrganizerLandingPage() {
                   </div>
                 ))}
               </div>
-              <p className="text-base text-muted-foreground">
+              <p className="text-sm md:text-base text-muted-foreground font-normal">
                 Joined by <span className="text-primary font-bold">1,200+</span> Nigerian organizers
               </p>
             </div>
           </div>
           <div className="relative animate-in fade-in zoom-in-95 duration-1000">
-            <div className="relative aspect-square rounded-3xl overflow-hidden border border-border shadow-2xl">
+            <div className="relative aspect-square lg:aspect-auto lg:h-[700px] w-full rounded-3xl overflow-hidden border border-border shadow-2xl">
               <Image 
-                src="https://picsum.photos/seed/organizer-hero/800/800" 
+                src="https://picsum.photos/seed/organizer-hero/800/1000" 
                 alt="Organizer dashboard" 
                 fill 
                 className="object-cover"
@@ -83,11 +83,11 @@ export default function OrganizerLandingPage() {
       </section>
 
       {/* Features */}
-      <section className="py-8 bg-card/30 border-y border-border">
+      <section className="py-16 bg-card/30 border-y border-border">
         <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto mb-12 space-y-4">
-            <h2 className="text-4xl md:text-5xl font-black tracking-tighter">Everything you need to succeed</h2>
-            <p className="text-base text-muted-foreground">We've built a suite of features specifically for the Nigerian market.</p>
+          <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+            <h2 className="text-3xl md:text-5xl font-black tracking-tighter">Everything you need to succeed</h2>
+            <p className="text-base text-muted-foreground font-normal">We've built a suite of features specifically for the Nigerian market.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -126,13 +126,13 @@ export default function OrganizerLandingPage() {
       </section>
 
       {/* Pricing Teaser */}
-      <section className="py-8">
+      <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="bg-primary/10 border border-primary/20 rounded-[3rem] p-12 md:p-16 text-center space-y-8 relative overflow-hidden">
+          <div className="bg-primary/10 border border-primary/20 rounded-[3rem] p-12 md:p-20 text-center space-y-8 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-32 h-32 bg-primary/20 blur-3xl -translate-x-1/2 -translate-y-1/2 rounded-full" />
             <div className="max-w-2xl mx-auto space-y-6">
-              <h2 className="text-4xl md:text-5xl font-black tracking-tighter">Simple, transparent pricing</h2>
-              <p className="text-base text-muted-foreground leading-relaxed">
+              <h2 className="text-3xl md:text-5xl font-black tracking-tighter">Simple, transparent pricing</h2>
+              <p className="text-base text-muted-foreground leading-relaxed font-normal">
                 No setup fees. No monthly subscriptions. <br />
                 We only win when you do.
               </p>
@@ -164,7 +164,7 @@ function FeatureCard({ icon: Icon, title, description }: any) {
         </div>
         <div className="space-y-2 text-left">
           <h3 className="text-xl font-bold tracking-tight">{title}</h3>
-          <p className="text-base text-muted-foreground leading-relaxed">{description}</p>
+          <p className="text-sm md:text-base text-muted-foreground leading-relaxed font-normal">{description}</p>
         </div>
       </CardContent>
     </Card>
