@@ -79,9 +79,9 @@ export default function HomePage() {
       <section className="pb-20">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl md:text-3xl font-black tracking-tighter">Top Category</h2>
-            <Link href="/categories">
-              <Button className="rounded-full px-6 shadow-lg shadow-primary/20 font-semibold gap-2">
+            <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-left">Top Category</h2>
+            <Link href="/discover">
+              <Button variant="ghost" className="rounded-full px-6 font-semibold gap-2">
                 View All <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
@@ -110,13 +110,12 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Featured Events */}
+      {/* Trending Events */}
       <section className="pb-24">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-10">
             <div className="text-left">
-              <h2 className="text-3xl md:text-4xl font-black tracking-tighter">Trending Events</h2>
-              <p className="text-muted-foreground text-sm">What&apos;s hot right now in Lagos</p>
+              <h2 className="text-3xl md:text-4xl font-black tracking-tighter">Trending</h2>
             </div>
             <Button className="rounded-full px-6 shadow-lg shadow-primary/20 font-semibold gap-2" asChild>
               <Link href="/discover">Explore More <ArrowRight className="w-4 h-4" /></Link>
