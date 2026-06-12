@@ -68,8 +68,27 @@ const organizerFaqGeneratorFlow = ai.defineFlow(
     outputSchema: OrganizerFaqGeneratorOutputSchema,
   },
   async (input) => {
-    const {output} = await organizerFaqGeneratorPrompt(input);
-    return output!;
+    let attempts = 0;
+    const maxAttempts = 3;
+    
+    while (attempts < maxAttempts) {
+      try {
+        const {output} = await organizerFaqGeneratorPrompt(input);
+        return output!;
+      } catch (error: any) {
+        attempts++;
+        // If we've hit max attempts, or it's not a transient 503 error, throw it
+        if (attempts >= maxAttempts) {
+          throw error;
+        }
+        
+        // Wait before retrying (exponential backoff: 2s, 4s...)
+        const delay = Math.pow(2, attempts) * 1000;
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+    }
+    
+    throw new Error('Failed to generate FAQs after multiple attempts.');
   },
 );
 

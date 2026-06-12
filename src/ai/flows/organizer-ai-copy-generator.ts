@@ -94,7 +94,24 @@ const organizerAICopyGeneratorFlow = ai.defineFlow(
     outputSchema: OrganizerAICopyGeneratorOutputSchema,
   },
   async input => {
-    const {output} = await prompt(input);
-    return output!;
+    let attempts = 0;
+    const maxAttempts = 3;
+    
+    while (attempts < maxAttempts) {
+      try {
+        const {output} = await prompt(input);
+        return output!;
+      } catch (error: any) {
+        attempts++;
+        if (attempts >= maxAttempts) {
+          throw error;
+        }
+        
+        const delay = Math.pow(2, attempts) * 1000;
+        await new Promise((resolve) => setTimeout(resolve, delay));
+      }
+    }
+    
+    throw new Error('Failed to generate event copy after multiple attempts.');
   }
 );
