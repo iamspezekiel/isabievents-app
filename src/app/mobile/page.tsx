@@ -16,6 +16,7 @@ import {
   Lock
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import Link from 'next/link';
 import Image from 'next/image';
 
@@ -130,30 +131,40 @@ export default function MobileAppPage() {
       </section>
 
       {/* Value Prop Section */}
-      <section className="py-24 bg-card/30 border-y border-border">
+      <section className="py-24 relative overflow-hidden">
+        {/* Background Atmospheric Glows */}
+        <div className="absolute top-1/2 left-0 w-64 h-64 bg-primary/5 blur-[120px] rounded-full -translate-x-1/2" />
+        <div className="absolute top-1/2 right-0 w-64 h-64 bg-accent/5 blur-[120px] rounded-full translate-x-1/2" />
+        
         <div className="container mx-auto px-4">
-          <div className="text-center max-w-3xl mx-auto mb-20 space-y-4">
-            <h2 className="font-headline text-4xl font-black tracking-tighter">Built for the Nigerian Experience</h2>
-            <p className="text-muted-foreground text-lg">We&apos;ve solved the common problems of physical ticketing and poor internet.</p>
+          <div className="text-center max-w-4xl mx-auto mb-20 space-y-4">
+            <Badge className="bg-primary/10 text-primary border-none py-1.5 px-6 font-bold tracking-widest uppercase mb-4">OPTIMIZED FOR NIGERIA</Badge>
+            <h2 className="font-headline text-4xl md:text-7xl font-black tracking-tighter leading-tight">
+              Built for the <br />
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Nigerian Experience</span>
+            </h2>
+            <p className="text-muted-foreground text-xl md:text-2xl font-medium max-w-2xl mx-auto leading-relaxed">
+              We&apos;ve solved the real-world problems of physical ticketing, expensive data, and unreliable connectivity.
+            </p>
           </div>
           
-          <div className="grid md:grid-cols-3 gap-12">
+          <div className="grid md:grid-cols-3 gap-8">
             <AppFeature 
               icon={ShieldCheck} 
               title="True Offline Access" 
-              desc="Your tickets are saved locally with encryption. Walk into any venue even without a data connection."
+              desc="Your tickets are saved locally with bank-level encryption. Walk into any venue even without an active data connection."
               color="primary"
             />
             <AppFeature 
               icon={Bell} 
               title="Priority Alerts" 
-              desc="Get exclusive first-look access to flash sales and lineup drops before they hit the web."
+              desc="Get exclusive first-look access to flash sales, lineup drops, and sold-out alerts before they hit the web."
               color="accent"
             />
             <AppFeature 
               icon={Lock} 
               title="Secure Transfers" 
-              desc="Bought for a friend? Transfer tickets securely via phone number with instant ownership verification."
+              desc="Bought for a friend? Transfer tickets securely via phone number with instant ownership verification and zero fraud."
               color="white"
             />
           </div>
@@ -202,18 +213,18 @@ export default function MobileAppPage() {
 
 function AppFeature({ icon: Icon, title, desc, color }: any) {
   const colorMap: any = {
-    primary: "text-primary bg-primary/10",
-    accent: "text-accent bg-accent/10",
-    white: "text-white bg-white/10"
+    primary: "text-primary bg-primary/20 shadow-primary/20",
+    accent: "text-accent bg-accent/20 shadow-accent/20",
+    white: "text-foreground bg-secondary shadow-secondary/20"
   };
 
   return (
-    <div className="space-y-6 text-center group">
-      <div className={`w-20 h-20 rounded-[2.5rem] flex items-center justify-center mx-auto mb-8 transition-all duration-500 group-hover:rotate-12 group-hover:scale-110 ${colorMap[color] || colorMap.primary}`}>
-        <Icon className="w-10 h-10" />
+    <div className="group p-10 rounded-[3rem] bg-card border border-border hover:border-primary/50 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/5">
+      <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-8 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3 shadow-lg ${colorMap[color] || colorMap.primary}`}>
+        <Icon className="w-8 h-8" />
       </div>
-      <div className="space-y-3">
-        <h3 className="font-headline text-2xl font-bold tracking-tight">{title}</h3>
+      <div className="space-y-4">
+        <h3 className="font-headline text-2xl font-black tracking-tight leading-tight">{title}</h3>
         <p className="text-muted-foreground leading-relaxed text-sm font-medium">{desc}</p>
       </div>
     </div>
