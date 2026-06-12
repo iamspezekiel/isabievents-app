@@ -130,9 +130,9 @@ export default function HomePage() {
       <section className="pb-24">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-10">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-black tracking-tighter mb-2">Trending Events</h2>
-              <p className="text-muted-foreground">What's hot right now in {selectedCity}</p>
+            <div className="text-left">
+              <h2 className="text-3xl md:text-4xl font-black tracking-tighter mb-2">Trending</h2>
+              <p className="text-muted-foreground">What's hot right now in Nigeria</p>
             </div>
             <Button className="rounded-full px-6 shadow-lg shadow-primary/20 font-semibold gap-2" asChild>
               <Link href="/discover">Explore More <ArrowRight className="w-4 h-4" /></Link>
@@ -157,7 +157,7 @@ export default function HomePage() {
                       </Badge>
                     </div>
                   </div>
-                  <div className="p-6">
+                  <div className="p-6 text-left">
                     <div className="flex items-center gap-2 text-primary text-sm font-semibold mb-3">
                       <Calendar className="w-4 h-4" />
                       {new Date(event.date).toLocaleDateString('en-NG', { month: 'short', day: 'numeric', year: 'numeric' })}
