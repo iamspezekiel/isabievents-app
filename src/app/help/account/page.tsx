@@ -60,10 +60,10 @@ export default function AccountSupportPage() {
               Verified accounts build trust with attendees. To get verified, organizers must provide a valid government-issued ID and proof of business registration (for corporate entities). 
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link href="/dashboard/organizer" className="no-underline">
-                <Button className="rounded-xl px-8 h-12 font-bold">Start Verification</Button>
+              <Link href="/dashboard/organizer" className="no-underline w-full flex-1">
+                <Button className="rounded-xl px-8 h-12 font-bold w-full">Start Verification</Button>
               </Link>
-              <Button variant="outline" className="rounded-xl px-8 h-12 font-bold">Learn Requirements</Button>
+              <Button variant="outline" className="rounded-xl px-8 h-12 font-bold w-full flex-1">Learn Requirements</Button>
             </div>
           </section>
 
