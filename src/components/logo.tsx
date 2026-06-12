@@ -1,7 +1,6 @@
-
 "use client";
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Ticket } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
@@ -30,12 +29,6 @@ const sizeClasses = {
 };
 
 export function Logo({ className, iconOnly = false, size = 'md' }: LogoProps) {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   const currentSize = sizeClasses[size];
 
   return (
@@ -49,8 +42,7 @@ export function Logo({ className, iconOnly = false, size = 'md' }: LogoProps) {
       {!iconOnly && (
         <div className={cn(
           "font-headline font-black tracking-tighter leading-none flex items-center text-primary", 
-          currentSize.text,
-          !mounted && "opacity-0"
+          currentSize.text
         )}>
           IsabiEvents
         </div>

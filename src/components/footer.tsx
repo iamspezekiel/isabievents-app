@@ -12,7 +12,7 @@ export function Footer() {
     <footer className="bg-background border-t border-border pt-16 pb-8">
       <div className="container mx-auto px-4">
         {/* Newsletter Section */}
-        <div className="max-w-6xl mx-auto bg-primary/5 border border-primary/10 rounded-[2.5rem] p-6 md:p-12 mb-12 flex flex-col lg:flex-row items-center justify-between gap-8">
+        <div className="max-w-6xl mx-auto bg-primary/5 border border-primary/10 rounded-[2.5rem] p-6 md:p-10 mb-12 flex flex-col lg:flex-row items-center justify-between gap-8">
           <div className="space-y-3 text-center lg:text-left">
             <h3 className="font-headline text-2xl md:text-3xl font-black tracking-tighter">Stay in the Loop</h3>
             <p className="text-muted-foreground text-base font-medium">Get first access to Nigerian concerts, festivals, and tech summits.</p>
@@ -86,9 +86,9 @@ export function Footer() {
         </div>
 
         {/* Bottom Bar: Unified Partners & Copyright */}
-        <div className="border-t border-border pt-8 pb-4 flex flex-col lg:flex-row items-center justify-between gap-6">
+        <div className="border-t border-border pt-8 pb-4 flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12">
           {/* Payment Logos */}
-          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10 opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700">
+          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10 opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700 order-2 lg:order-1">
             {/* Paystack */}
             <div className="flex items-center gap-2 group cursor-default">
               <svg className="w-5 h-5 text-[#09A5DB]" viewBox="0 0 24 24" fill="currentColor">
@@ -120,7 +120,7 @@ export function Footer() {
           </div>
           
           {/* Responsive Copyright */}
-          <div className="text-center lg:text-right text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 leading-relaxed text-balance max-w-[320px] sm:max-w-none">
+          <div className="text-center lg:text-right text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 leading-relaxed text-balance max-w-full sm:max-w-none order-1 lg:order-2">
             Copyright © 2026 · IsabiEvents Technology · All Rights Reserved
           </div>
         </div>
