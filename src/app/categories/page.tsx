@@ -38,7 +38,6 @@ export default function AllCategoriesPage() {
       <header className="relative pt-48 pb-20 overflow-hidden border-b border-border bg-card/30">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
         <div className="container mx-auto px-4 text-center space-y-6">
-          <Badge className="bg-primary/20 text-primary border-none py-1 px-4 font-black tracking-widest uppercase">BROWSE BY VIBE</Badge>
           <h1 className="font-headline text-4xl md:text-6xl font-black leading-tight tracking-tighter text-balance">
             Find Your Next <br />
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Shared Experience</span>
