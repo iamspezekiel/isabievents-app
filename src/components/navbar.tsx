@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -38,6 +37,23 @@ export function Navbar() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  if (!mounted) {
+    return (
+      <div className="fixed left-1/2 -translate-x-1/2 z-50 w-full max-w-7xl px-4 top-6">
+        <nav className="flex items-center justify-between px-6 py-3 rounded-full border bg-background/40 backdrop-blur-md border-white/20 h-20">
+          <Logo size="sm" />
+          <div className="hidden md:flex items-center gap-8">
+            {NAV_LINKS.map((link) => (
+              <span key={link.href} className="text-sm font-bold tracking-tight text-foreground/70">
+                {link.name}
+              </span>
+            ))}
+          </div>
+        </nav>
+      </div>
+    );
+  }
 
   const getIsActive = (path: string) => pathname === path;
 
