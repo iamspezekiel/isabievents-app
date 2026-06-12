@@ -87,36 +87,33 @@ export function Footer() {
 
         {/* Bottom Bar: Combined Partners & Copyright */}
         <div className="border-t border-border pt-10 pb-8 flex flex-col lg:flex-row items-center justify-between gap-8 text-[10px] font-black uppercase tracking-widest text-muted-foreground/50">
-          <div className="flex flex-col lg:flex-row items-center gap-6 lg:gap-12">
-            <div className="text-muted-foreground/40 whitespace-nowrap">Secure Payments & Settlement via</div>
-            <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10 opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700">
-              {/* Paystack */}
-              <div className="flex items-center gap-2 group cursor-default">
-                <svg className="w-5 h-5 text-[#09A5DB]" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 18.75c-3.728 0-6.75-3.022-6.75-6.75s3.022-6.75 6.75-6.75 6.75 3.022 6.75 6.75-3.022 6.75-6.75 6.75z"/>
-                  <path d="M12 7.5c-2.485 0-4.5 2.015-4.5 4.5s2.015 4.5 4.5 4.5 4.5-2.015 4.5-4.5-2.015-4.5-4.5-4.5zm0 6.75c-1.243 0-2.25-1.007-2.25-2.25s1.007-2.25 2.25-2.25 2.25 1.007 2.25 2.25-1.007 2.25-2.25 2.25z"/>
-                </svg>
-                <span className="text-[9px] font-black tracking-tighter uppercase text-foreground">Paystack</span>
-              </div>
-              {/* Flutterwave */}
-              <div className="flex items-center gap-2 group cursor-default">
-                <div className="w-5 h-5 bg-[#FB9129] rounded-full flex items-center justify-center text-[10px] font-black text-white italic shadow-sm">F</div>
-                <span className="text-[9px] font-black tracking-tighter uppercase text-foreground">Flutterwave</span>
-              </div>
-              {/* SolanaPay */}
-              <div className="flex items-center gap-3 group cursor-default">
-                <div className="flex items-center -space-x-1.5">
-                  <div className="w-5 h-5 bg-[#2775CA] rounded-full border-2 border-background flex items-center justify-center shadow-sm">
-                    <span className="text-[7px] font-black text-white leading-none">$</span>
-                  </div>
-                  <div className="w-5 h-5 bg-[#26A17B] rounded-full border-2 border-background flex items-center justify-center shadow-sm">
-                    <span className="text-[7px] font-black text-white leading-none">₮</span>
-                  </div>
+          <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10 opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700">
+            {/* Paystack */}
+            <div className="flex items-center gap-2 group cursor-default">
+              <svg className="w-5 h-5 text-[#09A5DB]" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 18.75c-3.728 0-6.75-3.022-6.75-6.75s3.022-6.75 6.75-6.75 6.75 3.022 6.75 6.75-3.022 6.75-6.75 6.75z"/>
+                <path d="M12 7.5c-2.485 0-4.5 2.015-4.5 4.5s2.015 4.5 4.5 4.5 4.5-2.015 4.5-4.5-2.015-4.5-4.5-4.5zm0 6.75c-1.243 0-2.25-1.007-2.25-2.25s1.007-2.25 2.25-2.25 2.25 1.007 2.25 2.25-1.007 2.25-2.25 2.25z"/>
+              </svg>
+              <span className="text-[9px] font-black tracking-tighter uppercase text-foreground">Paystack</span>
+            </div>
+            {/* Flutterwave */}
+            <div className="flex items-center gap-2 group cursor-default">
+              <div className="w-5 h-5 bg-[#FB9129] rounded-full flex items-center justify-center text-[10px] font-black text-white italic shadow-sm">F</div>
+              <span className="text-[9px] font-black tracking-tighter uppercase text-foreground">Flutterwave</span>
+            </div>
+            {/* SolanaPay */}
+            <div className="flex items-center gap-3 group cursor-default">
+              <div className="flex items-center -space-x-1.5">
+                <div className="w-5 h-5 bg-[#2775CA] rounded-full border-2 border-background flex items-center justify-center shadow-sm">
+                  <span className="text-[7px] font-black text-white leading-none">$</span>
                 </div>
-                <div className="flex flex-col items-start leading-none">
-                  <span className="text-[9px] font-black tracking-tighter uppercase text-foreground">SolanaPay</span>
-                  <span className="text-[6px] font-black uppercase text-muted-foreground tracking-[0.1em]">USDC / USDT</span>
+                <div className="w-5 h-5 bg-[#26A17B] rounded-full border-2 border-background flex items-center justify-center shadow-sm">
+                  <span className="text-[7px] font-black text-white leading-none">₮</span>
                 </div>
+              </div>
+              <div className="flex flex-col items-start leading-none">
+                <span className="text-[9px] font-black tracking-tighter uppercase text-foreground">SolanaPay</span>
+                <span className="text-[6px] font-black uppercase text-muted-foreground tracking-[0.1em]">USDC / USDT</span>
               </div>
             </div>
           </div>
