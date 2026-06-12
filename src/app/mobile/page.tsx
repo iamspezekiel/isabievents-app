@@ -25,7 +25,7 @@ export default function MobileAppPage() {
   return (
     <div className="min-h-screen bg-background text-foreground overflow-hidden">
       {/* Immersive Hero Header */}
-      <section className="relative h-[80vh] w-full flex items-end pb-8 md:pb-16 pt-40 overflow-hidden">
+      <section className="relative h-[80vh] w-full flex items-end pb-8 md:pb-16 pt-56 overflow-hidden">
         <Image 
           src="https://picsum.photos/seed/mobile-v3/1920/1080" 
           alt="IsabiEvents Mobile" 
@@ -80,7 +80,7 @@ export default function MobileAppPage() {
         
         <div className="container mx-auto px-4">
           <div className="text-center max-w-4xl mx-auto mb-12 space-y-6">
-            <h2 className="text-4xl md:text-6xl text-balance">
+            <h2 className="text-3xl md:text-5xl text-balance">
               Built for the <br />
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Nigerian Experience</span>
             </h2>
@@ -135,7 +135,7 @@ export default function MobileAppPage() {
             </div>
 
             <div className="space-y-12">
-               <h2 className="text-left leading-tight">Fast. Secure. <br /> Always with you.</h2>
+               <h2 className="text-left leading-tight text-2xl md:text-4xl">Fast. Secure. <br /> Always with you.</h2>
                <div className="space-y-8">
                   <FeatureListItem 
                     title="QR-Ready Entry" 
@@ -167,7 +167,7 @@ export default function MobileAppPage() {
             <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/10 blur-[120px] rounded-full translate-x-1/2 translate-y-1/2" />
             
             <div className="relative z-10 space-y-10">
-              <h2 className="text-6xl md:text-8xl font-black leading-tight tracking-tighter">
+              <h2 className="text-5xl md:text-7xl font-black leading-tight tracking-tighter">
                 Ready to <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">ditch paper?</span>
               </h2>
               <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto font-medium leading-relaxed">
