@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import Image from 'next/image';
+import { cn } from "@/lib/utils";
 
 const TESTIMONIALS = [
   {
@@ -158,5 +159,3 @@ function TestimonialCard({ name, quote, avatar, rating }: any) {
     </Card>
   );
 }
-
-import { cn } from "@/lib/utils";
