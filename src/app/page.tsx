@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Search, 
   MapPin, 
@@ -40,6 +40,22 @@ const iconMap: any = {
 
 export default function HomePage() {
   const [search, setSearch] = useState('');
+  const [displayLimit, setDisplayLimit] = useState(27); // Default to desktop limit
+
+  useEffect(() => {
+    const handleResize = () => {
+      // lg breakpoint is 1024px
+      if (window.innerWidth < 1024) {
+        setDisplayLimit(16); // 2 columns * 8 rows
+      } else {
+        setDisplayLimit(27); // 3 columns * 9 rows
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -128,44 +144,48 @@ export default function HomePage() {
             </Button>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            {MOCK_EVENTS.slice(0, 3).map((event) => (
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mb-8">
+            {MOCK_EVENTS.slice(0, displayLimit).map((event) => (
               <Link key={event.id} href={`/events/${event.id}`}>
-                <div className="group relative rounded-2xl overflow-hidden bg-card border border-border hover:border-primary/50 transition-all hover:shadow-2xl hover:shadow-primary/5">
+                <div className="group relative rounded-[1.25rem] md:rounded-[2.5rem] overflow-hidden bg-card border border-border hover:border-primary/50 transition-all hover:shadow-2xl hover:shadow-primary/5">
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <Image 
                       src={event.image} 
                       alt={event.title} 
                       fill 
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
                       data-ai-hint="event poster"
                     />
-                    <div className="absolute top-3 left-3">
-                      <Badge className="bg-black/60 backdrop-blur-md text-white border-none py-0.5 px-2 text-[10px]">
-                        {event.category.charAt(0).toUpperCase() + event.category.slice(1)}
+                    <div className="absolute top-2 left-2 md:top-4 md:left-4">
+                      <Badge className="bg-black/60 backdrop-blur-md text-white border-none py-0.5 px-1.5 md:py-1 md:px-3 text-[6px] md:text-[10px] uppercase font-black tracking-widest">
+                        {event.category}
                       </Badge>
                     </div>
                   </div>
-                  <div className="p-5 text-left">
-                    <div className="flex items-center gap-2 text-primary text-xs font-semibold mb-2">
-                      <Calendar className="w-3.5 h-3.5" />
+                  <div className="p-3 md:p-8 text-left">
+                    <div className="flex items-center gap-1 md:gap-2 text-primary text-[8px] md:text-sm font-black uppercase tracking-widest mb-1 md:mb-3">
+                      <Calendar className="w-2.5 h-2.5 md:w-4 h-4" />
                       {new Date(event.date).toLocaleDateString('en-NG', { month: 'short', day: 'numeric' })}
                     </div>
-                    <h3 className="text-lg mb-1 group-hover:text-primary transition-colors line-clamp-1 font-bold">{event.title}</h3>
-                    <p className="text-muted-foreground text-xs flex items-center gap-1 mb-4">
-                      <MapPin className="w-3 h-3 text-accent" /> <span className="truncate">{event.venue}</span>
+                    <h3 className="text-sm md:text-2xl mb-1 group-hover:text-primary transition-colors line-clamp-1 font-bold">{event.title}</h3>
+                    <p className="text-muted-foreground text-[8px] md:text-sm flex items-center gap-1 mb-2 md:mb-6">
+                      <MapPin className="w-2.5 h-2.5 md:w-4 h-4 text-accent" /> <span className="truncate">{event.venue}</span>
                     </p>
                     
-                    <div className="flex items-center justify-between pt-4 border-t border-border">
-                      <div className="flex items-center gap-2">
-                        <div className="relative w-6 h-6 rounded-full overflow-hidden">
+                    <div className="flex items-center justify-between pt-2 md:pt-6 border-t border-border">
+                      <div className="flex items-center gap-1 md:gap-3">
+                        <div className="relative w-5 h-5 md:w-8 h-8 rounded-full overflow-hidden border border-border">
                           <Image src={event.organizer.avatar} alt={event.organizer.name} fill className="object-cover" />
                         </div>
-                        <span className="text-[10px] font-bold text-muted-foreground">{event.organizer.name}</span>
-                        {event.organizer.verified && <CheckCircle2 className="w-2.5 h-2.5 text-primary" />}
+                        <div className="hidden sm:flex flex-col">
+                          <span className="text-[10px] font-bold text-foreground flex items-center gap-1">
+                            {event.organizer.name}
+                            {event.organizer.verified && <CheckCircle2 className="w-2.5 h-2.5 text-primary fill-primary text-white" />}
+                          </span>
+                        </div>
                       </div>
                       <div className="text-right">
-                        <span className="text-base font-black text-primary">
+                        <span className="text-xs md:text-xl font-black text-primary leading-none">
                           {event.price.min === 0 ? 'FREE' : `₦${event.price.min.toLocaleString()}`}
                         </span>
                       </div>
@@ -176,7 +196,7 @@ export default function HomePage() {
             ))}
           </div>
 
-          <div className="text-center">
+          <div className="text-center pt-8">
             <Link href="/discover">
               <Button variant="outline" size="lg" className="rounded-full px-12 h-14 text-lg group border-2">
                 Discover More Events <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
