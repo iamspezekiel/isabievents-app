@@ -191,7 +191,7 @@ export default function AboutPage() {
             </Link>
             <Link href="/signup?role=organizer" className="no-underline flex-1 sm:flex-none">
               <Button variant="outline" size="lg" className="rounded-full h-12 md:h-16 px-6 md:px-16 text-sm md:text-lg border-2 bg-background/50 backdrop-blur-sm font-bold w-full">
-                Host an Event
+                Host Event
               </Button>
             </Link>
           </div>
