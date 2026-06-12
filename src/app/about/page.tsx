@@ -16,10 +16,10 @@ export default function AboutPage() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
         <div className="container mx-auto px-4 text-center space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <Badge className="bg-primary/20 text-primary border-none py-1.5 px-6 font-bold tracking-widest uppercase">ABOUT</Badge>
-          <h4 className="font-headline text-4xl md:text-6xl font-black leading-[1.1] tracking-tighter text-balance">
+          <h1 className="font-headline text-4xl md:text-6xl font-black leading-[1.1] tracking-tighter text-balance">
             Connecting Nigeria through <br />
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Shared Experiences</span>
-          </h4>
+          </h1>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-medium">
             IsabiEvents is more than just a place to buy tickets. We are a digital bridge connecting creators to communities, rooted in the vibrant and unyielding Naija spirit.
           </p>
@@ -32,19 +32,21 @@ export default function AboutPage() {
         <div className="absolute -bottom-24 left-0 w-72 h-72 bg-primary/5 blur-[100px] rounded-full -z-10" />
         
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-32 items-center">
-          <div className="relative order-2 lg:order-1 space-y-16">
-            {/* Image Container */}
+          <div className="relative order-2 lg:order-1 space-y-12">
+            {/* Image Container with Padding */}
             <div className="relative group">
-              <div className="relative aspect-[4/5] rounded-[3.5rem] overflow-hidden border border-border/50 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] z-10">
-                <Image 
-                  src="https://picsum.photos/seed/story_v6/800/1000" 
-                  alt="The IsabiEvents Story" 
-                  fill 
-                  className="object-cover transition-transform duration-700 group-hover:scale-105"
-                  data-ai-hint="nigerian festival"
-                />
-                {/* Subtle Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
+              <div className="relative aspect-[4/5] rounded-[3.5rem] overflow-hidden border border-border/50 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] z-10 p-4 bg-card">
+                <div className="relative w-full h-full rounded-[2.5rem] overflow-hidden">
+                  <Image 
+                    src="https://picsum.photos/seed/story_v6/800/1000" 
+                    alt="The IsabiEvents Story" 
+                    fill 
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    data-ai-hint="nigerian festival"
+                  />
+                  {/* Subtle Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
+                </div>
               </div>
 
               {/* Decorative Frame */}
@@ -76,7 +78,7 @@ export default function AboutPage() {
             </div>
 
             {/* Stats Moved Under Image */}
-            <div className="grid grid-cols-2 gap-6 pt-4">
+            <div className="grid grid-cols-2 gap-6 pt-8">
               <div className="space-y-2 p-8 bg-secondary/40 rounded-[2.5rem] border border-border/50">
                 <div className="text-4xl font-black text-primary">50k+</div>
                 <div className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Active Users</div>
@@ -90,8 +92,8 @@ export default function AboutPage() {
 
           <div className="space-y-12 text-left order-1 lg:order-2">
             <div className="space-y-4">
-              <h5 className="font-headline text-xl font-black tracking-tighter leading-none text-primary">Our Story</h5>
-              <h2 className="text-2xl md:text-3xl font-black tracking-tight leading-[1.1]">Built for the <span className="italic">Naija way of life.</span></h2>
+              <h5 className="font-headline text-lg font-black tracking-tighter leading-none text-primary uppercase">Our Story</h5>
+              <h2 className="text-2xl md:text-3xl font-black tracking-tight leading-[1.1]">Built for the Naija way of life.</h2>
             </div>
             
             <div className="space-y-8">
