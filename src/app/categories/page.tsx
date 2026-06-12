@@ -98,19 +98,21 @@ export default function AllCategoriesPage() {
 
       {/* CTA Section */}
       <section className="container mx-auto px-4 pt-12 pb-32">
-        <div className="bg-primary/5 border border-primary/10 rounded-[4rem] p-12 md:p-20 text-center space-y-8 relative overflow-hidden group">
+        <div className="bg-primary/5 border border-primary/10 rounded-[4rem] p-12 md:p-20 text-center space-y-12 md:space-y-16 relative overflow-hidden group">
           <div className="absolute top-0 left-0 w-64 h-64 bg-primary/10 blur-[100px] rounded-full -translate-x-1/2 -translate-y-1/2" />
           <div className="absolute bottom-0 right-0 w-64 h-64 bg-accent/10 blur-[100px] rounded-full translate-x-1/2 translate-y-1/2" />
           
-          <div className="relative z-10 space-y-8">
-            <h2 className="font-headline text-2xl md:text-5xl font-black tracking-tighter">
+          <div className="relative z-10 space-y-6 md:space-y-10">
+            <h2 className="font-headline text-lg md:text-5xl font-black tracking-tighter leading-tight">
               Don't see what <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">you're looking for?</span>
             </h2>
-            <Link href="/discover">
-              <Button size="lg" className="rounded-full px-10 h-16 text-lg shadow-xl shadow-primary/20 font-bold gap-3">
-                <Sparkles className="w-5 h-5" /> Explore All Events
-              </Button>
-            </Link>
+            <div className="pt-4 md:pt-10 flex justify-center">
+              <Link href="/discover">
+                <Button size="lg" className="rounded-full px-8 md:px-16 h-12 md:h-20 text-sm md:text-xl shadow-2xl shadow-primary/20 font-bold gap-3 transition-transform hover:scale-105 active:scale-95">
+                  <Sparkles className="w-4 h-4 md:w-6 md:h-6" /> Explore All Events
+                </Button>
+              </Link>
+            </div>
           </div>
         </div>
       </section>
