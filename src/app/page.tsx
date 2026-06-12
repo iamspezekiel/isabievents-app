@@ -61,7 +61,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Hero Section with extra spacing and blended background */}
-      <div className="relative pt-60 pb-12 overflow-hidden">
+      <div className="relative pt-44 pb-12 overflow-hidden">
         {/* Extended Background Gradient */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[1200px] bg-primary/10 blur-[150px] -z-10 rounded-full" />
         
