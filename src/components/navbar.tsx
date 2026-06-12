@@ -18,7 +18,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 
 const NAV_LINKS = [
   { name: 'Discover', href: '/discover' },
-  { name: 'Host', href: '/organizer' },
+  { name: 'Host Event', href: '/organizer' },
   { name: 'Pricing', href: '/pricing' },
   { name: 'Case Studies', href: '/case-studies' },
 ];
