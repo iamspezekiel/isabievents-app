@@ -134,15 +134,17 @@ export default function HomePage() {
       </div>
 
       {/* Trending Events (3x9 grid desktop, 2x8 mobile) */}
-      <section className="pt-12 pb-24">
+      <section className="pt-0 pb-24">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-12">
             <div className="text-left">
               <h2 className="text-xl md:text-4xl font-black tracking-tighter">Trending</h2>
             </div>
-            <Button size="lg" className="rounded-full px-8 shadow-lg shadow-primary/20 font-bold gap-2" asChild>
-              <Link href="/discover">View More <ArrowRight className="w-4 h-4" /></Link>
-            </Button>
+            <Link href="/discover">
+              <Button variant="ghost" className="rounded-full px-4 font-semibold gap-2 h-9 text-xs">
+                View More <ArrowRight className="w-3 h-3" />
+              </Button>
+            </Link>
           </div>
           
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mb-12">
