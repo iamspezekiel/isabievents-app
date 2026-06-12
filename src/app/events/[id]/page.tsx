@@ -1,9 +1,8 @@
-
 "use client";
 
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { Calendar, MapPin, Share2, Heart, ShieldCheck, ChevronRight, Info, Music, Users, Ticket, CheckCircle2 } from 'lucide-react';
+import { Calendar, MapPin, Share2, Heart, ShieldCheck, ChevronRight, Info, Music, Users, Ticket, CheckCircle2, AlertCircle, RefreshCcw } from 'lucide-react';
 import { MOCK_EVENTS } from '@/lib/mock-data';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -19,18 +18,23 @@ export default function EventDetailsPage() {
   const event = MOCK_EVENTS.find(e => e.id === id) || MOCK_EVENTS[0];
   const [faqs, setFaqs] = useState<any[]>([]);
   const [loadingFaqs, setLoadingFaqs] = useState(true);
+  const [faqError, setFaqError] = useState(false);
+
+  async function fetchFaqs() {
+    setLoadingFaqs(true);
+    setFaqError(false);
+    try {
+      const generated = await generateFaqs({ description: event.description });
+      setFaqs(generated);
+    } catch (err: any) {
+      console.error("Failed to generate FAQs", err);
+      setFaqError(true);
+    } finally {
+      setLoadingFaqs(false);
+    }
+  }
 
   useEffect(() => {
-    async function fetchFaqs() {
-      try {
-        const generated = await generateFaqs({ description: event.description });
-        setFaqs(generated);
-      } catch (err) {
-        console.error("Failed to generate FAQs", err);
-      } finally {
-        setLoadingFaqs(false);
-      }
-    }
     fetchFaqs();
   }, [event.description]);
 
@@ -136,6 +140,15 @@ export default function EventDetailsPage() {
                 {loadingFaqs ? (
                   <div className="space-y-4">
                     {[1,2,3].map(i => <div key={i} className="h-16 bg-card animate-pulse rounded-xl" />)}
+                  </div>
+                ) : faqError ? (
+                  <div className="text-center py-12 bg-secondary/20 rounded-2xl border border-dashed border-border/50">
+                    <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-50" />
+                    <h4 className="font-bold mb-2">Service Temporarily Busy</h4>
+                    <p className="text-sm text-muted-foreground mb-6 max-w-xs mx-auto">We're experiencing high demand for AI-generated FAQs. Please try again in a few moments.</p>
+                    <Button variant="outline" size="sm" onClick={fetchFaqs} className="rounded-full gap-2">
+                      <RefreshCcw className="w-4 h-4" /> Retry AI FAQs
+                    </Button>
                   </div>
                 ) : (
                   <Accordion type="single" collapsible className="w-full">

@@ -16,13 +16,13 @@ export default function SuccessStoriesPage() {
         <div className="container mx-auto px-4 text-center space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <Badge className="bg-accent/20 text-accent border-none py-1.5 px-6 mb-4 font-bold tracking-widest uppercase">SUCCESS STORIES</Badge>
           <h1 className="font-headline text-4xl md:text-6xl font-black leading-[1.1] tracking-tighter text-balance">
-            Powering Nigeria&apos;s <br /> 
+            Powering Nigeria's <br /> 
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               Unforgettable Moments
             </span>
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            From intimate club nights to sold-out stadiums. See how Nigeria&apos;s leading organizers use IsabiEvents to scale their experiences.
+            From intimate club nights to sold-out stadiums. See how Nigeria's leading organizers use IsabiEvents to scale their experiences.
           </p>
         </div>
       </header>

@@ -50,7 +50,7 @@ export default function MobileAppPage() {
             </div>
             
             <p className="text-muted-foreground text-xl md:text-2xl font-medium max-w-2xl leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000">
-              Experience Nigeria&apos;s best events with zero friction. Buy, store, and transfer tickets even when you&apos;re offline.
+              Experience Nigeria's best events with zero friction. Buy, store, and transfer tickets even when you're offline.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-6 pt-4 animate-in fade-in slide-in-from-bottom-10 duration-1000">
@@ -85,7 +85,7 @@ export default function MobileAppPage() {
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Nigerian Experience</span>
             </h2>
             <p className="text-muted-foreground text-xl md:text-2xl font-medium max-w-2xl mx-auto leading-relaxed">
-              We&apos;ve solved the real-world problems of physical ticketing, expensive data, and unreliable connectivity.
+              We've solved the real-world problems of physical ticketing, expensive data, and unreliable connectivity.
             </p>
           </div>
           

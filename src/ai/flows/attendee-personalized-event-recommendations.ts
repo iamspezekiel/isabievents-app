@@ -86,7 +86,7 @@ Available Events:
 {{#each availableEvents}}ID: {{{id}}}, Title: {{{title}}}, Category: {{{category}}}, Description: {{{description}}}
 {{/each}}
 
-Provide your recommendations as a JSON array of event IDs only. For example: {"recommendedEventIds":["event-id-1", "event-id-2"]}`,
+Provide your recommendations as a JSON array of event IDs only.`,
 });
 
 const attendeePersonalizedEventRecommendationsFlow = ai.defineFlow(
@@ -97,7 +97,7 @@ const attendeePersonalizedEventRecommendationsFlow = ai.defineFlow(
   },
   async input => {
     let attempts = 0;
-    const maxAttempts = 3;
+    const maxAttempts = 5;
     
     while (attempts < maxAttempts) {
       try {
@@ -109,7 +109,7 @@ const attendeePersonalizedEventRecommendationsFlow = ai.defineFlow(
           throw error;
         }
         
-        const delay = Math.pow(2, attempts) * 1000;
+        const delay = Math.pow(2, attempts) * 1500;
         await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }

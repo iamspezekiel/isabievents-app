@@ -69,7 +69,7 @@ const organizerFaqGeneratorFlow = ai.defineFlow(
   },
   async (input) => {
     let attempts = 0;
-    const maxAttempts = 3;
+    const maxAttempts = 5;
     
     while (attempts < maxAttempts) {
       try {
@@ -77,13 +77,12 @@ const organizerFaqGeneratorFlow = ai.defineFlow(
         return output!;
       } catch (error: any) {
         attempts++;
-        // If we've hit max attempts, or it's not a transient 503 error, throw it
         if (attempts >= maxAttempts) {
           throw error;
         }
         
-        // Wait before retrying (exponential backoff: 2s, 4s...)
-        const delay = Math.pow(2, attempts) * 1000;
+        // Wait before retrying (exponential backoff: 3s, 6s, 12s, 24s...)
+        const delay = Math.pow(2, attempts) * 1500;
         await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }

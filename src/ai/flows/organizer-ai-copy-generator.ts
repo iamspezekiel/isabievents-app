@@ -32,6 +32,7 @@ const OrganizerAICopyGeneratorInputSchema = z.object({
   eventDate: z
     .string()
     .describe('The date and time of the event (e.g., "YYYY-MM-DD HH:MM").'),
+  eventDateDetails: z.string().optional(),
   eventVenue: z.string().describe('The venue where the event will take place.'),
   eventPoliciesInstructions: z
     .string()
@@ -56,7 +57,7 @@ const prompt = ai.definePrompt({
   name: 'organizerAICopyGeneratorPrompt',
   input: {schema: OrganizerAICopyGeneratorInputSchema},
   output: {schema: OrganizerAICopyGeneratorOutputSchema},
-  prompt: `You are an expert event copywriter and policy generator for a leading event marketplace. Your task is to create an engaging event description and clear, concise event policies based on the provided event details.
+  prompt: `You are an expert event copywriter and policy generator for IsabiEvents, a leading Nigerian event marketplace. Your task is to create an engaging event description and clear, concise event policies based on the provided event details.
 
 ---START EVENT DETAILS---
 Event Name: {{{eventName}}}
@@ -73,18 +74,11 @@ Specific Policy Instructions: {{{eventPoliciesInstructions}}}
 {{/if}}
 ---END EVENT DETAILS---
 
-First, generate an engaging event description, suitable for a marketplace listing. It should be compelling, highlight the key features, and appeal to the target audience. Write it in a vibrant and professional tone.
+First, generate an engaging event description, suitable for a marketplace listing. It should be compelling, highlight the key features, and appeal to the target audience. Write it in a vibrant and professional tone with a touch of the Naija spirit where appropriate.
 
-Second, generate clear, concise, and comprehensive event policies. These policies should cover general event rules, refund/cancellation guidelines, age restrictions (if applicable), and any other relevant guidelines. If specific policy instructions were provided, incorporate them appropriately. Keep the language direct and easy to understand.
+Second, generate clear, concise, and comprehensive event policies. These policies should cover general event rules, refund/cancellation guidelines (mentioning IsabiEvents 48-hour post-event settlement protection), age restrictions (if applicable), and any other relevant guidelines. If specific policy instructions were provided, incorporate them appropriately. Keep the language direct and easy to understand.
 
-Ensure your entire output is in JSON format, strictly adhering to the provided schema:
-```json
-{
-  "eventDescription": "...",
-  "eventPolicies": "..."
-}
-```
-`,
+Ensure your entire output is in JSON format, strictly adhering to the provided schema.`,
 });
 
 const organizerAICopyGeneratorFlow = ai.defineFlow(
@@ -95,7 +89,7 @@ const organizerAICopyGeneratorFlow = ai.defineFlow(
   },
   async input => {
     let attempts = 0;
-    const maxAttempts = 3;
+    const maxAttempts = 5;
     
     while (attempts < maxAttempts) {
       try {
@@ -107,7 +101,7 @@ const organizerAICopyGeneratorFlow = ai.defineFlow(
           throw error;
         }
         
-        const delay = Math.pow(2, attempts) * 1000;
+        const delay = Math.pow(2, attempts) * 1500;
         await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
