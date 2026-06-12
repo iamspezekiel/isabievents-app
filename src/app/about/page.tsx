@@ -16,10 +16,10 @@ export default function AboutPage() {
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
         <div className="container mx-auto px-4 text-center space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <Badge className="bg-primary/20 text-primary border-none py-1.5 px-6 font-bold tracking-widest uppercase">ABOUT US</Badge>
-          <h2 className="font-headline text-5xl md:text-8xl font-black leading-none tracking-tighter text-balance">
+          <h3 className="font-headline text-5xl md:text-8xl font-black leading-none tracking-tighter text-balance">
             Connecting Nigeria through <br />
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Shared Experiences</span>
-          </h2>
+          </h3>
           <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto leading-relaxed font-medium">
             IsabiEvents is more than a ticketing platform. We're a bridge between creators and communities, built on the vibrant spirit of Naija.
           </p>
