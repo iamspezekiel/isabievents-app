@@ -109,14 +109,14 @@ export default function CreateEventPage() {
 
   return (
     <div className="min-h-screen bg-background pb-20 pt-20">
-      {/* Header */}
-      <header className="border-b border-border bg-card sticky top-0 z-50">
+      {/* Header with added top spacing */}
+      <header className="border-b border-border bg-card sticky top-0 z-50 pt-4">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" onClick={() => router.back()}>
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <h1 className="font-headline text-lg">Create New Event</h1>
+            <h1 className="font-headline text-xl md:text-2xl tracking-tighter">Create New Event</h1>
           </div>
           <div className="flex items-center gap-4">
             <div className="hidden md:flex gap-1">
@@ -124,7 +124,7 @@ export default function CreateEventPage() {
                 <div key={i} className={`h-1.5 w-8 rounded-full transition-colors ${step >= i ? 'bg-primary' : 'bg-secondary'}`} />
               ))}
             </div>
-            <Button size="sm" variant="ghost">Save Draft</Button>
+            <Button variant="ghost" className="font-bold">Save Draft</Button>
           </div>
         </div>
       </header>
@@ -133,27 +133,28 @@ export default function CreateEventPage() {
         {step === 1 && (
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <section className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl font-headline">Basic Information</h2>
+              <div className="space-y-2 text-left">
+                <h2 className="text-3xl md:text-4xl font-headline tracking-tighter">Basic Information</h2>
                 <p className="text-muted-foreground">Let&apos;s start with the core details of your event.</p>
               </div>
 
               <div className="grid gap-6">
-                <div className="space-y-2">
+                <div className="space-y-2 text-left">
                   <Label htmlFor="name">Event Name</Label>
                   <Input 
                     id="name" 
                     placeholder="e.g. Lagos Jazz Night 2024" 
                     value={formData.name}
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    className="h-11"
                   />
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-2 gap-6 text-left">
                   <div className="space-y-2">
                     <Label htmlFor="category">Category</Label>
                     <Select value={formData.category} onValueChange={(v) => setFormData({...formData, category: v})}>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-11">
                         <SelectValue placeholder="Select category" />
                       </SelectTrigger>
                       <SelectContent>
@@ -170,7 +171,7 @@ export default function CreateEventPage() {
                       <Input 
                         id="venue" 
                         placeholder="e.g. Muson Center, Onikan" 
-                        className="pl-10"
+                        className="pl-10 h-11"
                         value={formData.venue}
                         onChange={(e) => setFormData({...formData, venue: e.target.value})}
                       />
@@ -178,7 +179,7 @@ export default function CreateEventPage() {
                   </div>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-6">
+                <div className="grid md:grid-cols-2 gap-6 text-left">
                   <div className="space-y-2">
                     <Label htmlFor="date">Date</Label>
                     <div className="relative">
@@ -186,7 +187,7 @@ export default function CreateEventPage() {
                       <Input 
                         id="date" 
                         type="date" 
-                        className="pl-10"
+                        className="pl-10 h-11"
                         value={formData.date}
                         onChange={(e) => setFormData({...formData, date: e.target.value})}
                       />
@@ -199,7 +200,7 @@ export default function CreateEventPage() {
                       <Input 
                         id="time" 
                         type="time" 
-                        className="pl-10"
+                        className="pl-10 h-11"
                         value={formData.time}
                         onChange={(e) => setFormData({...formData, time: e.target.value})}
                       />
@@ -210,7 +211,7 @@ export default function CreateEventPage() {
             </section>
 
             <div className="pt-8 flex justify-end">
-              <Button onClick={() => setStep(2)} className="rounded-full px-8 gap-2">
+              <Button onClick={() => setStep(2)} className="rounded-full px-8 gap-2 font-bold h-11">
                 Continue to Content <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
@@ -220,22 +221,22 @@ export default function CreateEventPage() {
         {step === 2 && (
           <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
             <section className="space-y-6">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 text-left">
                 <div className="space-y-1">
-                  <h2 className="text-2xl font-headline">Event Story</h2>
+                  <h2 className="text-3xl md:text-4xl font-headline tracking-tighter">Event Story</h2>
                   <p className="text-muted-foreground">Describe your event to attract attendees.</p>
                 </div>
                 <Button 
                   onClick={handleUseAI} 
                   disabled={loadingAI}
-                  className="bg-primary hover:bg-primary/90 rounded-full gap-2 px-6 shadow-lg shadow-primary/20"
+                  className="bg-primary hover:bg-primary/90 rounded-full gap-2 px-6 shadow-lg shadow-primary/20 h-11 font-bold"
                 >
                   {loadingAI ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                   Generate with AI
                 </Button>
               </div>
 
-              <div className="grid gap-6">
+              <div className="grid gap-6 text-left">
                 <div className="space-y-2">
                   <Label htmlFor="summary">Brief Summary</Label>
                   <Textarea 
@@ -245,7 +246,7 @@ export default function CreateEventPage() {
                     value={formData.summary}
                     onChange={(e) => setFormData({...formData, summary: e.target.value})}
                   />
-                  <p className="text-[10px] text-muted-foreground">This helps the AI generate a better description.</p>
+                  <p className="text-xs text-muted-foreground">This helps the AI generate a better description.</p>
                 </div>
 
                 <div className="space-y-2">
@@ -256,14 +257,15 @@ export default function CreateEventPage() {
                       value={currentFeature}
                       onChange={(e) => setCurrentFeature(e.target.value)}
                       onKeyPress={(e) => e.key === 'Enter' && handleAddFeature()}
+                      className="h-11"
                     />
-                    <Button variant="secondary" onClick={handleAddFeature}>Add</Button>
+                    <Button variant="secondary" onClick={handleAddFeature} className="h-11 font-bold px-6">Add</Button>
                   </div>
                   <div className="flex flex-wrap gap-2 mt-2">
                     {features.map((f, i) => (
-                      <Badge key={i} variant="outline" className="gap-1 pl-3 pr-2 py-1">
+                      <Badge key={i} variant="outline" className="gap-1 pl-3 pr-2 py-1 h-8">
                         {f}
-                        <button onClick={() => setFeatures(features.filter((_, idx) => idx !== i))} className="hover:text-red-500">×</button>
+                        <button onClick={() => setFeatures(features.filter((_, idx) => idx !== i))} className="hover:text-red-500 ml-1">×</button>
                       </Badge>
                     ))}
                   </div>
@@ -294,8 +296,8 @@ export default function CreateEventPage() {
             </section>
 
             <div className="pt-8 flex justify-between">
-              <Button variant="ghost" onClick={() => setStep(1)} className="rounded-full px-8">Back</Button>
-              <Button onClick={() => setStep(3)} className="rounded-full px-8 gap-2">
+              <Button variant="ghost" onClick={() => setStep(1)} className="rounded-full px-8 font-bold h-11">Back</Button>
+              <Button onClick={() => setStep(3)} className="rounded-full px-8 gap-2 font-bold h-11">
                 Pricing & Capacity <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
@@ -305,44 +307,44 @@ export default function CreateEventPage() {
         {step === 3 && (
           <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
             <section className="space-y-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl font-headline">Inventory & Launch</h2>
+              <div className="space-y-2 text-left">
+                <h2 className="text-3xl md:text-4xl font-headline tracking-tighter">Inventory & Launch</h2>
                 <p className="text-muted-foreground">Finalize your event logistics before going live.</p>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-8">
+              <div className="grid md:grid-cols-2 gap-8 text-left">
                 <Card className="bg-card border-border">
                   <CardHeader>
-                    <CardTitle className="text-lg">Ticketing</CardTitle>
+                    <CardTitle className="text-lg font-bold">Ticketing</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="price">Base Ticket Price (₦)</Label>
-                      <Input id="price" type="number" placeholder="5000" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} />
-                      <p className="text-[10px] text-muted-foreground">Set to 0 for Free events.</p>
+                      <Input id="price" type="number" placeholder="5000" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} className="h-11" />
+                      <p className="text-xs text-muted-foreground">Set to 0 for Free events.</p>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="capacity">Total Capacity</Label>
-                      <Input id="capacity" type="number" placeholder="100" value={formData.capacity} onChange={(e) => setFormData({...formData, capacity: e.target.value})} />
+                      <Input id="capacity" type="number" placeholder="100" value={formData.capacity} onChange={(e) => setFormData({...formData, capacity: e.target.value})} className="h-11" />
                     </div>
                   </CardContent>
                 </Card>
 
                 <Card className="bg-card border-border">
                   <CardHeader>
-                    <CardTitle className="text-lg">Media</CardTitle>
+                    <CardTitle className="text-lg font-bold">Media</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <div className="aspect-video bg-secondary/50 rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-secondary transition-colors">
                       <ImageIcon className="w-8 h-8 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground font-medium">Upload Event Cover</span>
-                      <span className="text-[10px] text-muted-foreground">Recommended: 1200x600px</span>
+                      <span className="text-base text-muted-foreground font-medium">Upload Event Cover</span>
+                      <span className="text-xs text-muted-foreground">Recommended: 1200x600px</span>
                     </div>
                   </CardContent>
                 </Card>
               </div>
 
-              <Card className="bg-primary/10 border-primary/20 border">
+              <Card className="bg-primary/10 border-primary/20 border text-left">
                 <CardContent className="p-6 flex items-start gap-4">
                   <AlertCircle className="w-6 h-6 text-primary shrink-0 mt-1" />
                   <div className="space-y-1">
@@ -350,7 +352,7 @@ export default function CreateEventPage() {
                     <ul className="text-sm text-muted-foreground space-y-1">
                       <li>• Your event description is compelling</li>
                       <li>• Venue and Date are verified</li>
-                      <li>• Ticket price includes 2.5% platform fee</li>
+                      <li>• Ticket price includes platform fee</li>
                       <li>• Payout bank account is connected</li>
                     </ul>
                   </div>
@@ -359,8 +361,8 @@ export default function CreateEventPage() {
             </section>
 
             <div className="pt-8 flex justify-between">
-              <Button variant="ghost" onClick={() => setStep(2)} className="rounded-full px-8">Back</Button>
-              <Button onClick={handleSubmit} className="rounded-full px-12 h-14 text-lg gap-2">
+              <Button variant="ghost" onClick={() => setStep(2)} className="rounded-full px-8 font-bold h-11">Back</Button>
+              <Button onClick={handleSubmit} className="rounded-full px-12 h-11 font-bold gap-2 shadow-xl shadow-primary/20">
                 Launch Event <CheckCircle2 className="w-5 h-5" />
               </Button>
             </div>
