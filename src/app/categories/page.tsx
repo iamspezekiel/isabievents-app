@@ -80,10 +80,6 @@ export default function AllCategoriesPage() {
                       <h3 className="font-headline text-3xl font-black tracking-tighter leading-none">{cat.name}</h3>
                       <p className="text-muted-foreground font-medium group-hover:text-foreground transition-colors">Discover trending {cat.name.toLowerCase()} events</p>
                     </div>
-
-                    <div className="absolute bottom-10 right-10 w-12 h-12 rounded-full bg-primary flex items-center justify-center text-white opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 shadow-xl shadow-primary/30">
-                      <ChevronRight className="w-6 h-6" />
-                    </div>
                   </div>
 
                   {/* Glass Overlay for Group Hover */}
