@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { CheckCircle2, Zap, ShieldCheck, BarChart3, Users, Globe, ArrowRight, HelpCircle } from 'lucide-react';
+import { CheckCircle2, Zap, ShieldCheck, BarChart3, Users, Globe, ArrowRight, HelpCircle, Code, LayoutDashboard, Smartphone, CreditCard } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -54,15 +54,15 @@ export default function PricingPage() {
 
                 <div className="grid gap-5">
                   <FeatureItem label="Unlimited Ticket Tiers" />
-                  <FeatureItem label="AI Event Description Generator" />
-                  <FeatureItem label="Real-time Sales Analytics" />
+                  <FeatureItem label="AI Event Content Assistant" />
+                  <FeatureItem label="Real-time Sales Dashboard" />
                   <FeatureItem label="Mobile Gate Staff App" />
-                  <FeatureItem label="Instant Automated Payouts" />
+                  <FeatureItem label="48h Automated Payouts" />
                 </div>
 
                 <div className="pt-6">
                   <Link href="/signup?role=organizer">
-                    <Button className="w-full transition-all rounded-full shadow-xl shadow-primary/20 hover:-translate-y-0.5">
+                    <Button className="w-full transition-all rounded-full shadow-xl shadow-primary/20 hover:-translate-y-0.5 font-bold h-11">
                       Create Your First Event
                     </Button>
                   </Link>
@@ -71,32 +71,48 @@ export default function PricingPage() {
 
               <div className="bg-secondary/30 p-10 md:p-20 flex flex-col justify-center space-y-10 border-l border-border/50 text-left">
                 <div className="space-y-4">
-                  <Badge variant="outline" className="text-accent border-accent">ENTERPRISE</Badge>
-                  <h3 className="font-headline">High Volume?</h3>
+                  <Badge variant="outline" className="text-accent border-accent font-black tracking-widest px-3 py-1">ENTERPRISE</Badge>
+                  <h3 className="font-headline text-3xl">High Volume?</h3>
                   <p className="text-muted-foreground">
                     Planning a stadium-level event or a national tour? Get custom rates and dedicated local support.
                   </p>
                 </div>
                 
-                <div className="space-y-6">
-                  <div className="flex items-start gap-4 p-4 border rounded-2xl bg-background/50 border-border">
-                    <ShieldCheck className="flex-shrink-0 w-6 h-6 mt-1 text-accent" />
-                    <div className="space-y-1">
-                      <h4 className="font-bold">On-site Support</h4>
-                      <p className="text-muted-foreground">Dedicated account managers for large-scale gate management.</p>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4 p-4 border rounded-2xl bg-background/50 border-border">
-                    <Globe className="flex-shrink-0 w-6 h-6 mt-1 text-accent" />
-                    <div className="space-y-1">
-                      <h4 className="font-bold">Whitelabel Checkout</h4>
-                      <p className="text-muted-foreground">Integrate our ticketing engine directly into your own domain.</p>
-                    </div>
-                  </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <EnterpriseSmallCard 
+                    icon={ShieldCheck}
+                    title="On-site Support"
+                    desc="Dedicated staff for gate management."
+                  />
+                  <EnterpriseSmallCard 
+                    icon={Globe}
+                    title="Whitelabel"
+                    desc="Ticketing on your own domain."
+                  />
+                  <EnterpriseSmallCard 
+                    icon={Code}
+                    title="Custom API"
+                    desc="Deep integration with your CRM."
+                  />
+                  <EnterpriseSmallCard 
+                    icon={CreditCard}
+                    title="Split Payouts"
+                    desc="Complex multi-vendor settlements."
+                  />
+                  <EnterpriseSmallCard 
+                    icon={LayoutDashboard}
+                    title="Custom Reports"
+                    desc="Audit-ready financial exports."
+                  />
+                  <EnterpriseSmallCard 
+                    icon={Smartphone}
+                    title="Hardware"
+                    desc="Lease specialized ticket scanners."
+                  />
                 </div>
 
                 <Link href="/help" className="no-underline">
-                  <Button variant="outline" className="w-full transition-all border-2 rounded-full hover:bg-secondary hover:-translate-y-0.5">
+                  <Button variant="outline" className="w-full transition-all border-2 rounded-full hover:bg-secondary hover:-translate-y-0.5 font-bold h-11">
                     Contact Our Sales Team
                   </Button>
                 </Link>
@@ -107,14 +123,14 @@ export default function PricingPage() {
       </section>
 
       {/* FAQ */}
-      <section className="py-8 bg-card/30 border-y border-border">
+      <section className="py-16 bg-card/30 border-y border-border">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="mb-12 text-center space-y-4">
             <h2 className="tracking-tighter">Frequently Asked Questions</h2>
             <p className="text-muted-foreground">Everything you need to know about our fees and payouts.</p>
           </div>
           
-          <div className="grid gap-8">
+          <div className="grid gap-6">
             <PricingFaq 
               q="Is there a fee for free events?" 
               a="No. Free events are completely free on IsabiEvents. We believe in supporting community and religious gatherings across Nigeria, so we don't charge anything for free tickets." 
@@ -136,7 +152,7 @@ export default function PricingPage() {
       </section>
 
       {/* CTA */}
-      <section className="container mx-auto px-4 py-12">
+      <section className="container mx-auto px-4 py-24">
         <div className="bg-primary/10 border border-primary/20 rounded-[3rem] p-12 md:p-20 text-center space-y-10">
           <h2 className="tracking-tighter">Ready to sell out?</h2>
           <p className="max-w-2xl mx-auto text-muted-foreground">
@@ -144,12 +160,12 @@ export default function PricingPage() {
           </p>
           <div className="flex flex-row items-center justify-center gap-4">
             <Link href="/signup?role=organizer" className="flex-1 no-underline sm:flex-none">
-              <Button className="w-full transition-all rounded-full px-12 shadow-xl shadow-primary/20 hover:-translate-y-0.5">
+              <Button className="w-full transition-all rounded-full px-12 shadow-xl shadow-primary/20 hover:-translate-y-0.5 font-bold h-11">
                 Get Started Now
               </Button>
             </Link>
             <Link href="/help" className="flex-1 no-underline sm:flex-none">
-              <Button variant="outline" className="w-full transition-all border-2 rounded-full px-12 hover:bg-secondary hover:-translate-y-0.5">
+              <Button variant="outline" className="w-full transition-all border-2 rounded-full px-12 hover:bg-secondary hover:-translate-y-0.5 font-bold h-11">
                 Book a Demo
               </Button>
             </Link>
@@ -171,10 +187,24 @@ function FeatureItem({ label }: { label: string }) {
   );
 }
 
+function EnterpriseSmallCard({ icon: Icon, title, desc }: any) {
+  return (
+    <div className="flex flex-col gap-2 p-4 border rounded-2xl bg-background/50 border-border hover:border-accent/30 transition-colors group">
+      <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center group-hover:bg-accent group-hover:text-white transition-colors">
+        <Icon className="w-4 h-4 text-accent group-hover:text-white" />
+      </div>
+      <div className="space-y-0.5">
+        <h4 className="font-bold text-sm">{title}</h4>
+        <p className="text-[10px] text-muted-foreground leading-tight">{desc}</p>
+      </div>
+    </div>
+  );
+}
+
 function PricingFaq({ q, a }: any) {
   return (
     <div className="p-8 transition-all border text-left rounded-3xl bg-card border-border hover:border-primary/30 group">
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 mb-2">
         <HelpCircle className="w-5 h-5 text-primary" />
         <h4 className="text-xl font-bold transition-colors group-hover:text-primary">{q}</h4>
       </div>
