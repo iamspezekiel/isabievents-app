@@ -31,7 +31,7 @@ export default function OrganizerLandingPage() {
               <span className="block">Way to Host</span>
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Legendary</span> Events
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground text-sm md:text-base px-8 sm:px-0 max-w-lg mx-auto lg:mx-0">
               From secret beach parties to national tech conferences. IsabiEvents provides the tools you need to sell out fast and manage with ease.
             </p>
             <div className="flex flex-row justify-center lg:justify-start gap-4 w-full px-12 lg:px-0">
