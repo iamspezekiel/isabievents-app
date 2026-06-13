@@ -77,10 +77,10 @@ export default function AnalyticsPage() {
         <div className="max-w-6xl mx-auto space-y-8">
           <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
             <div className="text-left">
-              <h1 className="font-headline mb-2">Detailed Analytics</h1>
+              <h1 className="font-headline">Detailed Analytics</h1>
               <p className="text-muted-foreground">Deep dive into your audience and sales performance.</p>
             </div>
-            <Button variant="outline" className="rounded-full">Export PDF</Button>
+            <Button variant="outline" className="rounded-full h-11 font-bold px-8">Export PDF</Button>
           </header>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -15,9 +14,7 @@ import {
   MousePointerClick, 
   RefreshCcw,
   Menu,
-  ShieldCheck,
-  User,
-  Smartphone
+  Loader2
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,6 +24,7 @@ import { Logo } from '@/components/logo';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useToast } from "@/hooks/use-toast";
 
 const salesData = [
   { day: 'Mon', sales: 45000 },
@@ -40,7 +38,20 @@ const salesData = [
 
 export default function OrganizerDashboard() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const pathname = usePathname();
+  const { toast } = useToast();
+
+  const handleRefresh = async () => {
+    setIsRefreshing(true);
+    // Simulate API fetch delay
+    await new Promise(r => setTimeout(r, 1200));
+    setIsRefreshing(false);
+    toast({
+      title: "Dashboard Refreshed",
+      description: "You're viewing the most up-to-date sales data.",
+    });
+  };
 
   const NavigationLinks = () => (
     <nav className="flex-1 space-y-1">
@@ -91,20 +102,25 @@ export default function OrganizerDashboard() {
         </Sheet>
       </header>
 
-      {/* Main Content - pt-12 refined from pt-16 for dashboard */}
       <main className="flex-1 p-4 md:p-12 overflow-x-hidden">
         <div className="max-w-6xl mx-auto space-y-8">
           <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="text-left">
-              <h1 className="font-headline text-3xl mb-2">Organizer Overview</h1>
+            <div className="text-left space-y-2">
+              <h1 className="font-headline">Organizer Overview</h1>
               <div className="flex flex-wrap items-center gap-2">
                 <Badge className="bg-accent/20 text-accent border-none font-bold">Verified Merchant</Badge>
                 <span className="text-muted-foreground text-xs font-medium bg-secondary/50 px-2 py-0.5 rounded-full">Account Health: 98%</span>
               </div>
             </div>
             <div className="flex items-center gap-3">
-              <Button variant="outline" className="rounded-full gap-2 h-11">
-                <RefreshCcw className="w-4 h-4" /> <span className="hidden sm:inline">Refresh</span>
+              <Button 
+                variant="outline" 
+                className="rounded-full gap-2 h-11 font-bold"
+                onClick={handleRefresh}
+                disabled={isRefreshing}
+              >
+                {isRefreshing ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCcw className="w-4 h-4" />}
+                <span className="hidden sm:inline">Refresh</span>
               </Button>
               <Link href="/dashboard/organizer/create">
                 <Button className="rounded-full gap-2 px-6 h-11 shadow-lg shadow-primary/20 font-bold">
@@ -152,7 +168,7 @@ export default function OrganizerDashboard() {
                 <PayoutItem date="24 Oct 2024" amount="₦450,000" status="COMPLETED" />
                 <PayoutItem date="18 Oct 2024" amount="₦210,000" status="COMPLETED" />
                 <PayoutItem date="12 Oct 2024" amount="₦580,000" status="COMPLETED" />
-                <Button variant="ghost" className="w-full text-primary hover:text-primary/80 font-bold">View Statement</Button>
+                <Button variant="ghost" className="w-full text-primary hover:text-primary/80 font-bold h-11">View Statement</Button>
               </CardContent>
             </Card>
           </div>
@@ -223,7 +239,7 @@ function EventStatusCard({ title, sold, total, revenue }: any) {
       <CardContent className="p-6 space-y-4">
         <div className="flex justify-between items-start">
           <h3 className="font-bold text-lg">{title}</h3>
-          <Button variant="ghost" size="sm" className="font-bold">Edit</Button>
+          <Button variant="ghost" size="sm" className="font-bold h-9">Edit</Button>
         </div>
         <div className="space-y-2">
           <div className="flex justify-between text-[10px] font-black uppercase tracking-wider">
