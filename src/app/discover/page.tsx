@@ -59,7 +59,8 @@ function DiscoverContent() {
       const searchLower = search.toLowerCase().trim();
       const matchesSearch = !searchLower || 
                            event.title.toLowerCase().includes(searchLower) || 
-                           event.description.toLowerCase().includes(searchLower);
+                           event.description.toLowerCase().includes(searchLower) ||
+                           event.organizer.name.toLowerCase().includes(searchLower);
       
       const matchesCategory = selectedCategory === 'all' || event.category === selectedCategory;
       const matchesCity = selectedCity === 'all' || event.city === selectedCity;
@@ -186,7 +187,7 @@ function DiscoverContent() {
           <div className="flex-1 relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
             <Input 
-              placeholder="Search events, artists, or vibes..." 
+              placeholder="Search events, organizers, or vibes..." 
               className="pl-12 h-11 bg-card border-border rounded-2xl text-base focus-visible:ring-primary transition-all shadow-xl shadow-black/5"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -208,7 +209,7 @@ function DiscoverContent() {
                 <span className="hidden sm:inline">Filters</span>
                 {(selectedCategory !== 'all' || selectedCity !== 'all' || priceFilter !== 'all') && (
                   <Badge className="ml-1 w-5 h-5 p-0 flex items-center justify-center bg-primary text-white text-[10px]">
-                    {[selectedCategory, selectedCity, priceFilter].filter(v => v !== 'all').length}
+                    {[selectedCategory, selectedCity, priceFilter].filter(v !== 'all').length}
                   </Badge>
                 )}
               </Button>

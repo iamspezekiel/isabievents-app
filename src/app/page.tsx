@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -105,7 +104,7 @@ export default function HomePage() {
               <div className="flex-1 w-full relative">
                 <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
                 <Input 
-                  placeholder="Search events, artists, venues..." 
+                  placeholder="Search events, organizers, venues..." 
                   className="pl-14 h-11 bg-secondary/30 md:bg-transparent border-none focus-visible:ring-0 text-base md:text-lg rounded-xl md:rounded-full"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
