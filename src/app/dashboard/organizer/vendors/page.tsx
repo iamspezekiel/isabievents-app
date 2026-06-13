@@ -135,7 +135,7 @@ export default function VendorsManagementPage() {
                   <Plus className="w-4 h-4" /> Add Vendor
                 </Button>
               </DialogTrigger>
-              <DialogContent className="bg-card border-border sm:rounded-[2rem] max-w-lg">
+              <DialogContent className="bg-card border-border sm:rounded-[2rem] max-w-lg w-[94vw] sm:w-full">
                 <DialogHeader className="text-left">
                   <DialogTitle className="font-headline text-2xl flex items-center gap-2">
                     <UserPlus className="w-6 h-6 text-primary" /> Invite Team Member
