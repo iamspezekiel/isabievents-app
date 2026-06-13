@@ -90,22 +90,22 @@ export default function TestimonialsPage() {
            <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/10 blur-[120px] rounded-full translate-x-1/2 translate-y-1/2 transition-transform duration-1000 group-hover:scale-110" />
            
            <div className="relative z-10 max-w-4xl mx-auto space-y-8">
-             <h2 className="font-headline text-4xl md:text-7xl font-black tracking-tighter leading-none">
+             <h2 className="font-headline text-3xl md:text-5xl font-black tracking-tighter leading-none">
                Don't just read about it. <br />
                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Live it.</span>
              </h2>
-             <p className="text-xl md:text-2xl text-muted-foreground font-medium leading-relaxed max-w-2xl mx-auto">
+             <p className="text-lg md:text-xl text-muted-foreground font-medium leading-relaxed max-w-2xl mx-auto">
                Find your next favorite memory. Explore trending events in Nigeria today.
              </p>
              
              <div className="flex flex-col sm:flex-row justify-center items-center gap-6 pt-10">
                <Link href="/discover" className="w-full sm:w-auto no-underline">
-                 <Button size="lg" className="w-full sm:w-auto rounded-full h-20 px-14 text-xl shadow-2xl shadow-primary/30 hover:-translate-y-2 transition-all duration-300 font-black">
+                 <Button size="lg" className="w-full sm:w-auto rounded-full h-16 px-14 text-lg shadow-2xl shadow-primary/30 hover:-translate-y-2 transition-all duration-300 font-black">
                    Explore Events
                  </Button>
                </Link>
                <Link href="/signup" className="w-full sm:w-auto no-underline">
-                 <Button variant="outline" size="lg" className="w-full sm:w-auto rounded-full h-20 px-14 text-xl border-2 bg-background/50 backdrop-blur-sm hover:bg-secondary hover:-translate-y-2 transition-all duration-300 font-black">
+                 <Button variant="outline" size="lg" className="w-full sm:w-auto rounded-full h-16 px-14 text-lg border-2 bg-background/50 backdrop-blur-sm hover:bg-secondary hover:-translate-y-2 transition-all duration-300 font-black">
                    Join Community
                  </Button>
                </Link>
@@ -121,8 +121,8 @@ function StatBox({ icon: Icon, label, value }: any) {
   return (
     <Card className="bg-card border-border hover:border-primary/50 transition-all rounded-[1.5rem]">
       <CardContent className="p-6 flex flex-col items-center text-center space-y-3">
-        <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center">
-          <Icon className="w-6 h-6 text-primary" />
+        <div className="w-10 h-10 bg-primary/10 rounded-2xl flex items-center justify-center">
+          <Icon className="w-5 h-5 text-primary" />
         </div>
         <div>
           <div className="text-2xl font-black text-foreground">{value}</div>
@@ -143,22 +143,22 @@ function TestimonialCard({ name, quote, avatar, rating }: any) {
               <Star 
                 key={i} 
                 className={cn(
-                  "w-3.5 h-3.5",
+                  "w-3 h-3",
                   i < rating ? "text-yellow-500 fill-yellow-500" : "text-muted stroke-muted"
                 )} 
               />
             ))}
           </div>
           <div className="relative">
-            <Quote className="absolute -top-3 -left-4 w-10 h-10 text-primary/5 -z-10" />
-            <p className="text-base leading-relaxed font-medium italic text-foreground/90">
+            <Quote className="absolute -top-3 -left-4 w-8 h-8 text-primary/5 -z-10" />
+            <p className="text-sm leading-relaxed font-medium italic text-foreground/90">
               "{quote}"
             </p>
           </div>
         </div>
         
-        <div className="pt-6 border-t border-border flex items-center gap-3">
-          <div className="relative w-10 h-10 rounded-full overflow-hidden shrink-0 border border-border">
+        <div className="pt-4 border-t border-border flex items-center gap-3">
+          <div className="relative w-8 h-8 rounded-full overflow-hidden shrink-0 border border-border">
             <Image 
               src={avatar} 
               alt={name} 
@@ -166,7 +166,7 @@ function TestimonialCard({ name, quote, avatar, rating }: any) {
               className="object-cover" 
             />
           </div>
-          <div className="font-headline text-lg font-black text-foreground">{name}</div>
+          <div className="font-headline text-base font-black text-foreground">{name}</div>
         </div>
       </CardContent>
     </Card>
