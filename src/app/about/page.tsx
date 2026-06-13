@@ -120,7 +120,7 @@ export default function AboutPage() {
       </section>
 
       {/* Values Section */}
-      <section className="relative py-16 md:py-24 bg-card/30 border-y border-border">
+      <section className="relative py-8 md:py-12 bg-card/30 border-y border-border">
         <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 blur-3xl rounded-full -z-10" />
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
