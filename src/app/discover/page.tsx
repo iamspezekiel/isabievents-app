@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useMemo, useEffect, Suspense } from 'react';
@@ -19,10 +18,10 @@ function DiscoverContent() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
   
-  const [search, setSearch] = useState(searchParams.get('q') || '');
-  const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'all');
-  const [selectedCity, setSelectedCity] = useState(searchParams.get('city') || 'all');
-  const [priceFilter, setPriceFilter] = useState(searchParams.get('price') || 'all');
+  const [search, setSearch] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCity, setSelectedCity] = useState('all');
+  const [priceFilter, setPriceFilter] = useState('all');
   
   const [displayLimit, setDisplayLimit] = useState(27);
   const [mounted, setMounted] = useState(false);
@@ -42,6 +41,7 @@ function DiscoverContent() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Sync state with URL params on load and change
   useEffect(() => {
     const q = searchParams.get('q');
     const cat = searchParams.get('category');
@@ -55,21 +55,23 @@ function DiscoverContent() {
   }, [searchParams]);
 
   const filteredEvents = useMemo(() => {
-    const filtered = MOCK_EVENTS.filter(event => {
-      const matchesSearch = event.title.toLowerCase().includes(search.toLowerCase()) || 
-                           event.description.toLowerCase().includes(search.toLowerCase());
+    return MOCK_EVENTS.filter(event => {
+      const searchLower = search.toLowerCase().trim();
+      const matchesSearch = !searchLower || 
+                           event.title.toLowerCase().includes(searchLower) || 
+                           event.description.toLowerCase().includes(searchLower);
+      
       const matchesCategory = selectedCategory === 'all' || event.category === selectedCategory;
       const matchesCity = selectedCity === 'all' || event.city === selectedCity;
       const matchesPrice = priceFilter === 'all' || 
                           (priceFilter === 'free' && event.price.min === 0) ||
                           (priceFilter === 'paid' && event.price.min > 0);
-      return matchesSearch && matchesCategory && matchesCity && matchesPrice;
-    });
 
-    return filtered.slice(0, displayLimit);
+      return matchesSearch && matchesCategory && matchesCity && matchesPrice;
+    }).slice(0, displayLimit);
   }, [search, selectedCategory, selectedCity, priceFilter, displayLimit]);
 
-  const handleBookmark = (e: React.MouseEvent, id: string) => {
+  const handleBookmark = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
     toast({
@@ -175,7 +177,7 @@ function DiscoverContent() {
           Discover <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Experiences</span>
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Discover and secure your spot with zero friction.
+          Discover and secure your spot with zero friction. Find your next favorite memory across Nigeria.
         </p>
       </div>
 
@@ -264,7 +266,7 @@ function DiscoverContent() {
                     size="icon" 
                     variant="secondary" 
                     className="w-7 h-7 md:w-10 md:h-10 rounded-full bg-black/40 backdrop-blur-md border-none text-white hover:bg-black/60 transition-colors"
-                    onClick={(e) => handleBookmark(e, event.id)}
+                    onClick={handleBookmark}
                   >
                     <Heart className="w-3 h-3 md:w-5 md:h-5" />
                   </Button>
