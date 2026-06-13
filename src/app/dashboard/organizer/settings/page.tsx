@@ -100,7 +100,7 @@ export default function OrganizerSettingsPage() {
                     </div>
                   </div>
                   <Link href="/dashboard/organizer/kyc" className="no-underline shrink-0">
-                    <Button className="rounded-full px-8 gap-2 font-bold shadow-lg shadow-primary/20 h-11">
+                    <Button className="rounded-full px-8 gap-2 font-bold shadow-lg shadow-primary/20 h-9 md:h-11">
                       Start KYC <ChevronRight className="w-4 h-4" />
                     </Button>
                   </Link>
