@@ -109,8 +109,8 @@ export default function CreateEventPage() {
 
   return (
     <div className="min-h-screen bg-background pb-20 pt-20">
-      {/* Header with added top spacing */}
-      <header className="border-b border-border bg-card sticky top-0 z-50 pt-4">
+      {/* Header with added top spacing and margin */}
+      <header className="border-b border-border bg-card sticky top-0 z-50 py-4 mt-16">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" onClick={() => router.back()}>
