@@ -26,16 +26,16 @@ export default function AboutPage() {
       </section>
 
       {/* Our Story Section */}
-      <section className="py-8 md:py-12 container mx-auto px-4 relative">
+      <section className="py-16 md:py-24 container mx-auto px-4 relative">
         <div className="absolute top-1/2 right-0 w-96 h-96 bg-accent/5 blur-[120px] rounded-full -z-10" />
         <div className="absolute -bottom-24 left-0 w-72 h-72 bg-primary/5 blur-[100px] rounded-full -z-10" />
         
-        <div className="grid lg:grid-cols-2 gap-16 lg:gap-32 items-center">
-          <div className="relative order-2 lg:order-1 space-y-12">
-            <div className="relative group">
-              <div className="relative aspect-[4/5] rounded-[3.5rem] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] z-10">
+        <div className="grid lg:grid-cols-2 gap-16 lg:gap-32 items-stretch">
+          <div className="relative order-2 lg:order-1 flex flex-col">
+            <div className="relative group flex-1 h-full min-h-[500px]">
+              <div className="relative h-full w-full rounded-[3.5rem] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] z-10">
                 <Image 
-                  src="https://picsum.photos/seed/story_v12/800/1000" 
+                  src="https://picsum.photos/seed/story_v12/800/1200" 
                   alt="The IsabiEvents Story" 
                   fill 
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -70,7 +70,7 @@ export default function AboutPage() {
             </div>
           </div>
 
-          <div className="space-y-12 text-left order-1 lg:order-2">
+          <div className="space-y-12 text-left order-1 lg:order-2 flex flex-col justify-center">
             <div className="space-y-4">
               <h2 className="tracking-tight leading-none">Built for the Naija way of life.</h2>
             </div>
