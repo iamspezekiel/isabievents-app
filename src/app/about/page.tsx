@@ -19,8 +19,8 @@ export default function AboutPage() {
             Connecting Nigeria through <br />
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Shared Experiences</span>
           </h1>
-          <p className="max-w-2xl mx-auto text-muted-foreground">
-            IsabiEvents is more than just a place to buy tickets. We are a digital bridge Connecting people to unforgettable experiences.
+          <p className="max-w-2xl mx-auto text-muted-foreground text-sm">
+            IsabiEvents is more than just a place to buy tickets. We are a digital bridge connecting people to unforgettable experiences across the federation.
           </p>
         </div>
       </section>
@@ -33,7 +33,7 @@ export default function AboutPage() {
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-32 items-center">
           <div className="relative order-2 lg:order-1 space-y-12">
             <div className="relative group">
-              <div className="relative aspect-[4/5] rounded-[3.5rem] overflow-hidden border border-border/50 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] z-10 p-16 md:p-6 bg-card">
+              <div className="relative aspect-[4/5] rounded-[3.5rem] overflow-hidden border border-border/50 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] z-10 p-6 md:p-6 bg-card">
                 <div className="relative w-full h-full rounded-[2.5rem] overflow-hidden">
                   <Image 
                     src="https://picsum.photos/seed/story_v12/800/1000" 
@@ -49,7 +49,7 @@ export default function AboutPage() {
               <div className="absolute -top-8 -left-8 w-full h-full border-2 border-primary/20 rounded-[3.5rem] -z-0 hidden md:block transition-transform duration-500 group-hover:-translate-y-2 group-hover:-translate-x-2" />
               
               <div className="absolute -bottom-10 -right-12 bg-card/80 backdrop-blur-2xl border border-white/20 p-8 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] z-20 hidden md:block max-w-[280px] animate-in zoom-in-90 duration-700 delay-300">
-                <div className="space-y-4">
+                <div className="space-y-4 text-left">
                   <div className="w-14 h-14 bg-accent/20 rounded-2xl flex items-center justify-center">
                     <Target className="w-7 h-7 text-accent" />
                   </div>
@@ -64,7 +64,7 @@ export default function AboutPage() {
                 <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
                   <Star className="w-5 h-5 text-white fill-white" />
                 </div>
-                <div className="text-white">
+                <div className="text-white text-left">
                   <div className="text-xl font-black leading-none">4.9/5</div>
                   <p className="text-[8px] uppercase font-bold opacity-80 tracking-tighter">User Satisfaction</p>
                 </div>
@@ -89,18 +89,18 @@ export default function AboutPage() {
             </div>
             
             <div className="space-y-8">
-              <p className="font-medium text-muted-foreground">
+              <p className="font-medium text-muted-foreground text-sm">
                 Founded with a vision to revolutionize the fragmented event landscape in Nigeria, IsabiEvents was born from a simple realization: the most incredible experiences are often the hardest to find and access securely.
               </p>
               
               <div className="relative pl-12 py-4">
                 <Quote className="absolute top-0 left-0 w-8 h-8 text-primary/20 rotate-180" />
-                <p className="font-headline font-bold tracking-tight leading-snug text-foreground">
+                <p className="font-headline font-bold tracking-tight leading-snug text-foreground text-lg">
                   "We didn't just build a ticket shop. We built a system that understands the local context—from bank transfers to offline entry."
                 </p>
               </div>
 
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground text-sm">
                 Today, we empower thousands of creators across the federation, providing them with the professional tools they need to scale their visions while ensuring every attendee enjoys a seamless, fraud-free journey.
               </p>
             </div>
@@ -114,7 +114,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
             <h2 className="tracking-tighter">What We Stand For</h2>
-            <p className="text-muted-foreground">Our core values guide every line of code we write and every event we power.</p>
+            <p className="text-muted-foreground text-sm">Our core values guide every line of code we write and every event we power.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-10">
@@ -180,17 +180,17 @@ export default function AboutPage() {
           <h2 className="leading-none tracking-tighter text-balance">
             Ready to join the <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">movement?</span>
           </h2>
-          <p className="max-w-2xl px-4 mx-auto font-medium text-muted-foreground">
+          <p className="max-w-2xl px-4 mx-auto font-medium text-muted-foreground text-sm">
             Whether you're looking for your next favorite memory or hosting the event of the year, we're here to help you make it happen.
           </p>
           <div className="flex flex-row items-center justify-center gap-4 px-2 md:gap-8 md:px-0">
             <Link href="/discover" className="flex-1 no-underline sm:flex-none">
-              <Button className="w-full font-bold rounded-full px-12 shadow-2xl shadow-primary/30">
+              <Button className="w-full font-bold rounded-full px-12 shadow-2xl shadow-primary/30 h-11">
                 Explore Events
               </Button>
             </Link>
             <Link href="/signup?role=organizer" className="flex-1 no-underline sm:flex-none">
-              <Button variant="outline" className="w-full font-bold backdrop-blur-sm bg-background/50 border-2 rounded-full px-12">
+              <Button variant="outline" className="w-full font-bold backdrop-blur-sm bg-background/50 border-2 rounded-full px-12 h-11">
                 Host Event
               </Button>
             </Link>
@@ -210,7 +210,7 @@ function ValueCard({ icon: Icon, title, desc }: any) {
         </div>
         <div className="space-y-2">
           <h3 className="font-headline text-2xl font-bold tracking-tight">{title}</h3>
-          <p className="font-medium text-muted-foreground">{desc}</p>
+          <p className="font-medium text-muted-foreground text-sm">{desc}</p>
         </div>
       </CardContent>
     </Card>
