@@ -67,7 +67,6 @@ export default function CheckoutPage() {
     setLoading(true);
     await new Promise(r => setTimeout(r, 1000));
     
-    // Support "Attendee" or the attendee's email for the loginEmail field
     const user = MOCK_USERS.find(u => 
       (u.email === loginEmail || loginEmail.toLowerCase() === 'attendee') && 
       u.password === loginPassword &&
@@ -79,7 +78,7 @@ export default function CheckoutPage() {
       setAttendeeInfo({
         fullname: user.name,
         email: user.email,
-        phone: '+234 812 345 6789' // Mock phone
+        phone: '+234 812 345 6789'
       });
       toast({
         title: "Logged in successfully",
@@ -97,7 +96,6 @@ export default function CheckoutPage() {
 
   const handlePayment = async () => {
     setLoading(true);
-    // Simulate payment processing
     await new Promise(r => setTimeout(r, 2500));
     setLoading(false);
     setStep(3);
@@ -130,8 +128,8 @@ export default function CheckoutPage() {
             {step === 1 && (
               <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
                 <div className="space-y-2">
-                  <h1 className="font-headline text-3xl">Attendee Information</h1>
-                  <p className="text-muted-foreground text-sm">Choose how you want to proceed with your ticket purchase.</p>
+                  <h1 className="font-headline">Attendee Information</h1>
+                  <p className="text-muted-foreground">Choose how you want to proceed with your ticket purchase.</p>
                 </div>
 
                 {!isLoggedIn ? (
@@ -185,7 +183,7 @@ export default function CheckoutPage() {
                             </div>
                           </div>
                           <Button 
-                            className="w-full rounded-xl font-bold" 
+                            className="w-full rounded-xl font-bold h-11" 
                             onClick={handleLogin}
                             disabled={loading}
                           >
@@ -212,7 +210,7 @@ export default function CheckoutPage() {
                             <Input 
                               id="fullname" 
                               placeholder="Enter your full name" 
-                              className="h-12 bg-card pl-10" 
+                              className="h-11 bg-card pl-10" 
                               value={attendeeInfo.fullname}
                               onChange={(e) => setAttendeeInfo({...attendeeInfo, fullname: e.target.value})}
                             />
@@ -226,7 +224,7 @@ export default function CheckoutPage() {
                               id="email" 
                               type="email" 
                               placeholder="Enter your email" 
-                              className="h-12 bg-card pl-10" 
+                              className="h-11 bg-card pl-10" 
                               value={attendeeInfo.email}
                               onChange={(e) => setAttendeeInfo({...attendeeInfo, email: e.target.value})}
                             />
@@ -239,14 +237,14 @@ export default function CheckoutPage() {
                             <Input 
                               id="phone" 
                               placeholder="+234..." 
-                              className="h-12 bg-card pl-10" 
+                              className="h-11 bg-card pl-10" 
                               value={attendeeInfo.phone}
                               onChange={(e) => setAttendeeInfo({...attendeeInfo, phone: e.target.value})}
                             />
                           </div>
                         </div>
                       </div>
-                      <Button onClick={handleContinueToPayment} size="lg" className="w-full rounded-full gap-2 no-underline mt-4">
+                      <Button onClick={handleContinueToPayment} className="w-full rounded-full gap-2 mt-4 h-11">
                         Continue as Guest <ArrowRight className="w-5 h-5" />
                       </Button>
                     </TabsContent>
@@ -273,12 +271,12 @@ export default function CheckoutPage() {
                       </div>
                     </Card>
                     <div className="space-y-3">
-                      <Button onClick={() => setStep(2)} size="lg" className="w-full rounded-full gap-2 no-underline">
+                      <Button onClick={() => setStep(2)} className="w-full rounded-full gap-2 h-11">
                         Continue to Payment <ArrowRight className="w-5 h-5" />
                       </Button>
                       <Button 
                         variant="ghost" 
-                        className="w-full font-bold text-muted-foreground hover:text-foreground rounded-xl"
+                        className="w-full font-bold text-muted-foreground hover:text-foreground rounded-xl h-11"
                         onClick={() => setIsLoggedIn(false)}
                       >
                         Switch account or checkout as guest
@@ -293,7 +291,7 @@ export default function CheckoutPage() {
               <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
                 <div className="flex items-center justify-between">
                   <div className="text-left">
-                    <h1 className="font-headline text-3xl">Select Payment</h1>
+                    <h1 className="font-headline">Select Payment</h1>
                     <p className="text-xs text-muted-foreground mt-1">Paying as: {attendeeInfo.fullname}</p>
                   </div>
                   {paymentMethod === 'solana' && (
@@ -314,7 +312,6 @@ export default function CheckoutPage() {
                     description="Pay with USDC or USDT" 
                     badge="FAST"
                   />
-                  <PaymentOption id="wallet" label="Isabi Wallet" icon={Wallet} description="Balance: ₦25,000.00" />
                 </RadioGroup>
 
                 <div className="bg-primary/5 border border-primary/10 p-5 rounded-2xl flex gap-4 items-start mt-6">
@@ -333,8 +330,7 @@ export default function CheckoutPage() {
                   <Button 
                     onClick={handlePayment} 
                     disabled={loading}
-                    size="lg"
-                    className="w-full rounded-full no-underline shadow-xl shadow-primary/20"
+                    className="w-full rounded-full shadow-xl shadow-primary/20 h-11 font-bold"
                   >
                     {loading ? (
                       <div className="flex items-center gap-3">
@@ -347,7 +343,7 @@ export default function CheckoutPage() {
                         : `Pay ₦${totalNaira.toLocaleString()}`
                     )}
                   </Button>
-                  <Button variant="ghost" onClick={() => setStep(1)} className="font-bold">
+                  <Button variant="ghost" onClick={() => setStep(1)} className="font-bold h-11">
                     Back to Attendee Details
                   </Button>
                   {paymentMethod === 'solana' && (
@@ -364,15 +360,15 @@ export default function CheckoutPage() {
                 <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mb-6 mx-auto border-4 border-primary/20">
                   <CheckCircle2 className="w-12 h-12 text-primary" />
                 </div>
-                <h1 className="font-headline text-4xl">Payment Confirmed!</h1>
-                <p className="text-muted-foreground text-lg max-w-md mx-auto leading-relaxed">
+                <h1 className="font-headline">Payment Confirmed!</h1>
+                <p className="text-muted-foreground max-w-md mx-auto leading-relaxed">
                   Thank you for your purchase. Your secure QR code ticket is now available in your digital wallet.
                 </p>
                 <div className="pt-10 flex flex-col sm:flex-row justify-center gap-4">
-                  <Button onClick={() => router.push('/dashboard/attendee')} variant="outline" size="lg" className="rounded-full px-10 no-underline border-2">
+                  <Button onClick={() => router.push('/dashboard/attendee')} variant="outline" className="rounded-full px-10 border-2 h-11 font-bold">
                     Go to Wallet
                   </Button>
-                  <Button onClick={() => router.push('/')} size="lg" className="rounded-full px-10 no-underline shadow-xl shadow-primary/20">
+                  <Button onClick={() => router.push('/')} className="rounded-full px-10 shadow-xl shadow-primary/20 h-11 font-bold">
                     Back to Home
                   </Button>
                 </div>
@@ -437,8 +433,8 @@ export default function CheckoutPage() {
                   <div className="space-y-4 text-left">
                     <Label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 font-black">Promo Code</Label>
                     <div className="flex gap-2">
-                      <Input placeholder="Enter code" className="h-12 bg-secondary/50 border-none rounded-xl" />
-                      <Button variant="outline" className="rounded-xl px-6 font-bold">Apply</Button>
+                      <Input placeholder="Enter code" className="h-11 bg-secondary/50 border-none rounded-xl" />
+                      <Button variant="outline" className="rounded-xl px-6 font-bold h-11">Apply</Button>
                     </div>
                   </div>
                 )}

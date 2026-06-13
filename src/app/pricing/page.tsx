@@ -16,7 +16,7 @@ export default function PricingPage() {
         <div className="container mx-auto px-4 space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <h1 className="tracking-tighter text-balance">
             Transparent Pricing <br /> 
-            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">
               Built for Scale
             </span>
           </h1>
@@ -37,7 +37,7 @@ export default function PricingPage() {
                     <div className="flex items-center justify-center w-8 h-8 rounded-full bg-primary/10">
                       <Zap className="w-4 h-4 text-primary fill-primary" />
                     </div>
-                    <h2 className="text-2xl font-bold font-headline">Simple Flat Rate</h2>
+                    <h2 className="font-bold">Simple Flat Rate</h2>
                   </div>
                   <p className="text-muted-foreground">
                     Perfect for concerts, festivals, and conferences of all sizes in Nigeria.
@@ -160,7 +160,7 @@ export default function PricingPage() {
           </p>
           <div className="flex flex-row items-center justify-center gap-4">
             <Link href="/signup?role=organizer" className="flex-1 no-underline sm:flex-none">
-              <Button className="w-full transition-all rounded-full px-12 shadow-xl shadow-primary/20 hover:-translate-y-0.5 font-bold h-11">
+              <Button className="w-full transition-all rounded-full shadow-xl shadow-primary/20 hover:-translate-y-0.5 font-bold h-11">
                 Get Started Now
               </Button>
             </Link>

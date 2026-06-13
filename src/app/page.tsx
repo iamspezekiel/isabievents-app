@@ -70,7 +70,7 @@ export default function HomePage() {
               Trusted by 50,000+ Nigerians
             </Badge>
             <h1 className="animate-in fade-in slide-in-from-bottom-8 duration-1000">
-              Experience the Best of <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Nigerian</span> Events
+              Experience the Best of <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Nigerian</span> Events
             </h1>
             <p className="max-w-2xl mx-auto mb-8 animate-in fade-in slide-in-from-bottom-12 duration-1000 text-muted-foreground">
               Discover and secure your spot with zero friction.
@@ -87,7 +87,7 @@ export default function HomePage() {
                 />
               </div>
               <Link href={`/discover?q=${encodeURIComponent(search)}`} className="w-full md:w-auto">
-                <Button className="w-full md:w-auto rounded-full shadow-lg shadow-primary/20 font-bold transition-transform hover:scale-[1.02] active:scale-95">
+                <Button className="w-full md:w-auto rounded-full shadow-lg shadow-primary/20 font-bold transition-transform hover:scale-[1.02] active:scale-95 h-11">
                   Discover Events
                 </Button>
               </Link>
@@ -97,7 +97,7 @@ export default function HomePage() {
           {/* Top Categories Section */}
           <section className="relative z-10 pt-12">
             <div className="flex items-center justify-between mb-8">
-              <h2 className="text-xl md:text-2xl font-black tracking-tighter text-left">Top Categories</h2>
+              <h2 className="font-black tracking-tighter text-left">Top Categories</h2>
               <Link href="/categories">
                 <Button variant="ghost" size="sm" className="rounded-full px-4 font-semibold gap-2">
                   View All <ArrowRight className="w-3 h-3" />
@@ -121,7 +121,7 @@ export default function HomePage() {
                         <div className="w-8 h-8 md:w-12 md:h-12 rounded-full bg-secondary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-300">
                           <IconComp className="w-4 h-4 md:w-6 md:h-6 text-muted-foreground group-hover:text-white transition-colors" />
                         </div>
-                        <span className="font-bold tracking-tight text-[10px] md:sm line-clamp-1">{cat.name}</span>
+                        <span className="font-bold tracking-tight text-[10px] md:text-sm line-clamp-1">{cat.name}</span>
                       </CardContent>
                     </Card>
                   </Link>
@@ -137,7 +137,7 @@ export default function HomePage() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-12">
             <div className="text-left">
-              <h2 className="text-xl md:text-4xl font-black tracking-tighter">Trending</h2>
+              <h2 className="font-black tracking-tighter">Trending</h2>
             </div>
             <Link href="/discover">
               <Button variant="ghost" size="sm" className="rounded-full px-4 font-semibold gap-2">
@@ -159,7 +159,7 @@ export default function HomePage() {
                       data-ai-hint="event poster"
                     />
                     <div className="absolute top-2 left-2 md:top-4 md:left-4">
-                      <Badge className="bg-black/60 backdrop-blur-md text-white border-none py-0.5 px-1.5 md:py-1.5 md:px-3 text-[6px] md:text-[10px] uppercase font-black tracking-widest">
+                      <Badge className="bg-black/60 backdrop-blur-md text-white border-none py-0.5 px-1.5 md:py-1.5 md:px-3 text-[6px] md:text-[10px] font-black tracking-widest uppercase">
                         {event.category}
                       </Badge>
                     </div>
@@ -200,7 +200,7 @@ export default function HomePage() {
 
           <div className="text-center pt-8">
             <Link href="/discover">
-              <Button variant="outline" className="rounded-full px-12 group border-2">
+              <Button variant="outline" className="rounded-full px-12 group border-2 h-11 font-bold">
                 Discover More Events <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
