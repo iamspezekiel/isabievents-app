@@ -85,21 +85,21 @@ export default function OrganizerSettingsPage() {
             <Card className="border-primary/20 bg-primary/5 overflow-hidden">
               <CardContent className="p-0">
                 <div className="p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 text-left">
-                  <div className="flex gap-5 items-start">
-                    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
-                      <ShieldCheck className="w-7 h-7 text-primary" />
+                  <div className="flex gap-5 items-center flex-wrap lg:flex-nowrap">
+                    <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+                      <ShieldCheck className="w-6 h-6 text-primary" />
                     </div>
-                    <div className="space-y-1">
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
                       <div className="flex items-center gap-2">
-                        <h3 className="font-bold text-xl">Verification Status</h3>
+                        <h3 className="font-bold text-lg whitespace-nowrap">Verification Status</h3>
                         <Badge variant="outline" className="text-[10px] font-black uppercase tracking-tighter border-yellow-500/50 text-yellow-600 bg-yellow-500/5">Not Verified</Badge>
                       </div>
-                      <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
+                      <p className="text-sm text-muted-foreground leading-relaxed">
                         Verify your identity to get the verified badge and unlock faster payouts for your events.
                       </p>
                     </div>
                   </div>
-                  <Link href="/dashboard/organizer/kyc" className="no-underline">
+                  <Link href="/dashboard/organizer/kyc" className="no-underline shrink-0">
                     <Button className="rounded-full px-8 gap-2 font-bold shadow-lg shadow-primary/20 h-11">
                       Start KYC <ChevronRight className="w-4 h-4" />
                     </Button>
