@@ -104,7 +104,7 @@ export default function HomePage() {
               <div className="flex-1 w-full relative">
                 <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
                 <Input 
-                  placeholder="Search events, organizers, venues..." 
+                  placeholder="Search events, organizers, or venues..." 
                   className="pl-14 h-11 bg-secondary/30 md:bg-transparent border-none focus-visible:ring-0 text-base md:text-lg rounded-xl md:rounded-full"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -119,7 +119,7 @@ export default function HomePage() {
           </div>
 
           {/* Top Categories Section */}
-          <section className="relative z-10 pt-12">
+          <section className="relative z-10 pt-12 md:pt-32">
             <div className="flex items-center justify-between mb-8">
               <h2 className="font-black tracking-tighter text-left">Top Categories</h2>
               <Link href="/categories">
@@ -172,7 +172,7 @@ export default function HomePage() {
           
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 mb-12">
             {MOCK_EVENTS.slice(0, displayLimit).map((event) => (
-              <Link key={event.id} href={`/events/${event.slug}`}>
+              <Link key={event.id} href={`/events/${event.slug || event.id}`}>
                 <div className="group bg-card border border-border rounded-[1.25rem] md:rounded-[2.5rem] overflow-hidden hover:border-primary/50 transition-all flex flex-col h-full hover:shadow-2xl hover:shadow-primary/5">
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <Image 
@@ -200,7 +200,7 @@ export default function HomePage() {
                         size="icon" 
                         variant="secondary" 
                         className="w-7 h-7 md:w-10 md:h-10 rounded-full bg-black/40 backdrop-blur-md border-none text-white hover:bg-black/60 transition-colors"
-                        onClick={(e) => handleShare(e, event.slug)}
+                        onClick={(e) => handleShare(e, event.slug || event.id)}
                       >
                         <Share2 className="w-3 h-3 md:w-5 md:h-5" />
                       </Button>
