@@ -1,7 +1,7 @@
 "use client";
 
-import React from 'react';
-import { Ticket, Plus, Search, Filter, MoreVertical, ExternalLink } from 'lucide-react';
+import React, { useState } from 'react';
+import { Ticket, Plus, Search, Filter, MoreVertical, ExternalLink, LayoutDashboard, Users, BarChart3, Settings, LogOut, Menu } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,31 +11,70 @@ import Link from 'next/link';
 import { Logo } from '@/components/logo';
 import { SidebarLink } from '../page';
 import { usePathname } from 'next/navigation';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 export default function MyEventsPage() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+
+  const NavigationLinks = () => (
+    <nav className="flex-1 space-y-1">
+      <div className="pb-2">
+        <SidebarLink icon={LayoutDashboard} label="Dashboard" href="/dashboard/organizer" active={pathname === '/dashboard/organizer'} />
+        <SidebarLink icon={Plus} label="Create Event" href="/dashboard/organizer/create" active={pathname === '/dashboard/organizer/create'} />
+        <SidebarLink icon={Ticket} label="My Events" href="/dashboard/organizer/events" active={pathname === '/dashboard/organizer/events'} />
+        <SidebarLink icon={Users} label="Vendors" href="/dashboard/organizer/vendors" active={pathname === '/dashboard/organizer/vendors'} />
+        <SidebarLink icon={BarChart3} label="Analytics" href="/dashboard/organizer/analytics" active={pathname === '/dashboard/organizer/analytics'} />
+        <SidebarLink icon={Settings} label="Settings" href="/dashboard/organizer/settings" active={pathname === '/dashboard/organizer/settings'} />
+      </div>
+    </nav>
+  );
   
   return (
     <div className="min-h-screen bg-background flex flex-col md:flex-row pt-32">
-      <aside className="w-64 bg-sidebar border-r border-sidebar-border p-6 flex flex-col hidden md:flex sticky top-0 h-screen">
-        <Link href="/" className="mb-10 block"><Logo size="sm" /></Link>
-        <nav className="flex-1 space-y-1">
-          <SidebarLink icon={Ticket} label="My Events" href="/dashboard/organizer/events" active={pathname === '/dashboard/organizer/events'} />
-          <Button variant="ghost" size="sm" className="w-full justify-start text-xs font-bold text-muted-foreground hover:text-primary mt-4 px-4" asChild>
-            <Link href="/dashboard/organizer">← Back to Overview</Link>
-          </Button>
-        </nav>
+      {/* Desktop Side Navigation */}
+      <aside className="w-64 bg-sidebar border-r border-sidebar-border p-6 flex flex-col hidden md:flex sticky top-0 h-screen overflow-y-auto">
+        <Link href="/" className="mb-10 block">
+          <Logo size="sm" />
+        </Link>
+        <NavigationLinks />
+        <div className="pt-6 border-t border-sidebar-border mt-auto">
+          <SidebarLink icon={LogOut} label="Log Out" href="/login" />
+        </div>
       </aside>
+
+      {/* Mobile Header */}
+      <header className="md:hidden flex items-center justify-between p-4 bg-card border-b border-border sticky top-0 z-40">
+        <Logo size="sm" />
+        <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <Menu className="w-6 h-6" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-72 bg-card border-border p-6 flex flex-col overflow-y-auto">
+            <SheetHeader className="text-left mb-10">
+              <SheetTitle>
+                <Logo size="sm" />
+              </SheetTitle>
+            </SheetHeader>
+            <NavigationLinks />
+            <div className="pt-6 border-t border-border mt-auto">
+              <SidebarLink icon={LogOut} label="Log Out" href="/login" />
+            </div>
+          </SheetContent>
+        </Sheet>
+      </header>
 
       <main className="flex-1 p-4 md:p-12">
         <div className="max-w-6xl mx-auto space-y-8">
           <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
             <div className="text-left">
-              <h1 className="font-headline text-3xl mb-2">My Events</h1>
+              <h1 className="font-headline mb-2">My Events</h1>
               <p className="text-muted-foreground">Manage your upcoming and past experiences.</p>
             </div>
             <Link href="/dashboard/organizer/create">
-              <Button className="rounded-full gap-2 px-6 h-12 shadow-lg shadow-primary/20 font-bold">
+              <Button className="rounded-full gap-2 px-6 shadow-lg shadow-primary/20 font-bold">
                 <Plus className="w-4 h-4" /> Create New
               </Button>
             </Link>
@@ -44,9 +83,9 @@ export default function MyEventsPage() {
           <div className="flex flex-col sm:flex-row gap-4">
             <div className="relative flex-1">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
-              <Input placeholder="Search your events..." className="pl-10 h-12 bg-card" />
+              <Input placeholder="Search your events..." className="pl-10 h-11 bg-card" />
             </div>
-            <Button variant="outline" className="h-12 rounded-xl gap-2">
+            <Button variant="outline" className="rounded-xl gap-2 h-11">
               <Filter className="w-4 h-4" /> Filters
             </Button>
           </div>
@@ -63,7 +102,7 @@ export default function MyEventsPage() {
                       <div className="space-y-1">
                         <Badge className="bg-primary/10 text-primary border-none uppercase text-[10px] font-black">{event.category}</Badge>
                         <h3 className="font-headline text-xl font-bold">{event.title}</h3>
-                        <p className="text-sm text-muted-foreground flex items-center gap-1">{event.venue} · {new Date(event.date).toLocaleDateString()}</p>
+                        <p className="text-muted-foreground flex items-center gap-1">{event.venue} · {new Date(event.date).toLocaleDateString()}</p>
                       </div>
                       <Button variant="ghost" size="icon"><MoreVertical className="w-5 h-5" /></Button>
                     </div>
@@ -83,9 +122,9 @@ export default function MyEventsPage() {
                         </div>
                       </div>
                       <div className="ml-auto flex gap-2">
-                        <Button variant="outline" size="sm" className="rounded-full">Edit</Button>
+                        <Button variant="outline" size="sm" className="rounded-full h-9">Edit</Button>
                         <Link href={`/events/${event.id}`}>
-                           <Button size="sm" variant="ghost" className="rounded-full gap-1">View <ExternalLink className="w-3.5 h-3.5" /></Button>
+                           <Button size="sm" variant="ghost" className="rounded-full gap-1 h-9">View <ExternalLink className="w-3.5 h-3.5" /></Button>
                         </Link>
                       </div>
                     </div>

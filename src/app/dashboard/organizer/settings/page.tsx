@@ -1,7 +1,7 @@
 "use client";
 
-import React from 'react';
-import { Settings, User, Bell, Lock, CreditCard, ShieldCheck } from 'lucide-react';
+import React, { useState } from 'react';
+import { Settings, User, ShieldCheck, LogOut, Menu, LayoutDashboard, Plus, Ticket, Users, BarChart3 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,24 +10,66 @@ import { Switch } from "@/components/ui/switch";
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
 import { SidebarLink } from '../page';
+import { usePathname } from 'next/navigation';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 export default function OrganizerSettingsPage() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  const NavigationLinks = () => (
+    <nav className="flex-1 space-y-1">
+      <div className="pb-2">
+        <SidebarLink icon={LayoutDashboard} label="Dashboard" href="/dashboard/organizer" active={pathname === '/dashboard/organizer'} />
+        <SidebarLink icon={Plus} label="Create Event" href="/dashboard/organizer/create" active={pathname === '/dashboard/organizer/create'} />
+        <SidebarLink icon={Ticket} label="My Events" href="/dashboard/organizer/events" active={pathname === '/dashboard/organizer/events'} />
+        <SidebarLink icon={Users} label="Vendors" href="/dashboard/organizer/vendors" active={pathname === '/dashboard/organizer/vendors'} />
+        <SidebarLink icon={BarChart3} label="Analytics" href="/dashboard/organizer/analytics" active={pathname === '/dashboard/organizer/analytics'} />
+        <SidebarLink icon={Settings} label="Settings" href="/dashboard/organizer/settings" active={pathname === '/dashboard/organizer/settings'} />
+      </div>
+    </nav>
+  );
+
   return (
     <div className="min-h-screen bg-background flex flex-col md:flex-row pt-32">
-      <aside className="w-64 bg-sidebar border-r border-sidebar-border p-6 flex flex-col hidden md:flex sticky top-0 h-screen">
-        <Link href="/" className="mb-10 block"><Logo size="sm" /></Link>
-        <nav className="flex-1 space-y-1">
-          <SidebarLink icon={Settings} label="Settings" href="/dashboard/organizer/settings" active />
-          <Button variant="ghost" size="sm" className="w-full justify-start text-xs font-bold text-muted-foreground hover:text-primary mt-4 px-4" asChild>
-            <Link href="/dashboard/organizer">← Back to Overview</Link>
-          </Button>
-        </nav>
+      {/* Desktop Side Navigation */}
+      <aside className="w-64 bg-sidebar border-r border-sidebar-border p-6 flex flex-col hidden md:flex sticky top-0 h-screen overflow-y-auto">
+        <Link href="/" className="mb-10 block">
+          <Logo size="sm" />
+        </Link>
+        <NavigationLinks />
+        <div className="pt-6 border-t border-sidebar-border mt-auto">
+          <SidebarLink icon={LogOut} label="Log Out" href="/login" />
+        </div>
       </aside>
+
+      {/* Mobile Header */}
+      <header className="md:hidden flex items-center justify-between p-4 bg-card border-b border-border sticky top-0 z-40">
+        <Logo size="sm" />
+        <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <Menu className="w-6 h-6" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-72 bg-card border-border p-6 flex flex-col overflow-y-auto">
+            <SheetHeader className="text-left mb-10">
+              <SheetTitle>
+                <Logo size="sm" />
+              </SheetTitle>
+            </SheetHeader>
+            <NavigationLinks />
+            <div className="pt-6 border-t border-border mt-auto">
+              <SidebarLink icon={LogOut} label="Log Out" href="/login" />
+            </div>
+          </SheetContent>
+        </Sheet>
+      </header>
 
       <main className="flex-1 p-4 md:p-12">
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="text-left">
-            <h1 className="font-headline text-3xl mb-2">Account Settings</h1>
+            <h1 className="font-headline mb-2">Account Settings</h1>
             <p className="text-muted-foreground">Manage your brand profile and financial preferences.</p>
           </div>
 
@@ -41,11 +83,11 @@ export default function OrganizerSettingsPage() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="brand-name">Brand Name</Label>
-                    <Input id="brand-name" defaultValue="Smooth Events" />
+                    <Input id="brand-name" defaultValue="Smooth Events" className="h-11" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Support Email</Label>
-                    <Input id="email" defaultValue="hello@smoothevents.ng" />
+                    <Input id="email" defaultValue="hello@smoothevents.ng" className="h-11" />
                   </div>
                 </div>
                 <Button className="rounded-full px-8">Save Changes</Button>

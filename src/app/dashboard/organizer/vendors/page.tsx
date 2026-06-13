@@ -1,35 +1,77 @@
 "use client";
 
-import React from 'react';
-import { Users, Plus, Mail, MessageSquare, ShieldCheck, MoreVertical } from 'lucide-react';
+import React, { useState } from 'react';
+import { Users, Plus, Mail, MessageSquare, ShieldCheck, LayoutDashboard, Ticket, BarChart3, Settings, LogOut, Menu } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
 import { SidebarLink } from '../page';
+import { usePathname } from 'next/navigation';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 export default function VendorsManagementPage() {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  const NavigationLinks = () => (
+    <nav className="flex-1 space-y-1">
+      <div className="pb-2">
+        <SidebarLink icon={LayoutDashboard} label="Dashboard" href="/dashboard/organizer" active={pathname === '/dashboard/organizer'} />
+        <SidebarLink icon={Plus} label="Create Event" href="/dashboard/organizer/create" active={pathname === '/dashboard/organizer/create'} />
+        <SidebarLink icon={Ticket} label="My Events" href="/dashboard/organizer/events" active={pathname === '/dashboard/organizer/events'} />
+        <SidebarLink icon={Users} label="Vendors" href="/dashboard/organizer/vendors" active={pathname === '/dashboard/organizer/vendors'} />
+        <SidebarLink icon={BarChart3} label="Analytics" href="/dashboard/organizer/analytics" active={pathname === '/dashboard/organizer/analytics'} />
+        <SidebarLink icon={Settings} label="Settings" href="/dashboard/organizer/settings" active={pathname === '/dashboard/organizer/settings'} />
+      </div>
+    </nav>
+  );
+
   return (
     <div className="min-h-screen bg-background flex flex-col md:flex-row pt-32">
-      <aside className="w-64 bg-sidebar border-r border-sidebar-border p-6 flex flex-col hidden md:flex sticky top-0 h-screen">
-        <Link href="/" className="mb-10 block"><Logo size="sm" /></Link>
-        <nav className="flex-1 space-y-1">
-          <SidebarLink icon={Users} label="Vendors" href="/dashboard/organizer/vendors" active />
-          <Button variant="ghost" size="sm" className="w-full justify-start text-xs font-bold text-muted-foreground hover:text-primary mt-4 px-4" asChild>
-            <Link href="/dashboard/organizer">← Back to Overview</Link>
-          </Button>
-        </nav>
+      {/* Desktop Side Navigation */}
+      <aside className="w-64 bg-sidebar border-r border-sidebar-border p-6 flex flex-col hidden md:flex sticky top-0 h-screen overflow-y-auto">
+        <Link href="/" className="mb-10 block">
+          <Logo size="sm" />
+        </Link>
+        <NavigationLinks />
+        <div className="pt-6 border-t border-sidebar-border mt-auto">
+          <SidebarLink icon={LogOut} label="Log Out" href="/login" />
+        </div>
       </aside>
+
+      {/* Mobile Header */}
+      <header className="md:hidden flex items-center justify-between p-4 bg-card border-b border-border sticky top-0 z-40">
+        <Logo size="sm" />
+        <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <Menu className="w-6 h-6" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-72 bg-card border-border p-6 flex flex-col overflow-y-auto">
+            <SheetHeader className="text-left mb-10">
+              <SheetTitle>
+                <Logo size="sm" />
+              </SheetTitle>
+            </SheetHeader>
+            <NavigationLinks />
+            <div className="pt-6 border-t border-border mt-auto">
+              <SidebarLink icon={LogOut} label="Log Out" href="/login" />
+            </div>
+          </SheetContent>
+        </Sheet>
+      </header>
 
       <main className="flex-1 p-4 md:p-12">
         <div className="max-w-6xl mx-auto space-y-8">
           <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
             <div className="text-left">
-              <h1 className="font-headline text-3xl mb-2">Vendors & Staff</h1>
+              <h1 className="font-headline mb-2">Vendors & Staff</h1>
               <p className="text-muted-foreground">Manage service providers and gate staff for your events.</p>
             </div>
-            <Button className="rounded-full gap-2 px-6 h-12 shadow-lg shadow-primary/20 font-bold">
+            <Button className="rounded-full gap-2 px-6 shadow-lg shadow-primary/20 font-bold">
               <Plus className="w-4 h-4" /> Add Vendor
             </Button>
           </header>
@@ -72,7 +114,7 @@ function VendorCard({ name, role, status, email }: any) {
         </div>
         <div>
           <h4 className="font-bold text-lg">{name}</h4>
-          <p className="text-xs text-muted-foreground uppercase font-black tracking-widest">{role}</p>
+          <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mt-1">{role}</p>
         </div>
         <div className="space-y-2">
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -80,8 +122,8 @@ function VendorCard({ name, role, status, email }: any) {
           </div>
         </div>
         <div className="flex gap-2 pt-2">
-          <Button variant="secondary" size="sm" className="flex-1 rounded-lg">Manage</Button>
-          <Button variant="outline" size="sm" className="rounded-lg"><MessageSquare className="w-4 h-4" /></Button>
+          <Button variant="secondary" size="sm" className="flex-1 rounded-lg h-9">Manage</Button>
+          <Button variant="outline" size="sm" className="rounded-lg h-9"><MessageSquare className="w-4 h-4" /></Button>
         </div>
       </CardContent>
     </Card>
