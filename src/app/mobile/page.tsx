@@ -43,9 +43,9 @@ export default function MobileAppPage() {
               <Badge className="w-fit bg-primary text-white border-none py-1 px-4 font-black tracking-widest uppercase mb-1 animate-in fade-in slide-in-from-bottom-4 duration-700">
                 NIGERIAN EXPERIENCE
               </Badge>
-              <h1 className="text-3xl md:text-5xl leading-none animate-in fade-in slide-in-from-bottom-6 duration-1000 font-black tracking-tighter text-white">
+              <h1 className="animate-in fade-in slide-in-from-bottom-6 duration-1000">
                 Your Tickets. <br />
-                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">
                   Everywhere
                 </span> You Go.
               </h1>
@@ -56,18 +56,18 @@ export default function MobileAppPage() {
             </p>
 
             <div className="flex flex-row items-center gap-3 pt-2 animate-in fade-in slide-in-from-bottom-10 duration-1000">
-              <Button size="lg" className="h-12 md:h-14 px-4 md:px-6 rounded-full text-xs md:text-sm gap-2 shadow-2xl shadow-primary/40 hover:scale-105 transition-all flex-1 sm:flex-none">
-                <Apple className="w-4 h-4 md:w-5 md:h-5 fill-current" />
+              <Button className="h-11 px-4 md:px-6 rounded-full gap-2 shadow-2xl shadow-primary/40 hover:scale-105 transition-all flex-1 sm:flex-none">
+                <Apple className="w-4 h-4 fill-current" />
                 <div className="flex flex-col items-start leading-none text-left">
-                  <span className="text-[6px] md:text-[8px] font-black uppercase tracking-tighter opacity-70">Download on the</span>
-                  <span className="text-[10px] md:text-sm font-bold">App Store</span>
+                  <span className="text-[6px] font-black uppercase tracking-tighter opacity-70">Download on the</span>
+                  <span className="text-[10px] font-bold">App Store</span>
                 </div>
               </Button>
-              <Button size="lg" variant="outline" className="h-12 md:h-14 px-4 md:px-6 rounded-full text-xs md:text-sm gap-2 border-2 border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-white/10 transition-all hover:scale-105 flex-1 sm:flex-none">
-                <Play className="w-4 h-4 md:w-5 md:h-5 fill-current" />
+              <Button variant="outline" className="h-11 px-4 md:px-6 rounded-full gap-2 border-2 border-white/20 bg-white/5 backdrop-blur-md text-white hover:bg-white/10 transition-all hover:scale-105 flex-1 sm:flex-none">
+                <Play className="w-4 h-4 fill-current" />
                 <div className="flex flex-col items-start leading-none text-left">
-                  <span className="text-[6px] md:text-[8px] font-black uppercase tracking-tighter opacity-70">Get it on</span>
-                  <span className="text-[10px] md:text-sm font-bold">Google Play</span>
+                  <span className="text-[6px] font-black uppercase tracking-tighter opacity-70">Get it on</span>
+                  <span className="text-[10px] font-bold">Google Play</span>
                 </div>
               </Button>
             </div>
@@ -82,7 +82,7 @@ export default function MobileAppPage() {
         
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-12 space-y-2">
-            <h2 className="text-xl md:text-2xl text-balance font-black tracking-tight">
+            <h2 className="text-balance">
               Built for the <br />
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Nigerian Experience</span>
             </h2>
@@ -137,7 +137,7 @@ export default function MobileAppPage() {
             </div>
 
             <div className="space-y-8 text-left">
-               <h2 className="leading-tight text-xl md:text-2xl font-black">Fast. Secure. <br /> Always with you.</h2>
+               <h2 className="leading-tight">Fast. Secure. <br /> Always with you.</h2>
                <div className="space-y-6">
                   <FeatureListItem 
                     title="QR-Ready Entry" 
@@ -153,7 +153,7 @@ export default function MobileAppPage() {
                   />
                </div>
                <div className="pt-4">
-                  <Button size="lg" className="rounded-full h-12 px-8 text-sm gap-3 group shadow-xl shadow-primary/20">
+                  <Button className="rounded-full h-11 px-8 gap-3 group shadow-xl shadow-primary/20 font-bold">
                     Explore App Features <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
                   </Button>
                </div>
@@ -169,26 +169,26 @@ export default function MobileAppPage() {
             <div className="absolute bottom-0 right-0 w-64 h-64 bg-accent/10 blur-[80px] rounded-full translate-x-1/2 translate-y-1/2" />
             
             <div className="relative z-10 space-y-6">
-              <h2 className="text-xl md:text-3xl font-black leading-tight tracking-tight">
-                Ready to <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">ditch paper?</span>
+              <h2 className="leading-tight tracking-tight">
+                Ready to <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">ditch paper?</span>
               </h2>
               <p className="text-muted-foreground max-w-xl mx-auto">
                 Join over 150,000+ Nigerians who have upgraded their social lives. No more queues, no more printed tickets.
               </p>
               
               <div className="flex flex-row items-center justify-center gap-3 pt-4">
-                <Button size="lg" className="h-12 md:h-16 px-5 md:px-8 rounded-full text-xs md:text-sm shadow-2xl shadow-primary/40 hover:-translate-y-1 transition-all gap-2 md:gap-3 flex-1 sm:flex-none">
-                  <Apple className="w-5 h-5 md:w-6 md:h-6 fill-current" />
+                <Button className="h-11 px-5 md:px-8 rounded-full shadow-2xl shadow-primary/40 hover:-translate-y-1 transition-all gap-2 md:gap-3 flex-1 sm:flex-none font-bold">
+                  <Apple className="w-5 h-5 fill-current" />
                   <div className="flex flex-col items-start leading-none text-left">
                     <span className="text-[8px] font-black uppercase tracking-tighter opacity-70">App Store</span>
-                    <span className="text-[10px] md:text-base font-bold">Download Now</span>
+                    <span className="text-[10px] font-bold">Download Now</span>
                   </div>
                 </Button>
-                <Button variant="outline" size="lg" className="h-12 md:h-16 px-5 md:px-8 rounded-full text-xs md:text-sm border-2 border-border bg-card hover:bg-secondary hover:-translate-y-1 transition-all shadow-2xl gap-2 md:gap-3 flex-1 sm:flex-none">
-                  <Play className="w-5 h-5 md:w-6 md:h-6 fill-current" />
+                <Button variant="outline" className="h-11 px-5 md:px-8 rounded-full border-2 border-border bg-card hover:bg-secondary hover:-translate-y-1 transition-all shadow-2xl gap-2 md:gap-3 flex-1 sm:flex-none font-bold">
+                  <Play className="w-5 h-5 fill-current" />
                   <div className="flex flex-col items-start leading-none text-left">
                     <span className="text-[8px] font-black uppercase tracking-tighter opacity-70">Google Play</span>
-                    <span className="text-[10px] md:text-base font-bold">Get it Free</span>
+                    <span className="text-[10px] font-bold">Get it Free</span>
                   </div>
                 </Button>
               </div>
@@ -213,7 +213,7 @@ function AppFeature({ icon: Icon, title, desc, color }: any) {
         <Icon className="w-7 h-7" />
       </div>
       <div className="space-y-3 text-left">
-        <h3 className="text-lg md:text-xl font-black tracking-tight leading-tight">{title}</h3>
+        <h3 className="font-bold tracking-tight leading-tight">{title}</h3>
         <p className="text-muted-foreground">{desc}</p>
       </div>
     </div>
@@ -227,7 +227,7 @@ function FeatureListItem({ title, desc }: any) {
           <ChevronRight className="w-5 h-5 text-primary group-hover:text-white transition-transform group-hover:translate-x-1" />
        </div>
        <div className="space-y-1 text-left">
-          <h4 className="text-base md:text-lg font-black tracking-tight">{title}</h4>
+          <h4 className="font-bold tracking-tight">{title}</h4>
           <p className="text-muted-foreground">{desc}</p>
        </div>
     </div>
