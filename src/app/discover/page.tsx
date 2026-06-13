@@ -209,7 +209,7 @@ function DiscoverContent() {
                 <span className="hidden sm:inline">Filters</span>
                 {(selectedCategory !== 'all' || selectedCity !== 'all' || priceFilter !== 'all') && (
                   <Badge className="ml-1 w-5 h-5 p-0 flex items-center justify-center bg-primary text-white text-[10px]">
-                    {[selectedCategory, selectedCity, priceFilter].filter(v !== 'all').length}
+                    {[selectedCategory, selectedCity, priceFilter].filter(v => v !== 'all').length}
                   </Badge>
                 )}
               </Button>
@@ -247,7 +247,7 @@ function DiscoverContent() {
 
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8">
         {filteredEvents.map((event) => (
-          <Link key={event.id} href={`/events/${event.slug}`}>
+          <Link key={event.id} href={`/events/${event.slug || event.id}`}>
             <div className="group bg-card border border-border rounded-[1.25rem] md:rounded-[2.5rem] overflow-hidden hover:border-primary/50 transition-all flex flex-col h-full hover:shadow-2xl hover:shadow-primary/5">
               <div className="relative aspect-[16/10] overflow-hidden">
                 <Image 
@@ -275,7 +275,7 @@ function DiscoverContent() {
                     size="icon" 
                     variant="secondary" 
                     className="w-7 h-7 md:w-10 md:h-10 rounded-full bg-black/40 backdrop-blur-md border-none text-white hover:bg-black/60 transition-colors"
-                    onClick={(e) => handleShare(e, event.slug)}
+                    onClick={(e) => handleShare(e, event.slug || event.id)}
                   >
                     <Share2 className="w-3 h-3 md:w-5 md:h-5" />
                   </Button>
