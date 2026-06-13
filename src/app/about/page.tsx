@@ -70,17 +70,6 @@ export default function AboutPage() {
                 </div>
               </div>
             </div>
-
-            <div className="grid grid-cols-2 gap-6 pt-8">
-              <div className="space-y-2 p-8 bg-secondary/40 rounded-[2.5rem] border border-border/50 text-left">
-                <div className="text-4xl font-black text-primary">50k+</div>
-                <div className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Active Users</div>
-              </div>
-              <div className="space-y-2 p-8 bg-primary/5 rounded-[2.5rem] border border-primary/10 text-left">
-                <div className="text-4xl font-black text-accent">36</div>
-                <div className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">States Reached</div>
-              </div>
-            </div>
           </div>
 
           <div className="space-y-12 text-left order-1 lg:order-2">
@@ -103,6 +92,17 @@ export default function AboutPage() {
               <p className="text-muted-foreground text-sm">
                 Today, we empower thousands of creators across the federation, providing them with the professional tools they need to scale their visions while ensuring every attendee enjoys a seamless, fraud-free journey.
               </p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-6 pt-4">
+              <div className="space-y-2 p-8 bg-secondary/40 rounded-[2.5rem] border border-border/50 text-left transition-transform hover:scale-[1.02]">
+                <div className="text-4xl font-black text-primary">50k+</div>
+                <div className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Active Users</div>
+              </div>
+              <div className="space-y-2 p-8 bg-primary/5 rounded-[2.5rem] border border-primary/10 text-left transition-transform hover:scale-[1.02]">
+                <div className="text-4xl font-black text-accent">36</div>
+                <div className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">States Reached</div>
+              </div>
             </div>
           </div>
         </div>
