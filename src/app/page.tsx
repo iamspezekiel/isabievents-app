@@ -146,51 +146,40 @@ export default function HomePage() {
             </Link>
           </div>
           
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mb-12">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 mb-12">
             {MOCK_EVENTS.slice(0, displayLimit).map((event) => (
               <Link key={event.id} href={`/events/${event.id}`}>
-                <div className="group relative rounded-[1.25rem] md:rounded-[2.5rem] overflow-hidden bg-card border border-border hover:border-primary/50 transition-all hover:shadow-2xl hover:shadow-primary/5">
+                <div className="group bg-card border border-border rounded-[1.25rem] md:rounded-[2.5rem] overflow-hidden hover:border-primary/50 transition-all flex flex-col h-full hover:shadow-2xl hover:shadow-primary/5">
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <Image 
                       src={event.image} 
                       alt={event.title} 
                       fill 
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
-                      data-ai-hint="event poster"
+                      className="object-cover transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute top-2 left-2 md:top-4 md:left-4">
-                      <Badge className="bg-black/60 backdrop-blur-md text-white border-none py-0.5 px-1.5 md:py-1.5 md:px-3 text-[6px] md:text-[10px] font-black tracking-widest uppercase">
+                      <Badge className="bg-black/60 backdrop-blur-md border-none py-0.5 px-1.5 md:py-1.5 md:px-3 uppercase text-[6px] md:text-[10px] font-black tracking-widest text-white">
                         {event.category}
                       </Badge>
                     </div>
                   </div>
-                  <div className="p-3 md:p-8 text-left">
-                    <div className="flex items-center gap-1 md:gap-2 text-primary text-[8px] md:text-sm font-black uppercase tracking-widest mb-1 md:mb-3">
-                      <Calendar className="w-2.5 h-2.5 md:w-4 h-4" />
+                  <div className="p-3 md:p-8 flex flex-col flex-1 text-left">
+                    <div className="text-primary text-[8px] md:text-sm font-black uppercase tracking-[0.1em] md:tracking-[0.2em] mb-1 md:mb-3 flex items-center gap-1">
+                      <Calendar className="w-2 h-2 md:w-4 md:h-4" />
                       {mounted ? new Date(event.date).toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Loading date...'}
                     </div>
-                    <h3 className="text-sm md:text-2xl mb-1 group-hover:text-primary transition-colors line-clamp-1 font-bold">{event.title}</h3>
-                    <div className="flex items-center gap-1 mb-2 md:mb-6 text-muted-foreground text-[8px] md:text-sm">
-                      <MapPin className="w-2.5 h-2.5 md:w-4 h-4 text-accent" /> <span className="truncate">{event.venue}</span>
+                    <h3 className="font-headline text-sm md:text-2xl mb-1 md:mb-2 group-hover:text-primary transition-colors line-clamp-1">{event.title}</h3>
+                    <div className="flex items-center gap-1 text-muted-foreground text-[8px] md:text-sm mb-2 md:mb-6">
+                      <MapPin className="w-2 h-2 md:w-4 md:h-4 text-accent" /> <span className="truncate">{event.venue}</span>
                     </div>
-                    
-                    <div className="flex items-center justify-between pt-2 md:pt-6 border-t border-border">
-                      <div className="flex items-center gap-1 md:gap-3">
-                        <div className="relative w-5 h-5 md:w-8 h-8 rounded-full overflow-hidden border border-border">
-                          <Image src={event.organizer.avatar} alt={event.organizer.name} fill className="object-cover" />
-                        </div>
-                        <div className="hidden sm:flex flex-col">
-                          <span className="text-[10px] font-bold text-foreground flex items-center gap-1">
-                            {event.organizer.name}
-                            {event.organizer.verified && <CheckCircle2 className="w-2.5 h-2.5 text-primary fill-primary text-white" />}
-                          </span>
-                        </div>
-                      </div>
-                      <div className="text-right">
+                    <div className="mt-auto pt-2 md:pt-6 border-t border-border flex items-center justify-between">
+                      <div className="space-y-0">
+                        <span className="hidden md:block text-[8px] md:text-[10px] uppercase font-black text-muted-foreground tracking-widest">Entry</span>
                         <span className="block text-xs md:text-xl font-black text-primary leading-none">
                           {event.price.min === 0 ? 'FREE' : `₦${event.price.min.toLocaleString()}`}
                         </span>
                       </div>
+                      <Button size="sm" className="rounded-full px-3 md:px-6 shadow-lg shadow-primary/20 font-bold">View</Button>
                     </div>
                   </div>
                 </div>
