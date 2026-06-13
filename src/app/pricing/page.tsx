@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -62,7 +63,7 @@ export default function PricingPage() {
 
                 <div className="pt-6">
                   <Link href="/signup?role=organizer">
-                    <Button className="w-full transition-all rounded-full shadow-xl shadow-primary/20 hover:-translate-y-0.5 font-bold h-11">
+                    <Button className="w-full transition-all rounded-full shadow-xl shadow-primary/20 hover:-translate-y-0.5 font-bold">
                       Create Your First Event
                     </Button>
                   </Link>
@@ -112,7 +113,7 @@ export default function PricingPage() {
                 </div>
 
                 <Link href="/help" className="no-underline">
-                  <Button variant="outline" className="w-full transition-all border-2 rounded-full hover:bg-secondary hover:-translate-y-0.5 font-bold h-11">
+                  <Button variant="outline" className="w-full transition-all border-2 rounded-full hover:bg-secondary hover:-translate-y-0.5 font-bold">
                     Contact Our Sales Team
                   </Button>
                 </Link>
@@ -160,12 +161,12 @@ export default function PricingPage() {
           </p>
           <div className="flex flex-row items-center justify-center gap-4">
             <Link href="/signup?role=organizer" className="flex-1 no-underline sm:flex-none">
-              <Button className="w-full transition-all rounded-full shadow-xl shadow-primary/20 hover:-translate-y-0.5 font-bold h-11">
+              <Button className="w-full transition-all rounded-full shadow-xl shadow-primary/20 hover:-translate-y-0.5 font-bold">
                 Get Started Now
               </Button>
             </Link>
             <Link href="/help" className="flex-1 no-underline sm:flex-none">
-              <Button variant="outline" className="w-full transition-all border-2 rounded-full px-12 hover:bg-secondary hover:-translate-y-0.5 font-bold h-11">
+              <Button variant="outline" className="w-full transition-all border-2 rounded-full px-12 hover:bg-secondary hover:-translate-y-0.5 font-bold">
                 Book a Demo
               </Button>
             </Link>

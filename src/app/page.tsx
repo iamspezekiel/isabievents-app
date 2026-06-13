@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -111,7 +112,7 @@ export default function HomePage() {
                 />
               </div>
               <Link href={`/discover?q=${encodeURIComponent(search)}`} className="w-full md:w-auto">
-                <Button className="w-full md:w-auto rounded-full shadow-lg shadow-primary/20 font-bold transition-transform hover:scale-[1.02] active:scale-95 h-11">
+                <Button className="w-full md:w-auto rounded-full shadow-lg shadow-primary/20 font-bold transition-transform hover:scale-[1.02] active:scale-95">
                   Discover Events
                 </Button>
               </Link>
@@ -123,7 +124,7 @@ export default function HomePage() {
             <div className="flex items-center justify-between mb-8">
               <h2 className="font-black tracking-tighter text-left">Top Categories</h2>
               <Link href="/categories">
-                <Button variant="ghost" size="sm" className="rounded-full px-4 font-semibold gap-2 h-11">
+                <Button variant="ghost" size="sm" className="rounded-full px-4 font-semibold gap-2">
                   View All <ArrowRight className="w-3 h-3" />
                 </Button>
               </Link>
@@ -164,7 +165,7 @@ export default function HomePage() {
               <h2 className="font-black tracking-tighter">Trending</h2>
             </div>
             <Link href="/discover">
-              <Button variant="ghost" size="sm" className="rounded-full px-4 font-semibold gap-2 h-11">
+              <Button variant="ghost" size="sm" className="rounded-full px-4 font-semibold gap-2">
                 View More <ArrowRight className="w-3 h-3" />
               </Button>
             </Link>
@@ -232,7 +233,7 @@ export default function HomePage() {
 
           <div className="text-center pt-8">
             <Link href="/discover">
-              <Button variant="outline" className="rounded-full px-12 group border-2 h-11 font-bold">
+              <Button variant="outline" className="rounded-full px-12 group border-2 font-bold">
                 Discover More Events <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
