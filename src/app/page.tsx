@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -106,16 +105,18 @@ export default function HomePage() {
                 <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
                 <Input 
                   placeholder="Search events, organizers, or venues..." 
-                  className="pl-14 h-11 bg-secondary/30 md:bg-transparent border-none focus-visible:ring-0 text-base md:text-lg rounded-xl md:rounded-full"
+                  className="pl-14 h-9 md:h-11 bg-secondary/30 md:bg-transparent border-none focus-visible:ring-0 text-base md:text-lg rounded-xl md:rounded-full"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
-              <Link href={`/discover?q=${encodeURIComponent(search)}`} className="w-full md:w-auto">
-                <Button className="w-full md:w-auto rounded-full shadow-lg shadow-primary/20 font-bold transition-transform hover:scale-[1.02] active:scale-95">
-                  Discover Events
-                </Button>
-              </Link>
+              <div className="w-full md:w-auto px-10 md:px-0">
+                <Link href={`/discover?q=${encodeURIComponent(search)}`} className="w-full md:w-auto">
+                  <Button className="w-full md:w-auto rounded-full shadow-lg shadow-primary/20 font-bold transition-transform hover:scale-[1.02] active:scale-95 h-9 md:h-11">
+                    Discover Events
+                  </Button>
+                </Link>
+              </div>
             </div>
           </div>
 
@@ -124,7 +125,7 @@ export default function HomePage() {
             <div className="flex items-center justify-between mb-8">
               <h2 className="font-black tracking-tighter text-left">Top Categories</h2>
               <Link href="/categories">
-                <Button variant="ghost" size="sm" className="rounded-full px-4 font-semibold gap-2">
+                <Button variant="ghost" size="sm" className="rounded-full px-4 font-semibold gap-2 h-8 md:h-9">
                   View All <ArrowRight className="w-3 h-3" />
                 </Button>
               </Link>
@@ -165,7 +166,7 @@ export default function HomePage() {
               <h2 className="font-black tracking-tighter">Trending</h2>
             </div>
             <Link href="/discover">
-              <Button variant="ghost" size="sm" className="rounded-full px-4 font-semibold gap-2">
+              <Button variant="ghost" size="sm" className="rounded-full px-4 font-semibold gap-2 h-8 md:h-9">
                 View More <ArrowRight className="w-3 h-3" />
               </Button>
             </Link>
@@ -223,7 +224,7 @@ export default function HomePage() {
                           {event.price.min === 0 ? 'FREE' : `₦${event.price.min.toLocaleString()}`}
                         </span>
                       </div>
-                      <Button size="sm" className="rounded-full px-3 md:px-6 shadow-lg shadow-primary/20 font-bold">View</Button>
+                      <Button size="sm" className="rounded-full px-3 md:px-6 shadow-lg shadow-primary/20 font-bold h-8 md:h-9">View</Button>
                     </div>
                   </div>
                 </div>
@@ -232,8 +233,8 @@ export default function HomePage() {
           </div>
 
           <div className="text-center pt-8">
-            <Link href="/discover">
-              <Button variant="outline" className="rounded-full px-12 group border-2 font-bold">
+            <Link href="/discover" className="inline-block px-12 md:px-0 w-full md:w-auto">
+              <Button variant="outline" className="w-full md:w-auto rounded-full md:px-12 group border-2 font-bold h-9 md:h-11">
                 Discover More Events <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>

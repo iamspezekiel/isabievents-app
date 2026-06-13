@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, Suspense } from 'react';
@@ -41,15 +40,15 @@ function SignupForm() {
             <CardTitle>Create Account</CardTitle>
             <CardDescription>Join our community today</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-6 px-10 md:px-6">
             <div className="space-y-3">
               <Label>I want to join as a...</Label>
               <RadioGroup value={role} onValueChange={setRole} className="grid grid-cols-2 gap-4">
-                <Label htmlFor="attendee" className={`flex items-center justify-center p-4 rounded-xl border-2 cursor-pointer transition-all ${role === 'attendee' ? 'border-primary bg-primary/5' : 'border-border hover:bg-secondary'}`}>
+                <Label htmlFor="attendee" className={`flex items-center justify-center p-3 md:p-4 rounded-xl border-2 cursor-pointer transition-all text-xs md:text-sm ${role === 'attendee' ? 'border-primary bg-primary/5' : 'border-border hover:bg-secondary'}`}>
                   <RadioGroupItem value="attendee" id="attendee" className="sr-only" />
                   <span>Attendee</span>
                 </Label>
-                <Label htmlFor="organizer" className={`flex items-center justify-center p-4 rounded-xl border-2 cursor-pointer transition-all ${role === 'organizer' ? 'border-primary bg-primary/5' : 'border-border hover:bg-secondary'}`}>
+                <Label htmlFor="organizer" className={`flex items-center justify-center p-3 md:p-4 rounded-xl border-2 cursor-pointer transition-all text-xs md:text-sm ${role === 'organizer' ? 'border-primary bg-primary/5' : 'border-border hover:bg-secondary'}`}>
                   <RadioGroupItem value="organizer" id="organizer" className="sr-only" />
                   <span>Organizer</span>
                 </Label>
@@ -61,14 +60,14 @@ function SignupForm() {
                 <Label htmlFor="fullname">Full Name</Label>
                 <div className="relative">
                   <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input id="fullname" placeholder="John Doe" className="pl-10 h-11 bg-secondary/50" />
+                  <Input id="fullname" placeholder="John Doe" className="pl-10 h-9 md:h-11 bg-secondary/50" />
                 </div>
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                  <Input id="email" type="email" placeholder="john@example.com" className="pl-10 h-11 bg-secondary/50" />
+                  <Input id="email" type="email" placeholder="john@example.com" className="pl-10 h-9 md:h-11 bg-secondary/50" />
                 </div>
               </div>
               <div className="space-y-2">
@@ -79,7 +78,7 @@ function SignupForm() {
                     id="password" 
                     type={showPassword ? "text" : "password"} 
                     placeholder="••••••••" 
-                    className="pl-10 pr-10 h-11 bg-secondary/50" 
+                    className="pl-10 pr-10 h-9 md:h-11 bg-secondary/50" 
                   />
                   <button
                     type="button"
@@ -92,7 +91,7 @@ function SignupForm() {
               </div>
             </div>
 
-            <div className="flex items-start gap-2 text-xs text-muted-foreground mt-4">
+            <div className="flex items-start gap-2 text-[10px] md:text-xs text-muted-foreground mt-4">
               <ShieldCheck className="w-4 h-4 text-primary shrink-0" />
               <span>
                 By creating an account, you agree to our{' '}
@@ -102,7 +101,7 @@ function SignupForm() {
               </span>
             </div>
 
-            <Button className="w-full h-11 rounded-xl mt-6 no-underline">Create Account</Button>
+            <Button className="w-full rounded-xl mt-6 no-underline h-9 md:h-11">Create Account</Button>
           </CardContent>
         </Card>
 

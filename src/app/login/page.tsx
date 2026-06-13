@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -72,7 +71,7 @@ export default function LoginPage() {
             <CardDescription>Enter your credentials to continue</CardDescription>
           </CardHeader>
           <form onSubmit={handleLogin}>
-            <CardContent className="space-y-4">
+            <CardContent className="space-y-4 px-10 md:px-6">
               <div className="space-y-2">
                 <Label htmlFor="email">Email Address</Label>
                 <div className="relative">
@@ -81,7 +80,7 @@ export default function LoginPage() {
                     id="email" 
                     type="email" 
                     placeholder="name@example.com" 
-                    className="pl-10 h-11 bg-secondary/50" 
+                    className="pl-10 h-9 md:h-11 bg-secondary/50" 
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
@@ -99,7 +98,7 @@ export default function LoginPage() {
                     id="password" 
                     type={showPassword ? "text" : "password"} 
                     placeholder="••••••••" 
-                    className="pl-10 pr-10 h-11 bg-secondary/50" 
+                    className="pl-10 pr-10 h-9 md:h-11 bg-secondary/50" 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
@@ -113,13 +112,13 @@ export default function LoginPage() {
                   </button>
                 </div>
               </div>
-              <Button type="submit" className="w-full h-11 rounded-xl mt-4 no-underline" disabled={!!loading}>
+              <Button type="submit" className="w-full rounded-xl mt-4 no-underline h-9 md:h-11" disabled={!!loading}>
                 {loading === 'form' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : 'Sign In'}
               </Button>
             </CardContent>
           </form>
           
-          <CardFooter className="flex flex-col gap-6">
+          <CardFooter className="flex flex-col gap-6 px-10 md:px-6">
             <div className="relative w-full">
               <div className="absolute inset-0 flex items-center">
                 <span className="w-full border-t border-border" />
@@ -134,7 +133,7 @@ export default function LoginPage() {
                 <Button 
                   key={user.role}
                   variant="outline" 
-                  className="rounded-xl no-underline h-10 px-2 justify-start gap-2 text-[10px] font-black uppercase tracking-tighter"
+                  className="rounded-xl no-underline h-8 md:h-10 px-2 justify-start gap-2 text-[10px] font-black uppercase tracking-tighter"
                   onClick={() => handleQuickLogin(user)}
                   disabled={!!loading}
                 >
@@ -160,8 +159,8 @@ export default function LoginPage() {
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4 w-full">
-              <Button variant="outline" className="rounded-xl no-underline font-bold">Google</Button>
-              <Button variant="outline" className="rounded-xl no-underline font-bold">Apple</Button>
+              <Button variant="outline" className="rounded-xl no-underline font-bold h-8 md:h-10">Google</Button>
+              <Button variant="outline" className="rounded-xl no-underline font-bold h-8 md:h-10">Apple</Button>
             </div>
           </CardFooter>
         </Card>
