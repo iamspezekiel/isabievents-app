@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -31,7 +32,7 @@ export function Footer() {
                 className="h-11 pl-12 rounded-xl bg-background border-border text-sm focus-visible:ring-primary shadow-sm"
               />
             </div>
-            <Button className="h-11 px-8 rounded-xl text-sm shadow-lg shadow-primary/20 font-bold">
+            <Button className="h-9 md:h-11 px-8 rounded-xl text-xs md:text-sm shadow-lg shadow-primary/20 font-bold">
               Subscribe
             </Button>
           </div>
@@ -75,7 +76,7 @@ export function Footer() {
             <h4 className="font-headline text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 mb-4">For Organizers</h4>
             <ul className="space-y-2 text-xs font-bold">
               <li><Link href="/pricing" className="text-foreground/70 hover:text-primary transition-colors no-underline">Pricing</Link></li>
-              <li><Link href="/organizer" className="text-foreground/70 hover:text-primary transition-colors no-underline">Host Event</Link></li>
+              <li><Link href="/host-event" className="text-foreground/70 hover:text-primary transition-colors no-underline">Host Event</Link></li>
               <li><Link href="/docs" className="text-foreground/70 hover:text-primary transition-colors no-underline">Developer API</Link></li>
               <li><Link href="/case-studies" className="text-foreground/70 hover:text-primary transition-colors no-underline">Success Stories</Link></li>
             </ul>

@@ -15,7 +15,7 @@ const NAV_LINKS = [
   { name: 'Discover', href: '/discover' },
   { name: 'Categories', href: '/categories' },
   { name: 'About', href: '/about' },
-  { name: 'Host Event', href: '/organizer' },
+  { name: 'Host Event', href: '/host-event' },
   { name: 'Pricing', href: '/pricing' },
   { name: 'Support', href: '/help' },
 ];
@@ -73,10 +73,10 @@ export function Navbar() {
         <div className="flex items-center gap-2 md:gap-4">
           <div className="hidden sm:flex items-center gap-2">
             {mounted && <ThemeToggle />}
-            <Button variant="ghost" size="sm" className="font-bold px-4 no-underline" asChild>
+            <Button variant="ghost" size="sm" className="font-bold px-4 no-underline h-9 md:h-11" asChild>
               <Link href="/login">Sign In</Link>
             </Button>
-            <Button size="sm" className="rounded-full px-6 shadow-xl shadow-primary/20 font-bold no-underline" asChild>
+            <Button size="sm" className="rounded-full px-6 shadow-xl shadow-primary/20 font-bold no-underline h-9 md:h-11" asChild>
               <Link href="/signup">Get Started</Link>
             </Button>
           </div>
