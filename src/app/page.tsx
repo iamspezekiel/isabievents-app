@@ -72,7 +72,7 @@ export default function HomePage() {
             <h1 className="text-4xl md:text-6xl lg:text-7xl animate-in fade-in slide-in-from-bottom-8 duration-1000">
               Experience the Best of <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Nigerian</span> Events
             </h1>
-            <p className="max-w-2xl mx-auto mt-4 mb-8 animate-in fade-in slide-in-from-bottom-12 duration-1000 text-muted-foreground">
+            <p className="max-w-2xl mx-auto mt-4 mb-8 animate-in fade-in slide-in-from-bottom-12 duration-1000 text-muted-foreground mt-4">
               Discover and secure your spot with zero friction.
             </p>
 
@@ -99,7 +99,7 @@ export default function HomePage() {
             <div className="flex items-center justify-between mb-8">
               <h2 className="font-black tracking-tighter text-left">Top Categories</h2>
               <Link href="/categories">
-                <Button variant="ghost" size="sm" className="rounded-full px-4 font-semibold gap-2">
+                <Button variant="ghost" size="sm" className="rounded-full px-4 font-semibold gap-2 h-11">
                   View All <ArrowRight className="w-3 h-3" />
                 </Button>
               </Link>
@@ -140,7 +140,7 @@ export default function HomePage() {
               <h2 className="font-black tracking-tighter">Trending</h2>
             </div>
             <Link href="/discover">
-              <Button variant="ghost" size="sm" className="rounded-full px-4 font-semibold gap-2">
+              <Button variant="ghost" size="sm" className="rounded-full px-4 font-semibold gap-2 h-11">
                 View More <ArrowRight className="w-3 h-3" />
               </Button>
             </Link>
@@ -210,7 +210,7 @@ export default function HomePage() {
 
       {/* Trust Section */}
       <section className="py-24 bg-card/30 border-y border-border">
-        <div className="container mx-auto px-4 text-center">
+        <div className="container mx-auto px-8 md:px-16 lg:px-24 text-center">
           <h2 className="mb-16">Why thousands choose IsabiEvents</h2>
           <div className="grid md:grid-cols-3 gap-12">
             <div className="space-y-4">
