@@ -27,7 +27,7 @@ export default function AboutPage() {
       </section>
 
       {/* Our Story Section */}
-      <section className="py-16 md:py-24 container mx-auto px-4 relative">
+      <section className="py-8 md:py-12 container mx-auto px-4 relative">
         <div className="absolute top-1/2 right-0 w-96 h-96 bg-accent/5 blur-[120px] rounded-full -z-10" />
         <div className="absolute -bottom-24 left-0 w-72 h-72 bg-primary/5 blur-[100px] rounded-full -z-10" />
         
@@ -197,12 +197,12 @@ export default function AboutPage() {
           </p>
           <div className="flex flex-row items-center justify-center gap-4 px-12 md:gap-8 md:px-0">
             <Link href="/discover" className="flex-1 no-underline sm:flex-none">
-              <Button className="w-full font-bold rounded-full px-12 shadow-2xl shadow-primary/30 h-11">
+              <Button className="w-full font-bold rounded-full px-4 md:px-12 shadow-2xl shadow-primary/30 h-9 md:h-11 text-xs md:text-sm">
                 Explore Events
               </Button>
             </Link>
             <Link href="/signup?role=organizer" className="flex-1 no-underline sm:flex-none">
-              <Button variant="outline" className="w-full font-bold backdrop-blur-sm bg-background/50 border-2 rounded-full px-12 h-11">
+              <Button variant="outline" className="w-full font-bold backdrop-blur-sm bg-background/50 border-2 rounded-full px-4 md:px-12 h-9 md:h-11 text-xs md:text-sm">
                 Host Event
               </Button>
             </Link>
