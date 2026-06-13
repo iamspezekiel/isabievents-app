@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Users, Plus, Mail, ShieldCheck, LayoutDashboard, Ticket, BarChart3, Settings, LogOut, Menu, Loader2, User, UserPlus, Trash2, Edit } from 'lucide-react';
+import { Users, Plus, Mail, ShieldCheck, LayoutDashboard, Ticket, BarChart3, Settings, LogOut, Menu, Loader2, User, UserPlus, Trash2, Edit, Phone } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -304,11 +304,24 @@ function VendorCard({ vendor, onDelete }: any) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <Button variant="outline" size="sm" className="rounded-lg h-9" asChild>
-            <a href={`https://wa.me/${whatsapp?.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer">
-              <WhatsAppIcon className="w-4 h-4 text-green-500" />
-            </a>
-          </Button>
+          
+          <div className="flex gap-1.5">
+            <Button variant="outline" size="icon" className="rounded-lg h-9 w-9" asChild title="Email">
+              <a href={`mailto:${email}`}>
+                <Mail className="w-4 h-4 text-primary" />
+              </a>
+            </Button>
+            <Button variant="outline" size="icon" className="rounded-lg h-9 w-9" asChild title="Call">
+              <a href={`tel:${whatsapp?.replace(/\D/g, '')}`}>
+                <Phone className="w-4 h-4 text-accent" />
+              </a>
+            </Button>
+            <Button variant="outline" size="icon" className="rounded-lg h-9 w-9" asChild title="WhatsApp">
+              <a href={`https://wa.me/${whatsapp?.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer">
+                <WhatsAppIcon className="w-4 h-4 text-green-500" />
+              </a>
+            </Button>
+          </div>
         </div>
       </CardContent>
     </Card>
