@@ -33,7 +33,7 @@ export default function AboutPage() {
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-32 items-center">
           <div className="relative order-2 lg:order-1 space-y-12">
             <div className="relative group">
-              <div className="relative aspect-[4/5] rounded-[3.5rem] overflow-hidden border border-border/50 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] z-10 p-6 md:p-6 bg-card">
+              <div className="relative aspect-[4/5] rounded-[3.5rem] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] z-10 p-6 md:p-6 bg-card">
                 <div className="relative w-full h-full rounded-[2.5rem] overflow-hidden">
                   <Image 
                     src="https://picsum.photos/seed/story_v12/800/1000" 
