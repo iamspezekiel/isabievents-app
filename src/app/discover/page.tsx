@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Search, MapPin, Filter, Loader2, X, Check, Calendar } from 'lucide-react';
+import { Search, MapPin, Filter, Loader2, X, Check, Calendar, Heart, Share2 } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -12,9 +12,11 @@ import { MOCK_EVENTS, CATEGORIES, CITIES } from '@/lib/mock-data';
 import Image from 'next/image';
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 function DiscoverContent() {
   const searchParams = useSearchParams();
+  const { toast } = useToast();
   
   const [search, setSearch] = useState(searchParams.get('q') || '');
   const [selectedCategory, setSelectedCategory] = useState(searchParams.get('category') || 'all');
@@ -65,6 +67,26 @@ function DiscoverContent() {
 
     return filtered.slice(0, displayLimit);
   }, [search, selectedCategory, selectedCity, priceFilter, displayLimit]);
+
+  const handleBookmark = (e: React.MouseEvent, id: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toast({
+      title: "Saved to Favorites",
+      description: "This event has been added to your digital wallet."
+    });
+  };
+
+  const handleShare = (e: React.MouseEvent, id: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const url = `${window.location.origin}/events/${id}`;
+    navigator.clipboard.writeText(url);
+    toast({
+      title: "Link Copied!",
+      description: "Event link has been copied to your clipboard."
+    });
+  };
 
   const resetFilters = () => {
     setSearch('');
@@ -234,6 +256,25 @@ function DiscoverContent() {
                   <Badge className="bg-black/60 backdrop-blur-md border-none py-0.5 px-1.5 md:py-1.5 md:px-3 uppercase text-[6px] md:text-[10px] font-black tracking-widest text-white">
                     {event.category}
                   </Badge>
+                </div>
+                {/* Actions Overlay */}
+                <div className="absolute top-2 right-2 md:top-4 md:right-4 flex gap-2">
+                  <Button 
+                    size="icon" 
+                    variant="secondary" 
+                    className="w-7 h-7 md:w-10 md:h-10 rounded-full bg-black/40 backdrop-blur-md border-none text-white hover:bg-black/60 transition-colors"
+                    onClick={(e) => handleBookmark(e, event.id)}
+                  >
+                    <Heart className="w-3 h-3 md:w-5 md:h-5" />
+                  </Button>
+                  <Button 
+                    size="icon" 
+                    variant="secondary" 
+                    className="w-7 h-7 md:w-10 md:h-10 rounded-full bg-black/40 backdrop-blur-md border-none text-white hover:bg-black/60 transition-colors"
+                    onClick={(e) => handleShare(e, event.id)}
+                  >
+                    <Share2 className="w-3 h-3 md:w-5 md:h-5" />
+                  </Button>
                 </div>
               </div>
               <div className="p-3 md:p-8 flex flex-col flex-1 text-left">

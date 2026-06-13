@@ -12,9 +12,11 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { generateFaqs } from '@/ai/flows/organizer-ai-faq-generator';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useToast } from "@/hooks/use-toast";
 
 export default function EventDetailsPage() {
   const { id } = useParams();
+  const { toast } = useToast();
   const event = MOCK_EVENTS.find(e => e.id === id) || MOCK_EVENTS[0];
   
   const [faqs, setFaqs] = useState<any[]>([]);
@@ -54,6 +56,22 @@ export default function EventDetailsPage() {
       setTierPrice(price);
       setQuantity(1);
     }
+  };
+
+  const handleBookmark = () => {
+    toast({
+      title: "Saved to Favorites",
+      description: "This event has been added to your digital wallet."
+    });
+  };
+
+  const handleShare = () => {
+    const url = window.location.href;
+    navigator.clipboard.writeText(url);
+    toast({
+      title: "Link Copied!",
+      description: "Event link has been copied to your clipboard."
+    });
   };
 
   return (
@@ -198,11 +216,21 @@ export default function EventDetailsPage() {
                   </div>
                   
                   <Link href={selectedTier ? `/checkout/${event.id}?tier=${encodeURIComponent(selectedTier)}&qty=${quantity}` : `/checkout/${event.id}`}>
-                    <Button size="lg" className="w-full rounded-full shadow-lg shadow-primary/20">
+                    <Button size="lg" className="w-full rounded-full shadow-lg shadow-primary/20 font-bold">
                       {selectedTier ? 'Proceed to Checkout' : 'Get Tickets Now'}
                     </Button>
                   </Link>
-                  <p className="text-center text-[10px] text-muted-foreground mt-4 uppercase font-bold tracking-widest">
+
+                  <div className="grid grid-cols-2 gap-3 mt-4">
+                    <Button variant="outline" className="rounded-full font-bold h-11" onClick={handleBookmark}>
+                      <Heart className="w-4 h-4 mr-2" /> Save
+                    </Button>
+                    <Button variant="outline" className="rounded-full font-bold h-11" onClick={handleShare}>
+                      <Share2 className="w-4 h-4 mr-2" /> Share
+                    </Button>
+                  </div>
+
+                  <p className="text-center text-[10px] text-muted-foreground mt-6 uppercase font-bold tracking-widest">
                     Secured by Paystack, Flutterwave & SolanaPay
                   </p>
                 </CardContent>

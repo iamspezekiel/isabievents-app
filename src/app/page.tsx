@@ -22,7 +22,9 @@ import {
   Network,
   Activity,
   GraduationCap,
-  HandHeart
+  HandHeart,
+  Heart,
+  Share2
 } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -32,6 +34,7 @@ import { CATEGORIES, MOCK_EVENTS } from '@/lib/mock-data';
 import Image from 'next/image';
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 const iconMap: any = {
   Music, Trophy, Mic2, GlassWater, Dribbble, Church, Palette, Images, Cpu, Users: UsersIcon,
@@ -42,6 +45,7 @@ export default function HomePage() {
   const [search, setSearch] = useState('');
   const [displayLimit, setDisplayLimit] = useState(27);
   const [mounted, setMounted] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     setMounted(true);
@@ -58,21 +62,41 @@ export default function HomePage() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const handleBookmark = (e: React.MouseEvent, id: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toast({
+      title: "Saved to Favorites",
+      description: "You can access this event in your digital wallet."
+    });
+  };
+
+  const handleShare = (e: React.MouseEvent, id: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const url = `${window.location.origin}/events/${id}`;
+    navigator.clipboard.writeText(url);
+    toast({
+      title: "Link Copied!",
+      description: "Event link has been copied to your clipboard."
+    });
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Hero Section */}
       <div className="relative pt-44 pb-12 overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[1200px] bg-primary/10 blur-[150px] -z-10 rounded-full" />
         
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
+        <div className="container mx-auto px-4 text-center">
+          <div className="mb-12">
             <Badge className="mb-4 py-1.5 px-4 bg-primary/20 text-primary border-primary/20 hover:bg-primary/20 animate-in fade-in slide-in-from-bottom-4 duration-700">
               Trusted by 50,000+ Nigerians
             </Badge>
             <h1 className="text-4xl md:text-6xl lg:text-7xl animate-in fade-in slide-in-from-bottom-8 duration-1000">
               Experience the Best of <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Nigerian</span> Events
             </h1>
-            <p className="max-w-2xl mx-auto mt-4 mb-8 animate-in fade-in slide-in-from-bottom-12 duration-1000 text-muted-foreground">
+            <p className="max-w-2xl mx-auto mt-6 mb-8 animate-in fade-in slide-in-from-bottom-12 duration-1000 text-muted-foreground">
               Discover and secure your spot with zero friction.
             </p>
 
@@ -161,6 +185,25 @@ export default function HomePage() {
                       <Badge className="bg-black/60 backdrop-blur-md border-none py-0.5 px-1.5 md:py-1.5 md:px-3 uppercase text-[6px] md:text-[10px] font-black tracking-widest text-white">
                         {event.category}
                       </Badge>
+                    </div>
+                    {/* Actions Overlay */}
+                    <div className="absolute top-2 right-2 md:top-4 md:right-4 flex gap-2">
+                      <Button 
+                        size="icon" 
+                        variant="secondary" 
+                        className="w-7 h-7 md:w-10 md:h-10 rounded-full bg-black/40 backdrop-blur-md border-none text-white hover:bg-black/60 transition-colors"
+                        onClick={(e) => handleBookmark(e, event.id)}
+                      >
+                        <Heart className="w-3 h-3 md:w-5 md:h-5" />
+                      </Button>
+                      <Button 
+                        size="icon" 
+                        variant="secondary" 
+                        className="w-7 h-7 md:w-10 md:h-10 rounded-full bg-black/40 backdrop-blur-md border-none text-white hover:bg-black/60 transition-colors"
+                        onClick={(e) => handleShare(e, event.id)}
+                      >
+                        <Share2 className="w-3 h-3 md:w-5 md:h-5" />
+                      </Button>
                     </div>
                   </div>
                   <div className="p-3 md:p-8 flex flex-col flex-1 text-left">
