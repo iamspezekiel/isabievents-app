@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Users, Plus, Mail, MessageSquare, ShieldCheck, LayoutDashboard, Ticket, BarChart3, Settings, LogOut, Menu, Loader2 } from 'lucide-react';
+import { Users, Plus, Mail, MessageSquare, ShieldCheck, LayoutDashboard, Ticket, BarChart3, Settings, LogOut, Menu, Loader2, User, UserPlus } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -131,55 +131,66 @@ export default function VendorsManagementPage() {
             
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
               <DialogTrigger asChild>
-                <Button className="rounded-full gap-2 px-6 shadow-lg shadow-primary/20 font-bold">
+                <Button className="rounded-full gap-2 px-6 shadow-lg shadow-primary/20 font-bold h-9 md:h-11">
                   <Plus className="w-4 h-4" /> Add Vendor
                 </Button>
               </DialogTrigger>
-              <DialogContent className="bg-card border-border rounded-3xl">
+              <DialogContent className="bg-card border-border sm:rounded-[2rem] max-w-lg">
                 <DialogHeader className="text-left">
-                  <DialogTitle className="font-headline text-2xl">Invite Vendor or Staff</DialogTitle>
+                  <DialogTitle className="font-headline text-2xl flex items-center gap-2">
+                    <UserPlus className="w-6 h-6 text-primary" /> Invite Team Member
+                  </DialogTitle>
                   <DialogDescription>
-                    Fill in the details below to add a new member to your event team.
+                    Send an invitation to a vendor or staff member to help manage your event.
                   </DialogDescription>
                 </DialogHeader>
-                <div className="space-y-4 py-4 text-left">
+                <div className="space-y-6 py-6 text-left">
                   <div className="space-y-2">
-                    <Label htmlFor="vendor-name">Name</Label>
-                    <Input 
-                      id="vendor-name" 
-                      placeholder="e.g. Sharp Security Ltd" 
-                      value={newVendor.name}
-                      onChange={(e) => setNewVendor({...newVendor, name: e.target.value})}
-                      className="bg-secondary/30"
-                    />
+                    <Label htmlFor="vendor-name" className="text-xs font-black uppercase tracking-widest text-muted-foreground">Full Name / Brand</Label>
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input 
+                        id="vendor-name" 
+                        placeholder="e.g. Sharp Security Ltd" 
+                        value={newVendor.name}
+                        onChange={(e) => setNewVendor({...newVendor, name: e.target.value})}
+                        className="pl-10 h-12 bg-secondary/20 border-border focus-visible:ring-primary rounded-xl"
+                      />
+                    </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="vendor-email">Email Address</Label>
-                    <Input 
-                      id="vendor-email" 
-                      type="email" 
-                      placeholder="contact@vendor.ng" 
-                      value={newVendor.email}
-                      onChange={(e) => setNewVendor({...newVendor, email: e.target.value})}
-                      className="bg-secondary/30"
-                    />
+                    <Label htmlFor="vendor-email" className="text-xs font-black uppercase tracking-widest text-muted-foreground">Email Address</Label>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input 
+                        id="vendor-email" 
+                        type="email" 
+                        placeholder="contact@vendor.ng" 
+                        value={newVendor.email}
+                        onChange={(e) => setNewVendor({...newVendor, email: e.target.value})}
+                        className="pl-10 h-12 bg-secondary/20 border-border focus-visible:ring-primary rounded-xl"
+                      />
+                    </div>
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="vendor-role">Role</Label>
-                    <Select value={newVendor.role} onValueChange={(v) => setNewVendor({...newVendor, role: v})}>
-                      <SelectTrigger className="bg-secondary/30">
-                        <SelectValue placeholder="Select role" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="Vendor">Vendor</SelectItem>
-                        <SelectItem value="Staff">Staff</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Label htmlFor="vendor-role" className="text-xs font-black uppercase tracking-widest text-muted-foreground">Assigned Role</Label>
+                    <div className="relative">
+                      <ShieldCheck className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
+                      <Select value={newVendor.role} onValueChange={(v) => setNewVendor({...newVendor, role: v})}>
+                        <SelectTrigger className="pl-10 h-12 bg-secondary/20 border-border focus:ring-primary rounded-xl">
+                          <SelectValue placeholder="Select role" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-card border-border">
+                          <SelectItem value="Vendor">Vendor (Meals, Merch)</SelectItem>
+                          <SelectItem value="Staff">Staff (Gate, Security)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
                   </div>
                 </div>
-                <DialogFooter>
-                  <Button variant="ghost" onClick={() => setIsAddDialogOpen(false)} className="rounded-full font-bold">Cancel</Button>
-                  <Button onClick={handleAddVendor} disabled={isLoading} className="rounded-full px-8 font-bold shadow-lg shadow-primary/20">
+                <DialogFooter className="gap-3 sm:gap-0">
+                  <Button variant="ghost" onClick={() => setIsAddDialogOpen(false)} className="rounded-full font-bold h-11">Cancel</Button>
+                  <Button onClick={handleAddVendor} disabled={isLoading} className="rounded-full px-10 font-bold shadow-xl shadow-primary/20 h-11 flex-1 sm:flex-none">
                     {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Send Invitation"}
                   </Button>
                 </DialogFooter>
