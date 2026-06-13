@@ -119,14 +119,14 @@ export default function TestimonialsPage() {
 
 function StatBox({ icon: Icon, label, value }: any) {
   return (
-    <Card className="bg-card border-border hover:border-primary/50 transition-all rounded-[2rem]">
-      <CardContent className="p-10 flex flex-col items-center text-center space-y-4">
-        <div className="w-14 h-14 bg-primary/10 rounded-2xl flex items-center justify-center">
-          <Icon className="w-7 h-7 text-primary" />
+    <Card className="bg-card border-border hover:border-primary/50 transition-all rounded-[1.5rem]">
+      <CardContent className="p-6 flex flex-col items-center text-center space-y-3">
+        <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center">
+          <Icon className="w-6 h-6 text-primary" />
         </div>
         <div>
-          <div className="text-3xl font-black text-foreground">{value}</div>
-          <div className="text-xs uppercase font-black text-muted-foreground tracking-widest mt-1">{label}</div>
+          <div className="text-2xl font-black text-foreground">{value}</div>
+          <div className="text-[10px] uppercase font-black text-muted-foreground tracking-widest mt-1">{label}</div>
         </div>
       </CardContent>
     </Card>
@@ -135,30 +135,30 @@ function StatBox({ icon: Icon, label, value }: any) {
 
 function TestimonialCard({ name, quote, avatar, rating }: any) {
   return (
-    <Card className="bg-card border-border hover:border-primary/50 transition-all group rounded-[2.5rem] overflow-hidden flex flex-col h-full">
-      <CardContent className="p-10 space-y-6 flex-1 flex flex-col justify-between">
-        <div className="space-y-4">
-          <div className="flex gap-1">
+    <Card className="bg-card border-border hover:border-primary/50 transition-all group rounded-[2rem] overflow-hidden flex flex-col h-full">
+      <CardContent className="p-6 space-y-5 flex-1 flex flex-col justify-between">
+        <div className="space-y-3">
+          <div className="flex gap-0.5">
             {[...Array(5)].map((_, i) => (
               <Star 
                 key={i} 
                 className={cn(
-                  "w-4 h-4",
+                  "w-3.5 h-3.5",
                   i < rating ? "text-yellow-500 fill-yellow-500" : "text-muted stroke-muted"
                 )} 
               />
             ))}
           </div>
           <div className="relative">
-            <Quote className="absolute -top-4 -left-6 w-12 h-12 text-primary/5 -z-10" />
-            <p className="text-lg leading-relaxed font-medium italic text-foreground/90">
+            <Quote className="absolute -top-3 -left-4 w-10 h-10 text-primary/5 -z-10" />
+            <p className="text-base leading-relaxed font-medium italic text-foreground/90">
               "{quote}"
             </p>
           </div>
         </div>
         
-        <div className="pt-8 border-t border-border flex items-center gap-4">
-          <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 border border-border">
+        <div className="pt-6 border-t border-border flex items-center gap-3">
+          <div className="relative w-10 h-10 rounded-full overflow-hidden shrink-0 border border-border">
             <Image 
               src={avatar} 
               alt={name} 
@@ -166,7 +166,7 @@ function TestimonialCard({ name, quote, avatar, rating }: any) {
               className="object-cover" 
             />
           </div>
-          <div className="font-headline text-xl font-black text-foreground">{name}</div>
+          <div className="font-headline text-lg font-black text-foreground">{name}</div>
         </div>
       </CardContent>
     </Card>
