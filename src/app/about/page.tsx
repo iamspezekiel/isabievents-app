@@ -185,12 +185,12 @@ export default function AboutPage() {
           </p>
           <div className="flex flex-row justify-center items-center gap-4 md:gap-8 px-2 md:px-0">
             <Link href="/discover" className="no-underline flex-1 sm:flex-none">
-              <Button size="lg" className="rounded-full h-12 md:h-16 px-6 md:px-16 text-sm md:text-lg shadow-2xl shadow-primary/30 font-bold w-full">
+              <Button size="lg" className="rounded-full px-6 md:px-16 shadow-2xl shadow-primary/30 font-bold w-full">
                 Explore Events
               </Button>
             </Link>
             <Link href="/signup?role=organizer" className="no-underline flex-1 sm:flex-none">
-              <Button variant="outline" size="lg" className="rounded-full h-12 md:h-16 px-6 md:px-16 text-sm md:text-lg border-2 bg-background/50 backdrop-blur-sm font-bold w-full">
+              <Button variant="outline" size="lg" className="rounded-full px-6 md:px-16 border-2 bg-background/50 backdrop-blur-sm font-bold w-full">
                 Host Event
               </Button>
             </Link>

@@ -198,7 +198,7 @@ export default function EventDetailsPage() {
                   </div>
                   
                   <Link href={selectedTier ? `/checkout/${event.id}?tier=${encodeURIComponent(selectedTier)}&qty=${quantity}` : `/checkout/${event.id}`}>
-                    <Button size="lg" className="w-full h-14 rounded-full text-lg shadow-lg shadow-primary/20">
+                    <Button size="lg" className="w-full rounded-full shadow-lg shadow-primary/20">
                       {selectedTier ? 'Proceed to Checkout' : 'Get Tickets Now'}
                     </Button>
                   </Link>
@@ -261,14 +261,14 @@ function TicketTier({ name, price, perks, available, isSelected, quantity, onSel
       <div className="flex items-center gap-4">
         <Button 
           variant={available ? "secondary" : "ghost"} 
-          className="flex-1 rounded-full h-12 font-bold" 
+          className="flex-1 rounded-full font-bold" 
           disabled={!available}
           onClick={onSelect}
         >
           {available ? 'Select Tier' : 'Unavailable'}
         </Button>
         {isSelected && (
-          <div className="flex items-center gap-3 bg-secondary rounded-full px-4 h-12">
+          <div className="flex items-center gap-3 bg-secondary rounded-full px-4 h-11">
             <button 
               onClick={() => onQuantityChange(Math.max(1, quantity - 1))}
               className="w-6 h-6 flex items-center justify-center hover:text-primary font-bold"

@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -63,7 +62,7 @@ export default function PricingPage() {
 
                 <div className="pt-6">
                   <Link href="/signup?role=organizer">
-                    <Button size="lg" className="w-full h-16 rounded-full text-lg shadow-xl shadow-primary/20 hover:-translate-y-0.5 transition-all">
+                    <Button size="lg" className="w-full rounded-full shadow-xl shadow-primary/20 hover:-translate-y-0.5 transition-all">
                       Create Your First Event
                     </Button>
                   </Link>
@@ -97,7 +96,7 @@ export default function PricingPage() {
                 </div>
 
                 <Link href="/help" className="no-underline">
-                  <Button variant="outline" size="lg" className="w-full rounded-full h-16 text-lg border-2 hover:bg-secondary hover:-translate-y-0.5 transition-all">
+                  <Button variant="outline" size="lg" className="w-full rounded-full border-2 hover:bg-secondary hover:-translate-y-0.5 transition-all">
                     Contact Our Sales Team
                   </Button>
                 </Link>
@@ -145,12 +144,12 @@ export default function PricingPage() {
           </p>
           <div className="flex flex-row justify-center items-center gap-4">
             <Link href="/signup?role=organizer" className="flex-1 sm:flex-none no-underline">
-              <Button size="lg" className="w-full rounded-full h-12 md:h-16 px-6 md:px-12 text-sm md:text-lg shadow-xl shadow-primary/20 hover:-translate-y-0.5 transition-all">
+              <Button size="lg" className="w-full rounded-full px-6 md:px-12 shadow-xl shadow-primary/20 hover:-translate-y-0.5 transition-all">
                 Get Started Now
               </Button>
             </Link>
             <Link href="/help" className="flex-1 sm:flex-none no-underline">
-              <Button variant="outline" size="lg" className="w-full rounded-full h-12 md:h-16 px-6 md:px-12 text-sm md:text-lg hover:-translate-y-0.5 transition-all">
+              <Button variant="outline" size="lg" className="w-full rounded-full px-6 md:px-12 hover:-translate-y-0.5 transition-all">
                 Book a Demo
               </Button>
             </Link>

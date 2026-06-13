@@ -87,7 +87,7 @@ export default function HomePage() {
                 />
               </div>
               <Link href={`/discover?q=${encodeURIComponent(search)}`} className="w-full md:w-auto">
-                <Button size="lg" className="w-full md:w-auto h-14 px-10 rounded-full text-lg shadow-lg shadow-primary/20 font-bold transition-transform hover:scale-[1.02] active:scale-95">
+                <Button size="lg" className="w-full md:w-auto rounded-full shadow-lg shadow-primary/20 font-bold transition-transform hover:scale-[1.02] active:scale-95">
                   Discover Events
                 </Button>
               </Link>
@@ -200,7 +200,7 @@ export default function HomePage() {
 
           <div className="text-center pt-8">
             <Link href="/discover">
-              <Button variant="outline" size="lg" className="rounded-full px-12 h-14 text-lg group border-2">
+              <Button variant="outline" size="lg" className="rounded-full px-12 group border-2">
                 Discover More Events <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>

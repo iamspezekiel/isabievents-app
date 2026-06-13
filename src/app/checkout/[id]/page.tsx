@@ -185,7 +185,7 @@ export default function CheckoutPage() {
                             </div>
                           </div>
                           <Button 
-                            className="w-full h-12 rounded-xl font-bold" 
+                            className="w-full rounded-xl font-bold" 
                             onClick={handleLogin}
                             disabled={loading}
                           >
@@ -246,7 +246,7 @@ export default function CheckoutPage() {
                           </div>
                         </div>
                       </div>
-                      <Button onClick={handleContinueToPayment} className="w-full h-14 rounded-full text-lg gap-2 no-underline mt-4">
+                      <Button onClick={handleContinueToPayment} size="lg" className="w-full rounded-full gap-2 no-underline mt-4">
                         Continue as Guest <ArrowRight className="w-5 h-5" />
                       </Button>
                     </TabsContent>
@@ -273,12 +273,12 @@ export default function CheckoutPage() {
                       </div>
                     </Card>
                     <div className="space-y-3">
-                      <Button onClick={() => setStep(2)} className="w-full h-14 rounded-full text-lg gap-2 no-underline">
+                      <Button onClick={() => setStep(2)} size="lg" className="w-full rounded-full gap-2 no-underline">
                         Continue to Payment <ArrowRight className="w-5 h-5" />
                       </Button>
                       <Button 
                         variant="ghost" 
-                        className="w-full font-bold text-muted-foreground hover:text-foreground h-12 rounded-xl"
+                        className="w-full font-bold text-muted-foreground hover:text-foreground rounded-xl"
                         onClick={() => setIsLoggedIn(false)}
                       >
                         Switch account or checkout as guest
@@ -333,7 +333,8 @@ export default function CheckoutPage() {
                   <Button 
                     onClick={handlePayment} 
                     disabled={loading}
-                    className="w-full h-14 rounded-full text-lg no-underline shadow-xl shadow-primary/20"
+                    size="lg"
+                    className="w-full rounded-full no-underline shadow-xl shadow-primary/20"
                   >
                     {loading ? (
                       <div className="flex items-center gap-3">
@@ -368,10 +369,10 @@ export default function CheckoutPage() {
                   Thank you for your purchase. Your secure QR code ticket is now available in your digital wallet.
                 </p>
                 <div className="pt-10 flex flex-col sm:flex-row justify-center gap-4">
-                  <Button onClick={() => router.push('/dashboard/attendee')} variant="outline" className="rounded-full px-10 h-14 text-lg no-underline border-2">
+                  <Button onClick={() => router.push('/dashboard/attendee')} variant="outline" size="lg" className="rounded-full px-10 no-underline border-2">
                     Go to Wallet
                   </Button>
-                  <Button onClick={() => router.push('/')} className="rounded-full px-10 h-14 text-lg no-underline shadow-xl shadow-primary/20">
+                  <Button onClick={() => router.push('/')} size="lg" className="rounded-full px-10 no-underline shadow-xl shadow-primary/20">
                     Back to Home
                   </Button>
                 </div>
@@ -437,7 +438,7 @@ export default function CheckoutPage() {
                     <Label className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60 font-black">Promo Code</Label>
                     <div className="flex gap-2">
                       <Input placeholder="Enter code" className="h-12 bg-secondary/50 border-none rounded-xl" />
-                      <Button variant="outline" className="h-12 rounded-xl px-6 font-bold">Apply</Button>
+                      <Button variant="outline" className="rounded-xl px-6 font-bold">Apply</Button>
                     </div>
                   </div>
                 )}

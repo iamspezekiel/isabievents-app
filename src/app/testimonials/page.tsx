@@ -100,12 +100,12 @@ export default function TestimonialsPage() {
              
              <div className="flex flex-col sm:flex-row justify-center items-center gap-6 pt-10">
                <Link href="/discover" className="w-full sm:w-auto no-underline">
-                 <Button size="lg" className="w-full sm:w-auto rounded-full h-16 px-14 text-lg shadow-2xl shadow-primary/30 hover:-translate-y-2 transition-all duration-300 font-black">
+                 <Button size="lg" className="w-full sm:w-auto rounded-full px-14 shadow-2xl shadow-primary/30 hover:-translate-y-2 transition-all duration-300 font-black">
                    Explore Events
                  </Button>
                </Link>
                <Link href="/signup" className="w-full sm:w-auto no-underline">
-                 <Button variant="outline" size="lg" className="w-full sm:w-auto rounded-full h-16 px-14 text-lg border-2 bg-background/50 backdrop-blur-sm hover:bg-secondary hover:-translate-y-2 transition-all duration-300 font-black">
+                 <Button variant="outline" size="lg" className="w-full sm:w-auto rounded-full px-14 border-2 bg-background/50 backdrop-blur-sm hover:bg-secondary hover:-translate-y-2 transition-all duration-300 font-black">
                    Join Community
                  </Button>
                </Link>
