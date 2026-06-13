@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Target, Users, ShieldCheck, Zap, Heart, Sparkles, Quote, Globe, Star, CreditCard, Lock } from 'lucide-react';
+import { Target, Users, ShieldCheck, Zap, Heart, Sparkles, Quote, Globe, Star, CreditCard, Lock, MapPin } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -94,14 +94,27 @@ export default function AboutPage() {
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-6 pt-4">
-              <div className="space-y-2 p-8 bg-secondary/40 rounded-[2.5rem] border border-border/50 text-left transition-transform hover:scale-[1.02]">
-                <div className="text-4xl font-black text-primary">50k+</div>
-                <div className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Active Users</div>
+            <div className="grid grid-cols-2 gap-4 md:gap-6 pt-4">
+              <div className="group relative overflow-hidden space-y-4 p-6 md:p-8 bg-secondary/30 backdrop-blur-sm rounded-[2rem] md:rounded-[2.5rem] border border-border/50 text-left transition-all hover:border-primary/30 hover:shadow-xl hover:shadow-primary/5">
+                <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center transition-colors group-hover:bg-primary/20">
+                  <Users className="w-5 h-5 text-primary" />
+                </div>
+                <div className="space-y-1">
+                  <div className="text-3xl md:text-4xl font-black text-foreground tracking-tighter">50k+</div>
+                  <div className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest">Active Users</div>
+                </div>
+                <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 blur-2xl rounded-full -translate-y-1/2 translate-x-1/2" />
               </div>
-              <div className="space-y-2 p-8 bg-primary/5 rounded-[2.5rem] border border-primary/10 text-left transition-transform hover:scale-[1.02]">
-                <div className="text-4xl font-black text-accent">36</div>
-                <div className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">States Reached</div>
+              
+              <div className="group relative overflow-hidden space-y-4 p-6 md:p-8 bg-accent/5 backdrop-blur-sm rounded-[2rem] md:rounded-[2.5rem] border border-accent/10 text-left transition-all hover:border-accent/30 hover:shadow-xl hover:shadow-accent/5">
+                <div className="w-10 h-10 bg-accent/10 rounded-xl flex items-center justify-center transition-colors group-hover:bg-accent/20">
+                  <Globe className="w-5 h-5 text-accent" />
+                </div>
+                <div className="space-y-1">
+                  <div className="text-3xl md:text-4xl font-black text-foreground tracking-tighter">36</div>
+                  <div className="text-[10px] uppercase font-bold text-muted-foreground tracking-widest">States Reached</div>
+                </div>
+                <div className="absolute top-0 right-0 w-24 h-24 bg-accent/5 blur-2xl rounded-full -translate-y-1/2 translate-x-1/2" />
               </div>
             </div>
           </div>
