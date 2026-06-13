@@ -1,19 +1,40 @@
+
 "use client";
 
 import React, { useState } from 'react';
-import { Users, Plus, Mail, MessageSquare, ShieldCheck, LayoutDashboard, Ticket, BarChart3, Settings, LogOut, Menu } from 'lucide-react';
+import { Users, Plus, Mail, MessageSquare, ShieldCheck, LayoutDashboard, Ticket, BarChart3, Settings, LogOut, Menu, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
 import { SidebarLink } from '../page';
 import { usePathname } from 'next/navigation';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { useToast } from "@/hooks/use-toast";
 
 export default function VendorsManagementPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const pathname = usePathname();
+  const { toast } = useToast();
+
+  const [vendors, setVendors] = useState([
+    { id: '1', name: "Main Gate Team", role: "Staff", status: "Active", email: "gate1@isabievents.ng" },
+    { id: '2', name: "Cold Sips Drinks", role: "Vendor", status: "Active", email: "drinks@vendor.ng" },
+    { id: '3', name: "Naija Grills", role: "Vendor", status: "Pending", email: "grills@vendor.ng" },
+  ]);
+
+  const [newVendor, setNewVendor] = useState({
+    name: '',
+    email: '',
+    role: 'Vendor'
+  });
 
   const NavigationLinks = () => (
     <nav className="flex-1 space-y-1">
@@ -27,6 +48,38 @@ export default function VendorsManagementPage() {
       </div>
     </nav>
   );
+
+  const handleAddVendor = async () => {
+    if (!newVendor.name || !newVendor.email) {
+      toast({
+        variant: "destructive",
+        title: "Missing fields",
+        description: "Please fill in all vendor details."
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    await new Promise(r => setTimeout(r, 1000));
+    
+    const vendor = {
+      id: Math.random().toString(36).substr(2, 9),
+      name: newVendor.name,
+      email: newVendor.email,
+      role: newVendor.role,
+      status: 'Active'
+    };
+
+    setVendors([vendor, ...vendors]);
+    setIsLoading(false);
+    setIsAddDialogOpen(false);
+    setNewVendor({ name: '', email: '', role: 'Vendor' });
+    
+    toast({
+      title: "Vendor Added",
+      description: `${vendor.name} has been invited to manage events.`
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col md:flex-row pt-32">
@@ -61,7 +114,7 @@ export default function VendorsManagementPage() {
               </SheetTitle>
             </SheetHeader>
             <NavigationLinks />
-            <div className="pt-6 border-t border-sidebar-border mt-auto">
+            <div className="pt-6 border-t border-border mt-auto">
               <SidebarLink icon={LogOut} label="Log Out" href="/login" />
             </div>
           </SheetContent>
@@ -75,15 +128,75 @@ export default function VendorsManagementPage() {
               <h1 className="font-headline mb-2 text-3xl md:text-5xl">Vendors & Staff</h1>
               <p className="text-muted-foreground">Manage service providers and gate staff for your events.</p>
             </div>
-            <Button className="rounded-full gap-2 px-6 shadow-lg shadow-primary/20 font-bold">
-              <Plus className="w-4 h-4" /> Add Vendor
-            </Button>
+            
+            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+              <DialogTrigger asChild>
+                <Button className="rounded-full gap-2 px-6 shadow-lg shadow-primary/20 font-bold">
+                  <Plus className="w-4 h-4" /> Add Vendor
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="bg-card border-border rounded-3xl">
+                <DialogHeader className="text-left">
+                  <DialogTitle className="font-headline text-2xl">Invite Vendor or Staff</DialogTitle>
+                  <DialogDescription>
+                    Fill in the details below to add a new member to your event team.
+                  </DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 py-4 text-left">
+                  <div className="space-y-2">
+                    <Label htmlFor="vendor-name">Name</Label>
+                    <Input 
+                      id="vendor-name" 
+                      placeholder="e.g. Sharp Security Ltd" 
+                      value={newVendor.name}
+                      onChange={(e) => setNewVendor({...newVendor, name: e.target.value})}
+                      className="bg-secondary/30"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="vendor-email">Email Address</Label>
+                    <Input 
+                      id="vendor-email" 
+                      type="email" 
+                      placeholder="contact@vendor.ng" 
+                      value={newVendor.email}
+                      onChange={(e) => setNewVendor({...newVendor, email: e.target.value})}
+                      className="bg-secondary/30"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="vendor-role">Role</Label>
+                    <Select value={newVendor.role} onValueChange={(v) => setNewVendor({...newVendor, role: v})}>
+                      <SelectTrigger className="bg-secondary/30">
+                        <SelectValue placeholder="Select role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Vendor">Vendor</SelectItem>
+                        <SelectItem value="Staff">Staff</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button variant="ghost" onClick={() => setIsAddDialogOpen(false)} className="rounded-full font-bold">Cancel</Button>
+                  <Button onClick={handleAddVendor} disabled={isLoading} className="rounded-full px-8 font-bold shadow-lg shadow-primary/20">
+                    {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Send Invitation"}
+                  </Button>
+                </DialogFooter>
+              </DialogContent>
+            </Dialog>
           </header>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-             <VendorCard name="Main Gate Team" role="Staff" status="Active" email="gate1@isabievents.ng" />
-             <VendorCard name="Cold Sips Drinks" role="Vendor" status="Active" email="drinks@vendor.ng" />
-             <VendorCard name="Naija Grills" role="Vendor" status="Pending" email="grills@vendor.ng" />
+             {vendors.map((vendor) => (
+               <VendorCard 
+                 key={vendor.id}
+                 name={vendor.name} 
+                 role={vendor.role} 
+                 status={vendor.status} 
+                 email={vendor.email} 
+               />
+             ))}
           </div>
 
           <Card className="border-dashed border-2 border-border bg-card/50 rounded-[2rem]">
@@ -106,13 +219,13 @@ export default function VendorsManagementPage() {
 
 function VendorCard({ name, role, status, email }: any) {
   return (
-    <Card className="bg-card border-border hover:border-primary/30 transition-all text-left">
+    <Card className="bg-card border-border hover:border-primary/30 transition-all text-left group">
       <CardContent className="p-6 space-y-6">
         <div className="flex justify-between items-start">
-          <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center group-hover:bg-primary/10 transition-colors">
             <Users className="w-6 h-6 text-primary" />
           </div>
-          <Badge className={status === 'Active' ? 'bg-green-500/10 text-green-500' : 'bg-yellow-500/10 text-yellow-500'}>
+          <Badge className={status === 'Active' ? 'bg-green-500/10 text-green-500 border-none' : 'bg-yellow-500/10 text-yellow-500 border-none'}>
             {status}
           </Badge>
         </div>
@@ -126,7 +239,7 @@ function VendorCard({ name, role, status, email }: any) {
           </div>
         </div>
         <div className="flex gap-2 pt-2">
-          <Button variant="secondary" size="sm" className="flex-1 rounded-lg h-9">Manage</Button>
+          <Button variant="secondary" size="sm" className="flex-1 rounded-lg h-9 font-bold">Manage</Button>
           <Button variant="outline" size="sm" className="rounded-lg h-9"><MessageSquare className="w-4 h-4" /></Button>
         </div>
       </CardContent>
