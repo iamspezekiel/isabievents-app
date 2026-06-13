@@ -63,7 +63,7 @@
     font-feature-settings: "rlig" 1, "calt" 1;
   }
   p {
-    @apply text-base leading-relaxed;
+    @apply text-sm leading-relaxed;
   }
   a {
     @apply no-underline;

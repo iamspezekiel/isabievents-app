@@ -95,7 +95,7 @@ export default function AboutPage() {
               
               <div className="relative pl-12 py-4">
                 <Quote className="absolute top-0 left-0 w-8 h-8 text-primary/20 rotate-180" />
-                <p className="font-headline text-xl md:text-2xl font-bold tracking-tight leading-snug text-foreground">
+                <p className="font-headline font-bold tracking-tight leading-snug text-foreground">
                   "We didn't just build a ticket shop. We built a system that understands the local context—from bank transfers to offline entry."
                 </p>
               </div>
