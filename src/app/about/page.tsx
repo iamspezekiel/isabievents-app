@@ -33,17 +33,15 @@ export default function AboutPage() {
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-32 items-center">
           <div className="relative order-2 lg:order-1 space-y-12">
             <div className="relative group">
-              <div className="relative aspect-[4/5] rounded-[3.5rem] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] z-10 p-6 md:p-6 bg-card">
-                <div className="relative w-full h-full rounded-[2.5rem] overflow-hidden">
-                  <Image 
-                    src="https://picsum.photos/seed/story_v12/800/1000" 
-                    alt="The IsabiEvents Story" 
-                    fill 
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    data-ai-hint="nigerian festival"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
-                </div>
+              <div className="relative aspect-[4/5] rounded-[3.5rem] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] z-10">
+                <Image 
+                  src="https://picsum.photos/seed/story_v12/800/1000" 
+                  alt="The IsabiEvents Story" 
+                  fill 
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  data-ai-hint="nigerian festival"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-60" />
               </div>
 
               <div className="absolute -top-8 -left-8 w-full h-full border-2 border-primary/20 rounded-[3.5rem] -z-0 hidden md:block transition-transform duration-500 group-hover:-translate-y-2 group-hover:-translate-x-2" />
