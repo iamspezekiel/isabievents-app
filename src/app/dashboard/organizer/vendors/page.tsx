@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Users, Plus, Mail, MessageSquare, ShieldCheck, LayoutDashboard, Ticket, BarChart3, Settings, LogOut, Menu, Loader2, User, UserPlus } from 'lucide-react';
+import { Users, Plus, Mail, MessageSquare, ShieldCheck, LayoutDashboard, Ticket, BarChart3, Settings, LogOut, Menu, Loader2, User, UserPlus, Trash2, Edit } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
 import { SidebarLink } from '../page';
@@ -78,6 +79,14 @@ export default function VendorsManagementPage() {
     toast({
       title: "Vendor Added",
       description: `${vendor.name} has been invited to manage events.`
+    });
+  };
+
+  const handleDeleteVendor = (id: string) => {
+    setVendors(vendors.filter(v => v.id !== id));
+    toast({
+      title: "Member Removed",
+      description: "The team member has been removed successfully."
     });
   };
 
@@ -202,10 +211,8 @@ export default function VendorsManagementPage() {
              {vendors.map((vendor) => (
                <VendorCard 
                  key={vendor.id}
-                 name={vendor.name} 
-                 role={vendor.role} 
-                 status={vendor.status} 
-                 email={vendor.email} 
+                 vendor={vendor}
+                 onDelete={handleDeleteVendor}
                />
              ))}
           </div>
@@ -228,7 +235,8 @@ export default function VendorsManagementPage() {
   );
 }
 
-function VendorCard({ name, role, status, email }: any) {
+function VendorCard({ vendor, onDelete }: any) {
+  const { name, role, status, email } = vendor;
   return (
     <Card className="bg-card border-border hover:border-primary/30 transition-all text-left group">
       <CardContent className="p-6 space-y-6">
@@ -250,7 +258,19 @@ function VendorCard({ name, role, status, email }: any) {
           </div>
         </div>
         <div className="flex gap-2 pt-2">
-          <Button variant="secondary" size="sm" className="flex-1 rounded-lg h-9 font-bold">Manage</Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="secondary" size="sm" className="flex-1 rounded-lg h-9 font-bold">Manage</Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48 bg-card border-border">
+              <DropdownMenuItem className="gap-2 font-bold cursor-pointer">
+                <Edit className="w-4 h-4" /> Edit Details
+              </DropdownMenuItem>
+              <DropdownMenuItem className="gap-2 font-bold text-red-500 hover:text-red-600 cursor-pointer" onClick={() => onDelete(vendor.id)}>
+                <Trash2 className="w-4 h-4" /> Remove Team
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
           <Button variant="outline" size="sm" className="rounded-lg h-9"><MessageSquare className="w-4 h-4" /></Button>
         </div>
       </CardContent>
