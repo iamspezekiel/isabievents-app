@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -56,7 +55,7 @@ export default function AttendeeDashboard() {
     <div className="min-h-screen bg-background flex flex-col lg:flex-row pt-32">
       {/* Sidebar for Desktop */}
       <aside className="hidden lg:flex w-72 bg-card/30 border-r border-border p-8 flex-col sticky top-0 h-screen overflow-y-auto">
-        <Link href="/" className="mb-12 block">
+        <Link href="/dashboard/attendee" className="mb-12 block no-underline">
           <Logo size="sm" />
         </Link>
         <Navigation />
@@ -67,7 +66,9 @@ export default function AttendeeDashboard() {
 
       {/* Mobile Top Header */}
       <header className="lg:hidden flex items-center justify-between p-4 bg-card border-b border-border sticky top-0 z-40">
-        <Logo size="sm" />
+        <Link href="/dashboard/attendee" className="no-underline">
+          <Logo size="sm" />
+        </Link>
         <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon">
@@ -77,7 +78,9 @@ export default function AttendeeDashboard() {
           <SheetContent side="left" className="w-72 bg-card border-border p-8 flex flex-col overflow-y-auto">
             <SheetHeader className="text-left mb-10">
               <SheetTitle>
-                <Logo size="sm" />
+                <Link href="/dashboard/attendee" className="no-underline" onClick={() => setIsSidebarOpen(false)}>
+                  <Logo size="sm" />
+                </Link>
               </SheetTitle>
             </SheetHeader>
             <Navigation />
@@ -88,16 +91,16 @@ export default function AttendeeDashboard() {
         </Sheet>
       </header>
 
-      {/* Main Content - pt-12 refined */}
+      {/* Main Content */}
       <main className="flex-1 p-4 md:p-8 lg:p-12 overflow-x-hidden">
         <div className="max-w-5xl mx-auto space-y-8 md:space-y-12">
           <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-1 text-left">
-              <h1 className="font-headline text-3xl md:text-4xl">Hi, {MOCK_USER.name} 👋</h1>
-              <p className="text-muted-foreground font-medium">You have {MOCK_USER.wallet.active} upcoming experiences.</p>
+              <h1 className="font-headline text-3xl md:text-5xl">Hi, {MOCK_USER.name} 👋</h1>
+              <p className="text-muted-foreground">You have {MOCK_USER.wallet.active} upcoming experiences.</p>
             </div>
             <div className="flex items-center gap-3">
-              <Link href="/discover" className="w-full sm:w-auto">
+              <Link href="/discover" className="w-full sm:w-auto no-underline">
                 <Button className="w-full rounded-full px-8 shadow-xl shadow-primary/20 h-11 font-bold">Discover Events</Button>
               </Link>
             </div>
@@ -140,7 +143,7 @@ export function SidebarLink({ icon: Icon, label, active, href = "#" }: any) {
   return (
     <Link 
       href={href} 
-      className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all text-sm font-bold ${
+      className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all text-sm font-bold no-underline ${
         active 
           ? 'bg-primary text-white shadow-lg shadow-primary/20' 
           : 'text-muted-foreground hover:bg-secondary hover:text-foreground'

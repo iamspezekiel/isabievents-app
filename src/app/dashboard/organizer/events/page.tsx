@@ -34,7 +34,7 @@ export default function MyEventsPage() {
     <div className="min-h-screen bg-background flex flex-col md:flex-row pt-32">
       {/* Desktop Side Navigation */}
       <aside className="w-64 bg-sidebar border-r border-sidebar-border p-6 flex flex-col hidden md:flex sticky top-0 h-screen overflow-y-auto">
-        <Link href="/" className="mb-10 block">
+        <Link href="/dashboard/organizer" className="mb-10 block no-underline">
           <Logo size="sm" />
         </Link>
         <NavigationLinks />
@@ -45,7 +45,9 @@ export default function MyEventsPage() {
 
       {/* Mobile Header */}
       <header className="md:hidden flex items-center justify-between p-4 bg-card border-b border-border sticky top-0 z-40">
-        <Logo size="sm" />
+        <Link href="/dashboard/organizer" className="no-underline">
+          <Logo size="sm" />
+        </Link>
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon">
@@ -55,11 +57,13 @@ export default function MyEventsPage() {
           <SheetContent side="left" className="w-72 bg-card border-border p-6 flex flex-col overflow-y-auto">
             <SheetHeader className="text-left mb-10">
               <SheetTitle>
-                <Logo size="sm" />
+                <Link href="/dashboard/organizer" className="no-underline" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Logo size="sm" />
+                </Link>
               </SheetTitle>
             </SheetHeader>
             <NavigationLinks />
-            <div className="pt-6 border-t border-border mt-auto">
+            <div className="pt-6 border-t border-sidebar-border mt-auto">
               <SidebarLink icon={LogOut} label="Log Out" href="/login" />
             </div>
           </SheetContent>
@@ -70,10 +74,10 @@ export default function MyEventsPage() {
         <div className="max-w-6xl mx-auto space-y-8">
           <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
             <div className="text-left">
-              <h1 className="font-headline mb-2">My Events</h1>
+              <h1 className="font-headline mb-2 text-3xl md:text-5xl">My Events</h1>
               <p className="text-muted-foreground">Manage your upcoming and past experiences.</p>
             </div>
-            <Link href="/dashboard/organizer/create">
+            <Link href="/dashboard/organizer/create" className="no-underline">
               <Button className="rounded-full gap-2 px-6 shadow-lg shadow-primary/20 font-bold">
                 <Plus className="w-4 h-4" /> Create New
               </Button>
@@ -123,7 +127,7 @@ export default function MyEventsPage() {
                       </div>
                       <div className="ml-auto flex gap-2">
                         <Button variant="outline" size="sm" className="rounded-full h-9">Edit</Button>
-                        <Link href={`/events/${event.id}`}>
+                        <Link href={`/events/${event.id}`} className="no-underline">
                            <Button size="sm" variant="ghost" className="rounded-full gap-1 h-9">View <ExternalLink className="w-3.5 h-3.5" /></Button>
                         </Link>
                       </div>

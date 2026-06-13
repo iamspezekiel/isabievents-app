@@ -70,7 +70,7 @@ export default function OrganizerDashboard() {
     <div className="min-h-screen bg-background flex flex-col md:flex-row pt-32">
       {/* Desktop Side Navigation */}
       <aside className="w-64 bg-sidebar border-r border-sidebar-border p-6 flex flex-col hidden md:flex sticky top-0 h-screen overflow-y-auto">
-        <Link href="/" className="mb-10 block">
+        <Link href="/dashboard/organizer" className="mb-10 block no-underline">
           <Logo size="sm" />
         </Link>
         <NavigationLinks />
@@ -81,7 +81,9 @@ export default function OrganizerDashboard() {
 
       {/* Mobile Header */}
       <header className="md:hidden flex items-center justify-between p-4 bg-card border-b border-border sticky top-0 z-40">
-        <Logo size="sm" />
+        <Link href="/dashboard/organizer" className="no-underline">
+          <Logo size="sm" />
+        </Link>
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon">
@@ -91,7 +93,9 @@ export default function OrganizerDashboard() {
           <SheetContent side="left" className="w-72 bg-card border-border p-6 flex flex-col overflow-y-auto">
             <SheetHeader className="text-left mb-10">
               <SheetTitle>
-                <Logo size="sm" />
+                <Link href="/dashboard/organizer" className="no-underline" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Logo size="sm" />
+                </Link>
               </SheetTitle>
             </SheetHeader>
             <NavigationLinks />
@@ -106,7 +110,7 @@ export default function OrganizerDashboard() {
         <div className="max-w-6xl mx-auto space-y-8">
           <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="text-left space-y-2">
-              <h1 className="font-headline">Organizer Overview</h1>
+              <h1 className="font-headline text-3xl md:text-5xl">Organizer Overview</h1>
               <div className="flex flex-wrap items-center gap-2">
                 <Badge className="bg-accent/20 text-accent border-none font-bold">Verified Merchant</Badge>
                 <span className="text-muted-foreground text-xs font-medium bg-secondary/50 px-2 py-0.5 rounded-full">Account Health: 98%</span>
@@ -122,7 +126,7 @@ export default function OrganizerDashboard() {
                 {isRefreshing ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCcw className="w-4 h-4" />}
                 <span className="hidden sm:inline">Refresh</span>
               </Button>
-              <Link href="/dashboard/organizer/create">
+              <Link href="/dashboard/organizer/create" className="no-underline">
                 <Button className="rounded-full gap-2 px-6 h-11 shadow-lg shadow-primary/20 font-bold">
                   <Plus className="w-4 h-4" /> New Event
                 </Button>
@@ -190,7 +194,7 @@ export function SidebarLink({ icon: Icon, label, active, href = "#" }: any) {
   return (
     <Link 
       href={href} 
-      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-bold ${
+      className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all text-sm font-bold no-underline ${
         active 
           ? 'bg-primary text-white shadow-lg shadow-primary/20' 
           : 'text-muted-foreground hover:bg-secondary hover:text-foreground'

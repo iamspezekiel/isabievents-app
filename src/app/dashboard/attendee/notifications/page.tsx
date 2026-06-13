@@ -29,7 +29,7 @@ export default function NotificationsPage() {
     <div className="min-h-screen bg-background flex flex-col lg:flex-row pt-32">
       {/* Sidebar for Desktop */}
       <aside className="hidden lg:flex w-72 bg-card/30 border-r border-border p-8 flex-col sticky top-0 h-screen overflow-y-auto">
-        <Link href="/" className="mb-12 block">
+        <Link href="/dashboard/attendee" className="mb-12 block no-underline">
           <Logo size="sm" />
         </Link>
         <Navigation />
@@ -40,7 +40,9 @@ export default function NotificationsPage() {
 
       {/* Mobile Top Header */}
       <header className="lg:hidden flex items-center justify-between p-4 bg-card border-b border-border sticky top-0 z-40">
-        <Logo size="sm" />
+        <Link href="/dashboard/attendee" className="no-underline">
+          <Logo size="sm" />
+        </Link>
         <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon">
@@ -50,7 +52,9 @@ export default function NotificationsPage() {
           <SheetContent side="left" className="w-72 bg-card border-border p-8 flex flex-col overflow-y-auto">
             <SheetHeader className="text-left mb-10">
               <SheetTitle>
-                <Logo size="sm" />
+                <Link href="/dashboard/attendee" className="no-underline" onClick={() => setIsSidebarOpen(false)}>
+                  <Logo size="sm" />
+                </Link>
               </SheetTitle>
             </SheetHeader>
             <Navigation />
@@ -65,7 +69,7 @@ export default function NotificationsPage() {
         <div className="max-w-4xl mx-auto space-y-8">
           <header className="flex items-center justify-between text-left">
             <div className="space-y-1">
-              <h1 className="font-headline">Notifications</h1>
+              <h1 className="font-headline text-3xl md:text-5xl">Notifications</h1>
               <p className="text-muted-foreground font-medium">Stay updated on your upcoming experiences.</p>
             </div>
             <Button variant="ghost" className="text-xs font-bold text-primary">Mark all as read</Button>

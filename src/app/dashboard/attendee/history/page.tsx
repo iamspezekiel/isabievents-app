@@ -31,7 +31,7 @@ export default function OrderHistoryPage() {
     <div className="min-h-screen bg-background flex flex-col lg:flex-row pt-32">
       {/* Sidebar for Desktop */}
       <aside className="hidden lg:flex w-72 bg-card/30 border-r border-border p-8 flex-col sticky top-0 h-screen overflow-y-auto">
-        <Link href="/" className="mb-12 block">
+        <Link href="/dashboard/attendee" className="mb-12 block no-underline">
           <Logo size="sm" />
         </Link>
         <Navigation />
@@ -42,7 +42,9 @@ export default function OrderHistoryPage() {
 
       {/* Mobile Top Header */}
       <header className="lg:hidden flex items-center justify-between p-4 bg-card border-b border-border sticky top-0 z-40">
-        <Logo size="sm" />
+        <Link href="/dashboard/attendee" className="no-underline">
+          <Logo size="sm" />
+        </Link>
         <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon">
@@ -52,7 +54,9 @@ export default function OrderHistoryPage() {
           <SheetContent side="left" className="w-72 bg-card border-border p-8 flex flex-col overflow-y-auto">
             <SheetHeader className="text-left mb-10">
               <SheetTitle>
-                <Logo size="sm" />
+                <Link href="/dashboard/attendee" className="no-underline" onClick={() => setIsSidebarOpen(false)}>
+                  <Logo size="sm" />
+                </Link>
               </SheetTitle>
             </SheetHeader>
             <Navigation />
@@ -66,7 +70,7 @@ export default function OrderHistoryPage() {
       <main className="flex-1 p-4 md:p-12">
         <div className="max-w-4xl mx-auto space-y-8">
           <div className="text-left">
-            <h1 className="font-headline mb-2">Order History</h1>
+            <h1 className="font-headline mb-2 text-3xl md:text-5xl">Order History</h1>
             <p className="text-muted-foreground">View and download invoices for all your past purchases.</p>
           </div>
 

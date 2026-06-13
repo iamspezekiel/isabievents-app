@@ -32,7 +32,7 @@ export default function VendorsManagementPage() {
     <div className="min-h-screen bg-background flex flex-col md:flex-row pt-32">
       {/* Desktop Side Navigation */}
       <aside className="w-64 bg-sidebar border-r border-sidebar-border p-6 flex flex-col hidden md:flex sticky top-0 h-screen overflow-y-auto">
-        <Link href="/" className="mb-10 block">
+        <Link href="/dashboard/organizer" className="mb-10 block no-underline">
           <Logo size="sm" />
         </Link>
         <NavigationLinks />
@@ -43,7 +43,9 @@ export default function VendorsManagementPage() {
 
       {/* Mobile Header */}
       <header className="md:hidden flex items-center justify-between p-4 bg-card border-b border-border sticky top-0 z-40">
-        <Logo size="sm" />
+        <Link href="/dashboard/organizer" className="no-underline">
+          <Logo size="sm" />
+        </Link>
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon">
@@ -53,11 +55,13 @@ export default function VendorsManagementPage() {
           <SheetContent side="left" className="w-72 bg-card border-border p-6 flex flex-col overflow-y-auto">
             <SheetHeader className="text-left mb-10">
               <SheetTitle>
-                <Logo size="sm" />
+                <Link href="/dashboard/organizer" className="no-underline" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Logo size="sm" />
+                </Link>
               </SheetTitle>
             </SheetHeader>
             <NavigationLinks />
-            <div className="pt-6 border-t border-border mt-auto">
+            <div className="pt-6 border-t border-sidebar-border mt-auto">
               <SidebarLink icon={LogOut} label="Log Out" href="/login" />
             </div>
           </SheetContent>
@@ -68,7 +72,7 @@ export default function VendorsManagementPage() {
         <div className="max-w-6xl mx-auto space-y-8">
           <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
             <div className="text-left">
-              <h1 className="font-headline mb-2">Vendors & Staff</h1>
+              <h1 className="font-headline mb-2 text-3xl md:text-5xl">Vendors & Staff</h1>
               <p className="text-muted-foreground">Manage service providers and gate staff for your events.</p>
             </div>
             <Button className="rounded-full gap-2 px-6 shadow-lg shadow-primary/20 font-bold">
