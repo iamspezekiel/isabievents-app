@@ -133,7 +133,7 @@ export default function HomePage() {
       </div>
 
       {/* Trending Events */}
-      <section className="pt-8 pb-24">
+      <section className="pt-8 pb-12">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-12">
             <div className="text-left">
