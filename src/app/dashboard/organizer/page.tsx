@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -15,7 +16,10 @@ import {
   RefreshCcw,
   Menu,
   Loader2,
-  CheckCircle2
+  CheckCircle2,
+  ShieldCheck,
+  ArrowRight,
+  Info
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -40,6 +44,7 @@ const salesData = [
 export default function OrganizerDashboard() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showTrustTip, setShowTrustTip] = useState(true);
   const pathname = usePathname();
   const { toast } = useToast();
 
@@ -71,9 +76,11 @@ export default function OrganizerDashboard() {
     <div className="min-h-screen bg-background flex flex-col md:flex-row pt-32">
       {/* Desktop Side Navigation */}
       <aside className="w-64 bg-sidebar border-r border-sidebar-border p-6 flex flex-col hidden md:flex sticky top-0 h-screen overflow-y-auto">
-        <Link href="/dashboard/organizer" className="mb-10 block no-underline">
-          <Logo size="sm" />
-        </Link>
+        <div className="mb-10">
+          <Link href="/dashboard/organizer" className="no-underline">
+            <Logo size="sm" />
+          </Link>
+        </div>
         <NavigationLinks />
         <div className="pt-6 border-t border-sidebar-border mt-auto">
           <SidebarLink icon={LogOut} label="Log Out" href="/login" />
@@ -109,11 +116,27 @@ export default function OrganizerDashboard() {
 
       <main className="flex-1 p-4 md:p-12 overflow-x-hidden">
         <div className="max-w-6xl mx-auto space-y-8">
+          {/* Trust Banner - Dismissible */}
+          {showTrustTip && (
+            <div className="bg-primary/10 border border-primary/20 p-4 px-6 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 animate-in slide-in-from-top-4 duration-500">
+              <div className="flex items-center gap-3">
+                <ShieldCheck className="w-5 h-5 text-primary shrink-0" />
+                <p className="text-xs font-medium text-left">Get a verified badge and unlock faster payouts by completing your KYC profile.</p>
+              </div>
+              <div className="flex items-center gap-4 w-full sm:w-auto">
+                <Link href="/dashboard/organizer/kyc" className="no-underline flex-1 sm:flex-none">
+                  <Button size="sm" variant="link" className="text-primary font-bold h-auto p-0">Verify Now <ArrowRight className="w-3 h-3 ml-1" /></Button>
+                </Link>
+                <button onClick={() => setShowTrustTip(false)} className="text-[10px] font-bold text-muted-foreground hover:text-foreground uppercase tracking-widest">Later</button>
+              </div>
+            </div>
+          )}
+
           <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="text-left space-y-2">
               <h1 className="font-headline text-3xl md:text-5xl flex items-center gap-3">
                 Smooth Events
-                <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8 text-accent fill-accent text-white" />
+                <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8 text-accent fill-accent text-white" summer-hint="verified-badge" />
               </h1>
             </div>
             <div className="flex items-center gap-3">

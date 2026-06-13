@@ -1,7 +1,8 @@
+
 "use client";
 
 import React, { useState } from 'react';
-import { Settings, User, ShieldCheck, LogOut, Menu, LayoutDashboard, Plus, Ticket, Users, BarChart3 } from 'lucide-react';
+import { Settings, User, ShieldCheck, LogOut, Menu, LayoutDashboard, Plus, Ticket, Users, BarChart3, CheckCircle2, ChevronRight, AlertCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,9 +35,11 @@ export default function OrganizerSettingsPage() {
     <div className="min-h-screen bg-background flex flex-col md:flex-row pt-32">
       {/* Desktop Side Navigation */}
       <aside className="w-64 bg-sidebar border-r border-sidebar-border p-6 flex flex-col hidden md:flex sticky top-0 h-screen overflow-y-auto">
-        <Link href="/dashboard/organizer" className="mb-10 block no-underline">
-          <Logo size="sm" />
-        </Link>
+        <div className="mb-10">
+          <Link href="/dashboard/organizer" className="no-underline">
+            <Logo size="sm" />
+          </Link>
+        </div>
         <NavigationLinks />
         <div className="pt-6 border-t border-sidebar-border mt-auto">
           <SidebarLink icon={LogOut} label="Log Out" href="/login" />
@@ -63,7 +66,7 @@ export default function OrganizerSettingsPage() {
               </SheetTitle>
             </SheetHeader>
             <NavigationLinks />
-            <div className="pt-6 border-t border-sidebar-border mt-auto">
+            <div className="pt-6 border-t border-border mt-auto">
               <SidebarLink icon={LogOut} label="Log Out" href="/login" />
             </div>
           </SheetContent>
@@ -78,9 +81,36 @@ export default function OrganizerSettingsPage() {
           </div>
 
           <div className="grid gap-8">
+            {/* Verification Card */}
+            <Card className="border-primary/20 bg-primary/5 overflow-hidden">
+              <CardContent className="p-0">
+                <div className="p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 text-left">
+                  <div className="flex gap-5 items-start">
+                    <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
+                      <ShieldCheck className="w-7 h-7 text-primary" />
+                    </div>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-bold text-xl">Verification Status</h3>
+                        <Badge variant="outline" className="text-[10px] font-black uppercase tracking-tighter border-yellow-500/50 text-yellow-600 bg-yellow-500/5">Not Verified</Badge>
+                      </div>
+                      <p className="text-sm text-muted-foreground max-w-md leading-relaxed">
+                        Verify your identity to get the verified badge and unlock faster payouts for your events.
+                      </p>
+                    </div>
+                  </div>
+                  <Link href="/dashboard/organizer/kyc" className="no-underline">
+                    <Button className="rounded-full px-8 gap-2 font-bold shadow-lg shadow-primary/20 h-11">
+                      Start KYC <ChevronRight className="w-4 h-4" />
+                    </Button>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+
             <Card className="border-border bg-card">
               <CardHeader className="text-left">
-                <CardTitle className="flex items-center gap-2"><User className="w-5 h-5 text-primary" /> Brand Profile</CardTitle>
+                <CardTitle className="flex items-center gap-2 text-lg"><User className="w-5 h-5 text-primary" /> Brand Profile</CardTitle>
                 <CardDescription>Public information that attendees will see.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6 text-left">
@@ -94,13 +124,13 @@ export default function OrganizerSettingsPage() {
                     <Input id="email" defaultValue="hello@smoothevents.ng" className="h-11" />
                   </div>
                 </div>
-                <Button className="rounded-full px-8">Save Changes</Button>
+                <Button className="rounded-full px-8 font-bold">Save Changes</Button>
               </CardContent>
             </Card>
 
             <Card className="border-border bg-card">
               <CardHeader className="text-left">
-                <CardTitle className="flex items-center gap-2"><ShieldCheck className="w-5 h-5 text-primary" /> Security & Payouts</CardTitle>
+                <CardTitle className="flex items-center gap-2 text-lg"><ShieldCheck className="w-5 h-5 text-primary" /> Security & Payouts</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6 text-left">
                 <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-xl">
