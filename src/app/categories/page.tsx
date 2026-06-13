@@ -48,13 +48,13 @@ export default function AllCategoriesPage() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+      <main className="container mx-auto px-4 py-8 md:py-16">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8">
           {CATEGORIES.map((cat) => {
             const IconComp = iconMap[cat.icon] || Music;
             return (
               <Link key={cat.id} href={`/discover?category=${cat.id}`} className="no-underline group">
-                <div className="relative h-72 rounded-[2.5rem] overflow-hidden border border-border bg-card transition-all duration-500 group-hover:border-primary/50 group-hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] group-hover:-translate-y-2">
+                <div className="relative h-60 md:h-72 rounded-[1.5rem] md:rounded-[2.5rem] overflow-hidden border border-border bg-card transition-all duration-500 group-hover:border-primary/50 group-hover:shadow-[0_32px_64px_-16px_rgba(0,0,0,0.1)] group-hover:-translate-y-2">
                   {/* Background Image Placeholder */}
                   <div className="absolute inset-0 opacity-10 grayscale group-hover:opacity-20 group-hover:grayscale-0 transition-all duration-700">
                     <Image 
@@ -66,19 +66,19 @@ export default function AllCategoriesPage() {
                   </div>
                   
                   {/* Content */}
-                  <div className="relative h-full p-10 flex flex-col justify-between z-10">
+                  <div className="relative h-full p-5 md:p-10 flex flex-col justify-between z-10">
                     <div className="flex justify-between items-start">
-                      <div className="w-16 h-16 bg-secondary rounded-2xl flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-lg group-hover:shadow-primary/20">
-                        <IconComp className="w-8 h-8" />
+                      <div className="w-10 h-10 md:w-16 md:h-16 bg-secondary rounded-xl md:rounded-2xl flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all duration-500 shadow-lg group-hover:shadow-primary/20">
+                        <IconComp className="w-5 h-5 md:w-8 md:h-8" />
                       </div>
-                      <Badge variant="outline" className="bg-background/50 backdrop-blur-md border-border/50 font-bold group-hover:border-primary/30 transition-colors">
+                      <Badge variant="outline" className="hidden md:flex bg-background/50 backdrop-blur-md border-border/50 font-bold group-hover:border-primary/30 transition-colors text-[10px]">
                         100+ Events
                       </Badge>
                     </div>
 
-                    <div className="space-y-2">
-                      <h3 className="font-headline text-3xl font-black tracking-tighter leading-none">{cat.name}</h3>
-                      <p className="text-muted-foreground font-medium group-hover:text-foreground transition-colors">Discover trending {cat.name.toLowerCase()} events</p>
+                    <div className="space-y-1 md:space-y-2">
+                      <h3 className="font-headline text-xl md:text-3xl font-black tracking-tighter leading-none">{cat.name}</h3>
+                      <p className="text-[10px] md:text-sm text-muted-foreground font-medium group-hover:text-foreground transition-colors line-clamp-2">Discover trending {cat.name.toLowerCase()} events</p>
                     </div>
                   </div>
 
