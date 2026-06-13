@@ -21,7 +21,7 @@ export function Footer() {
         {/* Newsletter Section */}
         <div className="max-w-6xl mx-auto bg-primary/5 border border-primary/10 rounded-[2rem] p-6 md:p-8 mb-10 flex flex-col lg:flex-row items-center justify-between gap-8">
           <div className="space-y-2 text-center lg:text-left">
-            <h3 className="font-headline text-xl md:text-2xl font-black tracking-tighter">Stay in the Loop</h3>
+            <h3 className="font-headline text-xl md:text-2xl font-black tracking-tighter">Stay in the <span className="text-primary">Loop</span></h3>
             <p className="text-muted-foreground font-medium">Get first access to Nigerian concerts, festivals, and tech summits.</p>
           </div>
           <div className="w-full lg:max-w-md flex flex-col sm:flex-row gap-3">
