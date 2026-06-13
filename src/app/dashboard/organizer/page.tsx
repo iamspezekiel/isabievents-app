@@ -113,7 +113,6 @@ export default function OrganizerDashboard() {
               <h1 className="font-headline text-3xl md:text-5xl">Organizer Overview</h1>
               <div className="flex flex-wrap items-center gap-2">
                 <Badge className="bg-accent/20 text-accent border-none font-bold">Verified Merchant</Badge>
-                <span className="text-muted-foreground text-xs font-medium bg-secondary/50 px-2 py-0.5 rounded-full">Account Health: 98%</span>
               </div>
             </div>
             <div className="flex items-center gap-3">
