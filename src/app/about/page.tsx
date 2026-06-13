@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -194,7 +195,7 @@ export default function AboutPage() {
           <p className="max-w-2xl px-4 mx-auto font-medium text-muted-foreground text-sm">
             Whether you're looking for your next favorite memory or hosting the event of the year, we're here to help you make it happen.
           </p>
-          <div className="flex flex-row items-center justify-center gap-4 px-8 md:gap-8 md:px-0">
+          <div className="flex flex-row items-center justify-center gap-4 px-12 md:gap-8 md:px-0">
             <Link href="/discover" className="flex-1 no-underline sm:flex-none">
               <Button className="w-full font-bold rounded-full px-12 shadow-2xl shadow-primary/30 h-11">
                 Explore Events
