@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -133,7 +132,7 @@ export default function KYCVerificationPage() {
                 </CardContent>
               </Card>
               
-              <Button onClick={() => setStep(2)} className="w-full rounded-full h-12 font-bold shadow-xl shadow-primary/20">
+              <Button onClick={() => setStep(2)} className="w-full rounded-full h-9 md:h-11 font-bold shadow-xl shadow-primary/20">
                 Continue to Business Info
               </Button>
               <Button variant="ghost" onClick={() => router.back()} className="w-full font-bold text-muted-foreground">
@@ -207,10 +206,10 @@ export default function KYCVerificationPage() {
               </Card>
 
               <div className="flex gap-4">
-                <Button variant="outline" onClick={() => setStep(1)} className="flex-1 rounded-full h-12 font-bold">
+                <Button variant="outline" onClick={() => setStep(1)} className="flex-1 rounded-full h-9 md:h-11 font-bold">
                   Back
                 </Button>
-                <Button onClick={handleSubmit} disabled={loading} className="flex-[2] rounded-full h-12 font-bold shadow-xl shadow-primary/20">
+                <Button onClick={handleSubmit} disabled={loading} className="flex-[2] rounded-full h-9 md:h-11 font-bold shadow-xl shadow-primary/20">
                   {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Submit for Verification"}
                 </Button>
               </div>
