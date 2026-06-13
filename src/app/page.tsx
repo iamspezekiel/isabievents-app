@@ -72,7 +72,7 @@ export default function HomePage() {
             <h1 className="text-4xl md:text-6xl lg:text-7xl animate-in fade-in slide-in-from-bottom-8 duration-1000">
               Experience the Best of <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Nigerian</span> Events
             </h1>
-            <p className="max-w-2xl mx-auto mt-4 mb-8 animate-in fade-in slide-in-from-bottom-12 duration-1000 text-muted-foreground mt-4">
+            <p className="max-w-2xl mx-auto mt-4 mb-8 animate-in fade-in slide-in-from-bottom-12 duration-1000 text-muted-foreground">
               Discover and secure your spot with zero friction.
             </p>
 
@@ -209,7 +209,7 @@ export default function HomePage() {
       </section>
 
       {/* Trust Section */}
-      <section className="py-24 bg-card/30 border-y border-border">
+      <section className="pt-16 pb-24 bg-card/30 border-y border-border">
         <div className="container mx-auto px-8 md:px-16 lg:px-24 text-center">
           <h2 className="mb-16">Why thousands choose IsabiEvents</h2>
           <div className="grid md:grid-cols-3 gap-12">
