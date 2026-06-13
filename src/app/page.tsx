@@ -72,7 +72,7 @@ export default function HomePage() {
             <h1 className="text-3xl md:text-7xl mb-6 leading-[1.05] max-w-4xl mx-auto font-black tracking-tighter text-balance animate-in fade-in slide-in-from-bottom-8 duration-1000">
               Experience the Best of <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Nigerian</span> Events
             </h1>
-            <p className="text-muted-foreground max-w-2xl mx-auto mb-8 animate-in fade-in slide-in-from-bottom-12 duration-1000">
+            <p className="max-w-2xl mx-auto mb-8 animate-in fade-in slide-in-from-bottom-12 duration-1000 text-muted-foreground">
               Discover and secure your spot with zero friction.
             </p>
 
@@ -81,13 +81,13 @@ export default function HomePage() {
                 <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
                 <Input 
                   placeholder="Search events, artists, venues..." 
-                  className="pl-14 h-14 bg-secondary/30 md:bg-transparent border-none focus-visible:ring-0 text-base md:text-lg rounded-xl md:rounded-full"
+                  className="pl-14 h-11 bg-secondary/30 md:bg-transparent border-none focus-visible:ring-0 text-base md:text-lg rounded-xl md:rounded-full"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
               <Link href={`/discover?q=${encodeURIComponent(search)}`} className="w-full md:w-auto">
-                <Button size="lg" className="w-full md:w-auto rounded-full shadow-lg shadow-primary/20 font-bold transition-transform hover:scale-[1.02] active:scale-95">
+                <Button className="w-full md:w-auto rounded-full shadow-lg shadow-primary/20 font-bold transition-transform hover:scale-[1.02] active:scale-95">
                   Discover Events
                 </Button>
               </Link>
@@ -159,7 +159,7 @@ export default function HomePage() {
                       data-ai-hint="event poster"
                     />
                     <div className="absolute top-2 left-2 md:top-4 md:left-4">
-                      <Badge className="bg-black/60 backdrop-blur-md text-white border-none py-0.5 px-1.5 md:py-1 md:px-3 text-[6px] md:text-[10px] uppercase font-black tracking-widest">
+                      <Badge className="bg-black/60 backdrop-blur-md text-white border-none py-0.5 px-1.5 md:py-1.5 md:px-3 text-[6px] md:text-[10px] uppercase font-black tracking-widest">
                         {event.category}
                       </Badge>
                     </div>
@@ -170,9 +170,9 @@ export default function HomePage() {
                       {mounted ? new Date(event.date).toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Loading date...'}
                     </div>
                     <h3 className="text-sm md:text-2xl mb-1 group-hover:text-primary transition-colors line-clamp-1 font-bold">{event.title}</h3>
-                    <p className="text-muted-foreground text-[8px] md:text-sm flex items-center gap-1 mb-2 md:mb-6">
+                    <div className="flex items-center gap-1 mb-2 md:mb-6 text-muted-foreground text-[8px] md:text-sm">
                       <MapPin className="w-2.5 h-2.5 md:w-4 h-4 text-accent" /> <span className="truncate">{event.venue}</span>
-                    </p>
+                    </div>
                     
                     <div className="flex items-center justify-between pt-2 md:pt-6 border-t border-border">
                       <div className="flex items-center gap-1 md:gap-3">
@@ -200,7 +200,7 @@ export default function HomePage() {
 
           <div className="text-center pt-8">
             <Link href="/discover">
-              <Button variant="outline" size="lg" className="rounded-full px-12 group border-2">
+              <Button variant="outline" className="rounded-full px-12 group border-2">
                 Discover More Events <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>

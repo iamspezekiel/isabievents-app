@@ -19,7 +19,7 @@ export default function AboutPage() {
             Connecting Nigeria through <br />
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Shared Experiences</span>
           </h1>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="max-w-2xl mx-auto text-muted-foreground">
             IsabiEvents is more than just a place to buy tickets. We are a digital bridge Connecting people to unforgettable experiences.
           </p>
         </div>
@@ -89,13 +89,13 @@ export default function AboutPage() {
             </div>
             
             <div className="space-y-8">
-              <p className="text-muted-foreground font-medium">
+              <p className="font-medium text-muted-foreground">
                 Founded with a vision to revolutionize the fragmented event landscape in Nigeria, IsabiEvents was born from a simple realization: the most incredible experiences are often the hardest to find and access securely.
               </p>
               
               <div className="relative pl-12 py-4">
                 <Quote className="absolute top-0 left-0 w-8 h-8 text-primary/20 rotate-180" />
-                <p className="text-xl md:text-2xl font-bold tracking-tight text-foreground font-headline leading-snug">
+                <p className="font-headline text-xl md:text-2xl font-bold tracking-tight leading-snug text-foreground">
                   "We didn't just build a ticket shop. We built a system that understands the local context—from bank transfers to offline entry."
                 </p>
               </div>
@@ -109,7 +109,7 @@ export default function AboutPage() {
       </section>
 
       {/* Values Section */}
-      <section className="py-16 md:py-24 bg-card/30 border-y border-border relative">
+      <section className="relative py-16 md:py-24 bg-card/30 border-y border-border">
         <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 blur-3xl rounded-full -z-10" />
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
@@ -138,7 +138,7 @@ export default function AboutPage() {
       </section>
 
       {/* Why Us Section */}
-      <section className="pt-16 pb-8 md:pt-20 md:pb-8 container mx-auto px-4">
+      <section className="container mx-auto px-4 pt-16 pb-8 md:pt-20 md:pb-8">
         <div className="text-center max-w-3xl mx-auto mb-12 space-y-4">
           <h2 className="font-headline text-3xl md:text-4xl font-black tracking-tighter leading-none">Why IsabiEvents?</h2>
         </div>
@@ -162,7 +162,7 @@ export default function AboutPage() {
                 />
              </div>
           </div>
-          <div className="flex-1 relative w-full aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl">
+          <div className="relative flex-1 w-full aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl">
             <Image 
               src="https://picsum.photos/seed/why_isabi_v10/800/600" 
               alt="Innovation" 
@@ -175,22 +175,22 @@ export default function AboutPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="pt-8 pb-20 md:pt-12 md:pb-32 container mx-auto px-4 text-center">
+      <section className="container mx-auto px-4 pt-8 pb-20 md:pt-12 md:pb-32 text-center">
         <div className="max-w-4xl mx-auto space-y-12">
-          <h2 className="font-headline text-3xl md:text-5xl font-black tracking-tighter leading-none text-balance">
+          <h2 className="font-headline text-3xl md:text-5xl font-black leading-none tracking-tighter text-balance">
             Ready to join the <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">movement?</span>
           </h2>
-          <p className="text-muted-foreground font-medium max-w-2xl mx-auto px-4">
+          <p className="max-w-2xl px-4 mx-auto font-medium text-muted-foreground">
             Whether you're looking for your next favorite memory or hosting the event of the year, we're here to help you make it happen.
           </p>
-          <div className="flex flex-row justify-center items-center gap-4 md:gap-8 px-2 md:px-0">
-            <Link href="/discover" className="no-underline flex-1 sm:flex-none">
-              <Button size="lg" className="rounded-full px-6 md:px-16 shadow-2xl shadow-primary/30 font-bold w-full">
+          <div className="flex flex-row items-center justify-center gap-4 px-2 md:gap-8 md:px-0">
+            <Link href="/discover" className="flex-1 no-underline sm:flex-none">
+              <Button className="w-full font-bold rounded-full px-16 shadow-2xl shadow-primary/30">
                 Explore Events
               </Button>
             </Link>
-            <Link href="/signup?role=organizer" className="no-underline flex-1 sm:flex-none">
-              <Button variant="outline" size="lg" className="rounded-full px-6 md:px-16 border-2 bg-background/50 backdrop-blur-sm font-bold w-full">
+            <Link href="/signup?role=organizer" className="flex-1 no-underline sm:flex-none">
+              <Button variant="outline" className="w-full font-bold backdrop-blur-sm bg-background/50 border-2 rounded-full px-16">
                 Host Event
               </Button>
             </Link>
@@ -210,7 +210,7 @@ function ValueCard({ icon: Icon, title, desc }: any) {
         </div>
         <div className="space-y-2">
           <h2 className="font-headline text-2xl font-bold tracking-tight">{title}</h2>
-          <p className="text-muted-foreground font-medium">{desc}</p>
+          <p className="font-medium text-muted-foreground">{desc}</p>
         </div>
       </CardContent>
     </Card>
@@ -220,12 +220,12 @@ function ValueCard({ icon: Icon, title, desc }: any) {
 function FeatureItem({ title, desc, icon: Icon }: any) {
   return (
     <div className="flex items-start gap-4">
-       <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+       <div className="flex items-center justify-center shrink-0 w-10 h-10 rounded-full bg-primary/10">
           <Icon className="w-5 h-5 text-primary" />
        </div>
        <div className="space-y-1">
-          <h2 className="font-bold text-xl">{title}</h2>
-          <p className="text-muted-foreground text-sm">{desc}</p>
+          <h2 className="text-xl font-bold">{title}</h2>
+          <p className="text-sm text-muted-foreground">{desc}</p>
        </div>
     </div>
   );
