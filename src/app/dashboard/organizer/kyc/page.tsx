@@ -52,7 +52,7 @@ export default function KYCVerificationPage() {
 
   return (
     <div className="min-h-screen bg-background pb-20 pt-24">
-      <header className="border-b border-border bg-card sticky top-0 z-50 py-4">
+      <header className="border-b border-border bg-card sticky top-0 z-50 py-4 mt-16">
         <div className="container mx-auto px-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-full">
@@ -146,6 +146,7 @@ export default function KYCVerificationPage() {
             <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
               <Card className="border-border bg-card">
                 <CardHeader className="text-left">
+                  <CheckCircle2 className="w-5 h-5 text-primary" />
                   <CardTitle className="flex items-center gap-2">
                     <Building2 className="w-5 h-5 text-primary" /> Business Details
                   </CardTitle>
