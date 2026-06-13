@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -39,7 +40,9 @@ export default function CheckoutPage() {
   const { id } = useParams();
   const router = useRouter();
   const { toast } = useToast();
-  const event = MOCK_EVENTS.find(e => e.id === id) || MOCK_EVENTS[0];
+  
+  // Find event by slug or fallback to ID
+  const event = MOCK_EVENTS.find(e => e.slug === id || e.id === id) || MOCK_EVENTS[0];
   
   const [step, setStep] = useState(1);
   const [quantity, setQuantity] = useState(1);
@@ -143,7 +146,6 @@ export default function CheckoutPage() {
                       <Card className="border-border bg-card/50">
                         <CardContent className="pt-6 space-y-4">
                           <div className="bg-primary/5 border border-primary/10 p-3 rounded-xl flex items-start gap-3 mb-2">
-                            <Info className="w-4 h-4 text-primary shrink-0 mt-0.5" />
                             <div className="space-y-1">
                                <p className="text-[11px] font-bold text-primary uppercase tracking-widest">Demo Credentials</p>
                                <p className="text-[11px] text-muted-foreground">Username: <span className="font-bold text-foreground">Attendee</span></p>
@@ -245,7 +247,7 @@ export default function CheckoutPage() {
                         </div>
                       </div>
                       <Button onClick={handleContinueToPayment} className="w-full rounded-full gap-2 mt-4 h-11">
-                        Continue as Guest <ArrowRight className="w-5 h-5" />
+                        Continue to Payment <ArrowRight className="w-5 h-5" />
                       </Button>
                     </TabsContent>
                   </Tabs>

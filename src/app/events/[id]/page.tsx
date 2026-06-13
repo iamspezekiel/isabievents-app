@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useEffect, useState } from 'react';
@@ -17,7 +18,9 @@ import { useToast } from "@/hooks/use-toast";
 export default function EventDetailsPage() {
   const { id } = useParams();
   const { toast } = useToast();
-  const event = MOCK_EVENTS.find(e => e.id === id) || MOCK_EVENTS[0];
+  
+  // Find event by slug or fallback to ID (backward compatibility)
+  const event = MOCK_EVENTS.find(e => e.slug === id || e.id === id) || MOCK_EVENTS[0];
   
   const [faqs, setFaqs] = useState<any[]>([]);
   const [loadingFaqs, setLoadingFaqs] = useState(true);
@@ -215,7 +218,7 @@ export default function EventDetailsPage() {
                     </span>
                   </div>
                   
-                  <Link href={selectedTier ? `/checkout/${event.id}?tier=${encodeURIComponent(selectedTier)}&qty=${quantity}` : `/checkout/${event.id}`}>
+                  <Link href={selectedTier ? `/checkout/${event.slug}?tier=${encodeURIComponent(selectedTier)}&qty=${quantity}` : `/checkout/${event.slug}`}>
                     <Button size="lg" className="w-full rounded-full shadow-lg shadow-primary/20 font-bold">
                       {selectedTier ? 'Proceed to Checkout' : 'Get Tickets Now'}
                     </Button>

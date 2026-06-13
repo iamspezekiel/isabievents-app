@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -75,7 +76,7 @@ export default function FavoritesPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {MOCK_EVENTS.slice(4, 8).map((event) => (
-              <Link key={event.id} href={`/events/${event.id}`} className="no-underline">
+              <Link key={event.id} href={`/events/${event.slug}`} className="no-underline">
                 <div className="group bg-card border border-border rounded-[2rem] overflow-hidden hover:border-primary/50 transition-all shadow-sm flex flex-col h-full">
                   <div className="relative aspect-video overflow-hidden">
                     <img src={event.image} alt="" className="object-cover w-full h-full group-hover:scale-105 transition-transform" />

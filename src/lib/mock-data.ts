@@ -28,6 +28,7 @@ export const CITIES = [
 export const MOCK_EVENTS = [
   {
     id: 'e1',
+    slug: 'lagos-jazz-night-2026',
     title: 'Lagos Jazz Night 2026',
     category: 'concerts',
     city: 'Lagos',
@@ -42,6 +43,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e2',
+    slug: 'naija-tech-summit',
     title: 'Naija Tech Summit',
     category: 'conferences',
     city: 'Abuja',
@@ -56,6 +58,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e3',
+    slug: 'gidi-festival',
     title: 'Gidi Festival',
     category: 'festivals',
     city: 'Lagos',
@@ -70,6 +73,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e4',
+    slug: 'calabar-carnival-main-parade',
     title: 'Calabar Carnival Main Parade',
     category: 'cultural',
     city: 'Calabar',
@@ -84,6 +88,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e5',
+    slug: 'abuja-praise-festival',
     title: 'Abuja Praise Festival',
     category: 'religious',
     city: 'Abuja',
@@ -98,6 +103,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e6',
+    slug: 'ph-garden-city-food-fest',
     title: 'PH Garden City Food Fest',
     category: 'festivals',
     city: 'Port Harcourt',
@@ -112,6 +118,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e7',
+    slug: 'ibadan-night-fever',
     title: 'Ibadan Night Fever',
     category: 'nightlife',
     city: 'Ibadan',
@@ -126,6 +133,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e8',
+    slug: 'kano-entrepreneurship-workshop',
     title: 'Kano Entrepreneurship Workshop',
     category: 'workshops',
     city: 'Kano',
@@ -140,6 +148,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e9',
+    slug: 'enugu-coal-city-marathon',
     title: 'Enugu Coal City Marathon',
     category: 'sports',
     city: 'Enugu',
@@ -154,6 +163,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e10',
+    slug: 'benin-arts-culture-expo',
     title: 'Benin Arts & Culture Expo',
     category: 'cultural',
     city: 'Benin City',
@@ -168,6 +178,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e11',
+    slug: 'akure-music-carnival',
     title: 'Akure Music Carnival',
     category: 'festivals',
     city: 'Akure',
@@ -182,6 +193,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e12',
+    slug: 'jos-winter-gala',
     title: 'Jos Winter Gala',
     category: 'nightlife',
     city: 'Jos',
@@ -196,6 +208,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e13',
+    slug: 'lagos-tech-expo',
     title: 'Lagos Tech Expo',
     category: 'technology',
     city: 'Lagos',
@@ -210,6 +223,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e14',
+    slug: 'founders-networking-night',
     title: 'Founders Networking Night',
     category: 'networking',
     city: 'Lagos',
@@ -224,6 +238,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e15',
+    slug: 'abuja-wellness-retreat',
     title: 'Abuja Wellness Retreat',
     category: 'health',
     city: 'Abuja',
@@ -238,6 +253,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e16',
+    slug: 'owerri-comedy-jam',
     title: 'Owerri Comedy Jam',
     category: 'concerts',
     city: 'Owerri',
@@ -252,6 +268,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e17',
+    slug: 'warri-street-dance',
     title: 'Warri Street Dance',
     category: 'cultural',
     city: 'Warri',
@@ -266,6 +283,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e18',
+    slug: 'bauchi-polo-tournament',
     title: 'Bauchi Polo Tournament',
     category: 'sports',
     city: 'Bauchi',
@@ -280,6 +298,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e19',
+    slug: 'ilorin-food-expo',
     title: 'Ilorin Food Expo',
     category: 'festivals',
     city: 'Ilorin',
@@ -294,6 +313,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e20',
+    slug: 'minna-youth-summit',
     title: 'Minna Youth Summit',
     category: 'education',
     city: 'Minna',
@@ -308,6 +328,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e21',
+    slug: 'abeokuta-rock-fest',
     title: 'Abeokuta Rock Fest',
     category: 'cultural',
     city: 'Abeokuta',
@@ -322,6 +343,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e22',
+    slug: 'asaba-movie-night',
     title: 'Asaba Movie Night',
     category: 'nightlife',
     city: 'Asaba',
@@ -336,6 +358,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e23',
+    slug: 'uyo-christmas-concert',
     title: 'Uyo Christmas Concert',
     category: 'concerts',
     city: 'Uyo',
@@ -350,6 +373,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e24',
+    slug: 'kaduna-book-fair',
     title: 'Kaduna Book Fair',
     category: 'education',
     city: 'Kaduna',
@@ -364,6 +388,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e25',
+    slug: 'makurdi-river-fest',
     title: 'Makurdi River Fest',
     category: 'festivals',
     city: 'Makurdi',
@@ -378,6 +403,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e26',
+    slug: 'onitsha-business-summit',
     title: 'Onitsha Business Summit',
     category: 'networking',
     city: 'Onitsha',
@@ -392,6 +418,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e27',
+    slug: 'sokoto-cultural-night',
     title: 'Sokoto Cultural Night',
     category: 'cultural',
     city: 'Sokoto',
@@ -406,6 +433,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e28',
+    slug: 'zaria-art-gallery-open',
     title: 'Zaria Art Gallery Open',
     category: 'exhibitions',
     city: 'Zaria',
@@ -420,6 +448,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e29',
+    slug: 'yenagoa-beach-bash',
     title: 'Yenagoa Beach Bash',
     category: 'nightlife',
     city: 'Yenagoa',
@@ -434,6 +463,7 @@ export const MOCK_EVENTS = [
   },
   {
     id: 'e30',
+    slug: 'maiduguri-peace-fest',
     title: 'Maiduguri Peace Fest',
     category: 'community',
     city: 'Maiduguri',

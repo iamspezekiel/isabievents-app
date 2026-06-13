@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -63,7 +64,7 @@ export default function MyEventsPage() {
               </SheetTitle>
             </SheetHeader>
             <NavigationLinks />
-            <div className="pt-6 border-t border-sidebar-border mt-auto">
+            <div className="pt-6 border-t border-border mt-auto">
               <SidebarLink icon={LogOut} label="Log Out" href="/login" />
             </div>
           </SheetContent>
@@ -127,7 +128,7 @@ export default function MyEventsPage() {
                       </div>
                       <div className="ml-auto flex gap-2">
                         <Button variant="outline" size="sm" className="rounded-full h-9">Edit</Button>
-                        <Link href={`/events/${event.id}`} className="no-underline">
+                        <Link href={`/events/${event.slug}`} className="no-underline">
                            <Button size="sm" variant="ghost" className="rounded-full gap-1 h-9">View <ExternalLink className="w-3.5 h-3.5" /></Button>
                         </Link>
                       </div>

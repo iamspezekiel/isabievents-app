@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -71,10 +72,10 @@ export default function HomePage() {
     });
   };
 
-  const handleShare = (e: React.MouseEvent, id: string) => {
+  const handleShare = (e: React.MouseEvent, slug: string) => {
     e.preventDefault();
     e.stopPropagation();
-    const url = `${window.location.origin}/events/${id}`;
+    const url = `${window.location.origin}/events/${slug}`;
     navigator.clipboard.writeText(url);
     toast({
       title: "Link Copied!",
@@ -172,7 +173,7 @@ export default function HomePage() {
           
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 mb-12">
             {MOCK_EVENTS.slice(0, displayLimit).map((event) => (
-              <Link key={event.id} href={`/events/${event.id}`}>
+              <Link key={event.id} href={`/events/${event.slug}`}>
                 <div className="group bg-card border border-border rounded-[1.25rem] md:rounded-[2.5rem] overflow-hidden hover:border-primary/50 transition-all flex flex-col h-full hover:shadow-2xl hover:shadow-primary/5">
                   <div className="relative aspect-[16/10] overflow-hidden">
                     <Image 
@@ -200,7 +201,7 @@ export default function HomePage() {
                         size="icon" 
                         variant="secondary" 
                         className="w-7 h-7 md:w-10 md:h-10 rounded-full bg-black/40 backdrop-blur-md border-none text-white hover:bg-black/60 transition-colors"
-                        onClick={(e) => handleShare(e, event.id)}
+                        onClick={(e) => handleShare(e, event.slug)}
                       >
                         <Share2 className="w-3 h-3 md:w-5 md:h-5" />
                       </Button>
