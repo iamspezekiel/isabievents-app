@@ -26,7 +26,7 @@ export default function AboutPage() {
       </section>
 
       {/* Our Story Section */}
-      <section className="py-16 md:py-24 container mx-auto px-4 relative">
+      <section className="py-8 md:py-12 container mx-auto px-4 relative">
         <div className="absolute top-1/2 right-0 w-96 h-96 bg-accent/5 blur-[120px] rounded-full -z-10" />
         <div className="absolute -bottom-24 left-0 w-72 h-72 bg-primary/5 blur-[100px] rounded-full -z-10" />
         
