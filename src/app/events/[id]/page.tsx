@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useEffect, useState } from 'react';
@@ -91,7 +90,7 @@ export default function EventDetailsPage() {
           <div className="lg:col-span-2 space-y-12">
             <section>
               <h2 className="font-headline text-2xl mb-6">About Event</h2>
-              <p className="text-muted-foreground text-lg leading-relaxed whitespace-pre-wrap">
+              <p className="text-muted-foreground whitespace-pre-wrap">
                 {event.description}
               </p>
               <div className="flex flex-wrap gap-2 mt-8">

@@ -19,7 +19,7 @@ export default function AboutPage() {
             Connecting Nigeria through <br />
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Shared Experiences</span>
           </h1>
-          <p className="text-muted-foreground text-base leading-relaxed max-w-2xl mx-auto">
+          <p className="text-muted-foreground max-w-2xl mx-auto">
             IsabiEvents is more than just a place to buy tickets. We are a digital bridge Connecting people to unforgettable experiences.
           </p>
         </div>
@@ -89,7 +89,7 @@ export default function AboutPage() {
             </div>
             
             <div className="space-y-8">
-              <p className="text-lg text-muted-foreground leading-relaxed font-medium">
+              <p className="text-muted-foreground font-medium">
                 Founded with a vision to revolutionize the fragmented event landscape in Nigeria, IsabiEvents was born from a simple realization: the most incredible experiences are often the hardest to find and access securely.
               </p>
               
@@ -100,7 +100,7 @@ export default function AboutPage() {
                 </p>
               </div>
 
-              <p className="text-lg text-muted-foreground leading-relaxed">
+              <p className="text-muted-foreground">
                 Today, we empower thousands of creators across the federation, providing them with the professional tools they need to scale their visions while ensuring every attendee enjoys a seamless, fraud-free journey.
               </p>
             </div>
@@ -114,7 +114,7 @@ export default function AboutPage() {
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
             <h2 className="font-headline text-2xl md:text-3xl font-black tracking-tighter">What We Stand For</h2>
-            <p className="text-muted-foreground text-lg">Our core values guide every line of code we write and every event we power.</p>
+            <p className="text-muted-foreground">Our core values guide every line of code we write and every event we power.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-10">
@@ -180,7 +180,7 @@ export default function AboutPage() {
           <h2 className="font-headline text-3xl md:text-5xl font-black tracking-tighter leading-none text-balance">
             Ready to join the <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">movement?</span>
           </h2>
-          <p className="text-xl text-muted-foreground font-medium max-w-2xl mx-auto leading-relaxed px-4">
+          <p className="text-muted-foreground font-medium max-w-2xl mx-auto px-4">
             Whether you're looking for your next favorite memory or hosting the event of the year, we're here to help you make it happen.
           </p>
           <div className="flex flex-row justify-center items-center gap-4 md:gap-8 px-2 md:px-0">
@@ -210,7 +210,7 @@ function ValueCard({ icon: Icon, title, desc }: any) {
         </div>
         <div className="space-y-2">
           <h2 className="font-headline text-2xl font-bold tracking-tight">{title}</h2>
-          <p className="text-muted-foreground leading-relaxed font-medium">{desc}</p>
+          <p className="text-muted-foreground font-medium">{desc}</p>
         </div>
       </CardContent>
     </Card>
@@ -225,7 +225,7 @@ function FeatureItem({ title, desc, icon: Icon }: any) {
        </div>
        <div className="space-y-1">
           <h2 className="font-bold text-xl">{title}</h2>
-          <p className="text-muted-foreground text-sm leading-relaxed">{desc}</p>
+          <p className="text-muted-foreground text-sm">{desc}</p>
        </div>
     </div>
   );

@@ -18,7 +18,7 @@ export default function HelpCenterPage() {
             <h1 className="font-headline text-4xl md:text-6xl text-balance">
               How can we <span className="text-primary">help?</span>
             </h1>
-            <p className="text-muted-foreground text-lg">Search our help center or browse common topics below.</p>
+            <p className="text-muted-foreground">Search our help center or browse common topics below.</p>
           </div>
           <div className="relative max-w-2xl mx-auto">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />

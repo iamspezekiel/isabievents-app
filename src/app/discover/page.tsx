@@ -151,7 +151,7 @@ function DiscoverContent() {
         <h1 className="font-headline text-3xl md:text-7xl lg:text-8xl tracking-tighter">
           Discover <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Experiences</span>
         </h1>
-        <p className="text-muted-foreground text-sm md:text-xl max-w-2xl mx-auto font-medium">
+        <p className="text-muted-foreground max-w-2xl mx-auto font-medium">
           Discover and secure your spot with zero friction.
         </p>
       </div>

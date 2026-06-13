@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -73,7 +72,7 @@ export default function HomePage() {
             <h1 className="text-3xl md:text-7xl mb-6 leading-[1.05] max-w-4xl mx-auto font-black tracking-tighter text-balance animate-in fade-in slide-in-from-bottom-8 duration-1000">
               Experience the Best of <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Nigerian</span> Events
             </h1>
-            <p className="text-muted-foreground text-sm md:text-xl max-w-2xl mx-auto mb-8 animate-in fade-in slide-in-from-bottom-12 duration-1000">
+            <p className="text-muted-foreground max-w-2xl mx-auto mb-8 animate-in fade-in slide-in-from-bottom-12 duration-1000">
               Discover and secure your spot with zero friction.
             </p>
 
@@ -95,7 +94,7 @@ export default function HomePage() {
             </div>
           </div>
 
-          {/* Top Categories Section - Refined Top Padding pt-12 */}
+          {/* Top Categories Section */}
           <section className="relative z-10 pt-12">
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-xl md:text-2xl font-black tracking-tighter text-left">Top Categories</h2>
@@ -133,7 +132,7 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Trending Events - Refined Top Padding pt-8 */}
+      {/* Trending Events */}
       <section className="pt-8 pb-24">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between mb-12">
@@ -219,21 +218,21 @@ export default function HomePage() {
                 <Star className="w-6 h-6 md:w-10 md:h-10 text-primary" />
               </div>
               <h3 className="text-lg md:text-2xl font-bold tracking-tight">Verified Organizers</h3>
-              <p className="text-sm md:text-lg text-muted-foreground leading-relaxed">Every event organizer undergoes strict KYC verification before listing on our platform.</p>
+              <p className="text-muted-foreground">Every event organizer undergoes strict KYC verification before listing on our platform.</p>
             </div>
             <div className="space-y-4">
               <div className="w-12 h-12 md:w-20 md:h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-8 transition-transform hover:scale-110">
                 <CheckCircle2 className="w-6 h-6 md:w-10 md:h-10 text-primary" />
               </div>
               <h3 className="text-lg md:text-2xl font-bold tracking-tight">Instant Ticket Delivery</h3>
-              <p className="text-sm md:text-lg text-muted-foreground leading-relaxed">Receive your unique secure QR code ticket immediately via email and in your wallet after payment.</p>
+              <p className="text-muted-foreground">Receive your unique secure QR code ticket immediately via email and in your wallet after payment.</p>
             </div>
             <div className="space-y-4">
               <div className="w-12 h-12 md:w-20 md:h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-8 transition-transform hover:scale-110">
                 <GlassWater className="w-6 h-6 md:w-10 md:h-10 text-primary" />
               </div>
               <h3 className="text-lg md:text-2xl font-bold tracking-tight">Seamless Payouts</h3>
-              <p className="text-sm md:text-lg text-muted-foreground leading-relaxed">Organizers and vendors receive automated settlements via our robust fintech integrations.</p>
+              <p className="text-muted-foreground">Organizers and vendors receive automated settlements via our robust fintech integrations.</p>
             </div>
           </div>
         </div>

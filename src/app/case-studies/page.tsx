@@ -21,7 +21,7 @@ export default function SuccessStoriesPage() {
               Unforgettable Moments
             </span>
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-muted-foreground max-w-3xl mx-auto">
             From intimate club nights to sold-out stadiums. See how Nigeria's leading organizers use IsabiEvents to scale their experiences.
           </p>
         </div>
@@ -43,7 +43,7 @@ export default function SuccessStoriesPage() {
             <div className="p-12 md:p-20 space-y-8">
               <div className="space-y-4">
                 <h2 className="font-headline text-3xl font-bold">Lagos Jazz Night 2024</h2>
-                <p className="text-muted-foreground text-lg leading-relaxed italic">
+                <p className="text-muted-foreground italic">
                   &quot;IsabiEvents transformed our gate management. We processed 5,000 attendees in under 2 hours without a single invalid ticket dispute.&quot;
                 </p>
                 <div className="flex items-center gap-4">
@@ -99,7 +99,7 @@ export default function SuccessStoriesPage() {
         {/* Global Impact */}
         <section className="mt-8 py-8 bg-primary/10 rounded-[3rem] border border-primary/20 text-center space-y-12">
            <h2 className="font-headline text-4xl font-black">Ready to be our next success story?</h2>
-           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+           <p className="text-muted-foreground max-w-2xl mx-auto">
              Join 1,200+ Nigerian organizers who are already scaling their businesses with IsabiEvents.
            </p>
            <div className="flex flex-col sm:flex-row justify-center gap-4">

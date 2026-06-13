@@ -51,7 +51,7 @@ export default function MobileAppPage() {
               </h1>
             </div>
             
-            <p className="text-white/80 text-sm md:text-base font-normal max-w-xl leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000">
+            <p className="text-white/80 max-w-xl animate-in fade-in slide-in-from-bottom-8 duration-1000">
               Experience Nigeria's best events with zero friction. Buy, store, and transfer tickets even when you're offline.
             </p>
 
@@ -86,7 +86,7 @@ export default function MobileAppPage() {
               Built for the <br />
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Nigerian Experience</span>
             </h2>
-            <p className="text-muted-foreground text-sm font-normal max-w-xl mx-auto leading-relaxed">
+            <p className="text-muted-foreground max-w-xl mx-auto">
               We've solved the real-world problems of physical ticketing, expensive data, and unreliable connectivity.
             </p>
           </div>
@@ -172,7 +172,7 @@ export default function MobileAppPage() {
               <h2 className="text-xl md:text-3xl font-black leading-tight tracking-tight">
                 Ready to <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">ditch paper?</span>
               </h2>
-              <p className="text-muted-foreground text-sm md:text-base font-normal max-w-xl mx-auto leading-relaxed">
+              <p className="text-muted-foreground max-w-xl mx-auto">
                 Join over 150,000+ Nigerians who have upgraded their social lives. No more queues, no more printed tickets.
               </p>
               
@@ -214,7 +214,7 @@ function AppFeature({ icon: Icon, title, desc, color }: any) {
       </div>
       <div className="space-y-3 text-left">
         <h3 className="text-lg md:text-xl font-black tracking-tight leading-tight">{title}</h3>
-        <p className="text-muted-foreground leading-relaxed text-sm font-normal">{desc}</p>
+        <p className="text-muted-foreground">{desc}</p>
       </div>
     </div>
   );
@@ -228,7 +228,7 @@ function FeatureListItem({ title, desc }: any) {
        </div>
        <div className="space-y-1 text-left">
           <h4 className="text-base md:text-lg font-black tracking-tight">{title}</h4>
-          <p className="text-muted-foreground leading-relaxed text-sm font-normal">{desc}</p>
+          <p className="text-muted-foreground">{desc}</p>
        </div>
     </div>
   );

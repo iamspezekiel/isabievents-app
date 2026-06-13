@@ -62,7 +62,7 @@ export default function TestimonialsPage() {
               Our Community
             </span>
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
+          <p className="text-muted-foreground max-w-3xl mx-auto">
             See why thousands of Nigerians trust IsabiEvents to discover and share their most memorable experiences.
           </p>
         </div>
@@ -94,7 +94,7 @@ export default function TestimonialsPage() {
                Don't just read about it. <br />
                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Live it.</span>
              </h2>
-             <p className="text-lg md:text-xl text-muted-foreground font-medium leading-relaxed max-w-2xl mx-auto">
+             <p className="text-muted-foreground font-medium max-w-2xl mx-auto">
                Find your next favorite memory. Explore trending events in Nigeria today.
              </p>
              
@@ -151,7 +151,7 @@ function TestimonialCard({ name, quote, avatar, rating }: any) {
           </div>
           <div className="relative">
             <Quote className="absolute -top-3 -left-4 w-8 h-8 text-primary/5 -z-10" />
-            <p className="text-sm leading-relaxed font-medium italic text-foreground/90">
+            <p className="font-medium italic text-foreground/90">
               "{quote}"
             </p>
           </div>

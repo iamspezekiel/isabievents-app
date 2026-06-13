@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -31,7 +30,7 @@ export default function OrganizerLandingPage() {
               <span className="block">Way to Host</span>
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Legendary</span> Events
             </h1>
-            <p className="text-base md:text-lg text-muted-foreground leading-relaxed max-w-lg">
+            <p className="text-muted-foreground">
               From secret beach parties to national tech conferences. IsabiEvents provides the tools you need to sell out fast and manage with ease.
             </p>
             <div className="flex flex-row justify-center lg:justify-start gap-4 w-full">
@@ -54,7 +53,7 @@ export default function OrganizerLandingPage() {
                   </div>
                 ))}
               </div>
-              <p className="text-base text-muted-foreground text-center sm:text-left">
+              <p className="text-muted-foreground text-center sm:text-left">
                 Joined by <span className="text-primary font-bold">1,200+</span> Nigerian organizers
               </p>
             </div>
@@ -91,7 +90,7 @@ export default function OrganizerLandingPage() {
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-12 space-y-4">
             <h2 className="text-3xl md:text-5xl font-black tracking-tighter">Everything you need to succeed</h2>
-            <p className="text-base text-muted-foreground">We've built a suite of features specifically for the Nigerian market.</p>
+            <p className="text-muted-foreground">We've built a suite of features specifically for the Nigerian market.</p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -137,7 +136,7 @@ export default function OrganizerLandingPage() {
             
             <div className="max-w-3xl mx-auto space-y-8 relative z-10">
               <h2 className="text-3xl md:text-5xl font-black tracking-tighter leading-tight">Simple, transparent pricing</h2>
-              <p className="text-base text-muted-foreground leading-relaxed">
+              <p className="text-muted-foreground">
                 No setup fees. No monthly subscriptions. We only win when you do.
               </p>
               
@@ -177,7 +176,7 @@ function FeatureCard({ icon: Icon, title, description }: any) {
         </div>
         <div className="space-y-2 text-left">
           <h3 className="text-xl font-bold tracking-tight">{title}</h3>
-          <p className="text-base text-muted-foreground leading-relaxed">{description}</p>
+          <p className="text-muted-foreground">{description}</p>
         </div>
       </CardContent>
     </Card>
