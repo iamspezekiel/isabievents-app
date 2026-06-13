@@ -14,14 +14,14 @@ export default function PricingPage() {
       <header className="relative pt-48 pb-12 overflow-hidden text-center">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
         <div className="container mx-auto px-4 space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-          <h1 className="font-headline text-4xl md:text-6xl font-black leading-[1.1] tracking-tighter text-balance">
+          <h1 className="tracking-tighter text-balance">
             Transparent Pricing <br /> 
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               Built for Scale
             </span>
           </h1>
-          <p className="max-w-3xl mx-auto leading-relaxed text-muted-foreground">
-            We only win when you do. No setup fees, no monthly subscriptions, and no hidden<br /> costs for Nigerian organizers.
+          <p className="max-w-3xl mx-auto text-muted-foreground">
+            We only win when you do. No setup fees, no monthly subscriptions, and no hidden costs for Nigerian organizers.
           </p>
         </div>
       </header>
@@ -39,7 +39,7 @@ export default function PricingPage() {
                     </div>
                     <h2 className="text-2xl font-bold font-headline">Simple Flat Rate</h2>
                   </div>
-                  <p className="leading-relaxed text-muted-foreground">
+                  <p className="text-muted-foreground">
                     Perfect for concerts, festivals, and conferences of all sizes in Nigeria.
                   </p>
                 </div>
@@ -72,8 +72,8 @@ export default function PricingPage() {
               <div className="bg-secondary/30 p-10 md:p-20 flex flex-col justify-center space-y-10 border-l border-border/50 text-left">
                 <div className="space-y-4">
                   <Badge variant="outline" className="text-accent border-accent">ENTERPRISE</Badge>
-                  <h3 className="text-3xl font-black font-headline">High Volume?</h3>
-                  <p className="leading-relaxed text-muted-foreground">
+                  <h3 className="font-headline">High Volume?</h3>
+                  <p className="text-muted-foreground">
                     Planning a stadium-level event or a national tour? Get custom rates and dedicated local support.
                   </p>
                 </div>
@@ -110,7 +110,7 @@ export default function PricingPage() {
       <section className="py-8 bg-card/30 border-y border-border">
         <div className="container mx-auto px-4 max-w-4xl">
           <div className="mb-12 text-center space-y-4">
-            <h2 className="text-3xl font-black md:text-4xl font-headline">Frequently Asked Questions</h2>
+            <h2 className="tracking-tighter">Frequently Asked Questions</h2>
             <p className="text-muted-foreground">Everything you need to know about our fees and payouts.</p>
           </div>
           
@@ -138,7 +138,7 @@ export default function PricingPage() {
       {/* CTA */}
       <section className="container mx-auto px-4 py-12">
         <div className="bg-primary/10 border border-primary/20 rounded-[3rem] p-12 md:p-20 text-center space-y-10">
-          <h2 className="text-3xl font-black md:text-5xl font-headline">Ready to sell out?</h2>
+          <h2 className="tracking-tighter">Ready to sell out?</h2>
           <p className="max-w-2xl mx-auto text-muted-foreground">
             Join 1,200+ Nigerian organizers who are already scaling their businesses with IsabiEvents.
           </p>

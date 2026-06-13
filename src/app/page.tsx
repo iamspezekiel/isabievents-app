@@ -69,7 +69,7 @@ export default function HomePage() {
             <Badge className="mb-4 py-1.5 px-4 bg-primary/20 text-primary border-primary/20 hover:bg-primary/20 animate-in fade-in slide-in-from-bottom-4 duration-700">
               Trusted by 50,000+ Nigerians
             </Badge>
-            <h1 className="text-3xl md:text-7xl mb-6 leading-[1.05] max-w-4xl mx-auto font-black tracking-tighter text-balance animate-in fade-in slide-in-from-bottom-8 duration-1000">
+            <h1 className="animate-in fade-in slide-in-from-bottom-8 duration-1000">
               Experience the Best of <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">Nigerian</span> Events
             </h1>
             <p className="max-w-2xl mx-auto mb-8 animate-in fade-in slide-in-from-bottom-12 duration-1000 text-muted-foreground">
@@ -99,7 +99,7 @@ export default function HomePage() {
             <div className="flex items-center justify-between mb-8">
               <h2 className="text-xl md:text-2xl font-black tracking-tighter text-left">Top Categories</h2>
               <Link href="/categories">
-                <Button variant="ghost" className="rounded-full px-4 font-semibold gap-2 h-9 text-xs">
+                <Button variant="ghost" size="sm" className="rounded-full px-4 font-semibold gap-2">
                   View All <ArrowRight className="w-3 h-3" />
                 </Button>
               </Link>
@@ -140,7 +140,7 @@ export default function HomePage() {
               <h2 className="text-xl md:text-4xl font-black tracking-tighter">Trending</h2>
             </div>
             <Link href="/discover">
-              <Button variant="ghost" className="rounded-full px-4 font-semibold gap-2 h-9 text-xs">
+              <Button variant="ghost" size="sm" className="rounded-full px-4 font-semibold gap-2">
                 View More <ArrowRight className="w-3 h-3" />
               </Button>
             </Link>
@@ -187,7 +187,7 @@ export default function HomePage() {
                         </div>
                       </div>
                       <div className="text-right">
-                        <span className="text-xs md:text-xl font-black text-primary leading-none">
+                        <span className="block text-xs md:text-xl font-black text-primary leading-none">
                           {event.price.min === 0 ? 'FREE' : `₦${event.price.min.toLocaleString()}`}
                         </span>
                       </div>
@@ -211,27 +211,27 @@ export default function HomePage() {
       {/* Trust Section */}
       <section className="py-24 bg-card/30 border-y border-border">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-2xl md:text-5xl font-black tracking-tighter mb-16">Why thousands choose IsabiEvents</h2>
+          <h2 className="mb-16">Why thousands choose IsabiEvents</h2>
           <div className="grid md:grid-cols-3 gap-12">
             <div className="space-y-4">
               <div className="w-12 h-12 md:w-20 md:h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-8 transition-transform hover:scale-110">
                 <Star className="w-6 h-6 md:w-10 md:h-10 text-primary" />
               </div>
-              <h3 className="text-lg md:text-2xl font-bold tracking-tight">Verified Organizers</h3>
+              <h3 className="font-bold tracking-tight">Verified Organizers</h3>
               <p className="text-muted-foreground">Every event organizer undergoes strict KYC verification before listing on our platform.</p>
             </div>
             <div className="space-y-4">
               <div className="w-12 h-12 md:w-20 md:h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-8 transition-transform hover:scale-110">
                 <CheckCircle2 className="w-6 h-6 md:w-10 md:h-10 text-primary" />
               </div>
-              <h3 className="text-lg md:text-2xl font-bold tracking-tight">Instant Ticket Delivery</h3>
+              <h3 className="font-bold tracking-tight">Instant Ticket Delivery</h3>
               <p className="text-muted-foreground">Receive your unique secure QR code ticket immediately via email and in your wallet after payment.</p>
             </div>
             <div className="space-y-4">
               <div className="w-12 h-12 md:w-20 md:h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-8 transition-transform hover:scale-110">
                 <GlassWater className="w-6 h-6 md:w-10 md:h-10 text-primary" />
               </div>
-              <h3 className="text-lg md:text-2xl font-bold tracking-tight">Seamless Payouts</h3>
+              <h3 className="font-bold tracking-tight">Seamless Payouts</h3>
               <p className="text-muted-foreground">Organizers and vendors receive automated settlements via our robust fintech integrations.</p>
             </div>
           </div>

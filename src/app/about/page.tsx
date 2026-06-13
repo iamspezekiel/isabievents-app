@@ -15,7 +15,7 @@ export default function AboutPage() {
       <section className="relative pt-52 pb-16 overflow-hidden border-b border-border">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[600px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
         <div className="container mx-auto px-4 text-center space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
-          <h1 className="font-headline text-3xl md:text-5xl font-black leading-[1.1] tracking-tighter text-balance">
+          <h1 className="animate-in fade-in slide-in-from-bottom-8 duration-1000">
             Connecting Nigeria through <br />
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Shared Experiences</span>
           </h1>
@@ -85,7 +85,7 @@ export default function AboutPage() {
 
           <div className="space-y-12 text-left order-1 lg:order-2">
             <div className="space-y-4">
-              <h2 className="text-2xl md:text-3xl font-black tracking-tight leading-none">Built for the Naija way of life.</h2>
+              <h2 className="tracking-tight leading-none">Built for the Naija way of life.</h2>
             </div>
             
             <div className="space-y-8">
@@ -113,7 +113,7 @@ export default function AboutPage() {
         <div className="absolute top-0 right-0 w-64 h-64 bg-accent/5 blur-3xl rounded-full -z-10" />
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-            <h2 className="font-headline text-2xl md:text-3xl font-black tracking-tighter">What We Stand For</h2>
+            <h2 className="tracking-tighter">What We Stand For</h2>
             <p className="text-muted-foreground">Our core values guide every line of code we write and every event we power.</p>
           </div>
 
@@ -140,7 +140,7 @@ export default function AboutPage() {
       {/* Why Us Section */}
       <section className="container mx-auto px-4 pt-16 pb-8 md:pt-20 md:pb-8">
         <div className="text-center max-w-3xl mx-auto mb-12 space-y-4">
-          <h2 className="font-headline text-3xl md:text-4xl font-black tracking-tighter leading-none">Why IsabiEvents?</h2>
+          <h2 className="tracking-tighter leading-none">Why IsabiEvents?</h2>
         </div>
         <div className="bg-primary/5 border border-primary/10 rounded-[4rem] p-12 md:p-20 flex flex-col lg:flex-row items-center gap-16">
           <div className="flex-1 space-y-8 text-left">
@@ -177,7 +177,7 @@ export default function AboutPage() {
       {/* CTA Section */}
       <section className="container mx-auto px-4 pt-8 pb-20 md:pt-12 md:pb-32 text-center">
         <div className="max-w-4xl mx-auto space-y-12">
-          <h2 className="font-headline text-3xl md:text-5xl font-black leading-none tracking-tighter text-balance">
+          <h2 className="leading-none tracking-tighter text-balance">
             Ready to join the <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">movement?</span>
           </h2>
           <p className="max-w-2xl px-4 mx-auto font-medium text-muted-foreground">
@@ -185,12 +185,12 @@ export default function AboutPage() {
           </p>
           <div className="flex flex-row items-center justify-center gap-4 px-2 md:gap-8 md:px-0">
             <Link href="/discover" className="flex-1 no-underline sm:flex-none">
-              <Button className="w-full font-bold rounded-full px-16 shadow-2xl shadow-primary/30">
+              <Button className="w-full font-bold rounded-full px-12 shadow-2xl shadow-primary/30">
                 Explore Events
               </Button>
             </Link>
             <Link href="/signup?role=organizer" className="flex-1 no-underline sm:flex-none">
-              <Button variant="outline" className="w-full font-bold backdrop-blur-sm bg-background/50 border-2 rounded-full px-16">
+              <Button variant="outline" className="w-full font-bold backdrop-blur-sm bg-background/50 border-2 rounded-full px-12">
                 Host Event
               </Button>
             </Link>
@@ -209,7 +209,7 @@ function ValueCard({ icon: Icon, title, desc }: any) {
           <Icon className="w-8 h-8 text-primary group-hover:text-white transition-colors" />
         </div>
         <div className="space-y-2">
-          <h2 className="font-headline text-2xl font-bold tracking-tight">{title}</h2>
+          <h3 className="font-headline text-2xl font-bold tracking-tight">{title}</h3>
           <p className="font-medium text-muted-foreground">{desc}</p>
         </div>
       </CardContent>
@@ -224,7 +224,7 @@ function FeatureItem({ title, desc, icon: Icon }: any) {
           <Icon className="w-5 h-5 text-primary" />
        </div>
        <div className="space-y-1">
-          <h2 className="text-xl font-bold">{title}</h2>
+          <h3 className="text-xl font-bold">{title}</h3>
           <p className="text-sm text-muted-foreground">{desc}</p>
        </div>
     </div>

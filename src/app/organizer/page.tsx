@@ -25,7 +25,7 @@ export default function OrganizerLandingPage() {
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-accent/10 blur-[120px] -z-10 rounded-full translate-x-1/2 -translate-y-1/2" />
         <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-6 animate-in fade-in slide-in-from-left-8 duration-1000 flex flex-col items-center lg:items-start text-center lg:text-left">
-            <h1 className="text-4xl md:text-6xl lg:text-7xl xl:text-8xl leading-[0.9] font-black tracking-tighter text-balance">
+            <h1 className="leading-[1.1] tracking-tighter text-balance">
               <span className="block">The Easiest</span>
               <span className="block">Way to Host</span>
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Legendary</span> Events
@@ -35,12 +35,12 @@ export default function OrganizerLandingPage() {
             </p>
             <div className="flex flex-row justify-center lg:justify-start gap-4 w-full">
               <Link href="/signup?role=organizer" className="flex-1 lg:flex-none">
-                <Button size="lg" className="h-12 md:h-16 px-6 md:px-10 rounded-full text-sm md:text-lg gap-2 shadow-xl shadow-primary/20 w-full">
+                <Button size="lg" className="rounded-full gap-2 shadow-xl shadow-primary/20 w-full">
                   Host Now <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
                 </Button>
               </Link>
               <Link href="/pricing" className="flex-1 lg:flex-none">
-                <Button size="lg" variant="outline" className="h-12 md:h-16 px-6 md:px-10 rounded-full text-sm md:text-lg w-full">
+                <Button size="lg" variant="outline" className="rounded-full w-full">
                   View Pricing
                 </Button>
               </Link>
@@ -89,7 +89,7 @@ export default function OrganizerLandingPage() {
       <section className="py-8 bg-card/30 border-y border-border">
         <div className="container mx-auto px-4">
           <div className="text-center max-w-3xl mx-auto mb-12 space-y-4">
-            <h2 className="text-3xl md:text-5xl font-black tracking-tighter">Everything you need to succeed</h2>
+            <h2 className="tracking-tighter">Everything you need to succeed</h2>
             <p className="text-muted-foreground">We've built a suite of features specifically for the Nigerian market.</p>
           </div>
 
@@ -135,7 +135,7 @@ export default function OrganizerLandingPage() {
             <div className="absolute top-0 left-0 w-64 h-64 bg-primary/10 blur-[100px] -translate-x-1/2 -translate-y-1/2 rounded-full" />
             
             <div className="max-w-3xl mx-auto space-y-8 relative z-10">
-              <h2 className="text-3xl md:text-5xl font-black tracking-tighter leading-tight">Simple, transparent pricing</h2>
+              <h2 className="tracking-tighter leading-tight">Simple, transparent pricing</h2>
               <p className="text-muted-foreground">
                 No setup fees. No monthly subscriptions. We only win when you do.
               </p>
@@ -154,7 +154,7 @@ export default function OrganizerLandingPage() {
 
               <div className="pt-4">
                 <Link href="/pricing">
-                  <Button size="lg" className="rounded-full px-12 h-16 text-lg shadow-2xl shadow-primary/30 font-bold">
+                  <Button size="lg" className="rounded-full px-12 shadow-2xl shadow-primary/30 font-bold">
                     Learn More
                   </Button>
                 </Link>
@@ -175,7 +175,7 @@ function FeatureCard({ icon: Icon, title, description }: any) {
           <Icon className="w-7 h-7 text-primary" />
         </div>
         <div className="space-y-2 text-left">
-          <h3 className="text-xl font-bold tracking-tight">{title}</h3>
+          <h3 className="font-bold tracking-tight">{title}</h3>
           <p className="text-muted-foreground">{description}</p>
         </div>
       </CardContent>

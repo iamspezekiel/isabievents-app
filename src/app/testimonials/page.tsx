@@ -56,7 +56,7 @@ export default function TestimonialsPage() {
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/10 blur-[120px] rounded-full translate-x-1/2 -translate-y-1/2 -z-10" />
         <div className="container mx-auto px-4 text-center space-y-8 animate-in fade-in slide-in-from-bottom-8 duration-1000">
           <Badge className="bg-accent/20 text-accent border-none py-1.5 px-6 mb-4 font-bold tracking-widest uppercase">TESTIMONIALS</Badge>
-          <h1 className="font-headline text-4xl md:text-7xl font-black leading-[1.1] tracking-tighter text-balance">
+          <h1 className="tracking-tighter text-balance">
             Real Stories from <br /> 
             <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               Our Community
@@ -90,7 +90,7 @@ export default function TestimonialsPage() {
            <div className="absolute bottom-0 right-0 transition-transform duration-1000 rounded-full w-96 h-96 bg-accent/10 blur-[120px] translate-x-1/2 translate-y-1/2 group-hover:scale-110" />
            
            <div className="relative z-10 max-w-4xl mx-auto space-y-8">
-             <h2 className="font-headline text-3xl md:text-5xl font-black tracking-tighter leading-none">
+             <h2 className="leading-none tracking-tighter">
                Don't just read about it. <br />
                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Live it.</span>
              </h2>

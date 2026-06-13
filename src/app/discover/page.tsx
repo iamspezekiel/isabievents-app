@@ -78,7 +78,7 @@ function DiscoverContent() {
       <div className="space-y-4 text-left">
         <label className="text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground/60">Location</label>
         <Select value={selectedCity} onValueChange={setSelectedCity}>
-          <SelectTrigger className="w-full bg-secondary/30 border-border rounded-xl h-12 px-4 focus:ring-primary">
+          <SelectTrigger className="w-full bg-secondary/30 border-border rounded-xl h-11 px-4 focus:ring-primary">
             <SelectValue placeholder="All Cities" />
           </SelectTrigger>
           <SelectContent>
@@ -148,10 +148,10 @@ function DiscoverContent() {
   return (
     <div className="max-w-7xl mx-auto space-y-12">
       <div className="px-2 text-center space-y-6">
-        <h1 className="font-headline text-3xl md:text-7xl lg:text-8xl tracking-tighter">
+        <h1 className="font-headline tracking-tighter">
           Discover <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Experiences</span>
         </h1>
-        <p className="text-muted-foreground max-w-2xl mx-auto font-medium">
+        <p className="text-muted-foreground max-w-2xl mx-auto">
           Discover and secure your spot with zero friction.
         </p>
       </div>
@@ -162,7 +162,7 @@ function DiscoverContent() {
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
             <Input 
               placeholder="Search events, artists, or vibes..." 
-              className="pl-12 h-14 bg-card border-border rounded-2xl text-lg focus-visible:ring-primary transition-all shadow-xl shadow-black/5"
+              className="pl-12 h-11 bg-card border-border rounded-2xl text-base focus-visible:ring-primary transition-all shadow-xl shadow-black/5"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -178,7 +178,7 @@ function DiscoverContent() {
           
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="outline" className="h-14 rounded-2xl px-4 md:px-8 gap-2 md:gap-3 border-border bg-card font-bold shadow-xl shadow-black/5">
+              <Button variant="outline" className="h-11 rounded-2xl px-4 md:px-8 gap-2 md:gap-3 border-border bg-card font-bold shadow-xl shadow-black/5">
                 <Filter className="w-5 h-5 shrink-0" /> 
                 <span className="hidden sm:inline">Filters</span>
                 {(selectedCategory !== 'all' || selectedCity !== 'all' || priceFilter !== 'all') && (
@@ -209,7 +209,7 @@ function DiscoverContent() {
               </div>
               <SheetFooter className="p-6 border-t border-border mt-auto">
                 <SheetClose asChild>
-                  <Button className="w-full h-14 rounded-2xl text-lg font-bold shadow-xl shadow-primary/20">
+                  <Button className="w-full h-11 rounded-2xl font-bold shadow-xl shadow-primary/20">
                     Show {filteredEvents.length} results
                   </Button>
                 </SheetClose>
@@ -252,7 +252,7 @@ function DiscoverContent() {
                       {event.price.min === 0 ? 'FREE' : `₦${event.price.min.toLocaleString()}`}
                     </span>
                   </div>
-                  <Button className="rounded-full px-3 md:px-6 shadow-lg shadow-primary/20 h-7 md:h-11 text-[10px] md:text-sm font-bold">View</Button>
+                  <Button size="sm" className="rounded-full px-3 md:px-6 shadow-lg shadow-primary/20 font-bold">View</Button>
                 </div>
               </div>
             </div>
@@ -264,8 +264,8 @@ function DiscoverContent() {
         <div className="text-center py-32 bg-card/20 rounded-[3rem] border border-dashed border-border/50">
           <Search className="w-16 h-16 text-muted-foreground mx-auto mb-6 opacity-20" />
           <h3 className="text-2xl font-headline mb-3">No results found</h3>
-          <p className="text-muted-foreground max-w-sm mx-auto mb-8 font-medium">Try adjusting your filters or search query to find more experiences.</p>
-          <Button variant="secondary" className="rounded-full px-8 h-12 font-bold" onClick={resetFilters}>
+          <p className="text-muted-foreground max-w-sm mx-auto mb-8">Try adjusting your filters or search query to find more experiences.</p>
+          <Button variant="secondary" className="rounded-full px-8 h-11 font-bold" onClick={resetFilters}>
             Clear all filters
           </Button>
         </div>
