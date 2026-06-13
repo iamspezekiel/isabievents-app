@@ -14,7 +14,8 @@ import {
   MousePointerClick, 
   RefreshCcw,
   Menu,
-  Loader2
+  Loader2,
+  CheckCircle2
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -110,10 +111,10 @@ export default function OrganizerDashboard() {
         <div className="max-w-6xl mx-auto space-y-8">
           <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="text-left space-y-2">
-              <h1 className="font-headline text-3xl md:text-5xl">Organizer Overview</h1>
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge className="bg-accent/20 text-accent border-none font-bold">Verified Merchant</Badge>
-              </div>
+              <h1 className="font-headline text-3xl md:text-5xl flex items-center gap-3">
+                Smooth Events
+                <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8 text-accent fill-accent text-white" />
+              </h1>
             </div>
             <div className="flex items-center gap-3">
               <Button 
