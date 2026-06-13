@@ -1,0 +1,74 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "Stores details for attendees, organizers, and staff.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth unique ID" },
+        "name": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "role": { "type": "string", "enum": ["attendee", "organizer", "staff", "admin"] },
+        "avatarUrl": { "type": "string", "description": "URL to profile image in Cloud Storage" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "name", "email", "role"]
+    },
+    "Event": {
+      "title": "Event",
+      "description": "Details for an event listing.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "category": { "type": "string" },
+        "city": { "type": "string" },
+        "venue": { "type": "string" },
+        "date": { "type": "string", "format": "date-time" },
+        "organizerId": { "type": "string", "description": "ID of the UserProfile who created the event" },
+        "priceRange": {
+          "type": "object",
+          "properties": {
+            "min": { "type": "number" },
+            "max": { "type": "number" }
+          }
+        },
+        "inventory": { "type": "number" },
+        "imageUrl": { "type": "string", "description": "Main event poster in Cloud Storage" },
+        "status": { "type": "string", "enum": ["draft", "live", "past", "cancelled"] }
+      },
+      "required": ["title", "category", "city", "date", "organizerId"]
+    },
+    "Ticket": {
+      "title": "Ticket",
+      "description": "A purchased ticket for an event.",
+      "type": "object",
+      "properties": {
+        "eventId": { "type": "string" },
+        "userId": { "type": "string" },
+        "tier": { "type": "string" },
+        "purchaseDate": { "type": "string", "format": "date-time" },
+        "status": { "type": "string", "enum": ["valid", "used", "refunded"] },
+        "qrCodeData": { "type": "string", "description": "Unique data for the entry QR code" }
+      },
+      "required": ["eventId", "userId", "status"]
+    }
+  },
+  "auth": {
+    "providers": ["password", "google.com", "apple.com"]
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "User account information"
+    },
+    "/events/{eventId}": {
+      "schema": { "$ref": "#/entities/Event" },
+      "description": "Marketplace event listings"
+    },
+    "/tickets/{ticketId}": {
+      "schema": { "$ref": "#/entities/Ticket" },
+      "description": "Attendee ticket ownership and usage"
+    }
+  }
+}
