@@ -1,7 +1,4 @@
-
-"use client";
-
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -9,19 +6,15 @@ import { Logo } from '@/components/logo';
 import { Mail, Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
 
 export function Footer() {
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   return (
     <footer className="bg-background border-t border-border pt-12 pb-8">
       <div className="container mx-auto px-4">
         {/* Newsletter Section */}
         <div className="max-w-6xl mx-auto bg-primary/5 border border-primary/10 rounded-[2rem] p-6 md:p-8 mb-10 flex flex-col lg:flex-row items-center justify-between gap-8">
           <div className="space-y-2 text-center lg:text-left">
-            <h3 className="font-headline text-xl md:text-2xl font-black tracking-tighter">Stay in the <span className="text-primary">Loop</span></h3>
+            <h3 className="font-headline text-xl md:text-2xl font-black tracking-tighter">
+              Stay in the <span className="text-primary">Loop</span>
+            </h3>
             <p className="text-muted-foreground font-medium">Get first access to Nigerian concerts, festivals, and tech summits.</p>
           </div>
           <div className="w-full lg:max-w-md flex flex-col sm:flex-row gap-3">
