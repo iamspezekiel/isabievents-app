@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -110,9 +111,9 @@ export default function HomePage() {
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
-              <div className="w-full md:w-auto px-10 md:px-0">
+              <div className="w-full md:w-auto">
                 <Link href={`/discover?q=${encodeURIComponent(search)}`} className="w-full md:w-auto">
-                  <Button className="w-full md:w-auto rounded-full shadow-lg shadow-primary/20 font-bold transition-transform hover:scale-[1.02] active:scale-95 h-9 md:h-11">
+                  <Button className="w-full rounded-full shadow-lg shadow-primary/20 font-bold transition-transform hover:scale-[1.02] active:scale-95 h-9 md:h-11">
                     Discover Events
                   </Button>
                 </Link>
