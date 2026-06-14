@@ -259,7 +259,7 @@ export default function HomePage() {
               <div className="w-12 h-12 md:w-20 md:h-20 bg-primary/10 rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-8 transition-transform hover:scale-110">
                 <CheckCircle2 className="w-6 h-6 md:w-10 md:h-10 text-primary" />
               </div>
-              <h3 className="font-bold tracking-tight">Instant Ticket Delivery</h3>
+              <h3 className="font-bold tracking-tight">Instant Ticket</h3>
               <p className="text-muted-foreground">Receive your unique secure QR code ticket immediately via email and in your wallet after payment.</p>
             </div>
             <div className="space-y-4">
