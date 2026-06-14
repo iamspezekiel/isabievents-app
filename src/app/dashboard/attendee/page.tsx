@@ -141,6 +141,26 @@ export default function AttendeeDashboard() {
             <StatBox label="Saved" value={5} color="white" icon={Heart} />
           </div>
 
+          <Tabs defaultValue="upcoming" className="w-full">
+            <TabsList className="bg-secondary/50 p-1 rounded-2xl w-full sm:w-auto mb-8">
+              <TabsTrigger value="upcoming" className="rounded-xl px-8 flex-1 sm:flex-none font-bold">Upcoming</TabsTrigger>
+              <TabsTrigger value="past" className="rounded-xl px-8 flex-1 sm:flex-none font-bold">Past</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="upcoming" className="space-y-6">
+              {MOCK_EVENTS.slice(0, 3).map((event) => (
+                <TicketCard key={event.id} event={event} mounted={mounted} />
+              ))}
+            </TabsContent>
+
+            <TabsContent value="past" className="pt-12">
+              <div className="text-center py-24 bg-card/20 rounded-[3rem] border border-dashed border-border/50">
+                <History className="w-16 h-16 text-muted-foreground mx-auto mb-6 opacity-10" />
+                <p className="text-muted-foreground font-medium">No past events recorded yet.</p>
+              </div>
+            </TabsContent>
+          </Tabs>
+
           <div className="space-y-6">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -178,26 +198,6 @@ export default function AttendeeDashboard() {
               )}
             </div>
           </div>
-
-          <Tabs defaultValue="upcoming" className="w-full">
-            <TabsList className="bg-secondary/50 p-1 rounded-2xl w-full sm:w-auto mb-8">
-              <TabsTrigger value="upcoming" className="rounded-xl px-8 flex-1 sm:flex-none font-bold">Upcoming</TabsTrigger>
-              <TabsTrigger value="past" className="rounded-xl px-8 flex-1 sm:flex-none font-bold">Past</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="upcoming" className="space-y-6">
-              {MOCK_EVENTS.slice(0, 3).map((event) => (
-                <TicketCard key={event.id} event={event} mounted={mounted} />
-              ))}
-            </TabsContent>
-
-            <TabsContent value="past" className="pt-12">
-              <div className="text-center py-24 bg-card/20 rounded-[3rem] border border-dashed border-border/50">
-                <History className="w-16 h-16 text-muted-foreground mx-auto mb-6 opacity-10" />
-                <p className="text-muted-foreground font-medium">No past events recorded yet.</p>
-              </div>
-            </TabsContent>
-          </Tabs>
         </div>
       </main>
     </div>
