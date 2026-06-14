@@ -2,17 +2,19 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Settings, User, ShieldCheck, LogOut, Menu, Ticket, History, Heart, Bell } from 'lucide-react';
+import { Settings, User, ShieldCheck, LogOut, Menu, Ticket, History, Heart, Bell, MapPin } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
 import { SidebarLink } from '../page';
 import { usePathname } from 'next/navigation';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { CITIES } from '@/lib/mock-data';
 
 const WhatsAppIcon = ({ className }: { className?: string }) => (
   <svg 
@@ -99,7 +101,7 @@ export default function AttendeeSettingsPage() {
           <div className="grid gap-8">
             <Card className="border-border bg-card">
               <CardHeader className="text-left">
-                <CardTitle className="flex items-center gap-2"><User className="w-5 h-5 text-primary" /> Profile Information</CardTitle>
+                <CardTitle className="flex items-center gap-2 text-lg"><User className="w-5 h-5 text-primary" /> Profile Information</CardTitle>
                 <CardDescription>Your account details used for ticket issuance.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6 text-left">
@@ -118,14 +120,29 @@ export default function AttendeeSettingsPage() {
                     </Label>
                     <Input id="whatsapp" defaultValue="+2348123456789" className="h-11" />
                   </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="location" className="flex items-center gap-1.5">
+                      <MapPin className="w-3.5 h-3.5 text-primary" /> Location
+                    </Label>
+                    <Select defaultValue="Lagos">
+                      <SelectTrigger className="h-11">
+                        <SelectValue placeholder="Select your city" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CITIES.map(city => (
+                          <SelectItem key={city} value={city}>{city}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
-                <Button className="rounded-full px-8">Save Changes</Button>
+                <Button className="rounded-full px-8 font-bold">Save Changes</Button>
               </CardContent>
             </Card>
 
             <Card className="border-border bg-card">
               <CardHeader className="text-left">
-                <CardTitle className="flex items-center gap-2"><ShieldCheck className="w-5 h-5 text-primary" /> Privacy & Security</CardTitle>
+                <CardTitle className="flex items-center gap-2 text-lg"><ShieldCheck className="w-5 h-5 text-primary" /> Privacy & Security</CardTitle>
               </CardHeader>
               <CardContent className="space-y-6 text-left">
                 <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-xl">
