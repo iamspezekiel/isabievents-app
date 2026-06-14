@@ -1,19 +1,20 @@
-
 "use client";
 
 import React, { useState } from 'react';
-import { Settings, User, ShieldCheck, LogOut, Menu, LayoutDashboard, Plus, Ticket, Users, BarChart3, ChevronRight } from 'lucide-react';
+import { Settings, User, ShieldCheck, LogOut, Menu, LayoutDashboard, Plus, Ticket, Users, BarChart3, ChevronRight, MapPin } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
 import { SidebarLink } from '../page';
 import { usePathname } from 'next/navigation';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { CITIES } from '@/lib/mock-data';
 
 const WhatsAppIcon = ({ className }: { className?: string }) => (
   <svg 
@@ -142,6 +143,21 @@ export default function OrganizerSettingsPage() {
                       <WhatsAppIcon className="w-3.5 h-3.5 text-green-500" /> WhatsApp Number
                     </Label>
                     <Input id="whatsapp" defaultValue="+2348011122233" className="h-11" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="location" className="flex items-center gap-1.5">
+                      <MapPin className="w-3.5 h-3.5 text-primary" /> Brand Headquarters
+                    </Label>
+                    <Select defaultValue="Lagos">
+                      <SelectTrigger className="h-11">
+                        <SelectValue placeholder="Select your city" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CITIES.map(city => (
+                          <SelectItem key={city} value={city}>{city}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
                 <Button className="rounded-full px-8 font-bold">Save Changes</Button>

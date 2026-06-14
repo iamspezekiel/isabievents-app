@@ -18,7 +18,9 @@ import {
   Lock,
   RefreshCcw,
   AlertTriangle,
-  CreditCard
+  CreditCard,
+  User,
+  MapPin
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -26,12 +28,14 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Logo } from '@/components/logo';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { SidebarLink } from '../page';
 import { useToast } from "@/hooks/use-toast";
+import { CITIES } from '@/lib/mock-data';
 
 export default function AdminSystemSettings() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -116,6 +120,39 @@ export default function AdminSystemSettings() {
           </header>
 
           <div className="grid gap-8 text-left">
+            {/* Admin Profile */}
+            <Card className="border-border bg-card">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <User className="w-5 h-5 text-primary" /> Admin Profile
+                </CardTitle>
+                <CardDescription>Your personal account details for system audit logs.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid sm:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <Label>Full Name</Label>
+                    <Input defaultValue="Admin Master" className="h-11 bg-secondary/30 border-none rounded-xl" />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="location" className="flex items-center gap-1.5">
+                      <MapPin className="w-3.5 h-3.5 text-primary" /> Primary Operating Base
+                    </Label>
+                    <Select defaultValue="Abuja">
+                      <SelectTrigger className="h-11 bg-secondary/30 border-none rounded-xl">
+                        <SelectValue placeholder="Select your city" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CITIES.map(city => (
+                          <SelectItem key={city} value={city}>{city}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Global Pricing */}
             <Card className="border-border bg-card">
               <CardHeader>
