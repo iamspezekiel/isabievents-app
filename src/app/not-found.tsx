@@ -1,6 +1,3 @@
-
-"use client";
-
 import React from 'react';
 import Link from 'next/link';
 import { Button } from "@/components/ui/button";
@@ -10,6 +7,7 @@ import { Logo } from '@/components/logo';
 /**
  * Custom 404 Page for IsabiEvents.
  * Replaces the default Next.js error page with a branded, helpful experience.
+ * Implemented as a Server Component to avoid hydration mismatches and improve load times.
  */
 export default function NotFound() {
   return (
