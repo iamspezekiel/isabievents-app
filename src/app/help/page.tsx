@@ -127,6 +127,11 @@ export default function HelpCenterPage() {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-3">
+                  <Button variant="ghost" className="w-full gap-2 rounded-full h-12 no-underline font-bold hover:bg-primary/10 hover:text-primary transition-colors border-2 border-transparent" asChild>
+                    <Link href="/contact">
+                      <Send className="w-4 h-4" /> Get in Touch
+                    </Link>
+                  </Button>
                   <Button className="w-full gap-2 rounded-full h-12 no-underline font-bold shadow-lg shadow-primary/20" asChild>
                     <a href="https://wa.me/2349024244140" target="_blank">
                       <MessageCircle className="w-4 h-4" /> Live Chat
@@ -135,11 +140,6 @@ export default function HelpCenterPage() {
                   <Button variant="outline" className="w-full gap-2 rounded-full h-12 no-underline font-bold border-2" asChild>
                     <Link href="mailto:support@isabievents.ng">
                       <Mail className="w-4 h-4" /> Email Support
-                    </Link>
-                  </Button>
-                  <Button variant="ghost" className="w-full gap-2 rounded-full h-12 no-underline font-bold hover:bg-primary/10 hover:text-primary transition-colors border-2 border-transparent" asChild>
-                    <Link href="/contact">
-                      <Send className="w-4 h-4" /> Get in Touch
                     </Link>
                   </Button>
                 </div>
