@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Bell, Ticket, Star, Zap, Menu, LogOut, History, Heart, Settings } from 'lucide-react';
+import { Bell, Ticket, Star, Zap, Menu, LogOut, History, Heart, Settings, Clock } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
@@ -122,9 +122,12 @@ function NotificationItem({ icon: Icon, title, desc, time, type }: any) {
           <Icon className="w-6 h-6" />
        </div>
        <div className="flex-1 space-y-1">
-          <div className="flex justify-between items-start">
-             <h4 className="font-bold text-lg">{title}</h4>
-             <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest">{time}</span>
+          <div className="flex justify-between items-start gap-4">
+             <h4 className="font-bold text-lg leading-tight">{title}</h4>
+             <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground font-bold uppercase tracking-widest shrink-0 mt-1">
+                <Clock className="w-3 h-3" />
+                {time}
+             </div>
           </div>
           <p className="text-sm text-muted-foreground leading-relaxed">{desc}</p>
           <div className="pt-2">
