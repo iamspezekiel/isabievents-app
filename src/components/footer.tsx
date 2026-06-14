@@ -43,16 +43,16 @@ export function Footer() {
             </p>
             {/* Social Icons */}
             <div className="flex items-center gap-3">
-              <Link href="#" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
+              <Link href="https://facebook.com/isabievents" target="_blank" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
                 <Facebook className="w-4 h-4" />
               </Link>
-              <Link href="#" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
+              <Link href="https://twitter.com/isabievents" target="_blank" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
                 <Twitter className="w-4 h-4" />
               </Link>
-              <Link href="#" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
+              <Link href="https://instagram.com/isabievents" target="_blank" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
                 <Instagram className="w-4 h-4" />
               </Link>
-              <Link href="#" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
+              <Link href="https://youtube.com/@isabievents" target="_blank" className="p-2 rounded-lg bg-secondary hover:bg-primary hover:text-white transition-all group no-underline">
                 <Youtube className="w-4 h-4" />
               </Link>
             </div>

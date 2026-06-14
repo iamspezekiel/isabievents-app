@@ -78,11 +78,11 @@ export default function ContactPage() {
             <div className="space-y-6 pt-8 border-t border-border">
               <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">Follow the Vibe</h4>
               <div className="flex flex-wrap gap-2.5">
-                <SocialLink icon={Instagram} href="#" color="bg-[#E4405F]/10 text-[#E4405F]" />
-                <SocialLink icon={Twitter} href="#" color="bg-foreground/10 text-foreground" />
-                <SocialLink icon={Facebook} href="#" color="bg-[#1877F2]/10 text-[#1877F2]" />
-                <SocialLink icon={Linkedin} href="#" color="bg-[#0A66C2]/10 text-[#0A66C2]" />
-                <SocialLink icon={Youtube} href="#" color="bg-[#FF0000]/10 text-[#FF0000]" />
+                <SocialLink icon={Instagram} href="https://instagram.com/isabievents" color="bg-[#E4405F]/10 text-[#E4405F]" />
+                <SocialLink icon={Twitter} href="https://twitter.com/isabievents" color="bg-foreground/10 text-foreground" />
+                <SocialLink icon={Facebook} href="https://facebook.com/isabievents" color="bg-[#1877F2]/10 text-[#1877F2]" />
+                <SocialLink icon={Linkedin} href="https://linkedin.com/company/isabievents" color="bg-[#0A66C2]/10 text-[#0A66C2]" />
+                <SocialLink icon={Youtube} href="https://youtube.com/@isabievents" color="bg-[#FF0000]/10 text-[#FF0000]" />
               </div>
             </div>
           </div>
@@ -180,7 +180,7 @@ function ContactInfo({ icon: Icon, title, value, desc }: any) {
 
 function SocialLink({ icon: Icon, href, color }: { icon: any, href: string, color: string }) {
   return (
-    <Link href={href} className={cn(
+    <Link href={href} target="_blank" className={cn(
       "w-10 h-10 rounded-xl flex items-center justify-center transition-all hover:-translate-y-1 hover:shadow-lg shadow-black/5 group",
       color
     )}>
