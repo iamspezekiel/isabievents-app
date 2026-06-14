@@ -243,16 +243,16 @@ function TicketCard({ event, mounted }: any) {
           </div>
         </div>
         
-        <div className="mt-8 pt-8 border-t border-border flex flex-col sm:flex-row gap-4">
-          <Button className="flex-1 rounded-full h-12 gap-3 shadow-lg shadow-primary/20 font-black text-xs uppercase tracking-widest hover:scale-[1.02] transition-transform">
-            <QrCode className="w-5 h-5" /> View Ticket
+        <div className="mt-8 pt-8 border-t border-border flex flex-row items-center gap-2">
+          <Button className="flex-1 rounded-full h-11 gap-2 shadow-lg shadow-primary/20 font-black text-[10px] uppercase tracking-widest hover:scale-[1.02] transition-transform">
+            <QrCode className="w-4 h-4" /> View Ticket
           </Button>
           <div className="flex gap-2">
-            <Button variant="outline" size="icon" className="w-12 h-12 rounded-full border-border bg-card hover:bg-secondary hover:text-primary transition-colors">
-              <Download className="w-5 h-5" />
+            <Button variant="outline" size="icon" className="w-11 h-11 rounded-full border-border bg-card hover:bg-secondary hover:text-primary transition-colors">
+              <Download className="w-4 h-4" />
             </Button>
-            <Button variant="outline" size="icon" className="w-12 h-12 rounded-full border-border bg-card hover:bg-secondary hover:text-primary transition-colors">
-              <Share2 className="w-5 h-5" />
+            <Button variant="outline" size="icon" className="w-11 h-11 rounded-full border-border bg-card hover:bg-secondary hover:text-primary transition-colors">
+              <Share2 className="w-4 h-4" />
             </Button>
           </div>
         </div>
