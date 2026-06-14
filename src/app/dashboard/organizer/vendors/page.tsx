@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Users, Plus, Mail, ShieldCheck, LayoutDashboard, Ticket, BarChart3, Settings, LogOut, Menu, Loader2, User, UserPlus, Trash2, Edit, Phone } from 'lucide-react';
+import { Users, Plus, Mail, ShieldCheck, LayoutDashboard, Ticket, BarChart3, Settings, LogOut, Menu, Loader2, User, UserPlus, Trash2, Edit, Phone, Info, ShoppingBag, CheckCircle2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -39,7 +39,6 @@ export default function VendorsManagementPage() {
   const [vendors, setVendors] = useState([
     { id: '1', name: "Main Gate Team", role: "Staff", status: "Active", email: "gate1@isabievents.ng", whatsapp: "+2348000000001" },
     { id: '2', name: "Cold Sips Drinks", role: "Vendor", status: "Active", email: "drinks@vendor.ng", whatsapp: "+2348000000002" },
-    { id: '3', name: "Naija Grills", role: "Vendor", status: "Pending", email: "grills@vendor.ng", whatsapp: "+2348000000003" },
   ]);
 
   const [newVendor, setNewVendor] = useState({
@@ -154,7 +153,7 @@ export default function VendorsManagementPage() {
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
               <DialogTrigger asChild>
                 <Button className="rounded-full gap-2 px-6 shadow-lg shadow-primary/20 font-bold h-9 md:h-11">
-                  <Plus className="w-4 h-4" /> Add Vendor
+                  <Plus className="w-4 h-4" /> Add Member
                 </Button>
               </DialogTrigger>
               <DialogContent className="bg-card border-border sm:rounded-[2rem] max-w-lg w-[94vw] sm:w-full">
@@ -243,18 +242,26 @@ export default function VendorsManagementPage() {
              ))}
           </div>
 
-          <Card className="border-dashed border-2 border-border bg-card/50 rounded-[2rem]">
-            <CardContent className="p-12 text-center space-y-4">
-               <div className="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto">
-                 <ShieldCheck className="w-8 h-8 text-muted-foreground opacity-50" />
-               </div>
-               <div className="space-y-1">
-                 <h3 className="font-bold text-xl">On-site Verification</h3>
-                 <p className="text-muted-foreground max-w-sm mx-auto">Vendors can use their dedicated portal to scan and verify guest meal vouchers or VIP access.</p>
-               </div>
-               <div className="pt-4">
-                 <Button variant="outline" className="rounded-full">Learn More</Button>
-               </div>
+          <Card className="bg-primary/5 border-primary/20 border text-left">
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <Info className="w-5 h-5 text-primary" /> Role Definitions
+              </CardTitle>
+              <CardDescription>Understanding the difference between your team members.</CardDescription>
+            </CardHeader>
+            <CardContent className="grid gap-6 md:grid-cols-2">
+              <div className="space-y-2">
+                <h4 className="font-bold flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-primary" /> Staff (Gate Control)</h4>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Staff members manage the attendee flow. They use the Gate Tool to scan entry tickets, verify attendance, and prevent duplicate access.
+                </p>
+              </div>
+              <div className="space-y-2">
+                <h4 className="font-bold flex items-center gap-2"><ShoppingBag className="w-4 h-4 text-accent" /> Vendors (On-site Services)</h4>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  Vendors verify pre-paid vouchers for items like meals or drinks. Scanning ensures each voucher is fulfilled only once and tracks sales performance.
+                </p>
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -264,7 +271,7 @@ export default function VendorsManagementPage() {
 }
 
 function VendorCard({ vendor, onDelete }: any) {
-  const { name, role, status, email, whatsapp } = vendor;
+  const { name, role, status } = vendor;
   return (
     <Card className="bg-card border-border hover:border-primary/30 transition-all text-left group">
       <CardContent className="p-6 space-y-6">
@@ -283,7 +290,7 @@ function VendorCard({ vendor, onDelete }: any) {
         <div className="flex gap-2 pt-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="secondary" size="sm" className="flex-1 rounded-lg h-9 font-bold">Manage</Button>
+              <Button variant="secondary" size="sm" className="w-full rounded-lg h-9 font-bold">Manage</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48 bg-card border-border">
               <DropdownMenuItem className="gap-2 font-bold cursor-pointer">
@@ -294,24 +301,6 @@ function VendorCard({ vendor, onDelete }: any) {
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          
-          <div className="flex gap-1.5">
-            <Button variant="outline" size="icon" className="rounded-lg h-9 w-9" asChild title="Email">
-              <a href={`mailto:${email}`}>
-                <Mail className="w-4 h-4 text-primary" />
-              </a>
-            </Button>
-            <Button variant="outline" size="icon" className="rounded-lg h-9 w-9" asChild title="Call">
-              <a href={`tel:${whatsapp?.replace(/\D/g, '')}`}>
-                <Phone className="w-4 h-4 text-accent" />
-              </a>
-            </Button>
-            <Button variant="outline" size="icon" className="rounded-lg h-9 w-9" asChild title="WhatsApp">
-              <a href={`https://wa.me/${whatsapp?.replace(/\D/g, '')}`} target="_blank" rel="noopener noreferrer">
-                <WhatsAppIcon className="w-4 h-4 text-green-500" />
-              </a>
-            </Button>
-          </div>
         </div>
       </CardContent>
     </Card>
