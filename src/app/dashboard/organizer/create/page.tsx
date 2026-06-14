@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { 
   ArrowLeft, 
   Sparkles, 
@@ -25,11 +25,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { generateEventCopy } from '@/ai/flows/organizer-ai-copy-generator';
-import { CATEGORIES } from '@/lib/mock-data';
+import { CATEGORIES, MOCK_EVENTS } from '@/lib/mock-data';
 
-export default function CreateEventPage() {
+function CreateEventForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const { toast } = useToast();
+  
+  const eventId = searchParams.get('id');
+  const isEdit = !!eventId;
   
   const [step, setStep] = useState(1);
   const [loadingAI, setLoadingAI] = useState(false);
@@ -49,6 +53,28 @@ export default function CreateEventPage() {
 
   const [features, setFeatures] = useState<string[]>([]);
   const [currentFeature, setCurrentFeature] = useState('');
+
+  // Simulate loading existing event data in edit mode
+  useEffect(() => {
+    if (isEdit) {
+      const event = MOCK_EVENTS.find(e => e.id === eventId);
+      if (event) {
+        setFormData({
+          name: event.title,
+          category: event.category,
+          summary: event.description.substring(0, 100) + '...',
+          description: event.description,
+          policies: "Standard IsabiEvents event policies apply.",
+          venue: event.venue,
+          date: event.date.split('T')[0],
+          time: event.date.split('T')[1].substring(0, 5),
+          price: event.price.min.toString(),
+          capacity: event.inventory.toString(),
+        });
+        setFeatures(event.tags);
+      }
+    }
+  }, [isEdit, eventId]);
 
   const handleAddFeature = () => {
     if (currentFeature && !features.includes(currentFeature)) {
@@ -101,22 +127,23 @@ export default function CreateEventPage() {
 
   const handleSubmit = async () => {
     toast({
-      title: "Event Created!",
-      description: "Your event is being processed and will be live shortly.",
+      title: isEdit ? "Event Updated!" : "Event Created!",
+      description: isEdit ? "Your changes have been saved." : "Your event is being processed and will be live shortly.",
     });
     router.push('/dashboard/organizer');
   };
 
   return (
     <div className="min-h-screen bg-background pb-20 pt-20">
-      {/* Header with added top spacing and margin */}
       <header className="border-b border-border bg-card sticky top-0 z-50 py-4 mt-16">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" onClick={() => router.back()}>
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <h1 className="font-headline text-xl md:text-2xl tracking-tighter">Create New Event</h1>
+            <h1 className="font-headline text-xl md:text-2xl tracking-tighter">
+              {isEdit ? 'Edit Event' : 'Create New Event'}
+            </h1>
           </div>
           <div className="flex items-center gap-4">
             <div className="hidden md:flex gap-1">
@@ -159,7 +186,7 @@ export default function CreateEventPage() {
                       </SelectTrigger>
                       <SelectContent>
                         {CATEGORIES.map(cat => (
-                          <SelectItem key={cat.id} value={cat.name}>{cat.name}</SelectItem>
+                          <SelectItem key={cat.id} value={cat.id}>{cat.name}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
@@ -363,12 +390,24 @@ export default function CreateEventPage() {
             <div className="pt-8 flex justify-between">
               <Button variant="ghost" onClick={() => setStep(2)} className="rounded-full px-8 font-bold h-11">Back</Button>
               <Button onClick={handleSubmit} className="rounded-full px-12 h-11 font-bold gap-2 shadow-xl shadow-primary/20">
-                Launch Event <CheckCircle2 className="w-5 h-5" />
+                {isEdit ? 'Save Changes' : 'Launch Event'} <CheckCircle2 className="w-5 h-5" />
               </Button>
             </div>
           </div>
         )}
       </main>
     </div>
+  );
+}
+
+export default function CreateEventPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+      </div>
+    }>
+      <CreateEventForm />
+    </Suspense>
   );
 }
