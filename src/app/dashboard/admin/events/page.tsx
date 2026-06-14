@@ -153,10 +153,25 @@ export default function AdminEventsManagement() {
           </header>
 
           <Tabs defaultValue="pending" className="w-full">
-            <TabsList className="bg-secondary/50 p-1 rounded-2xl mb-8">
-              <TabsTrigger value="pending" className="rounded-xl px-8 font-bold">Pending Review ({pendingModeration.length})</TabsTrigger>
-              <TabsTrigger value="approved" className="rounded-xl px-8 font-bold">Auto-Approved ({autoApproved.length})</TabsTrigger>
-              <TabsTrigger value="all" className="rounded-xl px-8 font-bold">All Events</TabsTrigger>
+            <TabsList className="bg-secondary/50 p-1 rounded-2xl mb-8 w-full sm:w-auto h-auto sm:h-11 flex overflow-x-auto">
+              <TabsTrigger 
+                value="pending" 
+                className="rounded-xl px-2 sm:px-8 font-bold flex-1 sm:flex-none py-2.5 sm:py-1.5 text-[10px] sm:text-sm whitespace-nowrap"
+              >
+                Pending Review ({pendingModeration.length})
+              </TabsTrigger>
+              <TabsTrigger 
+                value="approved" 
+                className="rounded-xl px-2 sm:px-8 font-bold flex-1 sm:flex-none py-2.5 sm:py-1.5 text-[10px] sm:text-sm whitespace-nowrap"
+              >
+                Auto-Approved ({autoApproved.length})
+              </TabsTrigger>
+              <TabsTrigger 
+                value="all" 
+                className="rounded-xl px-2 sm:px-8 font-bold flex-1 sm:flex-none py-2.5 sm:py-1.5 text-[10px] sm:text-sm whitespace-nowrap"
+              >
+                All Events
+              </TabsTrigger>
             </TabsList>
 
             <TabsContent value="pending" className="space-y-4">
