@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -7,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardDescription, CardFooter } from "@/components/ui/card";
 import Link from 'next/link';
-import { Mail, Lock, Loader2, ShieldCheck, User, LayoutDashboard, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, Loader2, ShieldCheck, User, LayoutDashboard, Eye, EyeOff, Store } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { MOCK_USERS } from '@/lib/mock-data';
 import { useToast } from "@/hooks/use-toast";
@@ -143,6 +144,7 @@ export default function LoginPage() {
                     user.role === 'admin' ? <ShieldCheck className="w-3 h-3 text-primary" /> :
                     user.role === 'organizer' ? <LayoutDashboard className="w-3 h-3 text-primary" /> :
                     user.role === 'staff' ? <ShieldCheck className="w-3 h-3 text-accent" /> :
+                    user.role === 'vendor' ? <Store className="w-3 h-3 text-primary" /> :
                     <User className="w-3 h-3 text-muted-foreground" />
                   )}
                   {user.role}

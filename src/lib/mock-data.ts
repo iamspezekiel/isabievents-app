@@ -212,6 +212,14 @@ export const MOCK_USERS = [
     dashboard: '/dashboard/staff'
   },
   {
+    name: 'Cold Sips Drinks',
+    email: 'vendor@isabievents.ng',
+    whatsapp: '+2348077788899',
+    password: 'password123',
+    role: 'vendor',
+    dashboard: '/dashboard/vendor'
+  },
+  {
     name: 'Sylvanus P. Ezekiel',
     email: 'attendee@isabievents.ng',
     whatsapp: '+2348123456789',
