@@ -23,12 +23,17 @@ import {
   Cloud,
   RefreshCw,
   ShieldCheck,
-  X
+  X,
+  Send,
+  Mail
 } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { MOCK_USER, MOCK_EVENTS, CATEGORIES } from '@/lib/mock-data';
 import { Logo } from '@/components/logo';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -46,13 +51,19 @@ export default function AttendeeDashboard() {
   const [isSyncing, setIsSyncing] = useState(false);
   const [isOfflineReady, setIsOfflineReady] = useState(false);
   const [showOfflineBanner, setShowOfflineBanner] = useState(true);
+  
+  // Transfer state
+  const [isTransferOpen, setIsTransferOpen] = useState(false);
+  const [transferTicket, setTransferTicket] = useState<any>(null);
+  const [transferEmail, setTransferEmail] = useState('');
+  const [isTransferring, setIsTransferring] = useState(false);
+
   const pathname = usePathname();
   const { toast } = useToast();
 
   useEffect(() => {
     setMounted(true);
     fetchRecommendations();
-    // Check local storage for offline data
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('isabi_offline_tickets');
       if (saved) setIsOfflineReady(true);
@@ -61,26 +72,22 @@ export default function AttendeeDashboard() {
 
   const handleSyncOffline = async () => {
     setIsSyncing(true);
-    // Simulate encryption and local storage persistence
     await new Promise(r => setTimeout(r, 2000));
     localStorage.setItem('isabi_offline_tickets', JSON.stringify(MOCK_EVENTS.slice(0, 3)));
     setIsSyncing(false);
     setIsOfflineReady(true);
     toast({
       title: "Offline Access Enabled",
-      description: "Your tickets have been encrypted and stored on this device. You can now scan them without an internet connection.",
+      description: "Your tickets have been encrypted and stored on this device.",
     });
   };
 
   const fetchRecommendations = async () => {
     setLoadingRecs(true);
-    
-    // Check for cached recommendations to save quota
     if (typeof window !== 'undefined') {
       const cached = localStorage.getItem('isabi_recs_cache');
       if (cached) {
         const { data, timestamp } = JSON.parse(cached);
-        // Cache valid for 30 minutes
         if (Date.now() - timestamp < 30 * 60 * 1000 && data.length > 0) {
           setRecommendations(data);
           setLoadingRecs(false);
@@ -105,10 +112,8 @@ export default function AttendeeDashboard() {
       
       const recommendedEvents = MOCK_EVENTS.filter(e => result.recommendedEventIds.includes(e.id));
       const finalRecs = recommendedEvents.length > 0 ? recommendedEvents : MOCK_EVENTS.slice(3, 6);
-      
       setRecommendations(finalRecs);
       
-      // Store in cache
       if (typeof window !== 'undefined') {
         localStorage.setItem('isabi_recs_cache', JSON.stringify({
           data: finalRecs,
@@ -121,6 +126,27 @@ export default function AttendeeDashboard() {
     } finally {
       setLoadingRecs(false);
     }
+  };
+
+  const handleTransfer = async () => {
+    if (!transferEmail) {
+      toast({ variant: "destructive", title: "Email Required", description: "Please enter the recipient's email address." });
+      return;
+    }
+    setIsTransferring(true);
+    await new Promise(r => setTimeout(r, 2000));
+    setIsTransferring(false);
+    setIsTransferOpen(false);
+    setTransferEmail('');
+    toast({
+      title: "Ticket Transferred!",
+      description: `Your ticket for ${transferTicket.title} has been sent to ${transferEmail}.`,
+    });
+  };
+
+  const openTransfer = (event: any) => {
+    setTransferTicket(event);
+    setIsTransferOpen(true);
   };
 
   const Navigation = () => (
@@ -167,9 +193,7 @@ export default function AttendeeDashboard() {
             <SheetContent side="left" className="w-72 bg-card border-border p-8 flex flex-col overflow-y-auto">
               <SheetHeader className="text-left mb-10">
                 <SheetTitle>
-                  <Link href="/dashboard/attendee" className="no-underline" onClick={() => setIsSidebarOpen(false)}>
-                    <Logo size="sm" />
-                  </Link>
+                  <Logo size="sm" />
                 </SheetTitle>
               </SheetHeader>
               <Navigation />
@@ -183,7 +207,6 @@ export default function AttendeeDashboard() {
 
       <main className="flex-1 p-4 md:p-8 lg:p-12 overflow-x-hidden">
         <div className="max-w-5xl mx-auto space-y-8 md:space-y-12">
-          {/* Offline Sync Banner */}
           {showOfflineBanner && (
             <div className={cn(
               "relative p-4 px-6 rounded-3xl border flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-500",
@@ -197,9 +220,7 @@ export default function AttendeeDashboard() {
                   {isOfflineReady ? <Cloud className="w-5 h-5" /> : <CloudOff className="w-5 h-5" />}
                 </div>
                 <div className="space-y-0.5 pr-8 md:pr-0">
-                  <p className="text-sm font-bold">
-                    {isOfflineReady ? "Offline Access Enabled" : "Data-Saving Offline Access"}
-                  </p>
+                  <p className="text-sm font-bold">{isOfflineReady ? "Offline Access Enabled" : "Data-Saving Offline Access"}</p>
                   <p className="text-[10px] md:text-xs text-muted-foreground leading-tight">
                     {isOfflineReady 
                       ? "Your tickets are stored locally. You can enter venues even without an internet connection." 
@@ -213,25 +234,11 @@ export default function AttendeeDashboard() {
                   onClick={handleSyncOffline} 
                   disabled={isSyncing}
                   variant={isOfflineReady ? "outline" : "default"}
-                  className={cn(
-                    "rounded-full h-10 px-6 font-bold gap-2 flex-1 md:flex-none md:min-w-[140px]",
-                    isOfflineReady && "border-green-500/20 text-green-600 hover:bg-green-500/5 hover:text-green-700"
-                  )}
+                  className={cn("rounded-full h-10 px-6 font-bold gap-2 flex-1 md:flex-none md:min-w-[140px]", isOfflineReady && "border-green-500/20 text-green-600")}
                 >
-                  {isSyncing ? (
-                    <RefreshCw className="w-4 h-4 animate-spin" />
-                  ) : isOfflineReady ? (
-                    <>Update Sync</>
-                  ) : (
-                    <>Sync for Offline</>
-                  )}
+                  {isSyncing ? <RefreshCw className="w-4 h-4 animate-spin" /> : isOfflineReady ? "Update Sync" : "Sync for Offline"}
                 </Button>
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="rounded-full h-8 w-8 text-muted-foreground hover:text-foreground absolute top-2 right-2 md:relative md:top-auto md:right-auto"
-                  onClick={() => setShowOfflineBanner(false)}
-                >
+                <Button variant="ghost" size="icon" className="rounded-full h-8 w-8 text-muted-foreground absolute top-2 right-2 md:relative md:top-auto md:right-auto" onClick={() => setShowOfflineBanner(false)}>
                   <X className="w-4 h-4" />
                 </Button>
               </div>
@@ -243,11 +250,9 @@ export default function AttendeeDashboard() {
               <h1 className="font-headline text-3xl md:text-5xl tracking-tighter">Hi, {MOCK_USER.name} 👋</h1>
               <p className="text-muted-foreground font-medium">You have {MOCK_USER.wallet.active} upcoming experiences.</p>
             </div>
-            <div className="flex items-center gap-3">
-              <Link href="/discover" className="w-full sm:w-auto no-underline">
-                <Button className="w-full rounded-full px-8 shadow-xl shadow-primary/20 h-11 font-bold">Discover Events</Button>
-              </Link>
-            </div>
+            <Link href="/discover" className="w-full sm:w-auto no-underline">
+              <Button className="w-full rounded-full px-8 shadow-xl shadow-primary/20 h-11 font-bold">Discover Events</Button>
+            </Link>
           </header>
 
           <div className="grid grid-cols-3 gap-2 md:gap-6">
@@ -264,7 +269,7 @@ export default function AttendeeDashboard() {
 
             <TabsContent value="upcoming" className="space-y-6">
               {MOCK_EVENTS.slice(0, 3).map((event) => (
-                <TicketCard key={event.id} event={event} mounted={mounted} offline={isOfflineReady} />
+                <TicketCard key={event.id} event={event} mounted={mounted} offline={isOfflineReady} onTransfer={() => openTransfer(event)} />
               ))}
             </TabsContent>
 
@@ -315,20 +320,55 @@ export default function AttendeeDashboard() {
           </div>
         </div>
       </main>
+
+      <Dialog open={isTransferOpen} onOpenChange={setIsTransferOpen}>
+        <DialogContent className="bg-card border-border sm:rounded-[2.5rem] p-8 max-w-md">
+          <DialogHeader className="text-left">
+            <DialogTitle className="font-headline text-2xl flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                <Send className="w-5 h-5 text-primary" />
+              </div>
+              Transfer Ticket
+            </DialogTitle>
+            <DialogDescription className="text-muted-foreground">
+              Transfer your ticket for <strong>{transferTicket?.title}</strong> to a friend's account. This action is irreversible.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-6 space-y-4 text-left">
+            <div className="space-y-2">
+              <Label htmlFor="transfer-email" className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 pl-1">Recipient's Email Address</Label>
+              <div className="relative">
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input 
+                  id="transfer-email" 
+                  placeholder="friend@example.com" 
+                  className="pl-10 h-12 bg-secondary/30 border-none rounded-xl"
+                  value={transferEmail}
+                  onChange={(e) => setTransferEmail(e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
+          <DialogFooter className="flex-col sm:flex-row gap-3">
+            <Button variant="ghost" onClick={() => setIsTransferOpen(false)} className="rounded-full font-bold h-11">Cancel</Button>
+            <Button 
+              onClick={handleTransfer} 
+              disabled={isTransferring}
+              className="flex-1 rounded-full font-bold h-11 shadow-lg shadow-primary/20 gap-2"
+            >
+              {isTransferring ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+              Transfer Ticket
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
 
 export function SidebarLink({ icon: Icon, label, active, href = "#" }: any) {
   return (
-    <Link 
-      href={href} 
-      className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all text-sm font-bold no-underline ${
-        active 
-          ? 'bg-primary text-white shadow-lg shadow-primary/20' 
-          : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
-      }`}
-    >
+    <Link href={href} className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all text-sm font-bold no-underline ${active ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-muted-foreground hover:bg-secondary hover:text-foreground'}`}>
       <Icon className="w-5 h-5 shrink-0" />
       <span>{label}</span>
     </Link>
@@ -338,7 +378,6 @@ export function SidebarLink({ icon: Icon, label, active, href = "#" }: any) {
 function StatBox({ label, value, color, icon: Icon, className }: any) {
   const colorClass = color === 'primary' ? 'text-primary' : color === 'accent' ? 'text-accent' : 'text-foreground';
   const bgClass = color === 'primary' ? 'bg-primary/10' : color === 'accent' ? 'bg-accent/10' : 'bg-secondary/50';
-  
   return (
     <Card className={cn("bg-card border-border overflow-hidden rounded-[1.25rem] md:rounded-[2.5rem] shadow-sm hover:border-primary/40 hover:shadow-md transition-all duration-300 group cursor-default", className)}>
       <CardContent className="p-3 md:p-8 flex flex-row items-center justify-start gap-2 md:gap-6">
@@ -354,18 +393,14 @@ function StatBox({ label, value, color, icon: Icon, className }: any) {
   );
 }
 
-function TicketCard({ event, mounted, offline }: any) {
+function TicketCard({ event, mounted, offline, onTransfer }: any) {
   return (
     <div className="group relative bg-card border border-border rounded-[2.5rem] overflow-hidden hover:border-primary/50 transition-all duration-500 flex flex-col md:flex-row hover:shadow-[0_32px_64px_-16px_rgba(126,124,255,0.1)] shadow-sm">
       <div className="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-1/2 w-6 h-6 md:w-10 md:h-10 bg-background border border-border rounded-full z-10 hidden md:block" />
       <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2 w-6 h-6 md:w-10 md:h-10 bg-background border border-border rounded-full z-10 hidden md:block" />
 
       <div className="relative w-full md:w-64 aspect-[16/10] md:aspect-square shrink-0 overflow-hidden">
-        <img 
-          src={event.image} 
-          alt="" 
-          className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110" 
-        />
+        <img src={event.image} alt="" className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110" />
         <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 backdrop-blur-[2px]">
           <QrCode className="w-6 h-6 md:w-14 md:h-14 text-white mb-2 animate-in zoom-in-50" />
           <span className="text-white text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em]">Show Entry QR</span>
@@ -382,15 +417,12 @@ function TicketCard({ event, mounted, offline }: any) {
       
       <div className="flex-1 p-6 md:p-10 flex flex-col text-left relative">
         <div className="absolute left-0 top-0 bottom-0 w-px border-l-2 border-dashed border-border/50 ml-[-1px] hidden md:block" />
-        
         <div className="flex items-center justify-between mb-6">
           <Badge className="bg-primary text-white border-none py-1 px-4 font-black text-[10px] tracking-widest uppercase rounded-full">CONFIRMED</Badge>
           <span className="text-[10px] text-muted-foreground font-black font-mono tracking-widest opacity-60">#TKT-{event.id.toUpperCase()}</span>
         </div>
-        
         <div className="space-y-4 flex-1">
           <h3 className="font-headline text-2xl md:text-3xl mb-2 line-clamp-1 group-hover:text-primary transition-colors">{event.title}</h3>
-          
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
             <div className="space-y-1.5">
               <span className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60">Schedule</span>
@@ -398,12 +430,9 @@ function TicketCard({ event, mounted, offline }: any) {
                 <div className="w-9 h-9 rounded-xl bg-secondary flex items-center justify-center shrink-0">
                   <Calendar className="w-4 h-4 text-primary" />
                 </div>
-                <span className="font-bold text-sm text-foreground">
-                  {mounted ? new Date(event.date).toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' }) : '...'}
-                </span>
+                <span className="font-bold text-sm text-foreground">{mounted ? new Date(event.date).toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' }) : '...'}</span>
               </div>
             </div>
-            
             <div className="space-y-1.5">
               <span className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60">Location</span>
               <div className="flex items-center gap-3">
@@ -413,7 +442,6 @@ function TicketCard({ event, mounted, offline }: any) {
                 <span className="line-clamp-1 font-bold text-sm text-foreground">{event.venue}</span>
               </div>
             </div>
-
             <div className="space-y-1.5 hidden lg:block">
               <span className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60">Entry Type</span>
               <div className="flex items-center gap-3">
@@ -425,16 +453,15 @@ function TicketCard({ event, mounted, offline }: any) {
             </div>
           </div>
         </div>
-        
         <div className="mt-8 pt-8 border-t border-border flex flex-row items-center gap-2">
-          <Button className="flex-1 rounded-full h-11 gap-2 shadow-lg shadow-primary/20 font-black text-[10px] uppercase tracking-widest hover:scale-[1.02] transition-transform">
+          <Button className="flex-1 rounded-full h-11 gap-2 shadow-lg shadow-primary/20 font-black text-[10px] uppercase tracking-widest">
             <QrCode className="w-4 h-4" /> View Ticket
           </Button>
           <div className="flex gap-2">
-            <Button variant="outline" size="icon" className="w-11 h-11 rounded-full border-border bg-card hover:bg-secondary hover:text-primary transition-colors">
+            <Button variant="outline" size="icon" className="w-11 h-11 rounded-full" title="Download">
               <Download className="w-4 h-4" />
             </Button>
-            <Button variant="outline" size="icon" className="w-11 h-11 rounded-full border-border bg-card hover:bg-secondary hover:text-primary transition-colors">
+            <Button variant="outline" size="icon" className="w-11 h-11 rounded-full text-primary hover:bg-primary/10" onClick={onTransfer} title="Transfer Ticket">
               <Share2 className="w-4 h-4" />
             </Button>
           </div>

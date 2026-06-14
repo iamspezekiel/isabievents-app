@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Mail, MessageSquare, Phone, MapPin, Send, Loader2, CheckCircle2, ArrowRight } from 'lucide-react';
+import { Mail, MessageSquare, Phone, MapPin, Send, Loader2, CheckCircle2, ArrowRight, Sparkles } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,8 +35,9 @@ export default function ContactPage() {
       <header className="relative pt-48 pb-12 overflow-hidden border-b border-border bg-card/30">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
         <div className="container mx-auto px-4 text-center space-y-6">
-          <h1 className="font-headline tracking-tighter">Get in <span className="text-primary">Touch</span></h1>
-          <p className="max-w-2xl mx-auto text-muted-foreground">
+          <Badge className="bg-primary/10 text-primary border-none py-1.5 px-4 font-black tracking-widest uppercase">Support Center</Badge>
+          <h1 className="font-headline tracking-tighter text-balance">Get in <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Touch</span></h1>
+          <p className="max-w-2xl mx-auto text-muted-foreground font-medium">
             Have a question about tickets, hosting, or a specific experience? We're here to help you navigate the Nigerian event landscape.
           </p>
         </div>
@@ -78,21 +79,21 @@ export default function ContactPage() {
                   <form onSubmit={handleSubmit} className="space-y-6 text-left">
                     <div className="grid md:grid-cols-2 gap-6">
                       <div className="space-y-2">
-                        <Label htmlFor="name">Your Name</Label>
-                        <Input id="name" placeholder="John Doe" required className="h-11 bg-secondary/30 border-none" />
+                        <Label htmlFor="name" className="text-xs font-black uppercase tracking-widest text-muted-foreground/70 pl-1">Your Name</Label>
+                        <Input id="name" placeholder="John Doe" required className="h-12 bg-secondary/30 border-none rounded-xl" />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="email">Email Address</Label>
-                        <Input id="email" type="email" placeholder="john@example.com" required className="h-11 bg-secondary/30 border-none" />
+                        <Label htmlFor="email" className="text-xs font-black uppercase tracking-widest text-muted-foreground/70 pl-1">Email Address</Label>
+                        <Input id="email" type="email" placeholder="john@example.com" required className="h-12 bg-secondary/30 border-none rounded-xl" />
                       </div>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="subject">Reason for Contact</Label>
+                      <Label htmlFor="subject" className="text-xs font-black uppercase tracking-widest text-muted-foreground/70 pl-1">Reason for Contact</Label>
                       <Select required>
-                        <SelectTrigger className="h-11 bg-secondary/30 border-none">
+                        <SelectTrigger className="h-12 bg-secondary/30 border-none rounded-xl">
                           <SelectValue placeholder="Select a reason" />
                         </SelectTrigger>
-                        <SelectContent>
+                        <SelectContent className="bg-card border-border">
                           <SelectItem value="payouts">Payouts & Settlements</SelectItem>
                           <SelectItem value="ticketing">Ticket Issues</SelectItem>
                           <SelectItem value="verification">Organizer Verification</SelectItem>
@@ -102,27 +103,27 @@ export default function ContactPage() {
                       </Select>
                     </div>
                     <div className="space-y-2">
-                      <Label htmlFor="message">Message</Label>
-                      <Textarea id="message" placeholder="Tell us how we can help..." className="min-h-[150px] bg-secondary/30 border-none" required />
+                      <Label htmlFor="message" className="text-xs font-black uppercase tracking-widest text-muted-foreground/70 pl-1">Message</Label>
+                      <Textarea id="message" placeholder="Tell us how we can help..." className="min-h-[150px] bg-secondary/30 border-none rounded-xl resize-none" required />
                     </div>
-                    <Button type="submit" disabled={loading} className="w-full h-12 rounded-xl font-bold shadow-xl shadow-primary/20 gap-2">
-                      {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-5 h-5" />}
+                    <Button type="submit" disabled={loading} className="w-full h-14 rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-primary/20 gap-3">
+                      {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
                       Send Message
                     </Button>
                   </form>
                 ) : (
                   <div className="py-12 text-center space-y-8 animate-in zoom-in-95 duration-500">
-                    <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto border-4 border-green-500/20">
-                      <CheckCircle2 className="w-10 h-10 text-green-500" />
+                    <div className="w-24 h-24 bg-green-500/10 rounded-full flex items-center justify-center mx-auto border-4 border-green-500/20">
+                      <CheckCircle2 className="w-12 h-12 text-green-500" />
                     </div>
                     <div className="space-y-3">
-                      <h3 className="font-headline text-3xl">Message Received!</h3>
-                      <p className="text-muted-foreground max-w-sm mx-auto">
-                        Thank you for reaching out. We've received your request and will follow up shortly.
+                      <h3 className="font-headline text-4xl tracking-tight">Message Received!</h3>
+                      <p className="text-muted-foreground max-w-sm mx-auto font-medium">
+                        Thank you for reaching out. Our team is already on it and will follow up shortly.
                       </p>
                     </div>
                     <div className="flex justify-center">
-                      <Button onClick={() => setSubmitted(false)} variant="outline" className="rounded-full px-8">Send another message</Button>
+                      <Button onClick={() => setSubmitted(false)} variant="outline" className="rounded-full px-10 h-11 font-bold border-2">Send another message</Button>
                     </div>
                   </div>
                 )}
@@ -132,12 +133,15 @@ export default function ContactPage() {
         </div>
       </main>
 
-      <section className="bg-primary/5 py-20 border-y border-border">
+      <section className="bg-primary/5 py-24 border-y border-border">
         <div className="container mx-auto px-4 text-center space-y-8">
-           <h2 className="font-headline tracking-tighter">Looking for immediate answers?</h2>
-           <p className="text-muted-foreground">Check our Help Center for quick solutions to common issues.</p>
-           <Link href="/help" className="inline-block">
-             <Button size="lg" className="rounded-full px-12 h-14 font-black shadow-2xl shadow-primary/20 gap-2">
+           <div className="inline-flex items-center gap-2 bg-accent/10 text-accent px-4 py-2 rounded-full font-bold text-xs uppercase tracking-widest">
+              <Sparkles className="w-4 h-4" /> Instant Answers
+           </div>
+           <h2 className="font-headline tracking-tighter">Looking for immediate help?</h2>
+           <p className="text-muted-foreground max-w-xl mx-auto">Check our comprehensive knowledge base for quick solutions to common issues.</p>
+           <Link href="/help" className="inline-block no-underline">
+             <Button size="lg" className="rounded-full px-12 h-14 font-black shadow-2xl shadow-primary/20 gap-3">
                Browse Help Center <ArrowRight className="w-5 h-5" />
              </Button>
            </Link>
@@ -149,15 +153,19 @@ export default function ContactPage() {
 
 function ContactInfo({ icon: Icon, title, value, desc }: any) {
   return (
-    <div className="flex items-start gap-4 text-left group">
-      <div className="w-12 h-12 rounded-2xl bg-secondary flex items-center justify-center shrink-0 group-hover:bg-primary/10 transition-colors">
-        <Icon className="w-6 h-6 text-primary" />
+    <div className="flex items-start gap-5 text-left group">
+      <div className="w-14 h-14 rounded-2xl bg-secondary flex items-center justify-center shrink-0 group-hover:bg-primary/10 transition-colors shadow-sm">
+        <Icon className="w-7 h-7 text-primary" />
       </div>
       <div className="space-y-1">
-        <h4 className="font-bold text-sm text-muted-foreground uppercase tracking-widest">{title}</h4>
-        <p className="font-black text-lg">{value}</p>
-        <p className="text-xs text-muted-foreground leading-relaxed">{desc}</p>
+        <h4 className="font-bold text-xs text-muted-foreground uppercase tracking-widest">{title}</h4>
+        <p className="font-black text-xl tracking-tight">{value}</p>
+        <p className="text-xs text-muted-foreground leading-relaxed font-medium">{desc}</p>
       </div>
     </div>
   );
+}
+
+function Badge({ className, children }: { className?: string, children: React.ReactNode }) {
+  return <span className={cn("inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2", className)}>{children}</span>;
 }
