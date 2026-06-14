@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -34,7 +35,7 @@ export default function ForgotPasswordPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-start p-4 pt-32 pb-20">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-start p-4 pt-40 pb-20">
       <div className="w-full max-w-md space-y-8 text-left">
         <div className="text-center space-y-2">
           <Link href="/" className="inline-block mb-4 no-underline">

@@ -153,7 +153,7 @@ export default function VendorPortal() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col pt-32">
+    <div className="min-h-screen bg-background text-foreground flex flex-col pt-40">
       <header className="border-b border-border p-4 bg-card flex items-center justify-between sticky top-0 z-50">
         <div className="flex items-center gap-4">
           <Link href="/">
@@ -244,7 +244,7 @@ export default function VendorPortal() {
 
                 {scanState === 'error' && (
                   <div className="text-center space-y-6 animate-in zoom-in-95 duration-500 p-8">
-                    <div className="w-28 h-28 bg-red-500/20 rounded-full flex items-center justify-center mx-auto border-4 border-red-500/50">
+                    <div className="w-28 h-28 bg-red-500/20 rounded-full flex items-center justify-center mx-auto border-4 border-green-500/50">
                       <AlertCircle className="w-16 h-16 text-red-500" />
                     </div>
                     <div className="space-y-2">

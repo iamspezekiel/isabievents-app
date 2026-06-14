@@ -55,7 +55,7 @@ export default function AttendeeDashboard() {
   );
 
   return (
-    <div className="min-h-screen bg-background flex flex-col lg:flex-row pt-32">
+    <div className="min-h-screen bg-background flex flex-col lg:flex-row pt-40">
       {/* Sidebar for Desktop */}
       <aside className="hidden lg:flex w-72 bg-card/30 border-r border-border p-8 flex-col sticky top-0 h-screen overflow-y-auto">
         <Link href="/dashboard/attendee" className="mb-12 block no-underline">
@@ -109,7 +109,7 @@ export default function AttendeeDashboard() {
             </div>
           </header>
 
-          {/* Stats Grid - One line on mobile, 3 on desktop */}
+          {/* Stats Grid - Single row in mobile */}
           <div className="grid grid-cols-3 gap-2 md:gap-6">
             <StatBox label="Active" value={MOCK_USER.wallet.active} color="primary" icon={Ticket} />
             <StatBox label="Used" value={MOCK_USER.wallet.used} color="accent" icon={History} />
@@ -191,8 +191,8 @@ function TicketCard({ event, mounted }: any) {
           className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110" 
         />
         <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 backdrop-blur-[2px]">
-          <QrCode className="w-8 h-8 md:w-14 md:h-14 text-white mb-2 animate-in zoom-in-50" />
-          <span className="text-white text-[7px] md:text-[10px] font-black uppercase tracking-[0.2em]">Show Entry QR</span>
+          <QrCode className="w-6 h-6 md:w-14 md:h-14 text-white mb-2 animate-in zoom-in-50" />
+          <span className="text-white text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em]">Show Entry QR</span>
         </div>
       </div>
       
