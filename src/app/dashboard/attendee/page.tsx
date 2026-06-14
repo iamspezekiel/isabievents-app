@@ -191,8 +191,8 @@ function TicketCard({ event, mounted }: any) {
           className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110" 
         />
         <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 backdrop-blur-[2px]">
-          <QrCode className="w-14 h-14 text-white mb-2 animate-in zoom-in-50" />
-          <span className="text-white text-[10px] font-black uppercase tracking-[0.2em]">Show Entry QR</span>
+          <QrCode className="w-10 h-10 md:w-14 md:h-14 text-white mb-2 animate-in zoom-in-50" />
+          <span className="text-white text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em]">Show Entry QR</span>
         </div>
       </div>
       
