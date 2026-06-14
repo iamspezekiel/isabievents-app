@@ -181,7 +181,7 @@ export const MOCK_EVENTS = [
 export const MOCK_USER = {
   name: 'Sylvanus P. Ezekiel',
   email: 'attendee@isabievents.ng',
-  whatsapp: '+2348123456789',
+  whatsapp: '+2349024244140',
   role: 'attendee',
   wallet: { active: 2, used: 1, transferred: 0 }
 };
@@ -190,7 +190,7 @@ export const MOCK_USERS = [
   {
     name: 'Admin Master',
     email: 'admin@isabievents.ng',
-    whatsapp: '+2348000000000',
+    whatsapp: '+2349024244140',
     password: 'password123',
     role: 'admin',
     dashboard: '/dashboard/admin'
@@ -198,7 +198,7 @@ export const MOCK_USERS = [
   {
     name: 'Smooth Events',
     email: 'organizer@isabievents.ng',
-    whatsapp: '+2348011122233',
+    whatsapp: '+2349024244140',
     password: 'password123',
     role: 'organizer',
     dashboard: '/dashboard/organizer'
@@ -206,7 +206,7 @@ export const MOCK_USERS = [
   {
     name: 'Main Gate Staff',
     email: 'staff@isabievents.ng',
-    whatsapp: '+2348044455566',
+    whatsapp: '+2349024244140',
     password: 'password123',
     role: 'staff',
     dashboard: '/dashboard/staff'
@@ -214,7 +214,7 @@ export const MOCK_USERS = [
   {
     name: 'Cold Sips Drinks',
     email: 'vendor@isabievents.ng',
-    whatsapp: '+2348077788899',
+    whatsapp: '+2349024244140',
     password: 'password123',
     role: 'vendor',
     dashboard: '/dashboard/vendor'
@@ -222,7 +222,7 @@ export const MOCK_USERS = [
   {
     name: 'Sylvanus P. Ezekiel',
     email: 'attendee@isabievents.ng',
-    whatsapp: '+2348123456789',
+    whatsapp: '+2349024244140',
     password: 'password123',
     role: 'attendee',
     dashboard: '/dashboard/attendee'

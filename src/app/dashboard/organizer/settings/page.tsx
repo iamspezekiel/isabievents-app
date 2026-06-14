@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -49,7 +50,7 @@ export default function OrganizerSettingsPage() {
       {/* Desktop Side Navigation */}
       <aside className="w-64 bg-sidebar border-r border-sidebar-border p-6 flex flex-col hidden md:flex sticky top-0 h-screen overflow-y-auto">
         <div className="mb-10">
-          <Link href="/dashboard/organizer" className="no-underline">
+          <Link href="/dashboard/organizer" className="mb-10 block no-underline">
             <Logo size="sm" />
           </Link>
         </div>
@@ -142,7 +143,7 @@ export default function OrganizerSettingsPage() {
                     <Label htmlFor="whatsapp" className="flex items-center gap-1.5">
                       <WhatsAppIcon className="w-3.5 h-3.5 text-green-500" /> WhatsApp Number
                     </Label>
-                    <Input id="whatsapp" defaultValue="+2348011122233" className="h-11" />
+                    <Input id="whatsapp" defaultValue="+2349024244140" className="h-11" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="location" className="flex items-center gap-1.5">

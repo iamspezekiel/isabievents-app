@@ -118,7 +118,7 @@ export default function AttendeeSettingsPage() {
                     <Label htmlFor="whatsapp" className="flex items-center gap-1.5">
                       <WhatsAppIcon className="w-3.5 h-3.5 text-green-500" /> WhatsApp Number
                     </Label>
-                    <Input id="whatsapp" defaultValue="+2348123456789" className="h-11" />
+                    <Input id="whatsapp" defaultValue="+2349024244140" className="h-11" />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="location" className="flex items-center gap-1.5">

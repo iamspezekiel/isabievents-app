@@ -58,14 +58,14 @@ export default function ContactPage() {
               <ContactInfo 
                 icon={MessageSquare} 
                 title="Live Chat" 
-                value="WhatsApp Support" 
-                desc="Available Mon-Fri, 9am - 6pm WAT."
+                value="0902 424 4140" 
+                desc="Available Mon-Fri, 9am - 6pm WAT via WhatsApp."
               />
               <ContactInfo 
                 icon={Phone} 
                 title="Call Us" 
-                value="+234 (0) 800-ISABI-HELP" 
-                desc="Toll-free within Nigeria."
+                value="+234 902 424 4140" 
+                desc="Official support line for all inquiries."
               />
               <ContactInfo 
                 icon={MapPin} 

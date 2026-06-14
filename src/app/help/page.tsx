@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -122,7 +123,7 @@ export default function HelpCenterPage() {
                   </Button>
                 </div>
                 <div className="pt-4 border-t border-primary/10 flex items-center justify-center gap-3 text-sm font-bold">
-                  <Phone className="w-4 h-4 text-primary" /> +234 (0) 800-ISABI-HELP
+                  <Phone className="w-4 h-4 text-primary" /> +234 902 424 4140
                 </div>
               </CardContent>
             </Card>
