@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -107,7 +106,7 @@ export default function HelpCenterPage() {
               <CardContent className="space-y-6">
                 <div className="space-y-3">
                   <Button className="w-full gap-2 rounded-full h-12 no-underline font-bold shadow-lg shadow-primary/20" asChild>
-                    <Link href="https://wa.me/234800ISABIHELP" target="_blank">
+                    <Link href="https://tawk.to/chat/6a2ec0259e8aac1f4526f336/1jr39t4vv" target="_blank">
                       <MessageCircle className="w-4 h-4" /> Live Chat
                     </Link>
                   </Button>
