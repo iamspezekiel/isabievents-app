@@ -38,7 +38,7 @@ export function Footer() {
                <Logo size="sm" />
             </Link>
             <p className="text-muted-foreground leading-relaxed max-w-[180px] md:max-w-xs font-medium text-left text-[10px] md:text-[6px] text-balance">
-              Connecting people to unforgettable experiences across Nigeria.
+              Connecting people to unforgettable experiences.
             </p>
             {/* Social Icons */}
             <div className="flex items-center gap-3">
