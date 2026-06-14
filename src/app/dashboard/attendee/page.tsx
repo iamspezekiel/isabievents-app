@@ -15,32 +15,61 @@ import {
   Calendar, 
   MapPin, 
   Menu, 
-  X,
-  ShieldCheck,
   Smartphone,
-  User,
-  LayoutDashboard,
-  CheckCircle2
+  Sparkles,
+  ChevronRight,
+  Loader2
 } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { MOCK_USER, MOCK_EVENTS } from '@/lib/mock-data';
+import { MOCK_USER, MOCK_EVENTS, CATEGORIES } from '@/lib/mock-data';
 import { Logo } from '@/components/logo';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { attendeePersonalizedEventRecommendations } from '@/ai/flows/attendee-personalized-event-recommendations';
 
 export default function AttendeeDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [recommendations, setRecommendations] = useState<any[]>([]);
+  const [loadingRecs, setLoadingRecs] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
     setMounted(true);
+    fetchRecommendations();
   }, []);
+
+  const fetchRecommendations = async () => {
+    setLoadingRecs(true);
+    try {
+      // Mocking input data for the AI flow
+      const result = await attendeePersonalizedEventRecommendations({
+        pastPurchases: ['Lagos Jazz Night', 'Naija Tech Summit'],
+        savedEvents: ['Gidi Festival'],
+        browsingHistory: ['Calabar Carnival', 'Abuja Praise Festival'],
+        eventCategories: CATEGORIES.map(c => c.name),
+        availableEvents: MOCK_EVENTS.map(e => ({
+          id: e.id,
+          title: e.title,
+          category: e.category,
+          description: e.description
+        }))
+      });
+      
+      const recommendedEvents = MOCK_EVENTS.filter(e => result.recommendedEventIds.includes(e.id));
+      setRecommendations(recommendedEvents.length > 0 ? recommendedEvents : MOCK_EVENTS.slice(3, 6));
+    } catch (error) {
+      console.error("Failed to load AI recommendations", error);
+      setRecommendations(MOCK_EVENTS.slice(3, 6));
+    } finally {
+      setLoadingRecs(false);
+    }
+  };
 
   const Navigation = () => (
     <nav className="flex-1 space-y-1">
@@ -56,7 +85,6 @@ export default function AttendeeDashboard() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col lg:flex-row pt-40">
-      {/* Sidebar for Desktop */}
       <aside className="hidden lg:flex w-72 bg-card/30 border-r border-border p-8 flex-col sticky top-0 h-screen overflow-y-auto">
         <Link href="/dashboard/attendee" className="mb-12 block no-underline">
           <Logo size="sm" />
@@ -67,7 +95,6 @@ export default function AttendeeDashboard() {
         </div>
       </aside>
 
-      {/* Mobile Top Header */}
       <header className="lg:hidden flex items-center justify-between p-4 bg-card border-b border-border sticky top-0 z-40">
         <Link href="/dashboard/attendee" className="no-underline">
           <Logo size="sm" />
@@ -94,7 +121,6 @@ export default function AttendeeDashboard() {
         </Sheet>
       </header>
 
-      {/* Main Content */}
       <main className="flex-1 p-4 md:p-8 lg:p-12 overflow-x-hidden">
         <div className="max-w-5xl mx-auto space-y-8 md:space-y-12">
           <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -109,14 +135,50 @@ export default function AttendeeDashboard() {
             </div>
           </header>
 
-          {/* Stats Grid - Single row in mobile */}
           <div className="grid grid-cols-3 gap-2 md:gap-6">
             <StatBox label="Active" value={MOCK_USER.wallet.active} color="primary" icon={Ticket} />
             <StatBox label="Used" value={MOCK_USER.wallet.used} color="accent" icon={History} />
             <StatBox label="Saved" value={5} color="white" icon={Heart} />
           </div>
 
-          {/* Events Tabs */}
+          <div className="space-y-6">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center">
+                  <Sparkles className="w-4 h-4 text-primary" />
+                </div>
+                <h2 className="font-headline text-xl">Recommended for You</h2>
+              </div>
+              <Link href="/discover" className="text-xs font-bold text-primary hover:underline">See more</Link>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {loadingRecs ? (
+                [1,2,3].map(i => <div key={i} className="h-48 bg-card animate-pulse rounded-3xl" />)
+              ) : (
+                recommendations.map((event) => (
+                  <Link key={event.id} href={`/events/${event.slug}`} className="group">
+                    <div className="bg-card border border-border rounded-3xl overflow-hidden hover:border-primary/50 transition-all p-4 h-full flex flex-col">
+                      <div className="relative aspect-video rounded-2xl overflow-hidden mb-4">
+                        <img src={event.image} alt="" className="object-cover w-full h-full group-hover:scale-105 transition-transform" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                        <Badge className="absolute bottom-2 left-2 bg-white/20 backdrop-blur-md text-[8px] text-white border-none">{event.category.toUpperCase()}</Badge>
+                      </div>
+                      <div className="text-left space-y-1 flex-1">
+                        <h4 className="font-bold text-sm line-clamp-1 group-hover:text-primary transition-colors">{event.title}</h4>
+                        <p className="text-[10px] text-muted-foreground flex items-center gap-1"><MapPin className="w-3 h-3 text-accent" /> {event.city}</p>
+                      </div>
+                      <div className="mt-4 flex items-center justify-between">
+                        <span className="font-black text-xs text-primary">₦{event.price.min.toLocaleString()}</span>
+                        <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-1 transition-transform" />
+                      </div>
+                    </div>
+                  </Link>
+                ))
+              )}
+            </div>
+          </div>
+
           <Tabs defaultValue="upcoming" className="w-full">
             <TabsList className="bg-secondary/50 p-1 rounded-2xl w-full sm:w-auto mb-8">
               <TabsTrigger value="upcoming" className="rounded-xl px-8 flex-1 sm:flex-none font-bold">Upcoming</TabsTrigger>
@@ -180,7 +242,6 @@ function StatBox({ label, value, color, icon: Icon, className }: any) {
 function TicketCard({ event, mounted }: any) {
   return (
     <div className="group relative bg-card border border-border rounded-[2.5rem] overflow-hidden hover:border-primary/50 transition-all duration-500 flex flex-col md:flex-row hover:shadow-[0_32px_64px_-16px_rgba(126,124,255,0.1)] shadow-sm">
-      {/* Decorative Notches */}
       <div className="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-1/2 w-6 h-6 md:w-10 md:h-10 bg-background border border-border rounded-full z-10 hidden md:block" />
       <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2 w-6 h-6 md:w-10 md:h-10 bg-background border border-border rounded-full z-10 hidden md:block" />
 
@@ -197,7 +258,6 @@ function TicketCard({ event, mounted }: any) {
       </div>
       
       <div className="flex-1 p-6 md:p-10 flex flex-col text-left relative">
-        {/* Ticket Perforation Mock */}
         <div className="absolute left-0 top-0 bottom-0 w-px border-l-2 border-dashed border-border/50 ml-[-1px] hidden md:block" />
         
         <div className="flex items-center justify-between mb-6">

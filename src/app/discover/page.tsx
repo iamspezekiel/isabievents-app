@@ -3,12 +3,13 @@
 
 import React, { useState, useMemo, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Search, MapPin, Filter, Loader2, X, Check, Calendar, Heart, Share2 } from 'lucide-react';
+import { Search, MapPin, Filter, Loader2, X, Check, Calendar, Heart, Share2, Sparkles, TrendingUp } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose, SheetFooter } from "@/components/ui/sheet";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { MOCK_EVENTS, CATEGORIES, CITIES } from '@/lib/mock-data';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -42,7 +43,6 @@ function DiscoverContent() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Sync state with URL params on load and change
   useEffect(() => {
     const q = searchParams.get('q');
     const cat = searchParams.get('category');
@@ -72,6 +72,8 @@ function DiscoverContent() {
       return matchesSearch && matchesCategory && matchesCity && matchesPrice;
     }).slice(0, displayLimit);
   }, [search, selectedCategory, selectedCity, priceFilter, displayLimit]);
+
+  const trendingEvents = MOCK_EVENTS.slice(0, 5);
 
   const handleBookmark = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -179,8 +181,40 @@ function DiscoverContent() {
           Discover <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Experiences</span>
         </h1>
         <p className="text-muted-foreground max-w-2xl mx-auto">
-          Discover and secure your spot with zero friction. Find your next favorite memory across Nigeria.
+          Find your next favorite memory across Nigeria with zero friction.
         </p>
+      </div>
+
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <TrendingUp className="w-5 h-5 text-primary" />
+            <h2 className="font-headline text-xl">Trending Now</h2>
+          </div>
+        </div>
+        <Carousel className="w-full">
+          <CarouselContent className="-ml-4">
+            {trendingEvents.map((event) => (
+              <CarouselItem key={event.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                <Link href={`/events/${event.slug}`} className="block h-full group">
+                  <div className="relative aspect-[16/9] rounded-[2rem] overflow-hidden border border-border shadow-lg">
+                    <img src={event.image} alt="" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                    <div className="absolute bottom-6 left-6 right-6 text-left">
+                       <Badge className="mb-2 bg-primary/20 backdrop-blur-md border-none text-[10px] uppercase font-black">{event.category}</Badge>
+                       <h3 className="text-white text-lg font-bold leading-tight line-clamp-1">{event.title}</h3>
+                       <p className="text-white/60 text-xs mt-1 flex items-center gap-1"><MapPin className="w-3 h-3" /> {event.city}</p>
+                    </div>
+                  </div>
+                </Link>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <div className="hidden md:block">
+            <CarouselPrevious className="left-4 bg-background/50 backdrop-blur-md" />
+            <CarouselNext className="right-4 bg-background/50 backdrop-blur-md" />
+          </div>
+        </Carousel>
       </div>
 
       <div className="flex flex-col gap-4">
@@ -262,7 +296,6 @@ function DiscoverContent() {
                     {event.category}
                   </Badge>
                 </div>
-                {/* Actions Overlay */}
                 <div className="absolute top-2 right-2 md:top-4 md:right-4 flex gap-2">
                   <Button 
                     size="icon" 
