@@ -56,16 +56,16 @@ export default function NotFound() {
           </p>
         </div>
 
-        <div className="flex flex-col gap-3 pt-6">
+        <div className="flex flex-row gap-3 pt-6">
           <Button 
             onClick={() => router.back()}
-            className="w-full h-12 md:h-14 rounded-2xl font-bold shadow-xl shadow-primary/20 gap-2 text-base"
+            className="flex-1 h-12 md:h-14 rounded-2xl font-bold shadow-xl shadow-primary/20 gap-2 text-sm md:text-base"
           >
-            <ArrowLeft className="w-5 h-5" /> Go Back
+            <ArrowLeft className="w-4 h-4" /> Go Back
           </Button>
-          <Button asChild variant="ghost" className="w-full h-12 rounded-2xl font-bold gap-2 text-muted-foreground hover:text-foreground">
+          <Button asChild variant="ghost" className="flex-1 h-12 rounded-2xl font-bold gap-2 text-muted-foreground hover:text-foreground text-sm md:text-base">
             <Link href="/" className="no-underline">
-              <Home className="w-4 h-4" /> Back to Home
+              <Home className="w-4 h-4" /> Home
             </Link>
           </Button>
         </div>
