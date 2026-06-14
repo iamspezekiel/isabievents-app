@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, User, Bell } from 'lucide-react';
+import { Menu, User } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
@@ -73,13 +73,7 @@ export function Navbar() {
         <div className="flex items-center gap-2 md:gap-4">
           <div className="hidden sm:flex items-center gap-2">
             {mounted && <ThemeToggle />}
-            <Button variant="ghost" size="icon" className="rounded-full relative mr-2" asChild title="Notifications">
-              <Link href="/dashboard/attendee/notifications">
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border-2 border-background" />
-              </Link>
-            </Button>
-            <Button variant="ghost" size="sm" className="font-bold px-4 no-underline h-9 md:h-11" asChild>
+            <Button variant="ghost" size="sm" className="font-bold px-4 no-underline h-9 md:h-11 ml-2" asChild>
               <Link href="/login">Sign In</Link>
             </Button>
             <Button size="sm" className="rounded-full px-6 shadow-xl shadow-primary/20 font-bold no-underline h-9 md:h-11" asChild>
@@ -94,15 +88,8 @@ export function Navbar() {
              </Button>
           </div>
 
-          {/* Mobile Notification & Menu Trigger */}
+          {/* Mobile Menu Trigger */}
           <div className="flex items-center md:hidden">
-            <Button variant="ghost" size="icon" className="rounded-full relative" asChild title="Notifications">
-              <Link href="/dashboard/attendee/notifications">
-                <Bell className="w-5 h-5" />
-                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-primary rounded-full border-2 border-background" />
-              </Link>
-            </Button>
-
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
