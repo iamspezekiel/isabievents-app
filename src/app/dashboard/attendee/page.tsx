@@ -377,7 +377,6 @@ export default function AttendeeDashboard() {
             </div>
           </div>
           <DialogFooter className="flex-col sm:flex-row gap-3">
-            <Button variant="ghost" onClick={() => setIsTransferOpen(false)} className="rounded-full font-bold h-11">Cancel</Button>
             <Button 
               onClick={handleTransfer} 
               disabled={isTransferring}
@@ -386,6 +385,7 @@ export default function AttendeeDashboard() {
               {isTransferring ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
               Transfer Ticket
             </Button>
+            <Button variant="ghost" onClick={() => setIsTransferOpen(false)} className="rounded-full font-bold h-11">Cancel</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
