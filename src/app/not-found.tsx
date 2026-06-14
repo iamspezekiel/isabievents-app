@@ -59,11 +59,11 @@ export default function NotFound() {
         <div className="flex flex-row gap-3 pt-6">
           <Button 
             onClick={() => router.back()}
-            className="flex-1 h-12 md:h-14 rounded-2xl font-bold shadow-xl shadow-primary/20 gap-2 text-sm md:text-base"
+            className="flex-1 h-10 md:h-14 rounded-2xl font-bold shadow-xl shadow-primary/20 gap-2 text-xs md:text-base"
           >
             <ArrowLeft className="w-4 h-4" /> Go Back
           </Button>
-          <Button asChild variant="ghost" className="flex-1 h-12 rounded-2xl font-bold gap-2 text-muted-foreground hover:text-foreground text-sm md:text-base">
+          <Button asChild variant="ghost" className="flex-1 h-10 md:h-14 rounded-2xl font-bold gap-2 text-muted-foreground hover:text-foreground text-xs md:text-base">
             <Link href="/" className="no-underline">
               <Home className="w-4 h-4" /> Home
             </Link>
