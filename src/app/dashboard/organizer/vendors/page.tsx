@@ -280,16 +280,6 @@ function VendorCard({ vendor, onDelete }: any) {
           <h4 className="font-bold text-lg">{name}</h4>
           <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mt-1">{role}</p>
         </div>
-        <div className="space-y-2">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Mail className="w-4 h-4" /> {email}
-          </div>
-          {whatsapp && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <WhatsAppIcon className="w-4 h-4 text-green-500" /> {whatsapp}
-            </div>
-          )}
-        </div>
         <div className="flex gap-2 pt-2">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
