@@ -19,7 +19,8 @@ import {
   ShieldCheck,
   Smartphone,
   User,
-  LayoutDashboard
+  LayoutDashboard,
+  CheckCircle2
 } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -108,11 +109,11 @@ export default function AttendeeDashboard() {
             </div>
           </header>
 
-          {/* Stats Grid - One line on mobile */}
-          <div className="grid grid-cols-3 gap-2 md:gap-6">
+          {/* Stats Grid - 2 cols on mobile, 3 on desktop */}
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
             <StatBox label="Active" value={MOCK_USER.wallet.active} color="primary" icon={Ticket} />
             <StatBox label="Used" value={MOCK_USER.wallet.used} color="accent" icon={History} />
-            <StatBox label="Saved" value={5} color="white" icon={Heart} />
+            <StatBox label="Saved" value={5} color="white" icon={Heart} className="col-span-2 lg:col-span-1" />
           </div>
 
           {/* Events Tabs */}
@@ -123,7 +124,7 @@ export default function AttendeeDashboard() {
             </TabsList>
 
             <TabsContent value="upcoming" className="space-y-6">
-              {MOCK_EVENTS.slice(0, 2).map((event) => (
+              {MOCK_EVENTS.slice(0, 3).map((event) => (
                 <TicketCard key={event.id} event={event} mounted={mounted} />
               ))}
             </TabsContent>
@@ -157,19 +158,19 @@ export function SidebarLink({ icon: Icon, label, active, href = "#" }: any) {
   );
 }
 
-function StatBox({ label, value, color, icon: Icon }: any) {
+function StatBox({ label, value, color, icon: Icon, className }: any) {
   const colorClass = color === 'primary' ? 'text-primary' : color === 'accent' ? 'text-accent' : 'text-foreground';
   const bgClass = color === 'primary' ? 'bg-primary/10' : color === 'accent' ? 'bg-accent/10' : 'bg-secondary/50';
   
   return (
-    <Card className="bg-card border-border overflow-hidden rounded-[1.25rem] md:rounded-[2.5rem] shadow-sm hover:border-primary/40 hover:shadow-md transition-all duration-300 group cursor-default">
-      <CardContent className="p-3 md:p-8 flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-2 md:gap-6">
+    <Card className={cn("bg-card border-border overflow-hidden rounded-[1.25rem] md:rounded-[2.5rem] shadow-sm hover:border-primary/40 hover:shadow-md transition-all duration-300 group cursor-default", className)}>
+      <CardContent className="p-4 md:p-8 flex flex-row items-center justify-start gap-4 md:gap-6">
         <div className={cn("w-10 h-10 md:w-16 md:h-16 rounded-xl md:rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:scale-110", bgClass)}>
           <Icon className={cn("w-5 h-5 md:w-8 md:h-8", colorClass)} />
         </div>
-        <div className="text-center sm:text-left space-y-0.5 md:space-y-1">
-          <div className={cn("text-xl md:text-5xl font-headline font-black leading-none tracking-tighter", colorClass)}>{value}</div>
-          <span className="text-[8px] md:text-[11px] text-muted-foreground uppercase font-bold tracking-[0.1em] block">{label}</span>
+        <div className="text-left space-y-0.5 md:space-y-1">
+          <div className={cn("text-2xl md:text-5xl font-headline font-black leading-none tracking-tighter", colorClass)}>{value}</div>
+          <span className="text-[9px] md:text-[11px] text-muted-foreground uppercase font-bold tracking-[0.1em] block">{label}</span>
         </div>
       </CardContent>
     </Card>
@@ -207,7 +208,7 @@ function TicketCard({ event, mounted }: any) {
         <div className="space-y-4 flex-1">
           <h3 className="font-headline text-2xl md:text-3xl mb-2 line-clamp-1 group-hover:text-primary transition-colors">{event.title}</h3>
           
-          <div className="grid sm:grid-cols-2 gap-4 md:gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
             <div className="space-y-1.5">
               <span className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60">Schedule</span>
               <div className="flex items-center gap-3">
@@ -227,6 +228,16 @@ function TicketCard({ event, mounted }: any) {
                   <MapPin className="w-4 h-4 text-accent" />
                 </div>
                 <span className="line-clamp-1 font-bold text-sm text-foreground">{event.venue}</span>
+              </div>
+            </div>
+
+            <div className="space-y-1.5 hidden lg:block">
+              <span className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60">Entry Type</span>
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-secondary flex items-center justify-center shrink-0">
+                  <Smartphone className="w-4 h-4 text-primary" />
+                </div>
+                <span className="line-clamp-1 font-bold text-sm text-foreground">Standard Pass</span>
               </div>
             </div>
           </div>
