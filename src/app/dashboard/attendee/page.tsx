@@ -411,7 +411,7 @@ export default function AttendeeDashboard() {
                 <Ticket className="w-7 h-7 text-white fill-white/20" />
               </div>
             </div>
-            <h2 className="font-headline text-white text-2xl tracking-tighter">Digital Ticket</h2>
+            <h2 className="font-headline text-white text-2xl tracking-tighter">IsabiEvents</h2>
             <p className="text-white/70 text-xs font-bold uppercase tracking-widest">Scan at the entrance</p>
           </div>
           
