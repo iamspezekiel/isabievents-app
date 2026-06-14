@@ -377,6 +377,12 @@ export default function AttendeeDashboard() {
       {/* View Ticket Dialog */}
       <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
         <DialogContent className="bg-card border-border sm:rounded-[2.5rem] p-0 overflow-hidden max-w-md">
+          <DialogHeader className="sr-only">
+            <DialogTitle>View Entry Ticket</DialogTitle>
+            <DialogDescription>
+              Your secure digital QR code for {viewTicket?.title}.
+            </DialogDescription>
+          </DialogHeader>
           <div className="bg-primary p-8 text-center space-y-2 relative">
             <button 
               onClick={() => setIsViewOpen(false)}
