@@ -289,24 +289,29 @@ function VendorCard({ vendor, onDelete }: any) {
           <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mt-1">{role}</p>
         </div>
 
-        <div className="space-y-3 border-t border-border pt-4">
-          <div className="flex items-center gap-2.5 text-xs text-muted-foreground group/contact">
-            <Mail className="w-3.5 h-3.5 text-primary/60" />
-            <span className="truncate group-hover/contact:text-foreground transition-colors">{email}</span>
-          </div>
-          <div className="flex items-center justify-between group/contact">
-            <div className="flex items-center gap-2.5 text-xs text-muted-foreground">
-              <Phone className="w-3.5 h-3.5 text-primary/60" />
-              <span className="group-hover/contact:text-foreground transition-colors">{whatsapp}</span>
-            </div>
-            <Link 
-              href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}`} 
-              target="_blank"
-              className="w-7 h-7 rounded-full bg-green-500/10 flex items-center justify-center text-green-600 hover:bg-green-500 hover:text-white transition-all shadow-sm"
-            >
-              <WhatsAppIcon className="w-3.5 h-3.5" />
-            </Link>
-          </div>
+        <div className="flex items-center gap-3 border-t border-border pt-4">
+          <Link 
+            href={`mailto:${email}`} 
+            title={email}
+            className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all shadow-sm"
+          >
+            <Mail className="w-4 h-4" />
+          </Link>
+          <Link 
+            href={`tel:${whatsapp}`} 
+            title={whatsapp}
+            className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all shadow-sm"
+          >
+            <Phone className="w-4 h-4" />
+          </Link>
+          <Link 
+            href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}`} 
+            target="_blank"
+            title="WhatsApp"
+            className="w-9 h-9 rounded-full bg-green-500/10 flex items-center justify-center text-green-600 hover:bg-green-500 hover:text-white transition-all shadow-sm"
+          >
+            <WhatsAppIcon className="w-4 h-4" />
+          </Link>
         </div>
 
         <div className="flex gap-2 pt-2">
