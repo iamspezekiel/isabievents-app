@@ -165,54 +165,86 @@ export default function MyEventsPage() {
                         <p className="text-muted-foreground flex items-center gap-1">{event.venue} · {new Date(event.date).toLocaleDateString()}</p>
                       </div>
                       
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" title="Event Options">
-                            <MoreVertical className="w-5 h-5" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-48 bg-card border-border">
-                          <DropdownMenuItem className="gap-2 font-bold cursor-pointer" asChild>
-                            <Link href={`/dashboard/organizer/create?id=${event.id}`}>
-                              <Edit className="w-4 h-4" /> Edit Event
-                            </Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="gap-2 font-bold cursor-pointer" asChild>
-                            <Link href={`/events/${event.slug}`}>
-                              <Eye className="w-4 h-4" /> View Page
-                            </Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem 
-                            className="gap-2 font-bold text-red-500 hover:text-red-600 cursor-pointer"
-                            onClick={() => handleCancelIntent(event)}
-                          >
-                            <Trash2 className="w-4 h-4" /> Cancel Event
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <div className="hidden sm:block">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" title="Event Options" className="rounded-full">
+                              <MoreVertical className="w-5 h-5" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-48 bg-card border-border">
+                            <DropdownMenuItem className="gap-2 font-bold cursor-pointer" asChild>
+                              <Link href={`/dashboard/organizer/create?id=${event.id}`}>
+                                <Edit className="w-4 h-4" /> Edit Event
+                              </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="gap-2 font-bold cursor-pointer" asChild>
+                              <Link href={`/events/${event.slug}`}>
+                                <Eye className="w-4 h-4" /> View Page
+                              </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              className="gap-2 font-bold text-red-500 hover:text-red-600 cursor-pointer"
+                              onClick={() => handleCancelIntent(event)}
+                            >
+                              <Trash2 className="w-4 h-4" /> Cancel Event
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </div>
                     </div>
-                    <div className="mt-6 flex flex-wrap items-center gap-8 border-t border-border pt-6">
-                      <div className="space-y-0.5">
-                        <span className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Tickets Sold</span>
-                        <div className="font-bold">42/100</div>
-                      </div>
-                      <div className="space-y-0.5">
-                        <span className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Revenue</span>
-                        <div className="font-bold text-primary">₦210,000</div>
-                      </div>
-                      <div className="space-y-0.5">
-                        <span className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Status</span>
-                        <div className="flex items-center gap-1 text-green-500 font-bold text-sm">
-                          <div className="w-1.5 h-1.5 rounded-full bg-green-500" /> Live
+                    
+                    <div className="mt-6 flex flex-wrap items-center gap-y-6 gap-x-8 border-t border-border pt-6">
+                      <div className="flex flex-wrap items-center gap-8 flex-1">
+                        <div className="space-y-0.5">
+                          <span className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Tickets Sold</span>
+                          <div className="font-bold">42/100</div>
+                        </div>
+                        <div className="space-y-0.5">
+                          <span className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Revenue</span>
+                          <div className="font-bold text-primary">₦210,000</div>
+                        </div>
+                        <div className="space-y-0.5">
+                          <span className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Status</span>
+                          <div className="flex items-center gap-1 text-green-500 font-bold text-sm">
+                            <div className="w-1.5 h-1.5 rounded-full bg-green-500" /> Live
+                          </div>
                         </div>
                       </div>
-                      <div className="ml-auto flex gap-2">
-                        <Link href={`/dashboard/organizer/create?id=${event.id}`} className="no-underline">
-                          <Button variant="outline" size="sm" className="rounded-full h-9">Edit</Button>
+
+                      <div className="w-full lg:w-auto flex items-center gap-2 lg:ml-auto">
+                        <Link href={`/dashboard/organizer/create?id=${event.id}`} className="flex-1 lg:flex-none">
+                          <Button variant="outline" size="sm" className="w-full rounded-full h-10 font-bold px-6">Edit</Button>
                         </Link>
-                        <Link href={`/events/${event.slug}`} className="no-underline">
-                           <Button size="sm" variant="ghost" className="rounded-full gap-1 h-9">View <ExternalLink className="w-3.5 h-3.5" /></Button>
+                        <Link href={`/events/${event.slug}`} className="flex-1 lg:flex-none">
+                           <Button size="sm" variant="ghost" className="w-full rounded-full gap-2 h-10 font-bold px-6">View <ExternalLink className="w-3.5 h-3.5" /></Button>
                         </Link>
+                        
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="secondary" size="icon" className="rounded-full h-10 w-10 shrink-0" title="More Options">
+                              <MoreVertical className="w-4 h-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end" className="w-52 bg-card border-border">
+                            <DropdownMenuItem className="gap-2 font-bold cursor-pointer" asChild>
+                              <Link href={`/dashboard/organizer/analytics?id=${event.id}`}>
+                                <BarChart3 className="w-4 h-4" /> Detailed Analytics
+                              </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="gap-2 font-bold cursor-pointer" asChild>
+                              <Link href={`/dashboard/organizer/vendors?id=${event.id}`}>
+                                <Users className="w-4 h-4" /> Manage Vendors
+                              </Link>
+                            </DropdownMenuItem>
+                            <DropdownMenuItem 
+                              className="gap-2 font-bold text-red-500 hover:text-red-600 cursor-pointer"
+                              onClick={() => handleCancelIntent(event)}
+                            >
+                              <Trash2 className="w-4 h-4" /> Cancel Event
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
                     </div>
                   </div>
