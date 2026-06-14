@@ -130,7 +130,7 @@ export default function AdminUserManagement() {
           <Card className="border-border bg-card">
             <CardContent className="p-0">
               <div className="p-6 border-b border-border flex flex-col sm:flex-row gap-4 justify-between items-center">
-                <div className="relative w-full sm:w-96">
+                <div className="relative flex-1 w-full">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input 
                     placeholder="Search by name, email or ID..." 
