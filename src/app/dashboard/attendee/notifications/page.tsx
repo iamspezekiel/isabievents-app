@@ -152,15 +152,7 @@ function NotificationItem({ icon: Icon, title, desc, time, type, unread = false 
                 {time}
              </div>
           </div>
-          <p className="text-sm text-muted-foreground leading-relaxed mb-4 max-w-2xl">{desc}</p>
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="sm" className="h-8 px-4 rounded-full text-primary font-black text-[10px] uppercase tracking-widest hover:bg-primary/10 transition-all">
-              View Details
-            </Button>
-            <button className="text-[10px] font-black text-muted-foreground/40 hover:text-red-500 transition-colors uppercase tracking-widest flex items-center gap-1">
-              <Trash2 className="w-3 h-3" /> Dismiss
-            </button>
-          </div>
+          <p className="text-sm text-muted-foreground leading-relaxed max-w-2xl">{desc}</p>
        </div>
     </div>
   );
