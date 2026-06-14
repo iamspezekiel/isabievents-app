@@ -1,7 +1,8 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Ticket, Search, QrCode, Download, Share2, Calendar, MapPin, ArrowLeft } from 'lucide-react';
+import { Ticket, Search, QrCode, Download, Share2, Calendar, MapPin, ArrowLeft, ShieldCheck, CloudOff, CloudCheck } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -10,9 +11,12 @@ import Link from 'next/link';
 
 export default function TicketGalleryPage() {
   const [mounted, setMounted] = useState(false);
+  const [isOfflineReady, setIsOfflineReady] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    const saved = localStorage.getItem('isabi_offline_tickets');
+    if (saved) setIsOfflineReady(true);
   }, []);
 
   return (
@@ -24,7 +28,20 @@ export default function TicketGalleryPage() {
               <Link href="/dashboard/attendee" className="flex items-center gap-2 text-muted-foreground hover:text-white mb-2 transition-colors text-sm">
                 <ArrowLeft className="w-4 h-4" /> Back to Dashboard
               </Link>
-              <h1 className="font-headline text-3xl">My Digital Wallet</h1>
+              <div className="flex items-center gap-3">
+                <h1 className="font-headline text-3xl">My Digital Wallet</h1>
+                {isOfflineReady ? (
+                  <Badge className="bg-green-500/10 text-green-500 border-green-500/20 gap-1 hidden sm:flex">
+                    <CloudCheck className="w-3 h-3" />
+                    <span className="text-[10px] font-black">OFFLINE READY</span>
+                  </Badge>
+                ) : (
+                  <Badge variant="outline" className="text-muted-foreground border-dashed gap-1 hidden sm:flex">
+                    <CloudOff className="w-3 h-3" />
+                    <span className="text-[10px] font-black">SYNC PENDING</span>
+                  </Badge>
+                )}
+              </div>
             </div>
             <div className="relative w-full md:w-96">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -40,7 +57,10 @@ export default function TicketGalleryPage() {
             <div key={event.id} className="group bg-card border border-border rounded-3xl overflow-hidden hover:border-primary/50 transition-all flex flex-col shadow-2xl">
               <div className="relative aspect-[4/2] bg-secondary/50 p-6 flex items-center justify-between border-b border-dashed border-border/50">
                 <div className="space-y-1">
-                  <div className="text-[10px] uppercase font-black tracking-widest text-primary">Confirmed Access</div>
+                  <div className="flex items-center gap-2">
+                    <div className="text-[10px] uppercase font-black tracking-widest text-primary">Confirmed Access</div>
+                    {isOfflineReady && <ShieldCheck className="w-3 h-3 text-green-500" title="Available offline" />}
+                  </div>
                   <h3 className="font-headline text-lg line-clamp-1">{event.title}</h3>
                 </div>
                 <div className="w-12 h-12 bg-background rounded-xl border-border flex items-center justify-center">

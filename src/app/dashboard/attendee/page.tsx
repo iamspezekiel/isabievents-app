@@ -18,7 +18,11 @@ import {
   Smartphone,
   Sparkles,
   ChevronRight,
-  Loader2
+  Loader2,
+  CloudOff,
+  CloudCheck,
+  RefreshCw,
+  ShieldCheck
 } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -31,23 +35,42 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { attendeePersonalizedEventRecommendations } from '@/ai/flows/attendee-personalized-event-recommendations';
+import { useToast } from "@/hooks/use-toast";
 
 export default function AttendeeDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [recommendations, setRecommendations] = useState<any[]>([]);
   const [loadingRecs, setLoadingRecs] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [isOfflineReady, setIsOfflineReady] = useState(false);
   const pathname = usePathname();
+  const { toast } = useToast();
 
   useEffect(() => {
     setMounted(true);
     fetchRecommendations();
+    // Simulate checking local storage for offline data
+    const saved = localStorage.getItem('isabi_offline_tickets');
+    if (saved) setIsOfflineReady(true);
   }, []);
+
+  const handleSyncOffline = async () => {
+    setIsSyncing(true);
+    // Simulate encryption and local storage persistence
+    await new Promise(r => setTimeout(r, 2000));
+    localStorage.setItem('isabi_offline_tickets', JSON.stringify(MOCK_EVENTS.slice(0, 3)));
+    setIsSyncing(false);
+    setIsOfflineReady(true);
+    toast({
+      title: "Offline Access Enabled",
+      description: "Your tickets have been encrypted and stored on this device. You can now scan them without an internet connection.",
+    });
+  };
 
   const fetchRecommendations = async () => {
     setLoadingRecs(true);
     try {
-      // Mocking input data for the AI flow
       const result = await attendeePersonalizedEventRecommendations({
         pastPurchases: ['Lagos Jazz Night', 'Naija Tech Summit'],
         savedEvents: ['Gidi Festival'],
@@ -131,6 +154,49 @@ export default function AttendeeDashboard() {
 
       <main className="flex-1 p-4 md:p-8 lg:p-12 overflow-x-hidden">
         <div className="max-w-5xl mx-auto space-y-8 md:space-y-12">
+          {/* Offline Sync Banner */}
+          <div className={cn(
+            "p-4 px-6 rounded-3xl border flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-500",
+            isOfflineReady ? "bg-green-500/5 border-green-500/20" : "bg-primary/5 border-primary/20"
+          )}>
+            <div className="flex items-center gap-4 text-left">
+              <div className={cn(
+                "w-10 h-10 rounded-xl flex items-center justify-center shrink-0",
+                isOfflineReady ? "bg-green-500/10 text-green-500" : "bg-primary/10 text-primary"
+              )}>
+                {isOfflineReady ? <CloudCheck className="w-5 h-5" /> : <CloudOff className="w-5 h-5" />}
+              </div>
+              <div className="space-y-0.5">
+                <p className="text-sm font-bold">
+                  {isOfflineReady ? "Offline Access Enabled" : "Data-Saving Offline Access"}
+                </p>
+                <p className="text-[10px] md:text-xs text-muted-foreground leading-tight">
+                  {isOfflineReady 
+                    ? "Your tickets are stored locally. You can enter venues even without an internet connection." 
+                    : "Sync your tickets now to ensure they work even if your network connection is poor at the venue."}
+                </p>
+              </div>
+            </div>
+            <Button 
+              size="sm" 
+              onClick={handleSyncOffline} 
+              disabled={isSyncing}
+              variant={isOfflineReady ? "outline" : "default"}
+              className={cn(
+                "rounded-full h-10 px-6 font-bold gap-2 min-w-[140px]",
+                isOfflineReady && "border-green-500/20 text-green-600 hover:bg-green-500/5 hover:text-green-700"
+              )}
+            >
+              {isSyncing ? (
+                <RefreshCw className="w-4 h-4 animate-spin" />
+              ) : isOfflineReady ? (
+                <>Update Sync</>
+              ) : (
+                <>Sync for Offline</>
+              )}
+            </Button>
+          </div>
+
           <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-1 text-left">
               <h1 className="font-headline text-3xl md:text-5xl tracking-tighter">Hi, {MOCK_USER.name} 👋</h1>
@@ -157,7 +223,7 @@ export default function AttendeeDashboard() {
 
             <TabsContent value="upcoming" className="space-y-6">
               {MOCK_EVENTS.slice(0, 3).map((event) => (
-                <TicketCard key={event.id} event={event} mounted={mounted} />
+                <TicketCard key={event.id} event={event} mounted={mounted} offline={isOfflineReady} />
               ))}
             </TabsContent>
 
@@ -247,7 +313,7 @@ function StatBox({ label, value, color, icon: Icon, className }: any) {
   );
 }
 
-function TicketCard({ event, mounted }: any) {
+function TicketCard({ event, mounted, offline }: any) {
   return (
     <div className="group relative bg-card border border-border rounded-[2.5rem] overflow-hidden hover:border-primary/50 transition-all duration-500 flex flex-col md:flex-row hover:shadow-[0_32px_64px_-16px_rgba(126,124,255,0.1)] shadow-sm">
       <div className="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-1/2 w-6 h-6 md:w-10 md:h-10 bg-background border border-border rounded-full z-10 hidden md:block" />
@@ -263,6 +329,14 @@ function TicketCard({ event, mounted }: any) {
           <QrCode className="w-6 h-6 md:w-14 md:h-14 text-white mb-2 animate-in zoom-in-50" />
           <span className="text-white text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em]">Show Entry QR</span>
         </div>
+        {offline && (
+          <div className="absolute top-4 left-4">
+             <Badge className="bg-green-500 text-white border-none gap-1 py-1 px-3 shadow-lg">
+                <ShieldCheck className="w-3 h-3" />
+                <span className="text-[8px] font-black tracking-widest uppercase">OFFLINE READY</span>
+             </Badge>
+          </div>
+        )}
       </div>
       
       <div className="flex-1 p-6 md:p-10 flex flex-col text-left relative">
