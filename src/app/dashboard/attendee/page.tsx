@@ -392,62 +392,62 @@ export default function AttendeeDashboard() {
 
       {/* View Ticket Dialog */}
       <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
-        <DialogContent className="bg-card border-border sm:rounded-[2.5rem] p-0 overflow-hidden max-w-md w-[94vw] sm:w-full">
+        <DialogContent className="bg-card border-border sm:rounded-[2rem] p-0 overflow-hidden max-w-sm w-[94vw] sm:w-full">
           <DialogHeader className="sr-only">
             <DialogTitle>View Entry Ticket</DialogTitle>
             <DialogDescription>
               Your secure digital QR code for {viewTicket?.title}.
             </DialogDescription>
           </DialogHeader>
-          <div className="bg-primary p-8 text-center space-y-2 relative">
+          <div className="bg-primary p-6 text-center space-y-2 relative">
             <button 
               onClick={() => setIsViewOpen(false)}
               className="absolute top-4 right-4 p-2 hover:bg-white/10 rounded-full text-white transition-colors no-print"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4" />
             </button>
-            <div className="flex justify-center mb-4">
-              <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center -rotate-6">
-                <Ticket className="w-7 h-7 text-white fill-white/20" />
+            <div className="flex justify-center mb-3">
+              <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center -rotate-6">
+                <Ticket className="w-6 h-6 text-white fill-white/20" />
               </div>
             </div>
-            <h2 className="font-headline text-white text-2xl tracking-tighter">IsabiEvents</h2>
-            <p className="text-white/70 text-xs font-bold uppercase tracking-widest">Scan at the entrance</p>
+            <h2 className="font-headline text-white text-xl tracking-tighter">IsabiEvents</h2>
+            <p className="text-white/70 text-[10px] font-bold uppercase tracking-widest">Scan at the entrance</p>
           </div>
           
-          <div className="p-8 space-y-8">
-            <div className="flex flex-col items-center gap-6">
-              <div className="p-4 bg-white rounded-3xl shadow-xl">
-                 <QrCode className="w-48 h-48 text-black" />
+          <div className="p-6 space-y-6">
+            <div className="flex flex-col items-center gap-4">
+              <div className="p-3 bg-white rounded-2xl shadow-xl">
+                 <QrCode className="w-40 h-40 text-black" />
               </div>
-              <div className="text-center space-y-1">
-                 <h3 className="font-headline text-xl">{viewTicket?.title}</h3>
-                 <p className="text-muted-foreground text-sm flex items-center justify-center gap-1">
+              <div className="text-center space-y-0.5">
+                 <h3 className="font-headline text-lg">{viewTicket?.title}</h3>
+                 <p className="text-muted-foreground text-xs flex items-center justify-center gap-1">
                     <MapPin className="w-3 h-3 text-accent" /> {viewTicket?.venue}
                  </p>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-y-6 gap-x-4 border-t border-border pt-6">
-              <div className="space-y-1 text-left col-span-2">
-                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Attendee</p>
-                <p className="font-bold text-lg">{MOCK_USER.name}</p>
+            <div className="grid grid-cols-2 gap-y-4 gap-x-3 border-t border-border pt-4">
+              <div className="space-y-0.5 text-left col-span-2">
+                <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Attendee</p>
+                <p className="font-bold text-base">{MOCK_USER.name}</p>
               </div>
-              <div className="space-y-1 text-left">
-                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Date</p>
-                <p className="font-bold text-sm">{viewTicket && new Date(viewTicket.date).toLocaleDateString()}</p>
+              <div className="space-y-0.5 text-left">
+                <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Date</p>
+                <p className="font-bold text-xs">{viewTicket && new Date(viewTicket.date).toLocaleDateString()}</p>
               </div>
-              <div className="space-y-1 text-left">
-                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Ticket ID</p>
-                <p className="font-mono text-xs font-bold">#TKT-{viewTicket?.id.toUpperCase()}</p>
+              <div className="space-y-0.5 text-left">
+                <p className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">Ticket ID</p>
+                <p className="font-mono text-[10px] font-bold">#TKT-{viewTicket?.id.toUpperCase()}</p>
               </div>
             </div>
             
-            <div className="flex flex-col gap-3 no-print">
-              <Button onClick={() => window.print()} className="w-full rounded-full gap-2 h-11 font-bold shadow-xl shadow-primary/20">
+            <div className="flex flex-col gap-2 no-print">
+              <Button onClick={() => window.print()} className="w-full rounded-full gap-2 h-10 text-xs font-bold shadow-xl shadow-primary/20">
                 <Download className="w-4 h-4" /> Save Ticket PDF
               </Button>
-              <Button variant="ghost" onClick={() => setIsViewOpen(false)} className="w-full rounded-full h-11 font-bold">
+              <Button variant="ghost" onClick={() => setIsViewOpen(false)} className="w-full rounded-full h-10 text-xs font-bold">
                 Close
               </Button>
             </div>
