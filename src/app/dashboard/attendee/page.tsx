@@ -376,7 +376,7 @@ export default function AttendeeDashboard() {
               </div>
             </div>
           </div>
-          <DialogFooter className="flex-col sm:flex-row gap-3">
+          <DialogFooter className="flex-row gap-3">
             <Button 
               onClick={handleTransfer} 
               disabled={isTransferring}
