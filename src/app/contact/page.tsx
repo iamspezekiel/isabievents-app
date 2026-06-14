@@ -77,7 +77,7 @@ export default function ContactPage() {
 
             <div className="space-y-6 pt-8 border-t border-border">
               <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">Follow the Vibe</h4>
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-2.5">
                 <SocialLink icon={Instagram} href="#" color="bg-[#E4405F]/10 text-[#E4405F]" />
                 <SocialLink icon={Twitter} href="#" color="bg-foreground/10 text-foreground" />
                 <SocialLink icon={Facebook} href="#" color="bg-[#1877F2]/10 text-[#1877F2]" />
@@ -133,7 +133,7 @@ export default function ContactPage() {
                     </div>
                     <div className="space-y-3">
                       <h3 className="font-headline text-4xl tracking-tight">Message Received!</h3>
-                      <p className="text-muted-foreground max-w-sm mx-auto font-medium">
+                      <p className="text-muted-foreground max-sm mx-auto font-medium">
                         Thank you for reaching out. Our team is already on it and will follow up shortly.
                       </p>
                     </div>
@@ -181,10 +181,10 @@ function ContactInfo({ icon: Icon, title, value, desc }: any) {
 function SocialLink({ icon: Icon, href, color }: { icon: any, href: string, color: string }) {
   return (
     <Link href={href} className={cn(
-      "w-14 h-14 rounded-2xl flex items-center justify-center transition-all hover:-translate-y-1 hover:shadow-lg shadow-black/5 group",
+      "w-10 h-10 rounded-xl flex items-center justify-center transition-all hover:-translate-y-1 hover:shadow-lg shadow-black/5 group",
       color
     )}>
-      <Icon className="w-6 h-6 transition-transform group-hover:scale-110" />
+      <Icon className="w-4 h-4 transition-transform group-hover:scale-110" />
     </Link>
   );
 }
