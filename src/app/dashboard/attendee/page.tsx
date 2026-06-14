@@ -109,11 +109,11 @@ export default function AttendeeDashboard() {
             </div>
           </header>
 
-          {/* Stats Grid - 2 cols on mobile, 3 on desktop */}
-          <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
+          {/* Stats Grid - One line on mobile, 3 on desktop */}
+          <div className="grid grid-cols-3 gap-2 md:gap-6">
             <StatBox label="Active" value={MOCK_USER.wallet.active} color="primary" icon={Ticket} />
             <StatBox label="Used" value={MOCK_USER.wallet.used} color="accent" icon={History} />
-            <StatBox label="Saved" value={5} color="white" icon={Heart} className="col-span-2 lg:col-span-1" />
+            <StatBox label="Saved" value={5} color="white" icon={Heart} />
           </div>
 
           {/* Events Tabs */}
@@ -164,13 +164,13 @@ function StatBox({ label, value, color, icon: Icon, className }: any) {
   
   return (
     <Card className={cn("bg-card border-border overflow-hidden rounded-[1.25rem] md:rounded-[2.5rem] shadow-sm hover:border-primary/40 hover:shadow-md transition-all duration-300 group cursor-default", className)}>
-      <CardContent className="p-4 md:p-8 flex flex-row items-center justify-start gap-4 md:gap-6">
-        <div className={cn("w-10 h-10 md:w-16 md:h-16 rounded-xl md:rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:scale-110", bgClass)}>
-          <Icon className={cn("w-5 h-5 md:w-8 md:h-8", colorClass)} />
+      <CardContent className="p-3 md:p-8 flex flex-row items-center justify-start gap-2 md:gap-6">
+        <div className={cn("w-8 h-8 md:w-16 md:h-16 rounded-xl md:rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:scale-110", bgClass)}>
+          <Icon className={cn("w-4 h-4 md:w-8 md:h-8", colorClass)} />
         </div>
         <div className="text-left space-y-0.5 md:space-y-1">
-          <div className={cn("text-2xl md:text-5xl font-headline font-black leading-none tracking-tighter", colorClass)}>{value}</div>
-          <span className="text-[9px] md:text-[11px] text-muted-foreground uppercase font-bold tracking-[0.1em] block">{label}</span>
+          <div className={cn("text-xl md:text-5xl font-headline font-black leading-none tracking-tighter", colorClass)}>{value}</div>
+          <span className="text-[8px] md:text-[11px] text-muted-foreground uppercase font-bold tracking-[0.1em] block">{label}</span>
         </div>
       </CardContent>
     </Card>
