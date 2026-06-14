@@ -193,7 +193,7 @@ export const MOCK_USERS = [
     whatsapp: '+2348000000000',
     password: 'password123',
     role: 'admin',
-    dashboard: '/dashboard/organizer'
+    dashboard: '/dashboard/admin'
   },
   {
     name: 'Smooth Events',
