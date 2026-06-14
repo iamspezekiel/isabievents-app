@@ -37,7 +37,7 @@ export function Footer() {
             <Link href="/" className="inline-block no-underline">
                <Logo size="sm" />
             </Link>
-            <p className="text-muted-foreground leading-relaxed max-w-xs font-medium text-left text-[10px]">
+            <p className="text-muted-foreground leading-relaxed max-w-[180px] md:max-w-xs font-medium text-left text-[10px] text-balance">
               Connecting people to unforgettable experiences across Nigeria.
             </p>
             {/* Social Icons */}
