@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, User } from 'lucide-react';
+import { Menu, User, Bell } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
@@ -73,6 +73,12 @@ export function Navbar() {
         <div className="flex items-center gap-2 md:gap-4">
           <div className="hidden sm:flex items-center gap-2">
             {mounted && <ThemeToggle />}
+            <Button variant="ghost" size="icon" className="rounded-full relative mr-2" asChild title="Notifications">
+              <Link href="/dashboard/attendee/notifications">
+                <Bell className="w-5 h-5" />
+                <span className="absolute top-2 right-2 w-2 h-2 bg-primary rounded-full border-2 border-background" />
+              </Link>
+            </Button>
             <Button variant="ghost" size="sm" className="font-bold px-4 no-underline h-9 md:h-11" asChild>
               <Link href="/login">Sign In</Link>
             </Button>
@@ -88,45 +94,54 @@ export function Navbar() {
              </Button>
           </div>
 
-          {/* Mobile Menu Trigger */}
-          <Sheet open={isOpen} onOpenChange={setIsOpen}>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden">
-                <Menu className="w-6 h-6" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="bg-card/95 backdrop-blur-xl border-border w-[300px] p-8">
-              <SheetHeader className="text-left mb-12">
-                <SheetTitle>
-                  <Logo size="sm" />
-                </SheetTitle>
-              </SheetHeader>
-              <div className="flex flex-col gap-6">
-                {NAV_LINKS.map((link) => (
-                  <Link 
-                    key={link.href} 
-                    href={link.href} 
-                    onClick={() => setIsOpen(false)}
-                    className={cn(
-                      "text-xl font-black tracking-tighter no-underline",
-                      getIsActive(link.href) ? "text-primary" : "text-muted-foreground"
-                    )}
-                  >
-                    {link.name}
-                  </Link>
-                ))}
-                <div className="h-px bg-border/50" />
-                <div className="flex flex-col gap-3 pt-6">
-                  <Button variant="outline" className="w-full rounded-2xl h-12 font-bold no-underline" asChild>
-                    <Link href="/login">Sign In</Link>
-                  </Button>
-                  <Button className="w-full rounded-2xl h-12 font-bold shadow-xl shadow-primary/20 no-underline" asChild>
-                    <Link href="/signup">Create Account</Link>
-                  </Button>
+          {/* Mobile Notification & Menu Trigger */}
+          <div className="flex items-center md:hidden">
+            <Button variant="ghost" size="icon" className="rounded-full relative" asChild title="Notifications">
+              <Link href="/dashboard/attendee/notifications">
+                <Bell className="w-5 h-5" />
+                <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-primary rounded-full border-2 border-background" />
+              </Link>
+            </Button>
+
+            <Sheet open={isOpen} onOpenChange={setIsOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="w-6 h-6" />
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right" className="bg-card/95 backdrop-blur-xl border-border w-[300px] p-8">
+                <SheetHeader className="text-left mb-12">
+                  <SheetTitle>
+                    <Logo size="sm" />
+                  </SheetTitle>
+                </SheetHeader>
+                <div className="flex flex-col gap-6">
+                  {NAV_LINKS.map((link) => (
+                    <Link 
+                      key={link.href} 
+                      href={link.href} 
+                      onClick={() => setIsOpen(false)}
+                      className={cn(
+                        "text-xl font-black tracking-tighter no-underline",
+                        getIsActive(link.href) ? "text-primary" : "text-muted-foreground"
+                      )}
+                    >
+                      {link.name}
+                    </Link>
+                  ))}
+                  <div className="h-px bg-border/50" />
+                  <div className="flex flex-col gap-3 pt-6">
+                    <Button variant="outline" className="w-full rounded-2xl h-12 font-bold no-underline" asChild>
+                      <Link href="/login">Sign In</Link>
+                    </Button>
+                    <Button className="w-full rounded-2xl h-12 font-bold shadow-xl shadow-primary/20 no-underline" asChild>
+                      <Link href="/signup">Create Account</Link>
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </SheetContent>
-          </Sheet>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </nav>
     </div>
