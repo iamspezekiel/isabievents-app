@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -97,8 +98,8 @@ export default function AttendeeDashboard() {
         <div className="max-w-5xl mx-auto space-y-8 md:space-y-12">
           <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-1 text-left">
-              <h1 className="font-headline text-3xl md:text-5xl">Hi, {MOCK_USER.name} 👋</h1>
-              <p className="text-muted-foreground">You have {MOCK_USER.wallet.active} upcoming experiences.</p>
+              <h1 className="font-headline text-3xl md:text-5xl tracking-tighter">Hi, {MOCK_USER.name} 👋</h1>
+              <p className="text-muted-foreground font-medium">You have {MOCK_USER.wallet.active} upcoming experiences.</p>
             </div>
             <div className="flex items-center gap-3">
               <Link href="/discover" className="w-full sm:w-auto no-underline">
@@ -158,17 +159,17 @@ export function SidebarLink({ icon: Icon, label, active, href = "#" }: any) {
 
 function StatBox({ label, value, color, icon: Icon }: any) {
   const colorClass = color === 'primary' ? 'text-primary' : color === 'accent' ? 'text-accent' : 'text-foreground';
-  const bgClass = color === 'primary' ? 'bg-primary/10' : color === 'accent' ? 'bg-accent/10' : 'bg-secondary';
+  const bgClass = color === 'primary' ? 'bg-primary/10' : color === 'accent' ? 'bg-accent/10' : 'bg-secondary/50';
   
   return (
-    <Card className="bg-card border-border overflow-hidden rounded-[1.25rem] md:rounded-[2.5rem] shadow-sm hover:border-primary/30 transition-all group">
+    <Card className="bg-card border-border overflow-hidden rounded-[1.25rem] md:rounded-[2.5rem] shadow-sm hover:border-primary/40 hover:shadow-md transition-all duration-300 group cursor-default">
       <CardContent className="p-3 md:p-8 flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-2 md:gap-6">
-        <div className={cn("w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl flex items-center justify-center transition-colors group-hover:scale-110 duration-500", bgClass)}>
-          <Icon className={cn("w-5 h-5 md:w-7 md:h-7", colorClass)} />
+        <div className={cn("w-10 h-10 md:w-16 md:h-16 rounded-xl md:rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:scale-110", bgClass)}>
+          <Icon className={cn("w-5 h-5 md:w-8 md:h-8", colorClass)} />
         </div>
-        <div className="text-center sm:text-left space-y-0.5">
-          <div className={cn("text-xl md:text-4xl font-headline font-black leading-none", colorClass)}>{value}</div>
-          <span className="text-[8px] md:text-[10px] text-muted-foreground uppercase font-black tracking-widest mt-1 md:mt-2 block">{label}</span>
+        <div className="text-center sm:text-left space-y-0.5 md:space-y-1">
+          <div className={cn("text-xl md:text-5xl font-headline font-black leading-none tracking-tighter", colorClass)}>{value}</div>
+          <span className="text-[8px] md:text-[11px] text-muted-foreground uppercase font-bold tracking-[0.1em] block">{label}</span>
         </div>
       </CardContent>
     </Card>
@@ -177,45 +178,71 @@ function StatBox({ label, value, color, icon: Icon }: any) {
 
 function TicketCard({ event, mounted }: any) {
   return (
-    <div className="group relative bg-card border border-border rounded-[2.5rem] overflow-hidden hover:border-primary/50 transition-all flex flex-col md:flex-row hover:shadow-2xl hover:shadow-primary/5 shadow-sm">
-      <div className="relative w-full md:w-64 aspect-video md:aspect-square shrink-0">
-        <img src={event.image} alt="" className="object-cover w-full h-full" />
-        <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all backdrop-blur-sm">
-          <QrCode className="w-14 h-14 text-white mb-2" />
-          <span className="text-white text-[10px] font-black uppercase tracking-widest">Show Entry QR</span>
+    <div className="group relative bg-card border border-border rounded-[2.5rem] overflow-hidden hover:border-primary/50 transition-all duration-500 flex flex-col md:flex-row hover:shadow-[0_32px_64px_-16px_rgba(126,124,255,0.1)] shadow-sm">
+      {/* Decorative Notches */}
+      <div className="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-1/2 w-6 h-6 md:w-10 md:h-10 bg-background border border-border rounded-full z-10 hidden md:block" />
+      <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2 w-6 h-6 md:w-10 md:h-10 bg-background border border-border rounded-full z-10 hidden md:block" />
+
+      <div className="relative w-full md:w-64 aspect-[16/10] md:aspect-square shrink-0 overflow-hidden">
+        <img 
+          src={event.image} 
+          alt="" 
+          className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110" 
+        />
+        <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 backdrop-blur-[2px]">
+          <QrCode className="w-14 h-14 text-white mb-2 animate-in zoom-in-50" />
+          <span className="text-white text-[10px] font-black uppercase tracking-[0.2em]">Show Entry QR</span>
         </div>
       </div>
       
-      <div className="flex-1 p-8 flex flex-col text-left">
+      <div className="flex-1 p-6 md:p-10 flex flex-col text-left relative">
+        {/* Ticket Perforation Mock */}
+        <div className="absolute left-0 top-0 bottom-0 w-px border-l-2 border-dashed border-border/50 ml-[-1px] hidden md:block" />
+        
         <div className="flex items-center justify-between mb-6">
-          <Badge className="bg-primary/10 text-primary border-none py-1 px-4 font-bold text-[10px] tracking-widest uppercase">CONFIRMED</Badge>
-          <span className="text-[10px] text-muted-foreground font-black font-mono tracking-widest">#TKT-{event.id.toUpperCase()}</span>
+          <Badge className="bg-primary text-white border-none py-1 px-4 font-black text-[10px] tracking-widest uppercase rounded-full">CONFIRMED</Badge>
+          <span className="text-[10px] text-muted-foreground font-black font-mono tracking-widest opacity-60">#TKT-{event.id.toUpperCase()}</span>
         </div>
-        <h3 className="font-headline text-2xl mb-4 line-clamp-1">{event.title}</h3>
-        <div className="grid sm:grid-cols-2 gap-4 text-sm text-muted-foreground">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center">
-              <Calendar className="w-4 h-4 text-primary" />
+        
+        <div className="space-y-4 flex-1">
+          <h3 className="font-headline text-2xl md:text-3xl mb-2 line-clamp-1 group-hover:text-primary transition-colors">{event.title}</h3>
+          
+          <div className="grid sm:grid-cols-2 gap-4 md:gap-8">
+            <div className="space-y-1.5">
+              <span className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60">Schedule</span>
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-secondary flex items-center justify-center shrink-0">
+                  <Calendar className="w-4 h-4 text-primary" />
+                </div>
+                <span className="font-bold text-sm text-foreground">
+                  {mounted ? new Date(event.date).toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' }) : '...'}
+                </span>
+              </div>
             </div>
-            <span className="font-medium">
-              {mounted ? new Date(event.date).toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Loading date...'}
-            </span>
-          </div>
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-secondary flex items-center justify-center">
-              <MapPin className="w-4 h-4 text-accent" />
+            
+            <div className="space-y-1.5">
+              <span className="text-[10px] uppercase font-black tracking-widest text-muted-foreground/60">Location</span>
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-secondary flex items-center justify-center shrink-0">
+                  <MapPin className="w-4 h-4 text-accent" />
+                </div>
+                <span className="line-clamp-1 font-bold text-sm text-foreground">{event.venue}</span>
+              </div>
             </div>
-            <span className="line-clamp-1 font-medium">{event.venue}</span>
           </div>
         </div>
         
         <div className="mt-8 pt-8 border-t border-border flex flex-col sm:flex-row gap-4">
-          <Button className="flex-1 rounded-full h-12 gap-3 shadow-lg shadow-primary/20 font-bold">
+          <Button className="flex-1 rounded-full h-12 gap-3 shadow-lg shadow-primary/20 font-black text-xs uppercase tracking-widest hover:scale-[1.02] transition-transform">
             <QrCode className="w-5 h-5" /> View Ticket
           </Button>
           <div className="flex gap-2">
-            <Button variant="outline" size="icon" className="w-12 h-12 rounded-full border-border bg-card hover:bg-secondary"><Download className="w-5 h-5" /></Button>
-            <Button variant="outline" size="icon" className="w-12 h-12 rounded-full border-border bg-card hover:bg-secondary"><Share2 className="w-5 h-5" /></Button>
+            <Button variant="outline" size="icon" className="w-12 h-12 rounded-full border-border bg-card hover:bg-secondary hover:text-primary transition-colors">
+              <Download className="w-5 h-5" />
+            </Button>
+            <Button variant="outline" size="icon" className="w-12 h-12 rounded-full border-border bg-card hover:bg-secondary hover:text-primary transition-colors">
+              <Share2 className="w-5 h-5" />
+            </Button>
           </div>
         </div>
       </div>
