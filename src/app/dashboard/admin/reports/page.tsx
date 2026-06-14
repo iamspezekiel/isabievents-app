@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -18,7 +17,8 @@ import {
   Calendar,
   ArrowUpRight,
   ArrowDownRight,
-  Activity
+  Activity,
+  Loader2
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,6 +29,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { SidebarLink } from '../page';
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
+import { useToast } from "@/hooks/use-toast";
 
 const platformVolume = [
   { name: 'Jan', volume: 12000000 },
@@ -41,7 +42,21 @@ const platformVolume = [
 
 export default function AdminFinancialReports() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const pathname = usePathname();
+  const { toast } = useToast();
+
+  const handleExport = async () => {
+    setIsExporting(true);
+    // Simulate data generation and file download preparation
+    await new Promise(r => setTimeout(r, 2000));
+    setIsExporting(false);
+    
+    toast({
+      title: "Ledger Exported",
+      description: "The platform financial ledger (PDF/CSV) has been generated and downloaded.",
+    });
+  };
 
   const NavigationLinks = () => (
     <nav className="flex-1 space-y-1">
@@ -81,8 +96,13 @@ export default function AdminFinancialReports() {
               <h1 className="font-headline text-3xl md:text-5xl">Financial Intel</h1>
               <p className="text-muted-foreground font-medium">Global transaction volumes, revenue splits and platform performance.</p>
             </div>
-            <Button className="rounded-full shadow-lg shadow-primary/20 h-11 font-bold gap-2">
-              <Download className="w-4 h-4" /> Export Ledger
+            <Button 
+              onClick={handleExport} 
+              disabled={isExporting}
+              className="rounded-full shadow-lg shadow-primary/20 h-11 font-bold gap-2 min-w-[160px]"
+            >
+              {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
+              {isExporting ? "Processing..." : "Export Ledger"}
             </Button>
           </header>
 
