@@ -2,15 +2,17 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Mail, MessageSquare, Phone, MapPin, Send, Loader2, CheckCircle2, ArrowRight, Sparkles } from 'lucide-react';
+import { Mail, MessageSquare, Phone, MapPin, Send, Loader2, CheckCircle2, ArrowRight, Instagram, Twitter, Facebook, Linkedin, Youtube } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import Link from 'next/link';
+import { cn } from "@/lib/utils";
 
 export default function ContactPage() {
   const { toast } = useToast();
@@ -44,32 +46,45 @@ export default function ContactPage() {
       </header>
 
       <main className="container mx-auto px-4 py-16">
-        <div className="grid lg:grid-cols-3 gap-12 max-w-6xl mx-auto">
-          <div className="lg:col-span-1 space-y-8">
-            <ContactInfo 
-              icon={Mail} 
-              title="Email Us" 
-              value="support@isabievents.ng" 
-              desc="For general inquiries and support."
-            />
-            <ContactInfo 
-              icon={MessageSquare} 
-              title="Live Chat" 
-              value="WhatsApp Support" 
-              desc="Available Mon-Fri, 9am - 6pm WAT."
-            />
-            <ContactInfo 
-              icon={Phone} 
-              title="Call Us" 
-              value="+234 (0) 800-ISABI-HELP" 
-              desc="Toll-free within Nigeria."
-            />
-            <ContactInfo 
-              icon={MapPin} 
-              title="Headquarters" 
-              value="Victoria Island, Lagos" 
-              desc="Nigeria's event technology hub."
-            />
+        <div className="grid lg:grid-cols-3 gap-16 max-w-6xl mx-auto">
+          <div className="lg:col-span-1 space-y-12 text-left">
+            <div className="space-y-8">
+              <ContactInfo 
+                icon={Mail} 
+                title="Email Us" 
+                value="support@isabievents.ng" 
+                desc="For general inquiries and support."
+              />
+              <ContactInfo 
+                icon={MessageSquare} 
+                title="Live Chat" 
+                value="WhatsApp Support" 
+                desc="Available Mon-Fri, 9am - 6pm WAT."
+              />
+              <ContactInfo 
+                icon={Phone} 
+                title="Call Us" 
+                value="+234 (0) 800-ISABI-HELP" 
+                desc="Toll-free within Nigeria."
+              />
+              <ContactInfo 
+                icon={MapPin} 
+                title="Headquarters" 
+                value="Victoria Island, Lagos" 
+                desc="Nigeria's event technology hub."
+              />
+            </div>
+
+            <div className="space-y-6 pt-8 border-t border-border">
+              <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground/60">Follow the Vibe</h4>
+              <div className="flex flex-wrap gap-4">
+                <SocialLink icon={Instagram} href="#" color="bg-[#E4405F]/10 text-[#E4405F]" />
+                <SocialLink icon={Twitter} href="#" color="bg-foreground/10 text-foreground" />
+                <SocialLink icon={Facebook} href="#" color="bg-[#1877F2]/10 text-[#1877F2]" />
+                <SocialLink icon={Linkedin} href="#" color="bg-[#0A66C2]/10 text-[#0A66C2]" />
+                <SocialLink icon={Youtube} href="#" color="bg-[#FF0000]/10 text-[#FF0000]" />
+              </div>
+            </div>
           </div>
 
           <div className="lg:col-span-2">
@@ -135,10 +150,7 @@ export default function ContactPage() {
 
       <section className="bg-primary/5 py-24 border-y border-border">
         <div className="container mx-auto px-4 text-center space-y-8">
-           <div className="inline-flex items-center gap-2 bg-accent/10 text-accent px-4 py-2 rounded-full font-bold text-xs uppercase tracking-widest">
-              <Sparkles className="w-4 h-4" /> Instant Answers
-           </div>
-           <h2 className="font-headline tracking-tighter">Looking for immediate help?</h2>
+           <h2 className="font-headline tracking-tighter">Frequently Asked Questions</h2>
            <p className="text-muted-foreground max-w-xl mx-auto">Check our comprehensive knowledge base for quick solutions to common issues.</p>
            <Link href="/help" className="inline-block no-underline">
              <Button size="lg" className="rounded-full px-12 h-14 font-black shadow-2xl shadow-primary/20 gap-3">
@@ -166,6 +178,13 @@ function ContactInfo({ icon: Icon, title, value, desc }: any) {
   );
 }
 
-function Badge({ className, children }: { className?: string, children: React.ReactNode }) {
-  return <span className={cn("inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2", className)}>{children}</span>;
+function SocialLink({ icon: Icon, href, color }: { icon: any, href: string, color: string }) {
+  return (
+    <Link href={href} className={cn(
+      "w-14 h-14 rounded-2xl flex items-center justify-center transition-all hover:-translate-y-1 hover:shadow-lg shadow-black/5 group",
+      color
+    )}>
+      <Icon className="w-6 h-6 transition-transform group-hover:scale-110" />
+    </Link>
+  );
 }
