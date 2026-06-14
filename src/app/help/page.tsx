@@ -28,8 +28,8 @@ export default function HelpCenterPage() {
         {`
           (function () {
             var options = {
-              call: "+2349024244140", 
-              whatsapp: "+2349024244140", 
+              call: "+2349067591253", 
+              whatsapp: "+2349067591253", 
               call_to_action: "Contact Us", 
               button_color: "#7E7CFF", 
               position: "left", 
@@ -66,15 +66,15 @@ export default function HelpCenterPage() {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <div className="grid md:grid-cols-3 gap-8 mb-20">
+        <div className="grid md:grid-cols-3 gap-8 mb-16">
           <HelpCategoryCard icon={Ticket} title="Tickets & Entry" count={12} href="/help/tickets" />
           <HelpCategoryCard icon={CreditCard} title="Payments & Refunds" count={8} href="/help/refunds" />
           <HelpCategoryCard icon={User} title="Account & Profile" count={15} href="/help/account" />
         </div>
 
         <div className="grid lg:grid-cols-3 gap-16">
-          <div className="lg:col-span-2 space-y-12">
-            <section className="space-y-6">
+          <div className="lg:col-span-2 space-y-8">
+            <section className="space-y-4">
               <h4 className="font-bold text-xl">Popular Questions</h4>
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="q1" className="border-border/50">
@@ -104,14 +104,14 @@ export default function HelpCenterPage() {
               </Accordion>
             </section>
 
-            <section className="space-y-6">
+            <section className="space-y-4">
               <h4 className="font-bold text-xl">Latest Articles</h4>
-              <div className="space-y-4">
+              <div className="space-y-3">
                 {[1, 2, 3].map(i => (
-                  <Link key={i} href="#" className="flex items-center justify-between p-5 bg-card border border-border rounded-2xl transition-all group no-underline hover:border-primary/30">
-                    <div className="space-y-1">
-                      <h4 className="font-bold text-sm">Protecting your account from ticket scams</h4>
-                      <p className="text-xs text-muted-foreground">Safety tips for buying and selling tickets safely.</p>
+                  <Link key={i} href="#" className="flex items-center justify-between p-4 bg-card border border-border rounded-xl transition-all group no-underline hover:border-primary/30">
+                    <div className="space-y-0.5">
+                      <h4 className="font-bold text-[13px]">Protecting your account from ticket scams</h4>
+                      <p className="text-[11px] text-muted-foreground">Safety tips for buying and selling tickets safely.</p>
                     </div>
                     <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                   </Link>
@@ -134,7 +134,7 @@ export default function HelpCenterPage() {
                     </Link>
                   </Button>
                   <Button variant="outline" className="w-full gap-2 rounded-full h-12 no-underline font-bold border-2" asChild>
-                    <a href="https://wa.me/2349024244140" target="_blank">
+                    <a href="https://wa.me/2349067591253" target="_blank">
                       <MessageCircle className="w-4 h-4" /> Live Chat
                     </a>
                   </Button>
@@ -146,7 +146,7 @@ export default function HelpCenterPage() {
                 </div>
                 <div className="pt-4 border-t border-primary/10 flex items-center justify-center gap-3 text-sm font-bold">
                   <Phone className="w-4 h-4 text-primary" /> 
-                  <a href="tel:+2349024244140" className="hover:text-primary transition-colors">+234 902 424 4140</a>
+                  <a href="tel:+2349067591253" className="hover:text-primary transition-colors">+234 906 759 1253</a>
                 </div>
               </CardContent>
             </Card>

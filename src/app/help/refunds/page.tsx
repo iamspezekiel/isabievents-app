@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -13,8 +14,8 @@ export default function RefundPolicyPage() {
         {`
           (function () {
             var options = {
-              call: "+2349024244140", 
-              whatsapp: "+2349024244140", 
+              call: "+2349067591253", 
+              whatsapp: "+2349067591253", 
               call_to_action: "Contact Us", 
               button_color: "#7E7CFF", 
               position: "left", 
