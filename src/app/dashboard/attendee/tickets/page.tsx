@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Ticket, Search, QrCode, Download, Share2, Calendar, MapPin, ArrowLeft, ShieldCheck, CloudOff, CloudCheck } from 'lucide-react';
+import { Ticket, Search, QrCode, Download, Share2, Calendar, MapPin, ArrowLeft, ShieldCheck, CloudOff, Cloud } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -15,8 +15,10 @@ export default function TicketGalleryPage() {
 
   useEffect(() => {
     setMounted(true);
-    const saved = localStorage.getItem('isabi_offline_tickets');
-    if (saved) setIsOfflineReady(true);
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('isabi_offline_tickets');
+      if (saved) setIsOfflineReady(true);
+    }
   }, []);
 
   return (
@@ -32,7 +34,7 @@ export default function TicketGalleryPage() {
                 <h1 className="font-headline text-3xl">My Digital Wallet</h1>
                 {isOfflineReady ? (
                   <Badge className="bg-green-500/10 text-green-500 border-green-500/20 gap-1 hidden sm:flex">
-                    <CloudCheck className="w-3 h-3" />
+                    <Cloud className="w-3 h-3" />
                     <span className="text-[10px] font-black">OFFLINE READY</span>
                   </Badge>
                 ) : (

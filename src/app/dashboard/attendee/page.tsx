@@ -20,7 +20,7 @@ import {
   ChevronRight,
   Loader2,
   CloudOff,
-  CloudCheck,
+  Cloud,
   RefreshCw,
   ShieldCheck
 } from 'lucide-react';
@@ -50,9 +50,11 @@ export default function AttendeeDashboard() {
   useEffect(() => {
     setMounted(true);
     fetchRecommendations();
-    // Simulate checking local storage for offline data
-    const saved = localStorage.getItem('isabi_offline_tickets');
-    if (saved) setIsOfflineReady(true);
+    // Check local storage for offline data
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('isabi_offline_tickets');
+      if (saved) setIsOfflineReady(true);
+    }
   }, []);
 
   const handleSyncOffline = async () => {
@@ -164,7 +166,7 @@ export default function AttendeeDashboard() {
                 "w-10 h-10 rounded-xl flex items-center justify-center shrink-0",
                 isOfflineReady ? "bg-green-500/10 text-green-500" : "bg-primary/10 text-primary"
               )}>
-                {isOfflineReady ? <CloudCheck className="w-5 h-5" /> : <CloudOff className="w-5 h-5" />}
+                {isOfflineReady ? <Cloud className="w-5 h-5" /> : <CloudOff className="w-5 h-5" />}
               </div>
               <div className="space-y-0.5">
                 <p className="text-sm font-bold">
