@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -101,7 +102,7 @@ export default function OrganizerDashboard() {
           </Button>
           <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" title="Open Menu">
                 <Menu className="w-6 h-6" />
               </Button>
             </SheetTrigger>
@@ -153,6 +154,7 @@ export default function OrganizerDashboard() {
                 className="rounded-full gap-2 h-11 font-bold"
                 onClick={handleRefresh}
                 disabled={isRefreshing}
+                title="Refresh Analytics"
               >
                 {isRefreshing ? <Loader2 className="w-4 h-4 animate-spin" /> : <RefreshCcw className="w-4 h-4" />}
                 <span className="hidden sm:inline">Refresh</span>

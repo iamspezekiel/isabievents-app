@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -52,7 +53,7 @@ export default function MyEventsPage() {
         </Link>
         <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" title="Open Menu">
               <Menu className="w-6 h-6" />
             </Button>
           </SheetTrigger>
@@ -110,7 +111,9 @@ export default function MyEventsPage() {
                         <h3 className="font-headline text-xl font-bold">{event.title}</h3>
                         <p className="text-muted-foreground flex items-center gap-1">{event.venue} · {new Date(event.date).toLocaleDateString()}</p>
                       </div>
-                      <Button variant="ghost" size="icon"><MoreVertical className="w-5 h-5" /></Button>
+                      <Button variant="ghost" size="icon" title="Event Options">
+                        <MoreVertical className="w-5 h-5" />
+                      </Button>
                     </div>
                     <div className="mt-6 flex flex-wrap items-center gap-8 border-t border-border pt-6">
                       <div className="space-y-0.5">

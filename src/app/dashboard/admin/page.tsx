@@ -103,7 +103,7 @@ export default function AdminDashboard() {
           </Button>
           <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
+              <Button variant="ghost" size="icon" title="Open Menu">
                 <Menu className="w-6 h-6" />
               </Button>
             </SheetTrigger>
@@ -254,7 +254,9 @@ export default function AdminDashboard() {
                     <Button variant="outline" size="sm" className="rounded-full gap-2 border-red-500/20 text-red-500 hover:bg-red-500/5">
                       <Ban className="w-3.5 h-3.5" /> Reject
                     </Button>
-                    <Button variant="ghost" size="icon" className="rounded-full"><ChevronRight className="w-4 h-4" /></Button>
+                    <Link href={`/dashboard/admin/events?id=${event.id}`} title="View Moderation Details">
+                      <Button variant="ghost" size="icon" className="rounded-full"><ChevronRight className="w-4 h-4" /></Button>
+                    </Link>
                   </div>
                 </div>
               )) : (
