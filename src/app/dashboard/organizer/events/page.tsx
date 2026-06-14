@@ -17,7 +17,8 @@ import {
   Menu,
   Edit,
   Trash2,
-  Eye
+  Eye,
+  AlertTriangle
 } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -29,6 +30,16 @@ import {
   DropdownMenuItem, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { MOCK_EVENTS } from '@/lib/mock-data';
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
@@ -39,14 +50,25 @@ import { useToast } from "@/hooks/use-toast";
 
 export default function MyEventsPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
+  const [eventToCancel, setEventToCancel] = useState<any>(null);
   const pathname = usePathname();
   const { toast } = useToast();
 
-  const handleCancelEvent = (title: string) => {
-    toast({
-      title: "Cancellation Requested",
-      description: `The cancellation for "${title}" is being processed.`,
-    });
+  const handleCancelIntent = (event: any) => {
+    setEventToCancel(event);
+    setIsCancelDialogOpen(true);
+  };
+
+  const confirmCancelEvent = () => {
+    if (eventToCancel) {
+      toast({
+        title: "Cancellation Successful",
+        description: `"${eventToCancel.title}" has been removed and ticket holders notified.`,
+      });
+      setIsCancelDialogOpen(false);
+      setEventToCancel(null);
+    }
   };
 
   const NavigationLinks = () => (
@@ -162,7 +184,7 @@ export default function MyEventsPage() {
                           </DropdownMenuItem>
                           <DropdownMenuItem 
                             className="gap-2 font-bold text-red-500 hover:text-red-600 cursor-pointer"
-                            onClick={() => handleCancelEvent(event.title)}
+                            onClick={() => handleCancelIntent(event)}
                           >
                             <Trash2 className="w-4 h-4" /> Cancel Event
                           </DropdownMenuItem>
@@ -200,6 +222,30 @@ export default function MyEventsPage() {
           </div>
         </div>
       </main>
+
+      {/* Confirmation Dialog */}
+      <AlertDialog open={isCancelDialogOpen} onOpenChange={setIsCancelDialogOpen}>
+        <AlertDialogContent className="bg-card border-border sm:rounded-[2.5rem] p-8">
+          <AlertDialogHeader className="text-left">
+            <div className="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center mb-4">
+              <AlertTriangle className="w-6 h-6 text-red-500" />
+            </div>
+            <AlertDialogTitle className="font-headline text-2xl">Cancel this event?</AlertDialogTitle>
+            <AlertDialogDescription className="text-muted-foreground leading-relaxed">
+              This will immediately unlist <strong>{eventToCancel?.title}</strong> and initiate the refund process for all paid ticket holders. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex-row gap-3 pt-6">
+            <AlertDialogCancel className="flex-1 rounded-full font-bold h-11 border-2">Keep Event</AlertDialogCancel>
+            <AlertDialogAction 
+              onClick={confirmCancelEvent}
+              className="flex-1 rounded-full font-bold h-11 bg-red-500 hover:bg-red-600 text-white border-none"
+            >
+              Cancel Event
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
