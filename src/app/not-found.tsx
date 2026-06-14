@@ -1,19 +1,30 @@
 "use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Search, MapPin } from 'lucide-react';
+import { ArrowLeft, Search, MapPin, Home } from 'lucide-react';
 import { Logo } from '@/components/logo';
 
 /**
  * Custom 404 Page for IsabiEvents.
  * Replaces the default Next.js error page with a branded, helpful experience.
- * Converted to a Client Component to support navigation actions.
  */
 export default function NotFound() {
   const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+
+  // Use useEffect to ensure the component is mounted on the client
+  // before rendering to prevent hydration mismatches caused by server/client discrepancies.
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // During SSR and initial hydration, we render a placeholder to avoid mismatches.
+  if (!mounted) {
+    return <div className="min-h-screen bg-background" />;
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-start p-4 pt-40 pb-20 text-center overflow-hidden">
@@ -52,11 +63,11 @@ export default function NotFound() {
           >
             <ArrowLeft className="w-5 h-5" /> Go Back
           </Button>
-          <Link href="/" className="no-underline">
-            <Button variant="ghost" className="w-full h-12 rounded-2xl font-bold gap-2 text-muted-foreground hover:text-foreground">
-              <ArrowLeft className="w-4 h-4" /> Back to Home
-            </Button>
-          </Link>
+          <Button asChild variant="ghost" className="w-full h-12 rounded-2xl font-bold gap-2 text-muted-foreground hover:text-foreground">
+            <Link href="/" className="no-underline">
+              <Home className="w-4 h-4" /> Back to Home
+            </Link>
+          </Button>
         </div>
 
         <div className="pt-16 flex items-center justify-center gap-6 opacity-30">
