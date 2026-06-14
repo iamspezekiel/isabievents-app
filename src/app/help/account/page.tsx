@@ -6,10 +6,44 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import Link from 'next/link';
+import Script from 'next/script';
 
 export default function AccountSupportPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
+      <Script id="getbutton-account" strategy="lazyOnload">
+        {`
+          (function () {
+            var options = {
+              call: "+2349024244140", 
+              whatsapp: "+2349024244140", 
+              call_to_action: "Contact Us", 
+              button_color: "#7E7CFF", 
+              position: "left", 
+              order: "call,whatsapp", 
+              pre_filled_message: "Hello IsabiEvents, I want to", 
+            };
+            var proto = 'https:', host = "getbutton.io", url = proto + '//static.' + host;
+            var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = url + '/widget-send-button/js/init.js';
+            s.onload = function () { if (typeof WhWidgetSendButton !== 'undefined') WhWidgetSendButton.init(host, proto, options); };
+            var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);
+          })();
+        `}
+      </Script>
+      <Script id="tawk-account" strategy="lazyOnload">
+        {`
+          var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+          (function(){
+          var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+          s1.async=true;
+          s1.src='https://embed.tawk.to/6a2ec0259e8aac1f4526f336/1jr39t4vv';
+          s1.charset='UTF-8';
+          s1.setAttribute('crossorigin','*');
+          s0.parentNode.insertBefore(s1,s0);
+          })();
+        `}
+      </Script>
+
       <header className="border-b border-border bg-card pt-48 pb-10">
         <div className="container mx-auto px-4 max-w-4xl text-left">
           <Link href="/help" className="flex items-center gap-2 text-muted-foreground hover:text-white mb-6 transition-colors no-underline">

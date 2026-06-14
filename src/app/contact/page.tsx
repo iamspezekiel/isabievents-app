@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -13,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
+import Script from 'next/script';
 
 export default function ContactPage() {
   const { toast } = useToast();
@@ -34,6 +34,39 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen bg-background">
+      <Script id="getbutton-contact" strategy="lazyOnload">
+        {`
+          (function () {
+            var options = {
+              call: "+2349024244140", 
+              whatsapp: "+2349024244140", 
+              call_to_action: "Contact Us", 
+              button_color: "#7E7CFF", 
+              position: "left", 
+              order: "call,whatsapp", 
+              pre_filled_message: "Hello IsabiEvents, I want to", 
+            };
+            var proto = 'https:', host = "getbutton.io", url = proto + '//static.' + host;
+            var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = url + '/widget-send-button/js/init.js';
+            s.onload = function () { if (typeof WhWidgetSendButton !== 'undefined') WhWidgetSendButton.init(host, proto, options); };
+            var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);
+          })();
+        `}
+      </Script>
+      <Script id="tawk-contact" strategy="lazyOnload">
+        {`
+          var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+          (function(){
+          var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+          s1.async=true;
+          s1.src='https://embed.tawk.to/6a2ec0259e8aac1f4526f336/1jr39t4vv';
+          s1.charset='UTF-8';
+          s1.setAttribute('crossorigin','*');
+          s0.parentNode.insertBefore(s1,s0);
+          })();
+        `}
+      </Script>
+
       <header className="relative pt-48 pb-12 overflow-hidden border-b border-border bg-card/30">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-primary/10 blur-[120px] -z-10 rounded-full" />
         <div className="container mx-auto px-4 text-center space-y-6">

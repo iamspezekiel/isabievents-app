@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -19,10 +18,44 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import Link from 'next/link';
+import Script from 'next/script';
 
 export default function HelpCenterPage() {
   return (
     <div className="min-h-screen bg-background text-left">
+      <Script id="getbutton-help" strategy="lazyOnload">
+        {`
+          (function () {
+            var options = {
+              call: "+2349024244140", 
+              whatsapp: "+2349024244140", 
+              call_to_action: "Contact Us", 
+              button_color: "#7E7CFF", 
+              position: "left", 
+              order: "call,whatsapp", 
+              pre_filled_message: "Hello IsabiEvents, I want to", 
+            };
+            var proto = 'https:', host = "getbutton.io", url = proto + '//static.' + host;
+            var s = document.createElement('script'); s.type = 'text/javascript'; s.async = true; s.src = url + '/widget-send-button/js/init.js';
+            s.onload = function () { if (typeof WhWidgetSendButton !== 'undefined') WhWidgetSendButton.init(host, proto, options); };
+            var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);
+          })();
+        `}
+      </Script>
+      <Script id="tawk-help" strategy="lazyOnload">
+        {`
+          var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+          (function(){
+          var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+          s1.async=true;
+          s1.src='https://embed.tawk.to/6a2ec0259e8aac1f4526f336/1jr39t4vv';
+          s1.charset='UTF-8';
+          s1.setAttribute('crossorigin','*');
+          s0.parentNode.insertBefore(s1,s0);
+          })();
+        `}
+      </Script>
+
       {/* Header */}
       <header className="bg-card border-b border-border pt-56 pb-20 text-center relative overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-primary/5 blur-[120px] -z-10 rounded-full" />
