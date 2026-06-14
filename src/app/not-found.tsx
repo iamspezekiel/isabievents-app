@@ -56,7 +56,7 @@ export default function NotFound() {
           </p>
         </div>
 
-        <div className="flex flex-row gap-3 pt-6">
+        <div className="flex flex-row gap-3 pt-6 px-6 md:px-0">
           <Button 
             onClick={() => router.back()}
             className="flex-1 h-10 md:h-14 rounded-2xl font-bold shadow-xl shadow-primary/20 gap-2 text-xs md:text-base"
