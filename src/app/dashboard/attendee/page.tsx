@@ -406,6 +406,11 @@ export default function AttendeeDashboard() {
             >
               <X className="w-5 h-5" />
             </button>
+            <div className="flex justify-center mb-4">
+              <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center -rotate-6">
+                <Ticket className="w-7 h-7 text-white fill-white/20" />
+              </div>
+            </div>
             <h2 className="font-headline text-white text-2xl tracking-tighter">Digital Ticket</h2>
             <p className="text-white/70 text-xs font-bold uppercase tracking-widest">Scan at the entrance</p>
           </div>
