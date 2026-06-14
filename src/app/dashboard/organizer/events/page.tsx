@@ -2,21 +2,52 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Ticket, Plus, Search, Filter, MoreVertical, ExternalLink, LayoutDashboard, Users, BarChart3, Settings, LogOut, Menu } from 'lucide-react';
+import { 
+  Ticket, 
+  Plus, 
+  Search, 
+  Filter, 
+  MoreVertical, 
+  ExternalLink, 
+  LayoutDashboard, 
+  Users, 
+  BarChart3, 
+  Settings, 
+  LogOut, 
+  Menu,
+  Edit,
+  Trash2,
+  Eye
+} from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu";
 import { MOCK_EVENTS } from '@/lib/mock-data';
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
 import { SidebarLink } from '../page';
 import { usePathname } from 'next/navigation';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { useToast } from "@/hooks/use-toast";
 
 export default function MyEventsPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const { toast } = useToast();
+
+  const handleCancelEvent = (title: string) => {
+    toast({
+      title: "Cancellation Requested",
+      description: `The cancellation for "${title}" is being processed.`,
+    });
+  };
 
   const NavigationLinks = () => (
     <nav className="flex-1 space-y-1">
@@ -111,9 +142,32 @@ export default function MyEventsPage() {
                         <h3 className="font-headline text-xl font-bold">{event.title}</h3>
                         <p className="text-muted-foreground flex items-center gap-1">{event.venue} · {new Date(event.date).toLocaleDateString()}</p>
                       </div>
-                      <Button variant="ghost" size="icon" title="Event Options">
-                        <MoreVertical className="w-5 h-5" />
-                      </Button>
+                      
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button variant="ghost" size="icon" title="Event Options">
+                            <MoreVertical className="w-5 h-5" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-48 bg-card border-border">
+                          <DropdownMenuItem className="gap-2 font-bold cursor-pointer" asChild>
+                            <Link href={`/dashboard/organizer/create?id=${event.id}`}>
+                              <Edit className="w-4 h-4" /> Edit Event
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem className="gap-2 font-bold cursor-pointer" asChild>
+                            <Link href={`/events/${event.slug}`}>
+                              <Eye className="w-4 h-4" /> View Page
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem 
+                            className="gap-2 font-bold text-red-500 hover:text-red-600 cursor-pointer"
+                            onClick={() => handleCancelEvent(event.title)}
+                          >
+                            <Trash2 className="w-4 h-4" /> Cancel Event
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                     <div className="mt-6 flex flex-wrap items-center gap-8 border-t border-border pt-6">
                       <div className="space-y-0.5">
