@@ -17,7 +17,8 @@ import {
   Database,
   Lock,
   RefreshCcw,
-  AlertTriangle
+  AlertTriangle,
+  CreditCard
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -156,6 +157,56 @@ export default function AdminSystemSettings() {
                     <p className="text-xs text-muted-foreground">Disable manual approval for verified organizer payouts.</p>
                   </div>
                   <Switch checked />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Gateway Management */}
+            <Card className="border-border bg-card">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <CreditCard className="w-5 h-5 text-primary" /> Gateway Management
+                </CardTitle>
+                <CardDescription>Enable or disable active payment processing channels.</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-2xl border border-border">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-background flex items-center justify-center border border-border">
+                      <span className="text-xs font-black text-[#09A5DB]">PY</span>
+                    </div>
+                    <div className="space-y-0.5">
+                      <p className="font-bold text-sm">Paystack</p>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Standard Gateway</p>
+                    </div>
+                  </div>
+                  <Switch defaultChecked />
+                </div>
+                
+                <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-2xl border border-border">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-background flex items-center justify-center border border-border">
+                      <span className="text-xs font-black text-[#FB9129]">FW</span>
+                    </div>
+                    <div className="space-y-0.5">
+                      <p className="font-bold text-sm">Flutterwave</p>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Backup Gateway</p>
+                    </div>
+                  </div>
+                  <Switch defaultChecked />
+                </div>
+
+                <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-2xl border border-border">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-background flex items-center justify-center border border-border">
+                      <span className="text-xs font-black text-[#2775CA]">$</span>
+                    </div>
+                    <div className="space-y-0.5">
+                      <p className="font-bold text-sm">SolanaPay (USDC/USDT)</p>
+                      <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Web3 Channel</p>
+                    </div>
+                  </div>
+                  <Switch defaultChecked />
                 </div>
               </CardContent>
             </Card>
