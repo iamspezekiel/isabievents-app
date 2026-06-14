@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview An AI assistant that generates frequently asked questions (FAQs) and their answers
@@ -69,7 +70,7 @@ const organizerFaqGeneratorFlow = ai.defineFlow(
   },
   async (input) => {
     let attempts = 0;
-    const maxAttempts = 5;
+    const maxAttempts = 3;
     
     while (attempts < maxAttempts) {
       try {
@@ -77,17 +78,26 @@ const organizerFaqGeneratorFlow = ai.defineFlow(
         return output!;
       } catch (error: any) {
         attempts++;
+        
+        const isQuotaError = 
+          error.message?.includes('429') || 
+          error.message?.includes('RESOURCE_EXHAUSTED') ||
+          error.message?.includes('Quota exceeded');
+
         if (attempts >= maxAttempts) {
+          // Graceful fallback for FAQs
+          if (isQuotaError) {
+            return [];
+          }
           throw error;
         }
         
-        // Wait before retrying (exponential backoff: 3s, 6s, 12s, 24s...)
-        const delay = Math.pow(2, attempts) * 1500;
+        const delay = Math.pow(2, attempts) * (isQuotaError ? 3000 : 1500);
         await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
     
-    throw new Error('Failed to generate FAQs after multiple attempts.');
+    return [];
   },
 );
 

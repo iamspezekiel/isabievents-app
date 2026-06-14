@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview An AI content assistant for event organizers to generate engaging event descriptions and clear event policies.
@@ -89,7 +90,7 @@ const organizerAICopyGeneratorFlow = ai.defineFlow(
   },
   async input => {
     let attempts = 0;
-    const maxAttempts = 5;
+    const maxAttempts = 3;
     
     while (attempts < maxAttempts) {
       try {
@@ -97,11 +98,23 @@ const organizerAICopyGeneratorFlow = ai.defineFlow(
         return output!;
       } catch (error: any) {
         attempts++;
+        
+        const isQuotaError = 
+          error.message?.includes('429') || 
+          error.message?.includes('RESOURCE_EXHAUSTED') ||
+          error.message?.includes('Quota exceeded');
+
         if (attempts >= maxAttempts) {
+          if (isQuotaError) {
+            return {
+              eventDescription: "AI generation is temporarily busy due to high demand. Please try again in a few minutes or write your description manually.",
+              eventPolicies: "Standard IsabiEvents event policies apply."
+            };
+          }
           throw error;
         }
         
-        const delay = Math.pow(2, attempts) * 1500;
+        const delay = Math.pow(2, attempts) * (isQuotaError ? 3000 : 1500);
         await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }

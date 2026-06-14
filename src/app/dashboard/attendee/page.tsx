@@ -74,6 +74,21 @@ export default function AttendeeDashboard() {
 
   const fetchRecommendations = async () => {
     setLoadingRecs(true);
+    
+    // Check for cached recommendations to save quota
+    if (typeof window !== 'undefined') {
+      const cached = localStorage.getItem('isabi_recs_cache');
+      if (cached) {
+        const { data, timestamp } = JSON.parse(cached);
+        // Cache valid for 30 minutes
+        if (Date.now() - timestamp < 30 * 60 * 1000 && data.length > 0) {
+          setRecommendations(data);
+          setLoadingRecs(false);
+          return;
+        }
+      }
+    }
+
     try {
       const result = await attendeePersonalizedEventRecommendations({
         pastPurchases: ['Lagos Jazz Night', 'Naija Tech Summit'],
@@ -89,9 +104,19 @@ export default function AttendeeDashboard() {
       });
       
       const recommendedEvents = MOCK_EVENTS.filter(e => result.recommendedEventIds.includes(e.id));
-      setRecommendations(recommendedEvents.length > 0 ? recommendedEvents : MOCK_EVENTS.slice(3, 6));
+      const finalRecs = recommendedEvents.length > 0 ? recommendedEvents : MOCK_EVENTS.slice(3, 6);
+      
+      setRecommendations(finalRecs);
+      
+      // Store in cache
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('isabi_recs_cache', JSON.stringify({
+          data: finalRecs,
+          timestamp: Date.now()
+        }));
+      }
     } catch (error) {
-      console.error("Failed to load AI recommendations", error);
+      console.warn("Failed to load AI recommendations, using defaults", error);
       setRecommendations(MOCK_EVENTS.slice(3, 6));
     } finally {
       setLoadingRecs(false);

@@ -1,3 +1,4 @@
+
 'use server';
 /**
  * @fileOverview This flow provides personalized event recommendations for an attendee.
@@ -97,7 +98,7 @@ const attendeePersonalizedEventRecommendationsFlow = ai.defineFlow(
   },
   async input => {
     let attempts = 0;
-    const maxAttempts = 5;
+    const maxAttempts = 3;
     
     while (attempts < maxAttempts) {
       try {
@@ -105,15 +106,27 @@ const attendeePersonalizedEventRecommendationsFlow = ai.defineFlow(
         return output!;
       } catch (error: any) {
         attempts++;
+        
+        // Check for common quota errors
+        const isQuotaError = 
+          error.message?.includes('429') || 
+          error.message?.includes('RESOURCE_EXHAUSTED') ||
+          error.message?.includes('Quota exceeded');
+
         if (attempts >= maxAttempts) {
+          // If we ultimately fail due to quota, return an empty array instead of crashing the UI
+          if (isQuotaError) {
+            return { recommendedEventIds: [] };
+          }
           throw error;
         }
         
-        const delay = Math.pow(2, attempts) * 1500;
+        // Use a longer delay for quota issues to allow the rate limit to reset
+        const delay = Math.pow(2, attempts) * (isQuotaError ? 3000 : 1500);
         await new Promise((resolve) => setTimeout(resolve, delay));
       }
     }
     
-    throw new Error('Failed to generate recommendations after multiple attempts.');
+    return { recommendedEventIds: [] };
   }
 );
