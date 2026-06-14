@@ -153,7 +153,7 @@ export default function ContactPage() {
            <h2 className="font-headline tracking-tighter">Frequently Asked Questions</h2>
            <p className="text-muted-foreground max-w-xl mx-auto">Check our comprehensive knowledge base for quick solutions to common issues.</p>
            <Link href="/help" className="inline-block no-underline">
-             <Button size="lg" className="rounded-full px-12 h-14 font-black shadow-2xl shadow-primary/20 gap-3">
+             <Button size="lg" className="rounded-full px-8 h-12 font-black shadow-2xl shadow-primary/20 gap-3">
                Browse Help Center <ArrowRight className="w-5 h-5" />
              </Button>
            </Link>
