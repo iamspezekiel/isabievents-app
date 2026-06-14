@@ -1,9 +1,8 @@
-
 "use client";
 
 import React, { useState } from 'react';
 import { Users, Plus, Mail, ShieldCheck, LayoutDashboard, Ticket, BarChart3, Settings, LogOut, Menu, Loader2, User, UserPlus, Trash2, Edit, Phone, Info, ShoppingBag, CheckCircle2 } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
