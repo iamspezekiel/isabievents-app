@@ -208,7 +208,7 @@ export default function AttendeeDashboard() {
                 <Menu className="w-6 h-6" />
               </Button>
             </SheetTrigger>
-            <SheetContent side="left" className="w-72 bg-card border-border p-8 flex flex-col overflow-y-auto">
+            <SheetContent side="right" className="w-72 bg-card border-border p-8 flex flex-col overflow-y-auto">
               <SheetHeader className="text-left mb-10">
                 <SheetTitle>
                   <Logo size="sm" />
@@ -423,7 +423,11 @@ export default function AttendeeDashboard() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4 border-t border-border pt-6">
+            <div className="grid grid-cols-2 gap-y-6 gap-x-4 border-t border-border pt-6">
+              <div className="space-y-1 text-left col-span-2">
+                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Attendee</p>
+                <p className="font-bold text-lg">{MOCK_USER.name}</p>
+              </div>
               <div className="space-y-1 text-left">
                 <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Date</p>
                 <p className="font-bold text-sm">{viewTicket && new Date(viewTicket.date).toLocaleDateString()}</p>
@@ -504,7 +508,7 @@ function TicketCard({ event, mounted, offline, onTransfer, onView, onDownload }:
       <div className="flex-1 p-6 md:p-10 flex flex-col text-left relative">
         <div className="absolute left-0 top-0 bottom-0 w-px border-l-2 border-dashed border-border/50 ml-[-1px] hidden md:block" />
         <div className="flex items-center justify-between mb-6">
-          <Badge className="bg-primary text-white border-none py-1 px-4 font-black text-[10px] tracking-widest uppercase rounded-full">CONFIRMED</Badge>
+          <Badge className="bg-primary text-white border-none py-1.5 px-4 font-black text-[10px] tracking-widest uppercase rounded-full">CONFIRMED</Badge>
           <span className="text-[10px] text-muted-foreground font-black font-mono tracking-widest opacity-60">#TKT-{event.id.toUpperCase()}</span>
         </div>
         <div className="space-y-4 flex-1">
