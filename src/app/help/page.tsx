@@ -41,7 +41,7 @@ export default function HelpCenterPage() {
             s.onload = function () { if (typeof WhWidgetSendButton !== 'undefined') WhWidgetSendButton.init(host, proto, options); };
             var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);
           })();
-          void undefined;
+          void 0;
         `}
       </Script>
 
@@ -65,7 +65,7 @@ export default function HelpCenterPage() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-16">
+      <main className="container mx-auto px-4 py-8">
         <div className="grid md:grid-cols-3 gap-8 mb-20">
           <HelpCategoryCard icon={Ticket} title="Tickets & Entry" count={12} href="/help/tickets" />
           <HelpCategoryCard icon={CreditCard} title="Payments & Refunds" count={8} href="/help/refunds" />
@@ -127,13 +127,13 @@ export default function HelpCenterPage() {
                 <CardDescription className="text-left">Our support team is available 24/7 to assist you.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="space-y-3">
-                  <Button variant="ghost" className="w-full gap-2 rounded-full h-12 no-underline font-bold hover:bg-primary hover:text-white transition-all border-2 border-transparent" asChild>
+                <div className="space-y-3 flex flex-col">
+                  <Button className="w-full gap-2 rounded-full h-12 no-underline font-bold transition-all border-2 border-transparent hover:bg-primary hover:text-white" asChild>
                     <Link href="/contact">
                       <Send className="w-4 h-4" /> Get in Touch
                     </Link>
                   </Button>
-                  <Button className="w-full gap-2 rounded-full h-12 no-underline font-bold shadow-lg shadow-primary/20" asChild>
+                  <Button variant="outline" className="w-full gap-2 rounded-full h-12 no-underline font-bold border-2" asChild>
                     <a href="https://wa.me/2349024244140" target="_blank">
                       <MessageCircle className="w-4 h-4" /> Live Chat
                     </a>
