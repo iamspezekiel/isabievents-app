@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -142,6 +141,9 @@ export default function HelpCenterPage() {
                   <Button variant="outline" className="w-full gap-2 rounded-full h-12 no-underline font-bold border-2">
                     <Mail className="w-4 h-4" /> Email Support
                   </Button>
+                  <Button variant="ghost" className="w-full gap-2 rounded-full h-12 no-underline font-bold hover:bg-primary/10 hover:text-primary transition-colors border-2 border-transparent" onClick={() => document.getElementById('contact-form')?.scrollIntoView({ behavior: 'smooth' })}>
+                    <Send className="w-4 h-4" /> Get in Touch
+                  </Button>
                 </div>
                 <div className="pt-4 border-t border-primary/10 flex items-center justify-center gap-3 text-sm font-bold">
                   <Phone className="w-4 h-4 text-primary" /> +234 (0) 800-ISABI-HELP
@@ -152,7 +154,7 @@ export default function HelpCenterPage() {
         </div>
 
         {/* Contact Form & Social Section */}
-        <section className="mt-24 border-t border-border pt-24">
+        <section id="contact-form" className="mt-24 border-t border-border pt-24">
           <div className="grid lg:grid-cols-2 gap-16 items-start">
             <div className="space-y-12 text-left">
               <div className="space-y-4">
