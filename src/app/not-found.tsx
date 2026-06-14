@@ -1,5 +1,8 @@
+"use client";
+
 import React from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Search, Ticket, MapPin } from 'lucide-react';
 import { Logo } from '@/components/logo';
@@ -7,9 +10,11 @@ import { Logo } from '@/components/logo';
 /**
  * Custom 404 Page for IsabiEvents.
  * Replaces the default Next.js error page with a branded, helpful experience.
- * Implemented as a Server Component to avoid hydration mismatches and improve load times.
+ * Converted to a Client Component to support navigation actions.
  */
 export default function NotFound() {
+  const router = useRouter();
+
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-start p-4 pt-40 pb-20 text-center overflow-hidden">
       {/* Background decoration */}
@@ -41,8 +46,14 @@ export default function NotFound() {
         </div>
 
         <div className="flex flex-col gap-3 pt-6">
+          <Button 
+            onClick={() => router.back()}
+            className="w-full h-12 md:h-14 rounded-2xl font-bold shadow-xl shadow-primary/20 gap-2 text-base"
+          >
+            <ArrowLeft className="w-5 h-5" /> Go Back
+          </Button>
           <Link href="/discover" className="no-underline">
-            <Button className="w-full h-12 md:h-14 rounded-2xl font-bold shadow-xl shadow-primary/20 gap-2 text-base">
+            <Button variant="ghost" className="w-full h-12 rounded-2xl font-bold gap-2 text-muted-foreground hover:text-foreground">
               <Ticket className="w-5 h-5" /> Find New Experiences
             </Button>
           </Link>
