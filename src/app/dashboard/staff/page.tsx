@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Scan, Search, CheckCircle, AlertCircle, RefreshCcw, History, Users, X, ArrowLeft, User, Ticket, Activity, Camera, CameraOff } from 'lucide-react';
+import { Scan, Search, CheckCircle, AlertCircle, RefreshCcw, History, Users, X, ArrowLeft, User, Ticket, Activity, Camera, CameraOff, Bell } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -194,6 +194,12 @@ export default function StaffCheckIn() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+           <Button variant="ghost" size="icon" className="rounded-full relative" asChild title="Notifications">
+            <Link href="/dashboard/attendee/notifications">
+              <Bell className="w-5 h-5" />
+              <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-primary rounded-full border-2 border-background" />
+            </Link>
+          </Button>
            <Badge className="bg-primary/20 text-primary border-none hidden sm:inline-flex">Main Entrance</Badge>
            <Badge variant="outline" className="font-mono">GATE-04</Badge>
         </div>
