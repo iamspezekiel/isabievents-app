@@ -43,7 +43,7 @@ export default function MobileAppPage() {
               <Badge className="w-fit bg-primary text-white border-none py-1 px-4 font-black tracking-widest uppercase mb-1 animate-in fade-in slide-in-from-bottom-4 duration-700">
                 NIGERIAN EXPERIENCE
               </Badge>
-              <h1 className="animate-in fade-in slide-in-from-bottom-6 duration-1000">
+              <h1 className="text-white animate-in fade-in slide-in-from-bottom-6 duration-1000">
                 Your Tickets. <br />
                 <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">
                   Everywhere
@@ -86,7 +86,7 @@ export default function MobileAppPage() {
               Built for the <br />
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent italic">Nigerian Experience</span>
             </h2>
-            <p className="text-muted-foreground max-w-xl mx-auto">
+            <p className="text-muted-foreground max-xl mx-auto">
               We've solved the real-world problems of physical ticketing, expensive data, and unreliable connectivity.
             </p>
           </div>
