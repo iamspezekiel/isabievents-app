@@ -13,7 +13,7 @@ import { Logo } from '@/components/logo';
  */
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4 text-center overflow-hidden">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-start p-4 pt-40 pb-20 text-center overflow-hidden">
       {/* Background decoration */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 blur-[120px] -z-10 rounded-full" />
       
