@@ -47,10 +47,16 @@ const performanceData = [
 
 export default function AdminDashboard() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const pathname = usePathname();
 
   // Logic: Auto-approve verified organizers. Only show unverified ones in the queue.
-  const moderationQueue = MOCK_EVENTS.filter(event => !event.organizer.verified);
+  const moderationQueue = MOCK_EVENTS.filter(event => {
+    const matchesSearch = !searchQuery || 
+                         event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                         event.organizer.name.toLowerCase().includes(searchQuery.toLowerCase());
+    return !event.organizer.verified && matchesSearch;
+  });
 
   const NavigationLinks = () => (
     <nav className="flex-1 space-y-1">
@@ -128,7 +134,12 @@ export default function AdminDashboard() {
             <div className="flex items-center gap-3">
               <div className="relative hidden sm:block">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input placeholder="Global search..." className="pl-9 h-11 w-64 bg-card rounded-full" />
+                <Input 
+                  placeholder="Global search..." 
+                  className="pl-9 h-11 w-64 bg-card rounded-full" 
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
               </div>
               <Button className="rounded-full shadow-lg shadow-primary/20 h-11 font-bold">Generate Report</Button>
             </div>

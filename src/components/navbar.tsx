@@ -4,7 +4,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, User } from 'lucide-react';
+import { Menu, User, LayoutDashboard } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { cn } from "@/lib/utils";
@@ -17,7 +17,7 @@ const NAV_LINKS = [
   { name: 'About', href: '/about' },
   { name: 'Host Event', href: '/host-event' },
   { name: 'Pricing', href: '/pricing' },
-  { name: 'Support', href: '/help' },
+  { name: 'Support', href: '/contact' },
 ];
 
 export function Navbar() {
@@ -25,6 +25,10 @@ export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  
+  // Mock login state for demo purposes
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userRole, setUserRole] = useState('attendee');
 
   useEffect(() => {
     setMounted(true);
@@ -32,6 +36,15 @@ export function Navbar() {
       setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener('scroll', handleScroll);
+    
+    // Check for mock login session
+    if (typeof window !== 'undefined') {
+      const isLogged = localStorage.getItem('isabi_logged_in') === 'true';
+      const role = localStorage.getItem('isabi_user_role') || 'attendee';
+      setIsLoggedIn(isLogged);
+      setUserRole(role);
+    }
+    
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -73,18 +86,31 @@ export function Navbar() {
         <div className="flex items-center gap-2 md:gap-4">
           <div className="hidden sm:flex items-center gap-2">
             {mounted && <ThemeToggle />}
-            <Button variant="ghost" size="sm" className="font-bold px-4 no-underline h-9 md:h-11 ml-2" asChild>
-              <Link href="/login">Sign In</Link>
-            </Button>
-            <Button size="sm" className="rounded-full px-6 shadow-xl shadow-primary/20 font-bold no-underline h-9 md:h-11" asChild>
-              <Link href="/signup">Get Started</Link>
-            </Button>
+            
+            {isLoggedIn ? (
+              <Button size="sm" className="rounded-full px-6 shadow-xl shadow-primary/20 font-bold no-underline h-9 md:h-11 gap-2" asChild>
+                <Link href={userRole === 'organizer' ? '/dashboard/organizer' : '/dashboard/attendee'}>
+                  <LayoutDashboard className="w-4 h-4" /> Dashboard
+                </Link>
+              </Button>
+            ) : (
+              <>
+                <Button variant="ghost" size="sm" className="font-bold px-4 no-underline h-9 md:h-11 ml-2" asChild>
+                  <Link href="/login">Sign In</Link>
+                </Button>
+                <Button size="sm" className="rounded-full px-6 shadow-xl shadow-primary/20 font-bold no-underline h-9 md:h-11" asChild>
+                  <Link href="/signup">Get Started</Link>
+                </Button>
+              </>
+            )}
           </div>
 
           <div className="sm:hidden flex items-center gap-2">
              {mounted && <ThemeToggle />}
              <Button variant="ghost" size="icon" asChild className="no-underline">
-                <Link href="/login"><User className="w-5 h-5" /></Link>
+                <Link href={isLoggedIn ? (userRole === 'organizer' ? '/dashboard/organizer' : '/dashboard/attendee') : '/login'}>
+                  {isLoggedIn ? <LayoutDashboard className="w-5 h-5" /> : <User className="w-5 h-5" />}
+                </Link>
              </Button>
           </div>
 
@@ -118,12 +144,22 @@ export function Navbar() {
                   ))}
                   <div className="h-px bg-border/50" />
                   <div className="flex flex-col gap-3 pt-6">
-                    <Button variant="outline" className="w-full rounded-2xl h-12 font-bold no-underline" asChild>
-                      <Link href="/login">Sign In</Link>
-                    </Button>
-                    <Button className="w-full rounded-2xl h-12 font-bold shadow-xl shadow-primary/20 no-underline" asChild>
-                      <Link href="/signup">Create Account</Link>
-                    </Button>
+                    {isLoggedIn ? (
+                      <Button className="w-full rounded-2xl h-12 font-bold shadow-xl shadow-primary/20 no-underline gap-2" asChild onClick={() => setIsOpen(false)}>
+                        <Link href={userRole === 'organizer' ? '/dashboard/organizer' : '/dashboard/attendee'}>
+                          <LayoutDashboard className="w-5 h-5" /> Dashboard
+                        </Link>
+                      </Button>
+                    ) : (
+                      <>
+                        <Button variant="outline" className="w-full rounded-2xl h-12 font-bold no-underline" asChild onClick={() => setIsOpen(false)}>
+                          <Link href="/login">Sign In</Link>
+                        </Button>
+                        <Button className="w-full rounded-2xl h-12 font-bold shadow-xl shadow-primary/20 no-underline" asChild onClick={() => setIsOpen(false)}>
+                          <Link href="/signup">Create Account</Link>
+                        </Button>
+                      </>
+                    )}
                   </div>
                 </div>
               </SheetContent>

@@ -61,6 +61,8 @@ function DiscoverContent() {
       const matchesSearch = !searchLower || 
                            event.title.toLowerCase().includes(searchLower) || 
                            event.description.toLowerCase().includes(searchLower) ||
+                           event.venue.toLowerCase().includes(searchLower) ||
+                           event.tags.some(tag => tag.toLowerCase().includes(searchLower)) ||
                            event.organizer.name.toLowerCase().includes(searchLower);
       
       const matchesCategory = selectedCategory === 'all' || event.category === selectedCategory;
@@ -198,7 +200,7 @@ function DiscoverContent() {
               <CarouselItem key={event.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
                 <Link href={`/events/${event.slug}`} className="block h-full group">
                   <div className="relative aspect-[16/9] rounded-[2rem] overflow-hidden border border-border shadow-lg">
-                    <img src={event.image} alt="" className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-700" />
+                    <Image src={event.image} alt={event.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                     <div className="absolute bottom-6 left-6 right-6 text-left">
                        <Badge className="mb-2 bg-primary/20 backdrop-blur-md border-none text-[10px] uppercase font-black">{event.category}</Badge>
