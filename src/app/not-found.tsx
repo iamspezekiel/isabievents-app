@@ -4,7 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Search, Ticket, MapPin } from 'lucide-react';
+import { ArrowLeft, Search, MapPin } from 'lucide-react';
 import { Logo } from '@/components/logo';
 
 /**
@@ -52,11 +52,6 @@ export default function NotFound() {
           >
             <ArrowLeft className="w-5 h-5" /> Go Back
           </Button>
-          <Link href="/discover" className="no-underline">
-            <Button variant="ghost" className="w-full h-12 rounded-2xl font-bold gap-2 text-muted-foreground hover:text-foreground">
-              <Ticket className="w-5 h-5" /> Find New Experiences
-            </Button>
-          </Link>
           <Link href="/" className="no-underline">
             <Button variant="ghost" className="w-full h-12 rounded-2xl font-bold gap-2 text-muted-foreground hover:text-foreground">
               <ArrowLeft className="w-4 h-4" /> Back to Home
