@@ -59,26 +59,34 @@ export default function AttendeeSettingsPage() {
         <Link href="/dashboard/attendee" className="no-underline">
           <Logo size="sm" />
         </Link>
-        <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <Menu className="w-6 h-6" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-72 bg-card border-border p-8 flex flex-col overflow-y-auto">
-            <SheetHeader className="text-left mb-10">
-              <SheetTitle>
-                <Link href="/dashboard/attendee" className="no-underline" onClick={() => setIsSidebarOpen(false)}>
-                  <Logo size="sm" />
-                </Link>
-              </SheetTitle>
-            </SheetHeader>
-            <Navigation />
-            <div className="pt-8 border-t border-border mt-auto">
-              <SidebarLink icon={LogOut} label="Log Out" href="/login" />
-            </div>
-          </SheetContent>
-        </Sheet>
+        <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" className="rounded-full relative" asChild title="Notifications">
+            <Link href="/dashboard/attendee/notifications">
+              <Bell className="w-5 h-5" />
+              <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-primary rounded-full border-2 border-background" />
+            </Link>
+          </Button>
+          <Sheet open={isSidebarOpen} onOpenChange={setIsSidebarOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <Menu className="w-6 h-6" />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-72 bg-card border-border p-8 flex flex-col overflow-y-auto">
+              <SheetHeader className="text-left mb-10">
+                <SheetTitle>
+                  <Link href="/dashboard/attendee" className="no-underline" onClick={() => setIsSidebarOpen(false)}>
+                    <Logo size="sm" />
+                  </Link>
+                </SheetTitle>
+              </SheetHeader>
+              <Navigation />
+              <div className="pt-8 border-t border-border mt-auto">
+                <SidebarLink icon={LogOut} label="Log Out" href="/login" />
+              </div>
+            </SheetContent>
+          </Sheet>
+        </div>
       </header>
 
       <main className="flex-1 p-4 md:p-12">
