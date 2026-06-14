@@ -25,7 +25,8 @@ import {
   ShieldCheck,
   X,
   Send,
-  Mail
+  Mail,
+  Printer
 } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -57,6 +58,10 @@ export default function AttendeeDashboard() {
   const [transferTicket, setTransferTicket] = useState<any>(null);
   const [transferEmail, setTransferEmail] = useState('');
   const [isTransferring, setIsTransferring] = useState(false);
+
+  // View state
+  const [isViewOpen, setIsViewOpen] = useState(false);
+  const [viewTicket, setViewTicket] = useState<any>(null);
 
   const pathname = usePathname();
   const { toast } = useToast();
@@ -147,6 +152,11 @@ export default function AttendeeDashboard() {
   const openTransfer = (event: any) => {
     setTransferTicket(event);
     setIsTransferOpen(true);
+  };
+
+  const openView = (event: any) => {
+    setViewTicket(event);
+    setIsViewOpen(true);
   };
 
   const Navigation = () => (
@@ -269,7 +279,7 @@ export default function AttendeeDashboard() {
 
             <TabsContent value="upcoming" className="space-y-6">
               {MOCK_EVENTS.slice(0, 3).map((event) => (
-                <TicketCard key={event.id} event={event} mounted={mounted} offline={isOfflineReady} onTransfer={() => openTransfer(event)} />
+                <TicketCard key={event.id} event={event} mounted={mounted} offline={isOfflineReady} onTransfer={() => openTransfer(event)} onView={() => openView(event)} />
               ))}
             </TabsContent>
 
@@ -321,6 +331,7 @@ export default function AttendeeDashboard() {
         </div>
       </main>
 
+      {/* Transfer Ticket Dialog */}
       <Dialog open={isTransferOpen} onOpenChange={setIsTransferOpen}>
         <DialogContent className="bg-card border-border sm:rounded-[2.5rem] p-8 max-w-md">
           <DialogHeader className="text-left">
@@ -362,6 +373,56 @@ export default function AttendeeDashboard() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* View Ticket Dialog */}
+      <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
+        <DialogContent className="bg-card border-border sm:rounded-[2.5rem] p-0 overflow-hidden max-w-md">
+          <div className="bg-primary p-8 text-center space-y-2 relative">
+            <button 
+              onClick={() => setIsViewOpen(false)}
+              className="absolute top-4 right-4 p-2 hover:bg-white/10 rounded-full text-white transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            <h2 className="font-headline text-white text-2xl tracking-tighter">Digital Ticket</h2>
+            <p className="text-white/70 text-xs font-bold uppercase tracking-widest">Scan at the entrance</p>
+          </div>
+          
+          <div className="p-8 space-y-8">
+            <div className="flex flex-col items-center gap-6">
+              <div className="p-4 bg-white rounded-3xl shadow-xl">
+                 <QrCode className="w-48 h-48 text-black" />
+              </div>
+              <div className="text-center space-y-1">
+                 <h3 className="font-headline text-xl">{viewTicket?.title}</h3>
+                 <p className="text-muted-foreground text-sm flex items-center justify-center gap-1">
+                    <MapPin className="w-3 h-3 text-accent" /> {viewTicket?.venue}
+                 </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 border-t border-border pt-6">
+              <div className="space-y-1 text-left">
+                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Date</p>
+                <p className="font-bold text-sm">{viewTicket && new Date(viewTicket.date).toLocaleDateString()}</p>
+              </div>
+              <div className="space-y-1 text-left">
+                <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest">Ticket ID</p>
+                <p className="font-mono text-xs font-bold">#TKT-{viewTicket?.id.toUpperCase()}</p>
+              </div>
+            </div>
+            
+            <div className="flex flex-col gap-3">
+              <Button onClick={() => window.print()} className="w-full rounded-full gap-2 h-11 font-bold shadow-xl shadow-primary/20">
+                <Download className="w-4 h-4" /> Save Ticket PDF
+              </Button>
+              <Button variant="ghost" onClick={() => setIsViewOpen(false)} className="w-full rounded-full h-11 font-bold">
+                Close
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
@@ -393,7 +454,7 @@ function StatBox({ label, value, color, icon: Icon, className }: any) {
   );
 }
 
-function TicketCard({ event, mounted, offline, onTransfer }: any) {
+function TicketCard({ event, mounted, offline, onTransfer, onView }: any) {
   return (
     <div className="group relative bg-card border border-border rounded-[2.5rem] overflow-hidden hover:border-primary/50 transition-all duration-500 flex flex-col md:flex-row hover:shadow-[0_32px_64px_-16px_rgba(126,124,255,0.1)] shadow-sm">
       <div className="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-1/2 w-6 h-6 md:w-10 md:h-10 bg-background border border-border rounded-full z-10 hidden md:block" />
@@ -401,7 +462,10 @@ function TicketCard({ event, mounted, offline, onTransfer }: any) {
 
       <div className="relative w-full md:w-64 aspect-[16/10] md:aspect-square shrink-0 overflow-hidden">
         <img src={event.image} alt="" className="object-cover w-full h-full transition-transform duration-700 group-hover:scale-110" />
-        <div className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 backdrop-blur-[2px]">
+        <div 
+          onClick={onView}
+          className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-500 backdrop-blur-[2px] cursor-pointer"
+        >
           <QrCode className="w-6 h-6 md:w-14 md:h-14 text-white mb-2 animate-in zoom-in-50" />
           <span className="text-white text-[8px] md:text-[10px] font-black uppercase tracking-[0.2em]">Show Entry QR</span>
         </div>
@@ -454,14 +518,29 @@ function TicketCard({ event, mounted, offline, onTransfer }: any) {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-border flex flex-row items-center gap-2">
-          <Button className="flex-1 rounded-full h-11 gap-2 shadow-lg shadow-primary/20 font-black text-[10px] uppercase tracking-widest">
+          <Button 
+            onClick={onView}
+            className="flex-1 rounded-full h-11 gap-2 shadow-lg shadow-primary/20 font-black text-[10px] uppercase tracking-widest"
+          >
             <QrCode className="w-4 h-4" /> View Ticket
           </Button>
           <div className="flex gap-2">
-            <Button variant="outline" size="icon" className="w-11 h-11 rounded-full" title="Download">
+            <Button 
+              variant="outline" 
+              size="icon" 
+              className="w-11 h-11 rounded-full" 
+              title="Download"
+              onClick={() => window.print()}
+            >
               <Download className="w-4 h-4" />
             </Button>
-            <Button variant="outline" size="icon" className="w-11 h-11 rounded-full text-primary hover:bg-primary/10" onClick={onTransfer} title="Transfer Ticket">
+            <Button 
+              variant="outline" 
+              size="icon" 
+              className="w-11 h-11 rounded-full text-primary hover:bg-primary/10" 
+              onClick={onTransfer} 
+              title="Transfer Ticket"
+            >
               <Share2 className="w-4 h-4" />
             </Button>
           </div>
