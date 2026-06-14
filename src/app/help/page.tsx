@@ -43,20 +43,6 @@ export default function HelpCenterPage() {
           void 0;
         `}
       </Script>
-      <Script id="tawk-help" strategy="lazyOnload">
-        {`
-          var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-          (function(){
-          var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-          s1.async=true;
-          s1.src='https://embed.tawk.to/6a2ec0259e8aac1f4526f336/1jr39t4vv';
-          s1.charset='UTF-8';
-          s1.setAttribute('crossorigin','*');
-          s0.parentNode.insertBefore(s1,s0);
-          })();
-          void 0;
-        `}
-      </Script>
 
       {/* Header */}
       <header className="bg-card border-b border-border pt-56 pb-20 text-center relative overflow-hidden">
@@ -142,7 +128,7 @@ export default function HelpCenterPage() {
               <CardContent className="space-y-6">
                 <div className="space-y-3">
                   <Button className="w-full gap-2 rounded-full h-12 no-underline font-bold shadow-lg shadow-primary/20" asChild>
-                    <Link href="https://tawk.to/chat/6a2ec0259e8aac1f4526f336/1jr39t4vv" target="_blank">
+                    <Link href="https://wa.me/2349024244140" target="_blank">
                       <MessageCircle className="w-4 h-4" /> Live Chat
                     </Link>
                   </Button>

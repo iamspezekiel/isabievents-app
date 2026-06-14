@@ -54,20 +54,6 @@ export default function ContactPage() {
           void 0;
         `}
       </Script>
-      <Script id="tawk-contact" strategy="lazyOnload">
-        {`
-          var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-          (function(){
-          var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-          s1.async=true;
-          s1.src='https://embed.tawk.to/6a2ec0259e8aac1f4526f336/1jr39t4vv';
-          s1.charset='UTF-8';
-          s1.setAttribute('crossorigin','*');
-          s0.parentNode.insertBefore(s1,s0);
-          })();
-          void 0;
-        `}
-      </Script>
 
       <header className="relative pt-48 pb-12 overflow-hidden border-b border-border bg-card/30">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-primary/10 blur-[120px] -z-10 rounded-full" />

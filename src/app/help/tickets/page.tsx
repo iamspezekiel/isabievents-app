@@ -31,20 +31,6 @@ export default function TicketSupportPage() {
           void 0;
         `}
       </Script>
-      <Script id="tawk-tickets" strategy="lazyOnload">
-        {`
-          var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-          (function(){
-          var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-          s1.async=true;
-          s1.src='https://embed.tawk.to/6a2ec0259e8aac1f4526f336/1jr39t4vv';
-          s1.charset='UTF-8';
-          s1.setAttribute('crossorigin','*');
-          s0.parentNode.insertBefore(s1,s0);
-          })();
-          void 0;
-        `}
-      </Script>
 
       <header className="border-b border-border bg-card pt-48 pb-10">
         <div className="container mx-auto px-4 max-w-4xl text-left">
