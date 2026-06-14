@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -76,6 +75,33 @@ export default function AdminSystemSettings() {
         </div>
       </aside>
 
+      {/* Mobile Header */}
+      <header className="md:hidden flex items-center justify-between p-4 bg-card border-b border-border sticky top-0 z-40">
+        <Link href="/dashboard/admin" className="no-underline">
+          <Logo size="sm" />
+        </Link>
+        <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <Menu className="w-6 h-6" />
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-72 bg-card border-border p-6 flex flex-col overflow-y-auto">
+            <SheetHeader className="text-left mb-10">
+              <SheetTitle>
+                <Link href="/dashboard/admin" className="no-underline" onClick={() => setIsMobileMenuOpen(false)}>
+                  <Logo size="sm" />
+                </Link>
+              </SheetTitle>
+            </SheetHeader>
+            <NavigationLinks />
+            <div className="pt-6 border-t border-border mt-auto">
+              <SidebarLink icon={LogOut} label="Log Out" href="/login" />
+            </div>
+          </SheetContent>
+        </Sheet>
+      </header>
+
       <main className="flex-1 p-4 md:p-12 overflow-x-hidden">
         <div className="max-w-4xl mx-auto space-y-8">
           <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -102,10 +128,12 @@ export default function AdminSystemSettings() {
                   <div className="space-y-2">
                     <Label>Standard Platform Fee (%)</Label>
                     <Input defaultValue="2.5" className="h-11 bg-secondary/30 border-none rounded-xl" />
+                    <p className="text-[10px] text-muted-foreground">Commission percentage taken from every paid ticket sold.</p>
                   </div>
                   <div className="space-y-2">
                     <Label>Minimum Processing Fee (₦)</Label>
                     <Input defaultValue="50" className="h-11 bg-secondary/30 border-none rounded-xl" />
+                    <p className="text-[10px] text-muted-foreground">The base transaction floor. Ensures fixed payment gateway costs are always covered.</p>
                   </div>
                 </div>
               </CardContent>
