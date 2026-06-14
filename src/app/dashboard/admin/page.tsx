@@ -58,7 +58,7 @@ export default function AdminDashboard() {
         <SidebarLink icon={Users} label="User Management" href="/dashboard/admin/users" active={pathname === '/dashboard/admin/users'} />
         <SidebarLink icon={ShieldCheck} label="Organizer KYC" href="/dashboard/admin/kyc" active={pathname === '/dashboard/admin/kyc'} />
         <SidebarLink icon={Ticket} label="Event Moderation" href="/dashboard/admin/events" active={pathname === '/dashboard/admin/events'} />
-        <SidebarLink icon={DollarSign} label="Financial Reports" href="/dashboard/admin/reports" active={pathname === '/dashboard/admin/reports'} />
+        <SidebarLink icon={BarChart3} label="Financial Reports" href="/dashboard/admin/reports" active={pathname === '/dashboard/admin/reports'} />
         <SidebarLink icon={Settings} label="System Settings" href="/dashboard/admin/settings" active={pathname === '/dashboard/admin/settings'} />
       </div>
     </nav>
@@ -251,7 +251,7 @@ export default function AdminDashboard() {
   );
 }
 
-function SidebarLink({ icon: Icon, label, active, href = "#" }: any) {
+export function SidebarLink({ icon: Icon, label, active, href = "#" }: any) {
   return (
     <Link 
       href={href} 
