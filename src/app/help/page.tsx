@@ -31,6 +31,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
+import { cn } from "@/lib/utils";
 
 export default function HelpCenterPage() {
   const { toast } = useToast();
@@ -218,7 +219,7 @@ export default function HelpCenterPage() {
                     </div>
                     <div className="space-y-3">
                       <h3 className="font-headline text-4xl tracking-tight">Message Received!</h3>
-                      <p className="text-muted-foreground max-w-sm mx-auto font-medium">
+                      <p className="text-muted-foreground max-sm mx-auto font-medium">
                         Thank you for reaching out. Our team is already on it and will follow up shortly.
                       </p>
                     </div>
