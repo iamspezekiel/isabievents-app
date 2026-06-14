@@ -20,7 +20,8 @@ import {
   ChevronRight,
   UserCheck,
   Ban,
-  Activity
+  Activity,
+  Info
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -46,6 +47,9 @@ const performanceData = [
 export default function AdminDashboard() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+
+  // Logic: Auto-approve verified organizers. Only show unverified ones in the queue.
+  const moderationQueue = MOCK_EVENTS.filter(event => !event.organizer.verified);
 
   const NavigationLinks = () => (
     <nav className="flex-1 space-y-1">
@@ -194,12 +198,19 @@ export default function AdminDashboard() {
 
           {/* Event Moderation List */}
           <div className="space-y-6 text-left">
-            <div className="flex items-center justify-between">
-              <h2 className="font-headline text-xl">Event Moderation Queue</h2>
+            <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+              <div className="space-y-1">
+                <h2 className="font-headline text-xl">Event Moderation Queue</h2>
+                <div className="flex items-center gap-2 text-xs text-muted-foreground bg-secondary/50 px-3 py-1.5 rounded-lg border border-border">
+                  <Info className="w-3.5 h-3.5 text-primary" />
+                  <span>Verified KYC Organizers bypass moderation and are auto-approved.</span>
+                </div>
+              </div>
               <Link href="/dashboard/admin/events" className="text-sm font-bold text-primary hover:underline">Manage All</Link>
             </div>
+            
             <div className="grid gap-4">
-              {MOCK_EVENTS.slice(0, 3).map((event) => (
+              {moderationQueue.length > 0 ? moderationQueue.slice(0, 5).map((event) => (
                 <div key={event.id} className="bg-card border border-border p-5 rounded-2xl flex items-center justify-between group hover:border-primary/30 transition-all">
                   <div className="flex items-center gap-6">
                     <div className="w-14 h-14 rounded-xl overflow-hidden shrink-0">
@@ -209,8 +220,11 @@ export default function AdminDashboard() {
                       <div className="font-bold flex items-center gap-2">
                         {event.title}
                         <Badge variant="outline" className="text-[9px] uppercase">{event.category}</Badge>
+                        <Badge className="bg-yellow-500/10 text-yellow-600 border-none text-[8px] font-black uppercase">Unverified Host</Badge>
                       </div>
-                      <div className="text-xs text-muted-foreground">Organizer: <span className="text-foreground font-medium">{event.organizer.name}</span> · Venue: {event.venue}</div>
+                      <div className="text-xs text-muted-foreground">
+                        Organizer: <span className="text-foreground font-medium">{event.organizer.name}</span> · Venue: {event.venue}
+                      </div>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
@@ -223,7 +237,12 @@ export default function AdminDashboard() {
                     <Button variant="ghost" size="icon" className="rounded-full"><ChevronRight className="w-4 h-4" /></Button>
                   </div>
                 </div>
-              ))}
+              )) : (
+                <div className="bg-card border border-dashed border-border py-12 rounded-[2rem] text-center">
+                  <CheckCircle2 className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
+                  <p className="text-muted-foreground font-medium">Moderation queue is empty.</p>
+                </div>
+              )}
             </div>
           </div>
         </div>
