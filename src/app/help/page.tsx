@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -40,7 +41,7 @@ export default function HelpCenterPage() {
             s.onload = function () { if (typeof WhWidgetSendButton !== 'undefined') WhWidgetSendButton.init(host, proto, options); };
             var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);
           })();
-          void 0;
+          void undefined;
         `}
       </Script>
 
@@ -107,12 +108,12 @@ export default function HelpCenterPage() {
               <h4 className="font-bold text-xl">Latest Articles</h4>
               <div className="space-y-4">
                 {[1, 2, 3].map(i => (
-                  <Link key={i} href="#" className="flex items-center justify-between p-6 bg-card border border-border rounded-2xl transition-all group no-underline hover:border-primary/30">
+                  <Link key={i} href="#" className="flex items-center justify-between p-5 bg-card border border-border rounded-2xl transition-all group no-underline hover:border-primary/30">
                     <div className="space-y-1">
-                      <h4 className="font-bold">Protecting your account from ticket scams</h4>
-                      <p className="text-sm text-muted-foreground">Safety tips for buying and selling tickets safely.</p>
+                      <h4 className="font-bold text-sm">Protecting your account from ticket scams</h4>
+                      <p className="text-xs text-muted-foreground">Safety tips for buying and selling tickets safely.</p>
                     </div>
-                    <ExternalLink className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                    <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                   </Link>
                 ))}
               </div>
@@ -127,7 +128,7 @@ export default function HelpCenterPage() {
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="space-y-3">
-                  <Button variant="ghost" className="w-full gap-2 rounded-full h-12 no-underline font-bold hover:bg-primary/10 hover:text-primary transition-colors border-2 border-transparent" asChild>
+                  <Button variant="ghost" className="w-full gap-2 rounded-full h-12 no-underline font-bold hover:bg-primary hover:text-white transition-all border-2 border-transparent" asChild>
                     <Link href="/contact">
                       <Send className="w-4 h-4" /> Get in Touch
                     </Link>
