@@ -44,7 +44,7 @@ const iconMap: any = {
 
 export default function HomePage() {
   const [search, setSearch] = useState('');
-  const [displayLimit, setDisplayLimit] = useState(27);
+  const [displayLimit, setDisplayLimit] = useState(9);
   const [mounted, setMounted] = useState(false);
   const { toast } = useToast();
 
@@ -52,9 +52,9 @@ export default function HomePage() {
     setMounted(true);
     const handleResize = () => {
       if (window.innerWidth < 1024) {
-        setDisplayLimit(16);
+        setDisplayLimit(8);
       } else {
-        setDisplayLimit(27);
+        setDisplayLimit(9);
       }
     };
 

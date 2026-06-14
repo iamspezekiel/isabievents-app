@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useMemo, useEffect, Suspense } from 'react';
@@ -23,16 +24,16 @@ function DiscoverContent() {
   const [selectedCity, setSelectedCity] = useState('all');
   const [priceFilter, setPriceFilter] = useState('all');
   
-  const [displayLimit, setDisplayLimit] = useState(27);
+  const [displayLimit, setDisplayLimit] = useState(9);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     const handleResize = () => {
       if (window.innerWidth < 1024) {
-        setDisplayLimit(16);
+        setDisplayLimit(8);
       } else {
-        setDisplayLimit(27);
+        setDisplayLimit(9);
       }
     };
 
