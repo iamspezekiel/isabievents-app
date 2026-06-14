@@ -75,18 +75,21 @@ export default function ContactPage() {
                 title="Email Us" 
                 value="support@isabievents.ng" 
                 desc="For general inquiries and support."
+                href="mailto:support@isabievents.ng"
               />
               <ContactInfo 
                 icon={MessageSquare} 
                 title="Live Chat" 
                 value="0902 424 4140" 
                 desc="Available Mon-Fri, 9am - 6pm WAT via WhatsApp."
+                href="https://wa.me/2349024244140"
               />
               <ContactInfo 
                 icon={Phone} 
                 title="Call Us" 
                 value="+234 902 424 4140" 
                 desc="Official support line for all inquiries."
+                href="tel:+2349024244140"
               />
               <ContactInfo 
                 icon={MapPin} 
@@ -184,19 +187,29 @@ export default function ContactPage() {
   );
 }
 
-function ContactInfo({ icon: Icon, title, value, desc }: any) {
-  return (
+function ContactInfo({ icon: Icon, title, value, desc, href }: any) {
+  const content = (
     <div className="flex items-start gap-4 text-left group">
       <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center shrink-0 group-hover:bg-primary/10 transition-colors shadow-sm">
         <Icon className="w-5 h-5 text-primary" />
       </div>
       <div className="space-y-0.5">
         <h4 className="font-bold text-xs text-muted-foreground uppercase tracking-widest">{title}</h4>
-        <p className="font-black text-lg tracking-tight">{value}</p>
+        <p className="font-black text-lg tracking-tight group-hover:text-primary transition-colors">{value}</p>
         <p className="text-[11px] text-muted-foreground leading-relaxed font-medium">{desc}</p>
       </div>
     </div>
   );
+
+  if (href) {
+    return (
+      <Link href={href} className="no-underline block" target={href.startsWith('http') ? '_blank' : undefined}>
+        {content}
+      </Link>
+    );
+  }
+
+  return content;
 }
 
 function SocialLink({ icon: Icon, href, color }: { icon: any, href: string, color: string }) {

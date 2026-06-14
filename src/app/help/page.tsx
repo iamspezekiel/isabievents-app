@@ -128,9 +128,9 @@ export default function HelpCenterPage() {
               <CardContent className="space-y-6">
                 <div className="space-y-3">
                   <Button className="w-full gap-2 rounded-full h-12 no-underline font-bold shadow-lg shadow-primary/20" asChild>
-                    <Link href="https://wa.me/2349024244140" target="_blank">
+                    <a href="https://wa.me/2349024244140" target="_blank">
                       <MessageCircle className="w-4 h-4" /> Live Chat
-                    </Link>
+                    </a>
                   </Button>
                   <Button variant="outline" className="w-full gap-2 rounded-full h-12 no-underline font-bold border-2" asChild>
                     <Link href="mailto:support@isabievents.ng">
@@ -144,7 +144,8 @@ export default function HelpCenterPage() {
                   </Button>
                 </div>
                 <div className="pt-4 border-t border-primary/10 flex items-center justify-center gap-3 text-sm font-bold">
-                  <Phone className="w-4 h-4 text-primary" /> +234 902 424 4140
+                  <Phone className="w-4 h-4 text-primary" /> 
+                  <a href="tel:+2349024244140" className="hover:text-primary transition-colors">+234 902 424 4140</a>
                 </div>
               </CardContent>
             </Card>
