@@ -37,7 +37,7 @@ export function Footer() {
             <Link href="/" className="inline-block no-underline">
                <Logo size="sm" />
             </Link>
-            <p className="text-muted-foreground leading-relaxed max-w-[180px] md:max-w-xs font-medium text-left text-[10px] text-balance">
+            <p className="text-muted-foreground leading-relaxed max-w-[180px] md:max-w-xs font-medium text-left text-sm text-balance">
               Connecting people to unforgettable experiences across Nigeria.
             </p>
             {/* Social Icons */}
@@ -57,8 +57,8 @@ export function Footer() {
             </div>
           </div>
           <div className="text-left">
-            <h4 className="font-headline text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 mb-4">For Attendees</h4>
-            <ul className="space-y-2 text-xs font-bold">
+            <h4 className="font-headline text-xs font-black uppercase tracking-widest text-muted-foreground/50 mb-4">For Attendees</h4>
+            <ul className="space-y-2 text-sm font-bold">
               <li><Link href="/discover" className="text-foreground/70 hover:text-primary transition-colors no-underline">Find Events</Link></li>
               <li><Link href="/mobile" className="text-foreground/70 hover:text-primary transition-colors no-underline">Get the App</Link></li>
               <li><Link href="/help/tickets" className="text-foreground/70 hover:text-primary transition-colors no-underline">Ticket Support</Link></li>
@@ -66,8 +66,8 @@ export function Footer() {
             </ul>
           </div>
           <div className="text-left">
-            <h4 className="font-headline text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 mb-4">For Organizers</h4>
-            <ul className="space-y-2 text-xs font-bold">
+            <h4 className="font-headline text-xs font-black uppercase tracking-widest text-muted-foreground/50 mb-4">For Organizers</h4>
+            <ul className="space-y-2 text-sm font-bold">
               <li><Link href="/pricing" className="text-foreground/70 hover:text-primary transition-colors no-underline">Pricing</Link></li>
               <li><Link href="/host-event" className="text-foreground/70 hover:text-primary transition-colors no-underline">Host Event</Link></li>
               <li><Link href="/docs" className="text-foreground/70 hover:text-primary transition-colors no-underline">Developer API</Link></li>
@@ -75,8 +75,8 @@ export function Footer() {
             </ul>
           </div>
           <div className="text-left">
-            <h4 className="font-headline text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 mb-4">Legal & Support</h4>
-            <ul className="space-y-2 text-xs font-bold">
+            <h4 className="font-headline text-xs font-black uppercase tracking-widest text-muted-foreground/50 mb-4">Legal & Support</h4>
+            <ul className="space-y-2 text-sm font-bold">
               <li><Link href="/help" className="text-foreground/70 hover:text-primary transition-colors no-underline">Help Center</Link></li>
               <li><Link href="/help/refunds" className="text-foreground/70 hover:text-primary transition-colors no-underline">Refund Policy</Link></li>
               <li><Link href="/privacy" className="text-foreground/70 hover:text-primary transition-colors no-underline">Privacy Policy</Link></li>
@@ -95,12 +95,12 @@ export function Footer() {
                 <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 18.75c-3.728 0-6.75-3.022-6.75-6.75s3.022-6.75 6.75-6.75 6.75 3.022 6.75 6.75-3.022 6.75-6.75 6.75z"/>
                 <path d="M12 7.5c-2.485 0-4.5 2.015-4.5 4.5s2.015 4.5 4.5 4.5 4.5-2.015 4.5-4.5-2.015-4.5-4.5-4.5zm0 6.75c-1.243 0-2.25-1.007-2.25-2.25s1.007-2.25 2.25-2.25 2.25 1.007 2.25 2.25-1.007 2.25-2.25-2.25z"/>
               </svg>
-              <span className="text-[9px] font-black tracking-tighter uppercase text-foreground">Paystack</span>
+              <span className="text-[11px] font-black tracking-tighter uppercase text-foreground">Paystack</span>
             </div>
             {/* Flutterwave */}
             <div className="flex items-center gap-2 group cursor-default">
               <div className="w-5 h-5 bg-[#FB9129] rounded-full flex items-center justify-center text-[10px] font-black text-white italic shadow-sm">F</div>
-              <span className="text-[9px] font-black tracking-tighter uppercase text-foreground">Flutterwave</span>
+              <span className="text-[11px] font-black tracking-tighter uppercase text-foreground">Flutterwave</span>
             </div>
             {/* SolanaPay */}
             <div className="flex items-center gap-3 group cursor-default">
@@ -113,14 +113,14 @@ export function Footer() {
                 </div>
               </div>
               <div className="flex flex-col items-start leading-none">
-                <span className="text-[9px] font-black tracking-tighter uppercase text-foreground">SolanaPay</span>
-                <span className="text-[6px] font-black uppercase text-muted-foreground tracking-[0.1em]">USDC / USDT</span>
+                <span className="text-[11px] font-black tracking-tighter uppercase text-foreground">SolanaPay</span>
+                <span className="text-[7px] font-black uppercase text-muted-foreground tracking-[0.1em]">USDC / USDT</span>
               </div>
             </div>
           </div>
           
           {/* Responsive Copyright */}
-          <div className="text-center lg:text-right text-[10px] font-black uppercase tracking-widest text-muted-foreground/50 leading-relaxed text-balance max-w-xs md:max-w-none mx-auto lg:mx-0">
+          <div className="text-center lg:text-right text-xs font-black uppercase tracking-widest text-muted-foreground/50 leading-relaxed text-balance max-w-xs md:max-w-none mx-auto lg:mx-0">
             Copyright © 2026 · IsabiEvents Technology · All Rights Reserved
           </div>
         </div>
