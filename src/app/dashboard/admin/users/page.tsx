@@ -129,19 +129,19 @@ export default function AdminUserManagement() {
 
           <Card className="border-border bg-card">
             <CardContent className="p-0">
-              <div className="p-6 border-b border-border flex flex-col sm:flex-row gap-4 justify-between items-center">
-                <div className="relative flex-1 w-full">
+              <div className="p-4 md:p-6 border-b border-border flex flex-row gap-3 md:gap-4 justify-between items-center">
+                <div className="relative flex-1">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <Input 
                     placeholder="Search by name, email or ID..." 
-                    className="pl-9 h-11 bg-secondary/30 rounded-xl border-none" 
+                    className="pl-9 h-11 bg-secondary/30 rounded-xl border-none text-xs md:text-sm" 
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
                 <div className="flex items-center gap-2">
-                  <Button variant="outline" size="sm" className="rounded-xl h-11 px-4 gap-2 font-bold">
-                    <Filter className="w-4 h-4" /> Filter
+                  <Button variant="outline" size="sm" className="rounded-xl h-11 px-3 md:px-4 gap-2 font-bold">
+                    <Filter className="w-4 h-4" /> <span className="hidden sm:inline">Filter</span>
                   </Button>
                 </div>
               </div>
