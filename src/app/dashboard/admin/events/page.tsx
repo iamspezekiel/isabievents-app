@@ -20,7 +20,8 @@ import {
   MoreVertical,
   Calendar,
   MapPin,
-  ExternalLink
+  ExternalLink,
+  Loader2
 } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -33,11 +34,37 @@ import { usePathname } from 'next/navigation';
 import { MOCK_EVENTS } from '@/lib/mock-data';
 import { SidebarLink } from '../page';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AdminEventsManagement() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [events, setEvents] = useState(MOCK_EVENTS);
+  const [processingId, setProcessingId] = useState<string | null>(null);
   const pathname = usePathname();
+  const { toast } = useToast();
+
+  const handleAction = async (id: string, title: string, action: 'approve' | 'reject') => {
+    setProcessingId(id);
+    // Simulate network delay
+    await new Promise(r => setTimeout(r, 1000));
+    
+    setEvents(prev => prev.filter(e => e.id !== id));
+    setProcessingId(null);
+
+    if (action === 'approve') {
+      toast({
+        title: "Event Approved",
+        description: `"${title}" is now live on the marketplace.`,
+      });
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Event Rejected",
+        description: `"${title}" has been removed from the platform.`,
+      });
+    }
+  };
 
   const NavigationLinks = () => (
     <nav className="flex-1 space-y-1">
@@ -52,7 +79,7 @@ export default function AdminEventsManagement() {
     </nav>
   );
 
-  const filteredEvents = MOCK_EVENTS.filter(event => 
+  const filteredEvents = events.filter(event => 
     event.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
     event.organizer.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -134,7 +161,13 @@ export default function AdminEventsManagement() {
 
             <TabsContent value="pending" className="space-y-4">
               {pendingModeration.length > 0 ? pendingModeration.map((event) => (
-                <ModerationRow key={event.id} event={event} type="pending" />
+                <ModerationRow 
+                  key={event.id} 
+                  event={event} 
+                  type="pending" 
+                  onAction={handleAction}
+                  processingId={processingId}
+                />
               )) : (
                 <div className="bg-card border border-dashed border-border py-24 rounded-[3rem] text-center">
                   <CheckCircle2 className="w-16 h-16 text-muted-foreground/20 mx-auto mb-4" />
@@ -145,13 +178,25 @@ export default function AdminEventsManagement() {
 
             <TabsContent value="approved" className="space-y-4">
               {autoApproved.map((event) => (
-                <ModerationRow key={event.id} event={event} type="approved" />
+                <ModerationRow 
+                  key={event.id} 
+                  event={event} 
+                  type="approved" 
+                  onAction={handleAction}
+                  processingId={processingId}
+                />
               ))}
             </TabsContent>
 
             <TabsContent value="all" className="space-y-4">
               {filteredEvents.map((event) => (
-                <ModerationRow key={event.id} event={event} type="all" />
+                <ModerationRow 
+                  key={event.id} 
+                  event={event} 
+                  type="all" 
+                  onAction={handleAction}
+                  processingId={processingId}
+                />
               ))}
             </TabsContent>
           </Tabs>
@@ -161,8 +206,14 @@ export default function AdminEventsManagement() {
   );
 }
 
-function ModerationRow({ event, type }: { event: any, type: string }) {
+function ModerationRow({ event, type, onAction, processingId }: { 
+  event: any, 
+  type: string, 
+  onAction: (id: string, title: string, action: 'approve' | 'reject') => void,
+  processingId: string | null
+}) {
   const isVerified = event.organizer.verified;
+  const isProcessing = processingId === event.id;
 
   return (
     <div className="bg-card border border-border p-6 rounded-2xl flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 group hover:border-primary/30 transition-all shadow-sm">
@@ -193,12 +244,25 @@ function ModerationRow({ event, type }: { event: any, type: string }) {
       </div>
       
       <div className="flex items-center gap-3 w-full lg:w-auto pt-4 lg:pt-0 border-t lg:border-none border-border">
-        {type === 'pending' || !isVerified ? (
+        {(type === 'pending' || !isVerified) ? (
           <>
-            <Button variant="outline" size="sm" className="flex-1 lg:flex-none rounded-full gap-2 border-green-500/20 text-green-500 hover:bg-green-500/5 h-10 px-6 font-bold">
-              <UserCheck className="w-4 h-4" /> Approve
+            <Button 
+              variant="outline" 
+              size="sm" 
+              disabled={isProcessing}
+              onClick={() => onAction(event.id, event.title, 'approve')}
+              className="flex-1 lg:flex-none rounded-full gap-2 border-green-500/20 text-green-500 hover:bg-green-500/5 h-10 px-6 font-bold"
+            >
+              {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserCheck className="w-4 h-4" />} 
+              Approve
             </Button>
-            <Button variant="outline" size="sm" className="flex-1 lg:flex-none rounded-full gap-2 border-red-500/20 text-red-500 hover:bg-red-500/5 h-10 px-6 font-bold">
+            <Button 
+              variant="outline" 
+              size="sm" 
+              disabled={isProcessing}
+              onClick={() => onAction(event.id, event.title, 'reject')}
+              className="flex-1 lg:flex-none rounded-full gap-2 border-red-500/20 text-red-500 hover:bg-red-500/5 h-10 px-6 font-bold"
+            >
               <Ban className="w-4 h-4" /> Reject
             </Button>
           </>
