@@ -107,11 +107,11 @@ export default function AttendeeDashboard() {
             </div>
           </header>
 
-          {/* Stats Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
-            <StatBox label="Active Tickets" value={MOCK_USER.wallet.active} color="primary" icon={Ticket} />
+          {/* Stats Grid - One line on mobile */}
+          <div className="grid grid-cols-3 gap-2 md:gap-6">
+            <StatBox label="Active" value={MOCK_USER.wallet.active} color="primary" icon={Ticket} />
             <StatBox label="Used" value={MOCK_USER.wallet.used} color="accent" icon={History} />
-            <StatBox label="Favorites" value={5} color="white" icon={Heart} />
+            <StatBox label="Saved" value={5} color="white" icon={Heart} />
           </div>
 
           {/* Events Tabs */}
@@ -161,14 +161,14 @@ function StatBox({ label, value, color, icon: Icon }: any) {
   const bgClass = color === 'primary' ? 'bg-primary/10' : color === 'accent' ? 'bg-accent/10' : 'bg-secondary';
   
   return (
-    <Card className="bg-card border-border overflow-hidden rounded-[2.5rem] shadow-sm hover:border-primary/30 transition-all group">
-      <CardContent className="p-8 flex items-center gap-6">
-        <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center transition-colors group-hover:scale-110 duration-500", bgClass)}>
-          <Icon className={cn("w-7 h-7", colorClass)} />
+    <Card className="bg-card border-border overflow-hidden rounded-[1.25rem] md:rounded-[2.5rem] shadow-sm hover:border-primary/30 transition-all group">
+      <CardContent className="p-3 md:p-8 flex flex-col sm:flex-row items-center justify-center sm:justify-start gap-2 md:gap-6">
+        <div className={cn("w-10 h-10 md:w-14 md:h-14 rounded-xl md:rounded-2xl flex items-center justify-center transition-colors group-hover:scale-110 duration-500", bgClass)}>
+          <Icon className={cn("w-5 h-5 md:w-7 md:h-7", colorClass)} />
         </div>
-        <div className="text-left space-y-0.5">
-          <div className={cn("text-3xl md:text-4xl font-headline font-black leading-none", colorClass)}>{value}</div>
-          <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mt-2 block">{label}</span>
+        <div className="text-center sm:text-left space-y-0.5">
+          <div className={cn("text-xl md:text-4xl font-headline font-black leading-none", colorClass)}>{value}</div>
+          <span className="text-[8px] md:text-[10px] text-muted-foreground uppercase font-black tracking-widest mt-1 md:mt-2 block">{label}</span>
         </div>
       </CardContent>
     </Card>
