@@ -57,8 +57,8 @@ export function Footer() {
             </div>
           </div>
           <div className="text-left">
-            <h4 className="font-headline text-xs font-black uppercase tracking-widest text-muted-foreground/50 mb-4">For Attendees</h4>
-            <ul className="space-y-2 text-sm font-bold">
+            <h4 className="font-headline text-sm font-black uppercase tracking-widest text-muted-foreground/50 mb-4">For Attendees</h4>
+            <ul className="space-y-2 text-base font-bold">
               <li><Link href="/discover" className="text-foreground/70 hover:text-primary transition-colors no-underline">Find Events</Link></li>
               <li><Link href="/mobile" className="text-foreground/70 hover:text-primary transition-colors no-underline">Get the App</Link></li>
               <li><Link href="/help/tickets" className="text-foreground/70 hover:text-primary transition-colors no-underline">Ticket Support</Link></li>
@@ -66,8 +66,8 @@ export function Footer() {
             </ul>
           </div>
           <div className="text-left">
-            <h4 className="font-headline text-xs font-black uppercase tracking-widest text-muted-foreground/50 mb-4">For Organizers</h4>
-            <ul className="space-y-2 text-sm font-bold">
+            <h4 className="font-headline text-sm font-black uppercase tracking-widest text-muted-foreground/50 mb-4">For Organizers</h4>
+            <ul className="space-y-2 text-base font-bold">
               <li><Link href="/pricing" className="text-foreground/70 hover:text-primary transition-colors no-underline">Pricing</Link></li>
               <li><Link href="/host-event" className="text-foreground/70 hover:text-primary transition-colors no-underline">Host Event</Link></li>
               <li><Link href="/docs" className="text-foreground/70 hover:text-primary transition-colors no-underline">Developer API</Link></li>
@@ -75,8 +75,8 @@ export function Footer() {
             </ul>
           </div>
           <div className="text-left">
-            <h4 className="font-headline text-xs font-black uppercase tracking-widest text-muted-foreground/50 mb-4">Legal & Support</h4>
-            <ul className="space-y-2 text-sm font-bold">
+            <h4 className="font-headline text-sm font-black uppercase tracking-widest text-muted-foreground/50 mb-4">Legal & Support</h4>
+            <ul className="space-y-2 text-base font-bold">
               <li><Link href="/help" className="text-foreground/70 hover:text-primary transition-colors no-underline">Help Center</Link></li>
               <li><Link href="/help/refunds" className="text-foreground/70 hover:text-primary transition-colors no-underline">Refund Policy</Link></li>
               <li><Link href="/privacy" className="text-foreground/70 hover:text-primary transition-colors no-underline">Privacy Policy</Link></li>
