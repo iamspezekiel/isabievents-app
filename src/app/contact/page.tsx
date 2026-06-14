@@ -148,7 +148,7 @@ export default function ContactPage() {
         </div>
       </main>
 
-      <section className="bg-primary/5 py-24 border-y border-border">
+      <section className="bg-primary/5 py-12 border-y border-border">
         <div className="container mx-auto px-4 text-center space-y-8">
            <h2 className="font-headline tracking-tighter">Frequently Asked Questions</h2>
            <p className="text-muted-foreground max-w-xl mx-auto">Check our comprehensive knowledge base for quick solutions to common issues.</p>
