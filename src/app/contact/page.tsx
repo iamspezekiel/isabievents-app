@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import Link from 'next/link';
 
@@ -87,14 +88,25 @@ export default function ContactPage() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="subject">Reason for Contact</Label>
-                      <Input id="subject" placeholder="e.g. Refund request, Hosting inquiry" required className="h-11 bg-secondary/30 border-none" />
+                      <Select required>
+                        <SelectTrigger className="h-11 bg-secondary/30 border-none">
+                          <SelectValue placeholder="Select a reason" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="payouts">Payouts & Settlements</SelectItem>
+                          <SelectItem value="ticketing">Ticket Issues</SelectItem>
+                          <SelectItem value="verification">Organizer Verification</SelectItem>
+                          <SelectItem value="technical">Technical Support</SelectItem>
+                          <SelectItem value="other">Other Inquiries</SelectItem>
+                        </SelectContent>
+                      </Select>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="message">Message</Label>
                       <Textarea id="message" placeholder="Tell us how we can help..." className="min-h-[150px] bg-secondary/30 border-none" required />
                     </div>
                     <Button type="submit" disabled={loading} className="w-full h-12 rounded-xl font-bold shadow-xl shadow-primary/20 gap-2">
-                      {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
+                      {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-5 h-5" />}
                       Send Message
                     </Button>
                   </form>
