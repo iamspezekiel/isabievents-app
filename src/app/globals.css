@@ -84,3 +84,53 @@
     @apply text-xl md:text-2xl tracking-tight leading-snug font-bold;
   }
 }
+
+@media print {
+  /* Hide all UI elements */
+  nav, footer, header, aside, .no-print, button, [role="button"], [class*="DialogOverlay"] {
+    display: none !important;
+  }
+
+  /* Reset layout */
+  main, body, html {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Hide the main dashboard container when printing the modal */
+  .min-h-screen.flex-col {
+    display: none !important;
+  }
+
+  /* Ensure the ticket modal is the only thing shown and fills the page */
+  div[role="dialog"] {
+    display: block !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: auto !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: white !important;
+    transform: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Hide buttons inside the ticket modal */
+  div[role="dialog"] button, 
+  div[role="dialog"] .flex-col.gap-3 {
+    display: none !important;
+  }
+
+  /* Forces background colors and images to print */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+}

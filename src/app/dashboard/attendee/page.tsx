@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect } from 'react';
@@ -159,6 +158,15 @@ export default function AttendeeDashboard() {
     setIsViewOpen(true);
   };
 
+  const handleDownloadTicket = (event: any) => {
+    setViewTicket(event);
+    setIsViewOpen(true);
+    // Delay print to allow modal to mount and apply targeted print styles
+    setTimeout(() => {
+      window.print();
+    }, 400);
+  };
+
   const Navigation = () => (
     <nav className="flex-1 space-y-1">
       <div className="pb-4">
@@ -173,7 +181,7 @@ export default function AttendeeDashboard() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col lg:flex-row pt-40">
-      <aside className="hidden lg:flex w-72 bg-card/30 border-r border-border p-8 flex-col sticky top-0 h-screen overflow-y-auto">
+      <aside className="hidden lg:flex w-72 bg-card/30 border-r border-border p-8 flex-col sticky top-0 h-screen overflow-y-auto no-print">
         <Link href="/dashboard/attendee" className="mb-12 block no-underline">
           <Logo size="sm" />
         </Link>
@@ -183,7 +191,7 @@ export default function AttendeeDashboard() {
         </div>
       </aside>
 
-      <header className="lg:hidden flex items-center justify-between p-4 bg-card border-b border-border sticky top-0 z-40">
+      <header className="lg:hidden flex items-center justify-between p-4 bg-card border-b border-border sticky top-0 z-40 no-print">
         <Link href="/dashboard/attendee" className="no-underline">
           <Logo size="sm" />
         </Link>
@@ -215,7 +223,7 @@ export default function AttendeeDashboard() {
         </div>
       </header>
 
-      <main className="flex-1 p-4 md:p-8 lg:p-12 overflow-x-hidden">
+      <main className="flex-1 p-4 md:p-8 lg:p-12 overflow-x-hidden no-print">
         <div className="max-w-5xl mx-auto space-y-8 md:space-y-12">
           {showOfflineBanner && (
             <div className={cn(
@@ -279,7 +287,15 @@ export default function AttendeeDashboard() {
 
             <TabsContent value="upcoming" className="space-y-6">
               {MOCK_EVENTS.slice(0, 3).map((event) => (
-                <TicketCard key={event.id} event={event} mounted={mounted} offline={isOfflineReady} onTransfer={() => openTransfer(event)} onView={() => openView(event)} />
+                <TicketCard 
+                  key={event.id} 
+                  event={event} 
+                  mounted={mounted} 
+                  offline={isOfflineReady} 
+                  onTransfer={() => openTransfer(event)} 
+                  onView={() => openView(event)}
+                  onDownload={() => handleDownloadTicket(event)}
+                />
               ))}
             </TabsContent>
 
@@ -386,7 +402,7 @@ export default function AttendeeDashboard() {
           <div className="bg-primary p-8 text-center space-y-2 relative">
             <button 
               onClick={() => setIsViewOpen(false)}
-              className="absolute top-4 right-4 p-2 hover:bg-white/10 rounded-full text-white transition-colors"
+              className="absolute top-4 right-4 p-2 hover:bg-white/10 rounded-full text-white transition-colors no-print"
             >
               <X className="w-5 h-5" />
             </button>
@@ -418,7 +434,7 @@ export default function AttendeeDashboard() {
               </div>
             </div>
             
-            <div className="flex flex-col gap-3">
+            <div className="flex flex-col gap-3 no-print">
               <Button onClick={() => window.print()} className="w-full rounded-full gap-2 h-11 font-bold shadow-xl shadow-primary/20">
                 <Download className="w-4 h-4" /> Save Ticket PDF
               </Button>
@@ -460,7 +476,7 @@ function StatBox({ label, value, color, icon: Icon, className }: any) {
   );
 }
 
-function TicketCard({ event, mounted, offline, onTransfer, onView }: any) {
+function TicketCard({ event, mounted, offline, onTransfer, onView, onDownload }: any) {
   return (
     <div className="group relative bg-card border border-border rounded-[2.5rem] overflow-hidden hover:border-primary/50 transition-all duration-500 flex flex-col md:flex-row hover:shadow-[0_32px_64px_-16px_rgba(126,124,255,0.1)] shadow-sm">
       <div className="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-1/2 w-6 h-6 md:w-10 md:h-10 bg-background border border-border rounded-full z-10 hidden md:block" />
@@ -536,7 +552,7 @@ function TicketCard({ event, mounted, offline, onTransfer, onView }: any) {
               size="icon" 
               className="w-11 h-11 rounded-full" 
               title="Download"
-              onClick={() => window.print()}
+              onClick={onDownload}
             >
               <Download className="w-4 h-4" />
             </Button>
