@@ -48,7 +48,7 @@ export default function ContactPage() {
       <main className="container mx-auto px-4 py-16">
         <div className="grid lg:grid-cols-3 gap-16 max-w-6xl mx-auto">
           <div className="lg:col-span-1 space-y-12 text-left">
-            <div className="space-y-8">
+            <div className="space-y-6">
               <ContactInfo 
                 icon={Mail} 
                 title="Email Us" 
@@ -165,14 +165,14 @@ export default function ContactPage() {
 
 function ContactInfo({ icon: Icon, title, value, desc }: any) {
   return (
-    <div className="flex items-start gap-5 text-left group">
-      <div className="w-14 h-14 rounded-2xl bg-secondary flex items-center justify-center shrink-0 group-hover:bg-primary/10 transition-colors shadow-sm">
-        <Icon className="w-7 h-7 text-primary" />
+    <div className="flex items-start gap-4 text-left group">
+      <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center shrink-0 group-hover:bg-primary/10 transition-colors shadow-sm">
+        <Icon className="w-5 h-5 text-primary" />
       </div>
-      <div className="space-y-1">
+      <div className="space-y-0.5">
         <h4 className="font-bold text-xs text-muted-foreground uppercase tracking-widest">{title}</h4>
-        <p className="font-black text-xl tracking-tight">{value}</p>
-        <p className="text-xs text-muted-foreground leading-relaxed font-medium">{desc}</p>
+        <p className="font-black text-lg tracking-tight">{value}</p>
+        <p className="text-[11px] text-muted-foreground leading-relaxed font-medium">{desc}</p>
       </div>
     </div>
   );
