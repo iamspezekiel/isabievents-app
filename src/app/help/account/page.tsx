@@ -28,6 +28,7 @@ export default function AccountSupportPage() {
             s.onload = function () { if (typeof WhWidgetSendButton !== 'undefined') WhWidgetSendButton.init(host, proto, options); };
             var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);
           })();
+          void 0;
         `}
       </Script>
       <Script id="tawk-account" strategy="lazyOnload">
@@ -41,6 +42,7 @@ export default function AccountSupportPage() {
           s1.setAttribute('crossorigin','*');
           s0.parentNode.insertBefore(s1,s0);
           })();
+          void 0;
         `}
       </Script>
 

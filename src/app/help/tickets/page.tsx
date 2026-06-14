@@ -28,6 +28,7 @@ export default function TicketSupportPage() {
             s.onload = function () { if (typeof WhWidgetSendButton !== 'undefined') WhWidgetSendButton.init(host, proto, options); };
             var x = document.getElementsByTagName('script')[0]; x.parentNode.insertBefore(s, x);
           })();
+          void 0;
         `}
       </Script>
       <Script id="tawk-tickets" strategy="lazyOnload">
@@ -41,6 +42,7 @@ export default function TicketSupportPage() {
           s1.setAttribute('crossorigin','*');
           s0.parentNode.insertBefore(s1,s0);
           })();
+          void 0;
         `}
       </Script>
 
@@ -50,7 +52,7 @@ export default function TicketSupportPage() {
             <ArrowLeft className="w-4 h-4" /> Back to Help Center
           </Link>
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="space-y-2">
+            <div className="space-y-2 text-left">
               <h1 className="font-headline text-2xl md:text-3xl text-balance">Ticket Support</h1>
               <p className="text-muted-foreground">Everything you need to know about your digital tickets.</p>
             </div>
