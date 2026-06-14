@@ -29,6 +29,7 @@ import { Logo } from '@/components/logo';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 export default function AttendeeDashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -108,9 +109,9 @@ export default function AttendeeDashboard() {
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6">
-            <StatBox label="Active Tickets" value={MOCK_USER.wallet.active} color="primary" />
-            <StatBox label="Used" value={MOCK_USER.wallet.used} color="accent" />
-            <StatBox label="Favorites" value={5} color="white" />
+            <StatBox label="Active Tickets" value={MOCK_USER.wallet.active} color="primary" icon={Ticket} />
+            <StatBox label="Used" value={MOCK_USER.wallet.used} color="accent" icon={History} />
+            <StatBox label="Favorites" value={5} color="white" icon={Heart} />
           </div>
 
           {/* Events Tabs */}
@@ -155,13 +156,20 @@ export function SidebarLink({ icon: Icon, label, active, href = "#" }: any) {
   );
 }
 
-function StatBox({ label, value, color }: any) {
+function StatBox({ label, value, color, icon: Icon }: any) {
   const colorClass = color === 'primary' ? 'text-primary' : color === 'accent' ? 'text-accent' : 'text-foreground';
+  const bgClass = color === 'primary' ? 'bg-primary/10' : color === 'accent' ? 'bg-accent/10' : 'bg-secondary';
+  
   return (
-    <Card className="bg-card border-border overflow-hidden rounded-[2rem] shadow-sm">
-      <CardContent className="p-8">
-        <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">{label}</span>
-        <div className={`text-4xl md:text-5xl font-headline mt-3 ${colorClass}`}>{value}</div>
+    <Card className="bg-card border-border overflow-hidden rounded-[2.5rem] shadow-sm hover:border-primary/30 transition-all group">
+      <CardContent className="p-8 flex items-center gap-6">
+        <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center transition-colors group-hover:scale-110 duration-500", bgClass)}>
+          <Icon className={cn("w-7 h-7", colorClass)} />
+        </div>
+        <div className="text-left space-y-0.5">
+          <div className={cn("text-3xl md:text-4xl font-headline font-black leading-none", colorClass)}>{value}</div>
+          <span className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mt-2 block">{label}</span>
+        </div>
       </CardContent>
     </Card>
   );
