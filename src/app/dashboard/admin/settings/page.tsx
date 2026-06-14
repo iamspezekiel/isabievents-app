@@ -130,11 +130,6 @@ export default function AdminSystemSettings() {
                     <Input defaultValue="2.5" className="h-11 bg-secondary/30 border-none rounded-xl" />
                     <p className="text-[10px] text-muted-foreground">Commission percentage taken from every paid ticket sold.</p>
                   </div>
-                  <div className="space-y-2">
-                    <Label>Minimum Processing Fee (₦)</Label>
-                    <Input defaultValue="50" className="h-11 bg-secondary/30 border-none rounded-xl" />
-                    <p className="text-[10px] text-muted-foreground">The base transaction floor. Ensures fixed payment gateway costs are always covered.</p>
-                  </div>
                 </div>
               </CardContent>
             </Card>
