@@ -145,7 +145,7 @@ export default function OrganizerDashboard() {
             <div className="text-left space-y-2">
               <h1 className="font-headline text-3xl md:text-5xl flex items-center gap-3">
                 Smooth Events
-                <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8 text-accent fill-accent text-white" summer-hint="verified-badge" />
+                <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8 text-accent fill-accent text-white" data-ai-hint="verified badge" />
               </h1>
             </div>
             <div className="flex items-center gap-3">
@@ -212,8 +212,8 @@ export default function OrganizerDashboard() {
           <div className="space-y-6">
              <h2 className="font-headline text-xl text-left">Active Events</h2>
              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
-               <EventStatusCard title="Lagos Jazz Night" sold={420} total={500} revenue={2100000} />
-               <EventStatusCard title="Naija Tech Summit" sold={62} total={1200} revenue={930000} />
+               <EventStatusCard id="e1" title="Lagos Jazz Night" sold={420} total={500} revenue={2100000} />
+               <EventStatusCard id="e2" title="Naija Tech Summit" sold={62} total={1200} revenue={930000} />
              </div>
           </div>
         </div>
@@ -268,14 +268,16 @@ function PayoutItem({ date, amount, status }: any) {
   );
 }
 
-function EventStatusCard({ title, sold, total, revenue }: any) {
+function EventStatusCard({ id, title, sold, total, revenue }: any) {
   const percent = Math.floor((sold / total) * 100);
   return (
     <Card className="bg-card border-border shadow-sm overflow-hidden">
       <CardContent className="p-6 space-y-4">
         <div className="flex justify-between items-start">
           <h3 className="font-bold text-lg">{title}</h3>
-          <Button variant="ghost" size="sm" className="font-bold h-9">Edit</Button>
+          <Link href={`/dashboard/organizer/create?id=${id}`} className="no-underline">
+            <Button variant="ghost" size="sm" className="font-bold h-9">Edit</Button>
+          </Link>
         </div>
         <div className="space-y-2">
           <div className="flex justify-between text-[10px] font-black uppercase tracking-wider">

@@ -35,9 +35,11 @@ export default function MyEventsPage() {
     <div className="min-h-screen bg-background flex flex-col md:flex-row pt-32">
       {/* Desktop Side Navigation */}
       <aside className="w-64 bg-sidebar border-r border-sidebar-border p-6 flex flex-col hidden md:flex sticky top-0 h-screen overflow-y-auto">
-        <Link href="/dashboard/organizer" className="mb-10 block no-underline">
-          <Logo size="sm" />
-        </Link>
+        <div className="mb-10">
+          <Link href="/dashboard/organizer" className="no-underline">
+            <Logo size="sm" />
+          </Link>
+        </div>
         <NavigationLinks />
         <div className="pt-6 border-t border-sidebar-border mt-auto">
           <SidebarLink icon={LogOut} label="Log Out" href="/login" />
@@ -127,7 +129,9 @@ export default function MyEventsPage() {
                         </div>
                       </div>
                       <div className="ml-auto flex gap-2">
-                        <Button variant="outline" size="sm" className="rounded-full h-9">Edit</Button>
+                        <Link href={`/dashboard/organizer/create?id=${event.id}`} className="no-underline">
+                          <Button variant="outline" size="sm" className="rounded-full h-9">Edit</Button>
+                        </Link>
                         <Link href={`/events/${event.slug}`} className="no-underline">
                            <Button size="sm" variant="ghost" className="rounded-full gap-1 h-9">View <ExternalLink className="w-3.5 h-3.5" /></Button>
                         </Link>
