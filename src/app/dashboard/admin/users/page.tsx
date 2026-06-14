@@ -18,14 +18,19 @@ import {
   Filter,
   BadgeCheck,
   Ban,
-  Clock
+  Clock,
+  Loader2,
+  CheckCircle2,
+  User
 } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Logo } from '@/components/logo';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { MOCK_USERS } from '@/lib/mock-data';
@@ -44,11 +49,20 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useToast } from "@/hooks/use-toast";
 
 export default function AdminUserManagement() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const pathname = usePathname();
+  const { toast } = useToast();
+
+  const [newAdmin, setNewAdmin] = useState({
+    name: '',
+    email: '',
+  });
 
   const NavigationLinks = () => (
     <nav className="flex-1 space-y-1">
@@ -67,6 +81,29 @@ export default function AdminUserManagement() {
     user.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
     user.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleAddAdmin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newAdmin.name || !newAdmin.email) {
+      toast({
+        variant: "destructive",
+        title: "Missing fields",
+        description: "Please provide both a name and an email address."
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    await new Promise(r => setTimeout(r, 1500));
+    setIsSubmitting(false);
+    setIsAddDialogOpen(false);
+    setNewAdmin({ name: '', email: '' });
+
+    toast({
+      title: "Admin Invited",
+      description: `An invitation has been sent to ${newAdmin.email}.`
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background flex flex-col md:flex-row pt-40">
@@ -121,9 +158,58 @@ export default function AdminUserManagement() {
               <p className="text-muted-foreground font-medium">Manage all platform participants and their permission levels.</p>
             </div>
             <div className="flex items-center gap-3">
-              <Button className="rounded-full shadow-lg shadow-primary/20 h-11 font-bold gap-2">
-                <UserPlus className="w-4 h-4" /> Add Admin
-              </Button>
+              <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button className="rounded-full shadow-lg shadow-primary/20 h-11 font-bold gap-2">
+                    <UserPlus className="w-4 h-4" /> Add Admin
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-card border-border sm:rounded-[2rem] max-w-md w-[94vw] sm:w-full">
+                  <DialogHeader className="text-left">
+                    <DialogTitle className="font-headline text-2xl flex items-center gap-2">
+                      <ShieldCheck className="w-6 h-6 text-primary" /> Invite New Admin
+                    </DialogTitle>
+                    <DialogDescription>
+                      Assign administrative privileges to a new team member. They will have full access to the Master Console.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <form onSubmit={handleAddAdmin} className="space-y-6 py-6 text-left">
+                    <div className="space-y-2">
+                      <Label htmlFor="admin-name" className="text-xs font-black uppercase tracking-widest text-muted-foreground">Full Name</Label>
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input 
+                          id="admin-name" 
+                          placeholder="e.g. Sylvanus Ezekiel" 
+                          value={newAdmin.name}
+                          onChange={(e) => setNewAdmin({...newAdmin, name: e.target.value})}
+                          className="pl-10 h-12 bg-secondary/20 border-border focus-visible:ring-primary rounded-xl"
+                        />
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="admin-email" className="text-xs font-black uppercase tracking-widest text-muted-foreground">Email Address</Label>
+                      <div className="relative">
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <Input 
+                          id="admin-email" 
+                          type="email"
+                          placeholder="admin@isabievents.ng" 
+                          value={newAdmin.email}
+                          onChange={(e) => setNewAdmin({...newAdmin, email: e.target.value})}
+                          className="pl-10 h-12 bg-secondary/20 border-border focus-visible:ring-primary rounded-xl"
+                        />
+                      </div>
+                    </div>
+                    <DialogFooter className="gap-3 sm:gap-0">
+                      <Button type="button" variant="ghost" onClick={() => setIsAddDialogOpen(false)} className="rounded-full font-bold h-11">Cancel</Button>
+                      <Button type="submit" disabled={isSubmitting} className="rounded-full px-10 font-bold shadow-xl shadow-primary/20 h-11 flex-1 sm:flex-none">
+                        {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Send Invite"}
+                      </Button>
+                    </DialogFooter>
+                  </form>
+                </DialogContent>
+              </Dialog>
             </div>
           </header>
 
