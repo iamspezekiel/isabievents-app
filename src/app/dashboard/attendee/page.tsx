@@ -333,7 +333,7 @@ export default function AttendeeDashboard() {
 
       {/* Transfer Ticket Dialog */}
       <Dialog open={isTransferOpen} onOpenChange={setIsTransferOpen}>
-        <DialogContent className="bg-card border-border sm:rounded-[2.5rem] p-8 max-w-md">
+        <DialogContent className="bg-card border-border sm:rounded-[2.5rem] p-8 max-w-md w-[94vw] sm:w-full">
           <DialogHeader className="text-left">
             <DialogTitle className="font-headline text-2xl flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
@@ -376,7 +376,7 @@ export default function AttendeeDashboard() {
 
       {/* View Ticket Dialog */}
       <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
-        <DialogContent className="bg-card border-border sm:rounded-[2.5rem] p-0 overflow-hidden max-w-md">
+        <DialogContent className="bg-card border-border sm:rounded-[2.5rem] p-0 overflow-hidden max-w-md w-[94vw] sm:w-full">
           <DialogHeader className="sr-only">
             <DialogTitle>View Entry Ticket</DialogTitle>
             <DialogDescription>
