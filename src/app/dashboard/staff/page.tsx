@@ -1,7 +1,7 @@
-"use client";
+["use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Scan, Search, CheckCircle, AlertCircle, RefreshCcw, History, Users, X, ArrowLeft, User, Ticket, Activity, Camera, CameraOff, Bell, FileText } from 'lucide-react';
+import { Scan, Search, CheckCircle, AlertCircle, RefreshCcw, History, Users, X, ArrowLeft, User, Ticket, Activity, Camera, CameraOff, Bell, FileText, CheckCircle2, AlertTriangle, Sparkles } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -205,9 +205,9 @@ export default function StaffCheckIn() {
           <Card className="m-4 border-border bg-card overflow-hidden rounded-[2.5rem] shadow-2xl relative">
             <CardContent className="p-0">
               <div className={cn(
-                "aspect-square relative flex flex-col items-center justify-center transition-colors duration-700",
-                scanState === 'success' ? 'bg-green-500/10' : 
-                scanState === 'error' ? 'bg-red-500/10' : 
+                "aspect-square relative flex flex-col items-center justify-center transition-all duration-1000",
+                scanState === 'success' ? 'bg-gradient-to-br from-green-500/20 via-green-500/5 to-background' : 
+                scanState === 'error' ? 'bg-gradient-to-br from-red-500/20 via-red-500/5 to-background' : 
                 'bg-black/95'
               )}>
                 
@@ -217,7 +217,7 @@ export default function StaffCheckIn() {
 
                 {scanState === 'idle' && !isCameraActive && (
                   <div className="z-10 text-center space-y-6 p-8">
-                    <div className="w-24 h-24 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-primary/20">
+                    <div className="w-24 h-24 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-primary/20 animate-in fade-in zoom-in duration-500">
                       <Scan className="w-12 h-12 text-primary" />
                     </div>
                     <div className="space-y-1">
@@ -269,34 +269,82 @@ export default function StaffCheckIn() {
                 )}
 
                 {scanState === 'success' && (
-                  <div className="text-center space-y-6 animate-in zoom-in-95 duration-500 p-8">
-                    <div className="w-28 h-28 bg-green-500/20 rounded-full flex items-center justify-center mx-auto border-4 border-green-500/50">
-                      <CheckCircle className="w-16 h-16 text-green-500" />
-                    </div>
-                    <div className="space-y-2">
-                      <h2 className="font-headline text-4xl text-green-500 tracking-tighter uppercase italic">Access Granted</h2>
-                      <div className="bg-background/80 backdrop-blur-sm border border-border p-4 rounded-2xl inline-block min-w-[240px]">
-                        <p className="text-lg font-black">{history[0]?.name}</p>
-                        <p className="text-xs text-muted-foreground uppercase tracking-widest font-bold">{history[0]?.type}</p>
+                  <div className="text-center space-y-8 animate-in zoom-in-95 duration-500 p-8 w-full max-w-sm">
+                    <div className="relative mx-auto w-24 h-24">
+                      <div className="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-20" />
+                      <div className="relative w-full h-full bg-green-500 rounded-full flex items-center justify-center border-4 border-white dark:border-background shadow-xl">
+                        <CheckCircle2 className="w-12 h-12 text-white" />
                       </div>
                     </div>
-                    <Button onClick={startScanner} className="mt-4 rounded-full px-10 h-12 font-bold">
-                      Scan Next
+                    
+                    <div className="space-y-6">
+                      <div className="space-y-1">
+                        <h2 className="font-headline text-4xl text-green-500 tracking-tighter uppercase italic leading-none">Access Granted</h2>
+                        <p className="text-[10px] font-black tracking-[0.3em] text-green-600/60 uppercase">Doing Well!</p>
+                      </div>
+                      
+                      <div className="bg-card/40 backdrop-blur-md border border-green-500/20 p-6 rounded-[2rem] shadow-2xl relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-4 opacity-10">
+                          <Sparkles className="w-12 h-12 text-green-500" />
+                        </div>
+                        <div className="relative z-10 text-left space-y-4">
+                          <div className="space-y-1">
+                            <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Attendee Name</p>
+                            <p className="text-2xl font-black leading-none truncate">{history[0]?.name}</p>
+                          </div>
+                          <div className="flex items-center justify-between gap-4 pt-4 border-t border-border/50">
+                            <div className="space-y-0.5">
+                              <p className="text-[9px] font-black uppercase text-muted-foreground tracking-widest">Ticket Type</p>
+                              <Badge className="bg-green-500/10 text-green-600 border-none px-2 h-5 text-[9px] font-black uppercase tracking-tighter">
+                                {history[0]?.type}
+                              </Badge>
+                            </div>
+                            <div className="text-right space-y-0.5">
+                              <p className="text-[9px] font-black uppercase text-muted-foreground tracking-widest">Ticket ID</p>
+                              <p className="font-mono text-[10px] font-bold opacity-60 uppercase">{history[0]?.id}</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <Button 
+                      onClick={startScanner} 
+                      className="w-full rounded-full h-14 text-lg font-black bg-green-500 hover:bg-green-600 shadow-xl shadow-green-500/20 gap-3"
+                    >
+                      <Scan className="w-5 h-5" /> Scan Next
                     </Button>
                   </div>
                 )}
 
                 {scanState === 'error' && (
-                  <div className="text-center space-y-6 animate-in zoom-in-95 duration-500 p-8">
-                    <div className="w-28 h-28 bg-red-500/20 rounded-full flex items-center justify-center mx-auto border-4 border-green-500/50">
-                      <AlertCircle className="w-16 h-16 text-red-500" />
+                  <div className="text-center space-y-8 animate-in zoom-in-95 duration-500 p-8 w-full max-w-sm">
+                    <div className="relative mx-auto w-24 h-24">
+                      <div className="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-20" />
+                      <div className="relative w-full h-full bg-red-500 rounded-full flex items-center justify-center border-4 border-white dark:border-background shadow-xl">
+                        <AlertTriangle className="w-12 h-12 text-white" />
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <h2 className="font-headline text-4xl text-red-500 tracking-tighter uppercase italic">Access Denied</h2>
-                      <p className="text-muted-foreground font-medium leading-relaxed">Invalid or duplicate ticket ID.</p>
+                    
+                    <div className="space-y-6">
+                      <div className="space-y-1">
+                        <h2 className="font-headline text-4xl text-red-500 tracking-tighter uppercase italic leading-none">Access Denied</h2>
+                        <p className="text-[10px] font-black tracking-[0.3em] text-red-600/60 uppercase">Verification Failed</p>
+                      </div>
+                      
+                      <div className="bg-card/40 backdrop-blur-md border border-red-500/20 p-8 rounded-[2rem] shadow-2xl">
+                        <p className="text-sm font-medium text-muted-foreground leading-relaxed">
+                          This code does not match any valid records or has already been scanned.
+                        </p>
+                      </div>
                     </div>
-                    <Button onClick={startScanner} variant="outline" className="mt-4 rounded-full px-10 h-12 font-bold border-red-500/50 text-red-500 hover:bg-red-500/5">
-                      Try Again
+
+                    <Button 
+                      onClick={startScanner} 
+                      variant="outline"
+                      className="w-full rounded-full h-14 text-lg font-black border-red-500/50 text-red-500 hover:bg-red-500/5 gap-3"
+                    >
+                      <RefreshCcw className="w-5 h-5" /> Try Again
                     </Button>
                   </div>
                 )}
