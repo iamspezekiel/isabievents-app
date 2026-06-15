@@ -295,7 +295,10 @@ export default function AttendeeDashboard() {
               </div>
 
               <div className="space-y-1 text-left">
-                <h3 className="font-headline text-lg text-primary">{viewTicket?.title}</h3>
+                <div className="flex items-center justify-between">
+                  <h3 className="font-headline text-lg text-primary">{viewTicket?.title}</h3>
+                  <Badge variant="outline" className="text-[8px] font-black uppercase border-primary/20 text-primary">Standard Pass</Badge>
+                </div>
                 <div className="flex flex-col gap-1 mt-2">
                   <p className="text-muted-foreground text-xs flex items-center gap-1.5 font-medium">
                     <Calendar className="w-3 h-3 text-primary" /> 
