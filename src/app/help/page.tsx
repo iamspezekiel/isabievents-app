@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -110,8 +109,8 @@ export default function HelpCenterPage() {
                 {[1, 2, 3].map(i => (
                   <Link key={i} href="#" className="flex items-center justify-between p-4 bg-card border border-border rounded-xl transition-all group no-underline hover:border-primary/30">
                     <div className="space-y-0.5">
-                      <h4 className="font-bold text-sm">Protecting your account from ticket scams</h4>
-                      <p className="text-xs text-muted-foreground">Safety tips for buying and selling tickets safely.</p>
+                      <h4 className="font-bold text-[13px]">Protecting your account from ticket scams</h4>
+                      <p className="text-[11px] text-muted-foreground">Safety tips for buying and selling tickets safely.</p>
                     </div>
                     <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                   </Link>
