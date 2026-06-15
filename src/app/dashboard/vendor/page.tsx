@@ -177,7 +177,7 @@ export default function VendorPortal() {
       </header>
 
       <main className="flex-1 overflow-auto p-4 md:p-8">
-        <div className="max-w-2xl mx-auto space-y-8">
+        <div className="max-w-2xl mx-auto space-y-6">
           <Card className="border-border bg-card overflow-hidden rounded-[2.5rem] shadow-2xl relative">
             <CardContent className="p-0">
               <div className={`aspect-square relative flex flex-col items-center justify-center transition-colors duration-700 ${
@@ -209,8 +209,8 @@ export default function VendorPortal() {
                 )}
 
                 {isCameraActive && scanState === 'idle' && (
-                  <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-between p-8 pt-12 pb-6">
-                    <div className="w-full max-w-[250px] aspect-square border-2 border-primary/60 border-dashed rounded-3xl relative">
+                  <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-end p-8 pb-12">
+                    <div className="w-full max-w-[250px] aspect-square border-2 border-primary/60 border-dashed rounded-3xl relative mb-12">
                         <div className="absolute top-0 left-0 w-full h-0.5 bg-primary animate-[scan_2.5s_ease-in-out_infinite] shadow-[0_0_15px_hsl(var(--primary))]" />
                     </div>
                     <Button 
@@ -266,32 +266,33 @@ export default function VendorPortal() {
             </CardContent>
           </Card>
 
-          <div className="grid grid-cols-2 gap-4">
+          {/* Quick Stats & Search - SMALLER */}
+          <div className="grid grid-cols-2 gap-3">
             <Button 
               onClick={() => setManualMode(true)} 
               variant="secondary" 
-              className="h-24 rounded-[1.5rem] p-4 flex items-center justify-start gap-4 border-border border transition-all hover:bg-secondary/80"
+              className="h-16 rounded-xl p-3 flex items-center justify-start gap-3 border-border border transition-all hover:bg-secondary/80"
             >
-              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
-                <RefreshCcw className="w-6 h-6 text-primary" />
+              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+                <RefreshCcw className="w-5 h-5 text-primary" />
               </div>
               <div className="text-left leading-tight overflow-hidden">
-                <div className="font-bold text-sm truncate">Manual Code</div>
-                <div className="text-[10px] text-muted-foreground mt-0.5 uppercase font-bold line-clamp-1">Input Voucher ID</div>
+                <div className="font-bold text-xs truncate">Manual Code</div>
+                <div className="text-[9px] text-muted-foreground uppercase font-bold line-clamp-1">Input Voucher ID</div>
               </div>
             </Button>
-            <div className="h-24 rounded-[1.5rem] bg-card border border-border flex items-center justify-start gap-4 p-4 shadow-sm">
-              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
-                <Store className="w-6 h-6 text-primary" />
+            <div className="h-16 rounded-xl bg-card border border-border flex items-center justify-start gap-3 p-3 shadow-sm">
+              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+                <Store className="w-5 h-5 text-primary" />
               </div>
               <div className="text-left leading-tight overflow-hidden">
-                <div className="font-black text-3xl">{history.length + 15}</div>
-                <div className="text-[10px] text-muted-foreground uppercase font-black tracking-tighter line-clamp-1">Items Served</div>
+                <div className="font-black text-xl">{history.length + 15}</div>
+                <div className="text-[9px] text-muted-foreground uppercase font-black tracking-tighter line-clamp-1">Items Served</div>
               </div>
             </div>
           </div>
 
-          <section className="space-y-6 text-left pt-4">
+          <section className="space-y-6 text-left pt-2">
             <h3 className="font-headline text-xl flex items-center gap-2 leading-none">
               <Activity className="w-5 h-5 text-primary" /> fulfillment Log
             </h3>
