@@ -296,7 +296,7 @@ export default function StaffCheckIn() {
 
                 {scanState === 'error' && (
                   <div className="text-center space-y-6 animate-in zoom-in-95 duration-500 p-8">
-                    <div className="w-28 h-28 bg-red-500/20 rounded-full flex items-center justify-center mx-auto border-4 border-red-500/50">
+                    <div className="w-28 h-28 bg-red-500/20 rounded-full flex items-center justify-center mx-auto border-4 border-green-500/50">
                       <AlertCircle className="w-16 h-16 text-red-500" />
                     </div>
                     <div className="space-y-2">
@@ -314,20 +314,26 @@ export default function StaffCheckIn() {
 
           {/* Quick Stats & Search */}
           <div className="grid grid-cols-2 gap-4">
-            <Button onClick={() => setManualMode(true)} variant="secondary" className="h-24 rounded-[1.5rem] gap-3 flex-col sm:flex-row border-border border">
-              <Search className="w-6 h-6 text-primary" /> 
-              <div className="text-left leading-none">
-                <div className="font-bold text-sm">Manual Lookup</div>
-                <div className="text-[10px] text-muted-foreground mt-1 uppercase font-bold tracking-tight">Search by ID/Name</div>
+            <Button 
+              onClick={() => setManualMode(true)} 
+              variant="secondary" 
+              className="h-24 rounded-[1.5rem] p-4 flex items-center justify-start gap-4 border-border border transition-all hover:bg-secondary/80"
+            >
+              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
+                <Search className="w-6 h-6 text-primary" />
+              </div>
+              <div className="text-left leading-tight overflow-hidden">
+                <div className="font-bold text-sm truncate">Manual Lookup</div>
+                <div className="text-[10px] text-muted-foreground mt-0.5 uppercase font-bold tracking-tight line-clamp-1">Search ID/Name</div>
               </div>
             </Button>
-            <div className="h-24 rounded-[1.5rem] bg-card border border-border flex items-center justify-center gap-4 shadow-sm">
-              <div className="p-3 bg-primary/10 rounded-xl">
+            <div className="h-24 rounded-[1.5rem] bg-card border border-border flex items-center justify-start gap-4 p-4 shadow-sm">
+              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
                 <Users className="w-6 h-6 text-primary" />
               </div>
-              <div className="text-left leading-tight">
+              <div className="text-left leading-tight overflow-hidden">
                 <div className="font-black text-3xl">{history.length + 42}</div>
-                <div className="text-[10px] text-muted-foreground uppercase font-black tracking-tighter">Entries Today</div>
+                <div className="text-[10px] text-muted-foreground uppercase font-black tracking-tighter line-clamp-1">Entries Today</div>
               </div>
             </div>
           </div>

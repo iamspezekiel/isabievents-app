@@ -267,20 +267,26 @@ export default function VendorPortal() {
           </Card>
 
           <div className="grid grid-cols-2 gap-4">
-            <Button onClick={() => setManualMode(true)} variant="secondary" className="h-24 rounded-[1.5rem] gap-3 flex-col sm:flex-row border-border border">
-              <RefreshCcw className="w-6 h-6 text-primary" /> 
-              <div className="text-left leading-none">
-                <div className="font-bold text-sm">Manual Code</div>
-                <div className="text-[10px] text-muted-foreground mt-1 uppercase font-bold">Input Voucher ID</div>
+            <Button 
+              onClick={() => setManualMode(true)} 
+              variant="secondary" 
+              className="h-24 rounded-[1.5rem] p-4 flex items-center justify-start gap-4 border-border border transition-all hover:bg-secondary/80"
+            >
+              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
+                <RefreshCcw className="w-6 h-6 text-primary" />
+              </div>
+              <div className="text-left leading-tight overflow-hidden">
+                <div className="font-bold text-sm truncate">Manual Code</div>
+                <div className="text-[10px] text-muted-foreground mt-0.5 uppercase font-bold line-clamp-1">Input Voucher ID</div>
               </div>
             </Button>
-            <div className="h-24 rounded-[1.5rem] bg-card border border-border flex items-center justify-center gap-4 shadow-sm">
-              <div className="p-3 bg-primary/10 rounded-xl">
+            <div className="h-24 rounded-[1.5rem] bg-card border border-border flex items-center justify-start gap-4 p-4 shadow-sm">
+              <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
                 <Store className="w-6 h-6 text-primary" />
               </div>
-              <div className="text-left leading-tight">
+              <div className="text-left leading-tight overflow-hidden">
                 <div className="font-black text-3xl">{history.length + 15}</div>
-                <div className="text-[10px] text-muted-foreground uppercase font-black tracking-tighter">Items Served</div>
+                <div className="text-[10px] text-muted-foreground uppercase font-black tracking-tighter line-clamp-1">Items Served</div>
               </div>
             </div>
           </div>
