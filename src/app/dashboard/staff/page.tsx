@@ -1,4 +1,4 @@
-["use client";
+"use client";
 
 import React, { useState, useEffect, useRef } from 'react';
 import { Scan, Search, CheckCircle, AlertCircle, RefreshCcw, History, Users, X, ArrowLeft, User, Ticket, Activity, Camera, CameraOff, Bell, FileText, CheckCircle2, AlertTriangle, Sparkles } from 'lucide-react';
