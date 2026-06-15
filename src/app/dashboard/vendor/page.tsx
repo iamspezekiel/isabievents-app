@@ -209,7 +209,7 @@ export default function VendorPortal() {
                 )}
 
                 {isCameraActive && scanState === 'idle' && (
-                  <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-between p-12">
+                  <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-between p-8 pt-12 pb-6">
                     <div className="w-full max-w-[250px] aspect-square border-2 border-primary/60 border-dashed rounded-3xl relative">
                         <div className="absolute top-0 left-0 w-full h-0.5 bg-primary animate-[scan_2.5s_ease-in-out_infinite] shadow-[0_0_15px_hsl(var(--primary))]" />
                     </div>
