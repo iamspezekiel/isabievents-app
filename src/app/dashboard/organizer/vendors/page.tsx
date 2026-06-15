@@ -1,7 +1,8 @@
+
 "use client";
 
 import React, { useState } from 'react';
-import { Users, Plus, Mail, ShieldCheck, LayoutDashboard, Ticket, BarChart3, Settings, LogOut, Menu, Loader2, User, UserPlus, Trash2, Edit, Phone, Info, ShoppingBag, CheckCircle2 } from 'lucide-react';
+import { Users, Plus, Mail, ShieldCheck, Loader2, User, UserPlus, Trash2, Edit, Phone, Info, ShoppingBag } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,10 +12,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import Link from 'next/link';
-import { Logo } from '@/components/logo';
-import { SidebarLink } from '../page';
-import { usePathname } from 'next/navigation';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useToast } from "@/hooks/use-toast";
 
 const WhatsAppIcon = ({ className }: { className?: string }) => (
@@ -29,10 +26,8 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 );
 
 export default function VendorsManagementPage() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const pathname = usePathname();
   const { toast } = useToast();
 
   const [vendors, setVendors] = useState([
@@ -46,19 +41,6 @@ export default function VendorsManagementPage() {
     whatsapp: '',
     role: 'Vendor'
   });
-
-  const NavigationLinks = () => (
-    <nav className="flex-1 space-y-1">
-      <div className="pb-2">
-        <SidebarLink icon={LayoutDashboard} label="Dashboard" href="/dashboard/organizer" active={pathname === '/dashboard/organizer'} />
-        <SidebarLink icon={Plus} label="Create Event" href="/dashboard/organizer/create" active={pathname === '/dashboard/organizer/create'} />
-        <SidebarLink icon={Ticket} label="My Events" href="/dashboard/organizer/events" active={pathname === '/dashboard/organizer/events'} />
-        <SidebarLink icon={Users} label="Vendors" href="/dashboard/organizer/vendors" active={pathname === '/dashboard/organizer/vendors'} />
-        <SidebarLink icon={BarChart3} label="Analytics" href="/dashboard/organizer/analytics" active={pathname === '/dashboard/organizer/analytics'} />
-        <SidebarLink icon={Settings} label="Settings" href="/dashboard/organizer/settings" active={pathname === '/dashboard/organizer/settings'} />
-      </div>
-    </nav>
-  );
 
   const handleAddVendor = async () => {
     if (!newVendor.name || !newVendor.email || !newVendor.whatsapp) {
@@ -102,171 +84,129 @@ export default function VendorsManagementPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col md:flex-row pt-32">
-      {/* Desktop Side Navigation */}
-      <aside className="w-64 bg-sidebar border-r border-sidebar-border p-6 flex flex-col hidden md:flex sticky top-0 h-screen overflow-y-auto">
-        <div className="mb-10">
-          <Link href="/dashboard/organizer" className="mb-10 block no-underline">
-            <Logo size="sm" />
-          </Link>
-        </div>
-        <NavigationLinks />
-        <div className="pt-6 border-t border-sidebar-border mt-auto">
-          <SidebarLink icon={LogOut} label="Log Out" href="/login" />
-        </div>
-      </aside>
-
-      {/* Mobile Header */}
-      <header className="md:hidden flex items-center justify-between p-4 bg-card border-b border-border sticky top-0 z-40">
-        <Link href="/dashboard/organizer" className="no-underline">
-          <Logo size="sm" />
-        </Link>
-        <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <Menu className="w-6 h-6" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-72 bg-card border-border p-6 flex flex-col overflow-y-auto">
-            <SheetHeader className="text-left mb-10">
-              <SheetTitle>
-                <Link href="/dashboard/organizer" className="no-underline" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Logo size="sm" />
-                </Link>
-              </SheetTitle>
-            </SheetHeader>
-            <NavigationLinks />
-            <div className="pt-6 border-t border-border mt-auto">
-              <SidebarLink icon={LogOut} label="Log Out" href="/login" />
-            </div>
-          </SheetContent>
-        </Sheet>
-      </header>
-
-      <main className="flex-1 p-4 md:p-12">
-        <div className="max-w-6xl mx-auto space-y-8">
-          <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
-            <div className="text-left">
-              <h1 className="font-headline mb-2 text-3xl md:text-5xl">Vendors & Staff</h1>
-              <p className="text-muted-foreground">Manage service providers and gate staff for your events.</p>
-            </div>
-            
-            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-              <DialogTrigger asChild>
-                <Button className="rounded-full gap-2 px-6 shadow-lg shadow-primary/20 font-bold h-9 md:h-11">
-                  <Plus className="w-4 h-4" /> Add Member
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="bg-card border-border sm:rounded-[2rem] max-w-lg w-[94vw] sm:w-full">
-                <DialogHeader className="text-left">
-                  <DialogTitle className="font-headline text-2xl flex items-center gap-2">
-                    <UserPlus className="w-6 h-6 text-primary" /> Invite Team Member
-                  </DialogTitle>
-                  <DialogDescription>
-                    Send an invitation to a vendor or staff member to help manage your event.
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="space-y-6 py-6 text-left">
-                  <div className="space-y-2">
-                    <Label htmlFor="vendor-name" className="text-xs font-black uppercase tracking-widest text-muted-foreground">Full Name / Brand</Label>
-                    <div className="relative">
-                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input 
-                        id="vendor-name" 
-                        placeholder="e.g. Sharp Security Ltd" 
-                        value={newVendor.name}
-                        onChange={(e) => setNewVendor({...newVendor, name: e.target.value})}
-                        className="pl-10 h-12 bg-secondary/20 border-border focus-visible:ring-primary rounded-xl"
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="vendor-email" className="text-xs font-black uppercase tracking-widest text-muted-foreground">Email Address</Label>
-                    <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input 
-                        id="vendor-email" 
-                        type="email" 
-                        placeholder="contact@vendor.ng" 
-                        value={newVendor.email}
-                        onChange={(e) => setNewVendor({...newVendor, email: e.target.value})}
-                        className="pl-10 h-12 bg-secondary/20 border-border focus-visible:ring-primary rounded-xl"
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="vendor-whatsapp" className="text-xs font-black uppercase tracking-widest text-muted-foreground">WhatsApp Number</Label>
-                    <div className="relative">
-                      <WhatsAppIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <Input 
-                        id="vendor-whatsapp" 
-                        placeholder="+234..." 
-                        value={newVendor.whatsapp}
-                        onChange={(e) => setNewVendor({...newVendor, whatsapp: e.target.value})}
-                        className="pl-10 h-12 bg-secondary/20 border-border focus-visible:ring-primary rounded-xl"
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="vendor-role" className="text-xs font-black uppercase tracking-widest text-muted-foreground">Assigned Role</Label>
-                    <div className="relative">
-                      <ShieldCheck className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
-                      <Select value={newVendor.role} onValueChange={(v) => setNewVendor({...newVendor, role: v})}>
-                        <SelectTrigger className="pl-10 h-12 bg-secondary/20 border-border focus:ring-primary rounded-xl">
-                          <SelectValue placeholder="Select role" />
-                        </SelectTrigger>
-                        <SelectContent className="bg-card border-border">
-                          <SelectItem value="Vendor">Vendor (Meals, Merch)</SelectItem>
-                          <SelectItem value="Staff">Staff (Gate, Security)</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+    <div className="p-4 md:p-12">
+      <div className="max-w-6xl mx-auto space-y-8">
+        <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
+          <div className="text-left">
+            <h1 className="font-headline mb-2 text-3xl md:text-5xl">Vendors & Staff</h1>
+            <p className="text-muted-foreground">Manage service providers and gate staff for your events.</p>
+          </div>
+          
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="rounded-full gap-2 px-6 shadow-lg shadow-primary/20 font-bold h-9 md:h-11">
+                <Plus className="w-4 h-4" /> Add Member
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="bg-card border-border sm:rounded-[2rem] max-w-lg w-[94vw] sm:w-full">
+              <DialogHeader className="text-left">
+                <DialogTitle className="font-headline text-2xl flex items-center gap-2">
+                  <UserPlus className="w-6 h-6 text-primary" /> Invite Team Member
+                </DialogTitle>
+                <DialogDescription>
+                  Send an invitation to a vendor or staff member to help manage your event.
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-6 py-6 text-left">
+                <div className="space-y-2">
+                  <Label htmlFor="vendor-name" className="text-xs font-black uppercase tracking-widest text-muted-foreground">Full Name / Brand</Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Input 
+                      id="vendor-name" 
+                      placeholder="e.g. Sharp Security Ltd" 
+                      value={newVendor.name}
+                      onChange={(e) => setNewVendor({...newVendor, name: e.target.value})}
+                      className="pl-10 h-12 bg-secondary/20 border-border focus-visible:ring-primary rounded-xl"
+                    />
                   </div>
                 </div>
-                <DialogFooter className="gap-3 sm:gap-0">
-                  <Button variant="ghost" onClick={() => setIsAddDialogOpen(false)} className="rounded-full font-bold h-11">Cancel</Button>
-                  <Button onClick={handleAddVendor} disabled={isLoading} className="rounded-full px-10 font-bold shadow-xl shadow-primary/20 h-11 flex-1 sm:flex-none">
-                    {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Send Invitation"}
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          </header>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-             {vendors.map((vendor) => (
-               <VendorCard 
-                 key={vendor.id}
-                 vendor={vendor}
-                 onDelete={handleDeleteVendor}
-               />
-             ))}
-          </div>
-
-          <Card className="bg-primary/5 border-primary/20 border text-left">
-            <CardHeader>
-              <CardTitle className="text-lg flex items-center gap-2">
-                <Info className="w-5 h-5 text-primary" /> Role Definitions
-              </CardTitle>
-              <CardDescription>Understanding the difference between your team members.</CardDescription>
-            </CardHeader>
-            <CardContent className="grid gap-6 md:grid-cols-2">
-              <div className="space-y-2">
-                <h4 className="font-bold flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-primary" /> Staff (Gate Control)</h4>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Staff members manage the attendee flow. They use the Gate Tool to scan entry tickets, verify attendance, and prevent duplicate access.
-                </p>
+                <div className="space-y-2">
+                  <Label htmlFor="vendor-email" className="text-xs font-black uppercase tracking-widest text-muted-foreground">Email Address</Label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Input 
+                      id="vendor-email" 
+                      type="email" 
+                      placeholder="contact@vendor.ng" 
+                      value={newVendor.email}
+                      onChange={(e) => setNewVendor({...newVendor, email: e.target.value})}
+                      className="pl-10 h-12 bg-secondary/20 border-border focus-visible:ring-primary rounded-xl"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="vendor-whatsapp" className="text-xs font-black uppercase tracking-widest text-muted-foreground">WhatsApp Number</Label>
+                  <div className="relative">
+                    <WhatsAppIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                    <Input 
+                      id="vendor-whatsapp" 
+                      placeholder="+234..." 
+                      value={newVendor.whatsapp}
+                      onChange={(e) => setNewVendor({...newVendor, whatsapp: e.target.value})}
+                      className="pl-10 h-12 bg-secondary/20 border-border focus-visible:ring-primary rounded-xl"
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="vendor-role" className="text-xs font-black uppercase tracking-widest text-muted-foreground">Assigned Role</Label>
+                  <div className="relative">
+                    <ShieldCheck className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground z-10" />
+                    <Select value={newVendor.role} onValueChange={(v) => setNewVendor({...newVendor, role: v})}>
+                      <SelectTrigger className="pl-10 h-12 bg-secondary/20 border-border focus:ring-primary rounded-xl">
+                        <SelectValue placeholder="Select role" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-card border-border">
+                        <SelectItem value="Vendor">Vendor (Meals, Merch)</SelectItem>
+                        <SelectItem value="Staff">Staff (Gate, Security)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
               </div>
-              <div className="space-y-2">
-                <h4 className="font-bold flex items-center gap-2"><ShoppingBag className="w-4 h-4 text-accent" /> Vendors (On-site Services)</h4>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  Vendors verify pre-paid vouchers for items like meals or drinks. Scanning ensures each voucher is fulfilled only once and tracks sales performance.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
+              <DialogFooter className="gap-3 sm:gap-0">
+                <Button variant="ghost" onClick={() => setIsAddDialogOpen(false)} className="rounded-full font-bold h-11">Cancel</Button>
+                <Button onClick={handleAddVendor} disabled={isLoading} className="rounded-full px-10 font-bold shadow-xl shadow-primary/20 h-11 flex-1 sm:flex-none">
+                  {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Send Invitation"}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </header>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+           {vendors.map((vendor) => (
+             <VendorCard 
+               key={vendor.id}
+               vendor={vendor}
+               onDelete={handleDeleteVendor}
+             />
+           ))}
         </div>
-      </main>
+
+        <Card className="bg-primary/5 border-primary/20 border text-left">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Info className="w-5 h-5 text-primary" /> Role Definitions
+            </CardTitle>
+            <CardDescription>Understanding the difference between your team members.</CardDescription>
+          </CardHeader>
+          <CardContent className="grid gap-6 md:grid-cols-2">
+            <div className="space-y-2">
+              <h4 className="font-bold flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-primary" /> Staff (Gate Control)</h4>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Staff members manage the attendee flow. They use the Gate Tool to scan entry tickets, verify attendance, and prevent duplicate access.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <h4 className="font-bold flex items-center gap-2"><ShoppingBag className="w-4 h-4 text-accent" /> Vendors (On-site Services)</h4>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                Vendors verify pre-paid vouchers for items like meals or drinks. Scanning ensures each voucher is fulfilled only once and tracks sales performance.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
