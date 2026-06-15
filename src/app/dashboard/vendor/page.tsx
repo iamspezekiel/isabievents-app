@@ -2,14 +2,16 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Scan, Store, CheckCircle, AlertCircle, RefreshCcw, History, ShoppingBag, X, ArrowLeft, User, Ticket, Activity, Camera, CameraOff, Bell } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Scan, Store, CheckCircle, AlertCircle, RefreshCcw, History, ShoppingBag, X, ArrowLeft, User, Ticket, Activity, Camera, CameraOff, Bell, FileText } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import Link from 'next/link';
 import { Html5Qrcode } from 'html5-qrcode';
+import { cn } from '@/lib/utils';
 
 const MOCK_ATTENDEES = [
   { name: 'Sylvanus P. Ezekiel', type: 'Meal Voucher', id: 'VCH-M-029' },
@@ -24,6 +26,8 @@ export default function VendorPortal() {
   const [manualMode, setManualMode] = useState(false);
   const [lookupQuery, setLookupQuery] = useState('');
   const [isCameraActive, setIsCameraActive] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [historySearch, setHistorySearch] = useState('');
   
   const scannerRef = useRef<Html5Qrcode | null>(null);
   
@@ -152,6 +156,11 @@ export default function VendorPortal() {
     setLookupQuery('');
   };
 
+  const filteredHistory = history.filter(item => 
+    item.name.toLowerCase().includes(historySearch.toLowerCase()) ||
+    item.id.toLowerCase().includes(historySearch.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col pt-0">
       <header className="border-b border-border p-4 bg-card flex items-center justify-between sticky top-0 z-50">
@@ -176,15 +185,16 @@ export default function VendorPortal() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-auto p-4 md:p-8">
+      <main className="flex-1 overflow-auto p-4 md:p-8 pt-0">
         <div className="max-w-2xl mx-auto space-y-6">
           <Card className="border-border bg-card overflow-hidden rounded-[2.5rem] shadow-2xl relative">
             <CardContent className="p-0">
-              <div className={`aspect-square relative flex flex-col items-center justify-center transition-colors duration-700 ${
+              <div className={cn(
+                "aspect-square relative flex flex-col items-center justify-center transition-colors duration-700",
                 scanState === 'success' ? 'bg-green-500/10' : 
                 scanState === 'error' ? 'bg-red-500/10' : 
                 'bg-black/95'
-              }`}>
+              )}>
                 
                 {isCameraActive && scanState === 'idle' && (
                   <div id="reader" className="absolute inset-0 w-full h-full [&_video]:object-cover [&_video]:w-full [&_video]:h-full" />
@@ -266,39 +276,48 @@ export default function VendorPortal() {
             </CardContent>
           </Card>
 
-          {/* Quick Stats & Search - SMALLER */}
           <div className="grid grid-cols-2 gap-3">
             <Button 
               onClick={() => setManualMode(true)} 
               variant="secondary" 
-              className="h-16 rounded-xl p-3 flex items-center justify-start gap-3 border-border border transition-all hover:bg-secondary/80"
+              className="h-14 rounded-xl p-2.5 flex items-center justify-start gap-3 border-border border transition-all hover:bg-secondary/80"
             >
-              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-                <RefreshCcw className="w-5 h-5 text-primary" />
+              <div className="w-9 h-9 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+                <RefreshCcw className="w-4 h-4 text-primary" />
               </div>
               <div className="text-left leading-tight overflow-hidden">
                 <div className="font-bold text-xs truncate">Manual Code</div>
-                <div className="text-[9px] text-muted-foreground uppercase font-bold line-clamp-1">Input Voucher ID</div>
+                <div className="text-[8px] text-muted-foreground uppercase font-bold line-clamp-1">Input Voucher ID</div>
               </div>
             </Button>
-            <div className="h-16 rounded-xl bg-card border border-border flex items-center justify-start gap-3 p-3 shadow-sm">
-              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-                <Store className="w-5 h-5 text-primary" />
+            <div className="h-14 rounded-xl bg-card border border-border flex items-center justify-start gap-3 p-2.5 shadow-sm">
+              <div className="w-9 h-9 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+                <Store className="w-4 h-4 text-primary" />
               </div>
               <div className="text-left leading-tight overflow-hidden">
-                <div className="font-black text-xl">{history.length + 15}</div>
-                <div className="text-[9px] text-muted-foreground uppercase font-black tracking-tighter line-clamp-1">Items Served</div>
+                <div className="font-black text-lg">{history.length + 15}</div>
+                <div className="text-[8px] text-muted-foreground uppercase font-black tracking-tighter line-clamp-1">Items Served</div>
               </div>
             </div>
           </div>
 
           <section className="space-y-6 text-left pt-2">
-            <h3 className="font-headline text-xl flex items-center gap-2 leading-none">
-              <Activity className="w-5 h-5 text-primary" /> fulfillment Log
-            </h3>
+            <div className="flex items-center justify-between">
+              <h3 className="font-headline text-xl flex items-center gap-2 leading-none">
+                <Activity className="w-5 h-5 text-primary" /> fulfillment Log
+              </h3>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-xs font-bold text-primary rounded-full hover:bg-primary/5 h-8"
+                onClick={() => setIsHistoryOpen(true)}
+              >
+                View Full Log
+              </Button>
+            </div>
             
             <div className="space-y-3">
-              {history.map((entry, idx) => (
+              {history.slice(0, 5).map((entry, idx) => (
                 <div 
                   key={idx} 
                   className="bg-card border border-border p-5 rounded-2xl flex items-center justify-between animate-in slide-in-from-top-4 duration-500 shadow-sm"
@@ -325,6 +344,56 @@ export default function VendorPortal() {
           </section>
         </div>
       </main>
+
+      {/* Full History Dialog */}
+      <Dialog open={isHistoryOpen} onOpenChange={setIsHistoryOpen}>
+        <DialogContent className="bg-card border-border sm:rounded-[2rem] max-w-2xl w-[94vw] h-[80vh] flex flex-col p-0 overflow-hidden">
+          <DialogHeader className="p-6 pb-0 text-left">
+            <div className="flex items-center justify-between mb-4">
+              <div className="space-y-1">
+                <DialogTitle className="font-headline text-2xl flex items-center gap-2">
+                  <FileText className="w-6 h-6 text-primary" /> Fulfillment History
+                </DialogTitle>
+                <DialogDescription>Full log of items served during this session.</DialogDescription>
+              </div>
+              <Badge variant="outline" className="font-mono h-6">{history.length} Items</Badge>
+            </div>
+            <div className="relative mt-2 mb-4">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input 
+                placeholder="Search by customer name or voucher ID..." 
+                className="pl-10 h-11 bg-secondary/50 border-none rounded-xl"
+                value={historySearch}
+                onChange={(e) => setHistorySearch(e.target.value)}
+              />
+            </div>
+          </DialogHeader>
+          <div className="flex-1 overflow-y-auto p-6 pt-0 space-y-3">
+            {filteredHistory.map((entry, idx) => (
+              <div key={idx} className="bg-secondary/30 p-4 rounded-xl border border-border flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-background flex items-center justify-center shadow-sm">
+                    <User className="w-5 h-5 text-muted-foreground" />
+                  </div>
+                  <div className="text-left">
+                    <p className="font-bold text-sm leading-none">{entry.name}</p>
+                    <p className="text-[10px] text-muted-foreground font-mono mt-1 uppercase">{entry.id}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-[10px] font-black">{entry.time}</p>
+                  <p className="text-[8px] text-green-600 uppercase font-bold">{entry.type}</p>
+                </div>
+              </div>
+            ))}
+            {filteredHistory.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground text-sm italic">No entries found matching your search.</p>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {manualMode && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-[100] flex items-center justify-center p-4 animate-in fade-in duration-300">

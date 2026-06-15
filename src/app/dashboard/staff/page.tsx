@@ -2,14 +2,16 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Scan, Search, CheckCircle, AlertCircle, RefreshCcw, History, Users, X, ArrowLeft, User, Ticket, Activity, Camera, CameraOff, Bell } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Scan, Search, CheckCircle, AlertCircle, RefreshCcw, History, Users, X, ArrowLeft, User, Ticket, Activity, Camera, CameraOff, Bell, FileText } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import Link from 'next/link';
 import { Html5Qrcode } from 'html5-qrcode';
+import { cn } from '@/lib/utils';
 
 const MOCK_ATTENDEES = [
   { name: 'Sylvanus P. Ezekiel', type: 'VIP Pass', id: 'TKT-E1-029' },
@@ -26,10 +28,11 @@ export default function StaffCheckIn() {
   const [manualMode, setManualMode] = useState(false);
   const [lookupQuery, setLookupQuery] = useState('');
   const [isCameraActive, setIsCameraActive] = useState(false);
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [historySearch, setHistorySearch] = useState('');
   
   const scannerRef = useRef<Html5Qrcode | null>(null);
   
-  // Pre-populate with some recent check-ins for a "live" feel
   const [history, setHistory] = useState<any[]>([
     { id: 'TKT-E1-029', name: 'Sylvanus P. Ezekiel', time: '10:45 AM', type: 'VIP Pass' },
     { id: 'TKT-E3-112', name: 'Chioma Okereke', time: '10:42 AM', type: 'Standard Entry' },
@@ -59,7 +62,6 @@ export default function StaffCheckIn() {
     setIsCameraActive(true);
     setScanState('idle');
     
-    // Give react a tick to render the 'reader' div
     setTimeout(async () => {
       try {
         const html5QrCode = new Html5Qrcode("reader");
@@ -72,12 +74,9 @@ export default function StaffCheckIn() {
             qrbox: { width: 250, height: 250 },
           },
           (decodedText) => {
-            // Success
             handleValidation(decodedText);
           },
-          (errorMessage) => {
-            // Silence common errors like "No QR code found"
-          }
+          (errorMessage) => {}
         );
       } catch (err) {
         console.error("Camera start error", err);
@@ -95,10 +94,8 @@ export default function StaffCheckIn() {
     await stopScanner();
     setScanState('validating');
     
-    // Simulate network/validation delay
     await new Promise(r => setTimeout(r, 1500));
     
-    // Simple logic: if the ticketId contains a match in our mock database
     const attendee = MOCK_ATTENDEES.find(a => 
       ticketId.toUpperCase().includes(a.id.toUpperCase()) || 
       a.id.toUpperCase().includes(ticketId.toUpperCase())
@@ -115,7 +112,6 @@ export default function StaffCheckIn() {
       setHistory([entry, ...history]);
       toast({ title: "Access Granted", description: `${attendee.name} checked in.` });
     } else {
-      // If we don't recognize the ID, it might be a random code, let's still simulate success 80% of time for demo
       if (Math.random() > 0.2) {
          const randomAttendee = MOCK_ATTENDEES[Math.floor(Math.random() * MOCK_ATTENDEES.length)];
          setScanState('success');
@@ -176,10 +172,10 @@ export default function StaffCheckIn() {
     setLookupQuery('');
   };
 
-  const resetScanner = () => {
-    setScanState('idle');
-    setIsCameraActive(false);
-  };
+  const filteredHistory = history.filter(item => 
+    item.name.toLowerCase().includes(historySearch.toLowerCase()) ||
+    item.id.toLowerCase().includes(historySearch.toLowerCase())
+  );
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col pt-0">
@@ -205,23 +201,21 @@ export default function StaffCheckIn() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-auto p-4 md:p-8">
+      <main className="flex-1 overflow-auto p-4 md:p-8 pt-0">
         <div className="max-w-2xl mx-auto space-y-6">
-          {/* Scanner Card */}
           <Card className="border-border bg-card overflow-hidden rounded-[2.5rem] shadow-2xl relative">
             <CardContent className="p-0">
-              <div className={`aspect-square relative flex flex-col items-center justify-center transition-colors duration-700 ${
+              <div className={cn(
+                "aspect-square relative flex flex-col items-center justify-center transition-colors duration-700",
                 scanState === 'success' ? 'bg-green-500/10' : 
                 scanState === 'error' ? 'bg-red-500/10' : 
                 'bg-black/95'
-              }`}>
+              )}>
                 
-                {/* Camera View */}
                 {isCameraActive && scanState === 'idle' && (
                   <div id="reader" className="absolute inset-0 w-full h-full [&_video]:object-cover [&_video]:w-full [&_video]:h-full" />
                 )}
 
-                {/* Overlays and Visual Feedback */}
                 {scanState === 'idle' && !isCameraActive && (
                   <div className="z-10 text-center space-y-6 p-8">
                     <div className="w-24 h-24 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-primary/20">
@@ -248,7 +242,6 @@ export default function StaffCheckIn() {
                 {isCameraActive && scanState === 'idle' && (
                   <div className="absolute inset-0 pointer-events-none flex flex-col items-center justify-end p-8 pb-12">
                     <div className="w-full max-w-[250px] aspect-square border-2 border-primary/60 border-dashed rounded-3xl relative mb-12">
-                        {/* Scanning Line */}
                         <div className="absolute top-0 left-0 w-full h-0.5 bg-primary animate-[scan_2.5s_ease-in-out_infinite] shadow-[0_0_15px_hsl(var(--primary))]" />
                     </div>
                     <Button 
@@ -312,33 +305,31 @@ export default function StaffCheckIn() {
             </CardContent>
           </Card>
 
-          {/* Quick Stats & Search - SMALLER */}
           <div className="grid grid-cols-2 gap-3">
             <Button 
               onClick={() => setManualMode(true)} 
               variant="secondary" 
-              className="h-16 rounded-xl p-3 flex items-center justify-start gap-3 border-border border transition-all hover:bg-secondary/80"
+              className="h-14 rounded-xl p-2.5 flex items-center justify-start gap-3 border-border border transition-all hover:bg-secondary/80"
             >
-              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-                <Search className="w-5 h-5 text-primary" />
+              <div className="w-9 h-9 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+                <Search className="w-4 h-4 text-primary" />
               </div>
               <div className="text-left leading-tight overflow-hidden">
                 <div className="font-bold text-xs truncate">Manual Lookup</div>
-                <div className="text-[9px] text-muted-foreground uppercase font-bold tracking-tight line-clamp-1">Search ID/Name</div>
+                <div className="text-[8px] text-muted-foreground uppercase font-bold tracking-tight line-clamp-1">Search ID/Name</div>
               </div>
             </Button>
-            <div className="h-16 rounded-xl bg-card border border-border flex items-center justify-start gap-3 p-3 shadow-sm">
-              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-                <Users className="w-5 h-5 text-primary" />
+            <div className="h-14 rounded-xl bg-card border border-border flex items-center justify-start gap-3 p-2.5 shadow-sm">
+              <div className="w-9 h-9 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+                <Users className="w-4 h-4 text-primary" />
               </div>
               <div className="text-left leading-tight overflow-hidden">
-                <div className="font-black text-xl">{history.length + 42}</div>
-                <div className="text-[9px] text-muted-foreground uppercase font-black tracking-tighter line-clamp-1">Entries Today</div>
+                <div className="font-black text-lg">{history.length + 42}</div>
+                <div className="text-[8px] text-muted-foreground uppercase font-black tracking-tighter line-clamp-1">Entries Today</div>
               </div>
             </div>
           </div>
 
-          {/* Recent Check-ins List */}
           <section className="space-y-6 text-left pt-2">
             <div className="flex items-center justify-between">
               <div className="space-y-1">
@@ -347,13 +338,18 @@ export default function StaffCheckIn() {
                 </h3>
                 <p className="text-xs text-muted-foreground font-medium">Activity from your current gate</p>
               </div>
-              <Button variant="ghost" size="sm" className="text-xs font-bold text-primary rounded-full hover:bg-primary/5">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                className="text-xs font-bold text-primary rounded-full hover:bg-primary/5 h-8"
+                onClick={() => setIsHistoryOpen(true)}
+              >
                 View Full Log
               </Button>
             </div>
             
             <div className="space-y-3">
-              {history.map((entry, idx) => (
+              {history.slice(0, 5).map((entry, idx) => (
                 <div 
                   key={idx} 
                   className="bg-card border border-border p-5 rounded-2xl flex items-center justify-between animate-in slide-in-from-top-4 duration-500 shadow-sm hover:border-primary/30 transition-colors"
@@ -395,6 +391,56 @@ export default function StaffCheckIn() {
           </section>
         </div>
       </main>
+
+      {/* Full History Dialog */}
+      <Dialog open={isHistoryOpen} onOpenChange={setIsHistoryOpen}>
+        <DialogContent className="bg-card border-border sm:rounded-[2rem] max-w-2xl w-[94vw] h-[80vh] flex flex-col p-0 overflow-hidden">
+          <DialogHeader className="p-6 pb-0 text-left">
+            <div className="flex items-center justify-between mb-4">
+              <div className="space-y-1">
+                <DialogTitle className="font-headline text-2xl flex items-center gap-2">
+                  <FileText className="w-6 h-6 text-primary" /> Entry History
+                </DialogTitle>
+                <DialogDescription>Full log of check-ins for the current session.</DialogDescription>
+              </div>
+              <Badge variant="outline" className="font-mono h-6">{history.length} Entries</Badge>
+            </div>
+            <div className="relative mt-2 mb-4">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+              <Input 
+                placeholder="Search by name or ticket ID..." 
+                className="pl-10 h-11 bg-secondary/50 border-none rounded-xl"
+                value={historySearch}
+                onChange={(e) => setHistorySearch(e.target.value)}
+              />
+            </div>
+          </DialogHeader>
+          <div className="flex-1 overflow-y-auto p-6 pt-0 space-y-3">
+            {filteredHistory.map((entry, idx) => (
+              <div key={idx} className="bg-secondary/30 p-4 rounded-xl border border-border flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-background flex items-center justify-center shadow-sm">
+                    <User className="w-5 h-5 text-muted-foreground" />
+                  </div>
+                  <div className="text-left">
+                    <p className="font-bold text-sm leading-none">{entry.name}</p>
+                    <p className="text-[10px] text-muted-foreground font-mono mt-1 uppercase">{entry.id}</p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-[10px] font-black">{entry.time}</p>
+                  <p className="text-[8px] text-primary uppercase font-bold">{entry.type}</p>
+                </div>
+              </div>
+            ))}
+            {filteredHistory.length === 0 && (
+              <div className="text-center py-12">
+                <p className="text-muted-foreground text-sm italic">No entries found matching your search.</p>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Manual Lookup Modal */}
       {manualMode && (
