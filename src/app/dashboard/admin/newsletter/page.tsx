@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 
-const SENT_HISTORY = [
+const INITIAL_HISTORY = [
   { id: 'NSL-001', subject: 'Lagos Jazz Night 2026 - Early Bird Access', audience: 'All Users', sentDate: '2024-10-20', openRate: '42%' },
   { id: 'NSL-002', subject: 'New Guidelines for Organizers', audience: 'Organizers', sentDate: '2024-10-15', openRate: '68%' },
   { id: 'NSL-003', subject: 'Exclusive: Naija Tech Summit Speakers', audience: 'Attendees', sentDate: '2024-10-10', openRate: '35%' },
@@ -42,6 +42,7 @@ export default function AdminNewsletterPage() {
   const [loading, setLoading] = useState(false);
   const [loadingAI, setLoadingAI] = useState(false);
   const { toast } = useToast();
+  const [history, setHistory] = useState(INITIAL_HISTORY);
 
   const [formData, setFormData] = useState({
     audience: 'all',
@@ -62,6 +63,16 @@ export default function AdminNewsletterPage() {
 
     setLoading(true);
     await new Promise(r => setTimeout(r, 2000));
+    
+    const newEntry = {
+      id: `NSL-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`,
+      subject: formData.subject,
+      audience: formData.audience === 'all' ? 'All Users' : formData.audience.charAt(0).toUpperCase() + formData.audience.slice(1),
+      sentDate: new Date().toISOString().split('T')[0],
+      openRate: '0%' // New campaigns start at 0%
+    };
+
+    setHistory([newEntry, ...history]);
     setLoading(false);
     
     toast({
@@ -69,6 +80,14 @@ export default function AdminNewsletterPage() {
       description: `Your campaign has been queued for ${formData.audience} users.`,
     });
     setFormData({ audience: 'all', subject: '', content: '' });
+  };
+
+  const handleDelete = (id: string) => {
+    setHistory(history.filter(item => item.id !== id));
+    toast({
+      title: "Campaign Deleted",
+      description: "The newsletter record has been removed from history."
+    });
   };
 
   const handleUseAI = async () => {
@@ -249,7 +268,7 @@ export default function AdminNewsletterPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {SENT_HISTORY.map((item) => (
+                {history.map((item) => (
                   <TableRow key={item.id} className="group hover:bg-secondary/10 border-border/50">
                     <TableCell className="pl-6 font-bold py-4">{item.subject}</TableCell>
                     <TableCell>
@@ -265,7 +284,14 @@ export default function AdminNewsletterPage() {
                     <TableCell className="text-right pr-6">
                       <div className="flex items-center justify-end gap-2">
                         <Button variant="ghost" size="icon" className="rounded-full h-8 w-8"><Eye className="w-4 h-4" /></Button>
-                        <Button variant="ghost" size="icon" className="rounded-full h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-500/5"><Trash2 className="w-4 h-4" /></Button>
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="rounded-full h-8 w-8 text-red-500 hover:text-red-600 hover:bg-red-500/5"
+                          onClick={() => handleDelete(item.id)}
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
                       </div>
                     </TableCell>
                   </TableRow>
