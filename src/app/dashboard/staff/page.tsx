@@ -224,14 +224,14 @@ export default function StaffCheckIn() {
                       <p className="text-white font-bold text-xl">Ready to Scan</p>
                       <p className="text-muted-foreground text-sm">Activate the scanner to process attendees</p>
                     </div>
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-3 items-center">
                       <Button 
                         onClick={startScanner} 
-                        className="rounded-full px-12 h-16 text-lg shadow-xl shadow-primary/20 font-black hover:scale-105 transition-transform gap-3"
+                        className="rounded-full px-8 h-12 text-sm shadow-xl shadow-primary/20 font-black hover:scale-105 transition-transform gap-3"
                       >
-                        <Camera className="w-6 h-6" /> Launch Scanner
+                        <Camera className="w-5 h-5" /> Launch Scanner
                       </Button>
-                      <Button variant="ghost" onClick={handleSimulate} className="text-muted-foreground hover:text-white">
+                      <Button variant="ghost" onClick={handleSimulate} className="text-muted-foreground hover:text-white text-xs">
                         Simulate Success
                       </Button>
                     </div>
@@ -356,23 +356,23 @@ export default function StaffCheckIn() {
             <Button 
               onClick={() => setManualMode(true)} 
               variant="secondary" 
-              className="h-14 rounded-xl p-2.5 flex items-center justify-start gap-3 border-border border transition-all hover:bg-secondary/80"
+              className="h-10 rounded-xl p-2.5 flex items-center justify-start gap-3 border-border border transition-all hover:bg-secondary/80"
             >
-              <div className="w-9 h-9 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-                <Search className="w-4 h-4 text-primary" />
+              <div className="w-7 h-7 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+                <Search className="w-3.5 h-3.5 text-primary" />
               </div>
               <div className="text-left leading-tight overflow-hidden">
-                <div className="font-bold text-xs truncate">Manual Lookup</div>
-                <div className="text-[8px] text-muted-foreground uppercase font-bold tracking-tight line-clamp-1">Search ID/Name</div>
+                <div className="font-bold text-[10px] truncate">Manual Lookup</div>
+                <div className="text-[7px] text-muted-foreground uppercase font-bold tracking-tight line-clamp-1">Search ID/Name</div>
               </div>
             </Button>
-            <div className="h-14 rounded-xl bg-card border border-border flex items-center justify-start gap-3 p-2.5 shadow-sm">
-              <div className="w-9 h-9 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
-                <Users className="w-4 h-4 text-primary" />
+            <div className="h-10 rounded-xl bg-card border border-border flex items-center justify-start gap-3 p-2.5 shadow-sm">
+              <div className="w-7 h-7 bg-primary/10 rounded-lg flex items-center justify-center shrink-0">
+                <Users className="w-3.5 h-3.5 text-primary" />
               </div>
               <div className="text-left leading-tight overflow-hidden">
-                <div className="font-black text-lg">{history.length + 42}</div>
-                <div className="text-[8px] text-muted-foreground uppercase font-black tracking-tighter line-clamp-1">Entries Today</div>
+                <div className="font-black text-sm">{history.length + 42}</div>
+                <div className="text-[7px] text-muted-foreground uppercase font-black tracking-tighter line-clamp-1">Entries Today</div>
               </div>
             </div>
           </div>
