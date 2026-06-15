@@ -3,45 +3,27 @@
 
 import React, { useState } from 'react';
 import { 
-  LayoutDashboard, 
-  Users, 
-  Ticket, 
-  BarChart3, 
-  Settings, 
-  LogOut, 
-  ShieldCheck, 
   Search, 
-  Menu, 
   CheckCircle2, 
-  ChevronRight,
+  Calendar, 
+  MapPin, 
+  ExternalLink, 
+  Loader2,
   UserCheck,
-  Ban,
-  Filter,
-  MoreVertical,
-  Calendar,
-  MapPin,
-  ExternalLink,
-  Loader2
+  Ban
 } from 'lucide-react';
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { Logo } from '@/components/logo';
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { MOCK_EVENTS } from '@/lib/mock-data';
-import { SidebarLink } from '../page';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 
 export default function AdminEventsManagement() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [events, setEvents] = useState(MOCK_EVENTS);
   const [processingId, setProcessingId] = useState<string | null>(null);
-  const pathname = usePathname();
   const { toast } = useToast();
 
   const handleAction = async (id: string, title: string, action: 'approve' | 'reject') => {
@@ -66,19 +48,6 @@ export default function AdminEventsManagement() {
     }
   };
 
-  const NavigationLinks = () => (
-    <nav className="flex-1 space-y-1">
-      <div className="pb-2">
-        <SidebarLink icon={LayoutDashboard} label="Global Overview" href="/dashboard/admin" active={pathname === '/dashboard/admin'} />
-        <SidebarLink icon={Users} label="User Management" href="/dashboard/admin/users" active={pathname === '/dashboard/admin/users'} />
-        <SidebarLink icon={ShieldCheck} label="Organizer KYC" href="/dashboard/admin/kyc" active={pathname === '/dashboard/admin/kyc'} />
-        <SidebarLink icon={Ticket} label="Event Moderation" href="/dashboard/admin/events" active={pathname === '/dashboard/admin/events'} />
-        <SidebarLink icon={BarChart3} label="Financial Reports" href="/dashboard/admin/reports" active={pathname === '/dashboard/admin/reports'} />
-        <SidebarLink icon={Settings} label="System Settings" href="/dashboard/admin/settings" active={pathname === '/dashboard/admin/settings'} />
-      </div>
-    </nav>
-  );
-
   const filteredEvents = events.filter(event => 
     event.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
     event.organizer.name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -88,135 +57,88 @@ export default function AdminEventsManagement() {
   const autoApproved = filteredEvents.filter(event => event.organizer.verified);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col md:flex-row pt-40">
-      {/* Desktop Side Navigation */}
-      <aside className="w-64 bg-sidebar border-r border-sidebar-border p-6 flex flex-col hidden md:flex sticky top-0 h-screen overflow-y-auto">
-        <div className="mb-10">
-          <Link href="/dashboard/admin" className="no-underline">
-            <Logo size="sm" />
-          </Link>
-          <div className="mt-2 text-[10px] font-black uppercase tracking-widest text-primary bg-primary/10 px-2 py-1 rounded inline-block">
-            Master Console
+    <div className="p-4 md:p-12 space-y-8">
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="text-left space-y-1">
+          <h1 className="font-headline text-3xl md:text-5xl">Event Moderation</h1>
+          <p className="text-muted-foreground font-medium">Review and manage all event listings across the platform.</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <div className="relative w-full sm:w-64">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input 
+              placeholder="Search events or hosts..." 
+              className="pl-9 h-11 bg-card rounded-full" 
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
         </div>
-        <NavigationLinks />
-        <div className="pt-6 border-t border-sidebar-border mt-auto">
-          <SidebarLink icon={LogOut} label="Log Out" href="/login" />
-        </div>
-      </aside>
-
-      {/* Mobile Header */}
-      <header className="md:hidden flex items-center justify-between p-4 bg-card border-b border-border sticky top-0 z-40">
-        <Link href="/dashboard/admin" className="no-underline">
-          <Logo size="sm" />
-        </Link>
-        <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-          <SheetTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <Menu className="w-6 h-6" />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-72 bg-card border-border p-6 flex flex-col overflow-y-auto">
-            <SheetHeader className="text-left mb-10">
-              <SheetTitle>
-                <Link href="/dashboard/admin" className="no-underline" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Logo size="sm" />
-                </Link>
-              </SheetTitle>
-            </SheetHeader>
-            <NavigationLinks />
-            <div className="pt-6 border-t border-border mt-auto">
-              <SidebarLink icon={LogOut} label="Log Out" href="/login" />
-            </div>
-          </SheetContent>
-        </Sheet>
       </header>
 
-      <main className="flex-1 p-4 md:p-12 overflow-x-hidden">
-        <div className="max-w-6xl mx-auto space-y-8">
-          <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-            <div className="text-left space-y-1">
-              <h1 className="font-headline text-3xl md:text-5xl">Event Moderation</h1>
-              <p className="text-muted-foreground font-medium">Review and manage all event listings across the platform.</p>
+      <Tabs defaultValue="pending" className="w-full">
+        <TabsList className="bg-secondary/50 p-1 rounded-2xl mb-8 w-full sm:w-auto h-auto sm:h-11 flex overflow-x-auto">
+          <TabsTrigger 
+            value="pending" 
+            className="rounded-xl px-2 sm:px-8 font-bold flex-1 sm:flex-none py-2.5 sm:py-1.5 text-[10px] sm:text-sm whitespace-nowrap"
+          >
+            Pending Review ({pendingModeration.length})
+          </TabsTrigger>
+          <TabsTrigger 
+            value="approved" 
+            className="rounded-xl px-2 sm:px-8 font-bold flex-1 sm:flex-none py-2.5 sm:py-1.5 text-[10px] sm:text-sm whitespace-nowrap"
+          >
+            Auto-Approved ({autoApproved.length})
+          </TabsTrigger>
+          <TabsTrigger 
+            value="all" 
+            className="rounded-xl px-2 sm:px-8 font-bold flex-1 sm:flex-none py-2.5 sm:py-1.5 text-[10px] sm:text-sm whitespace-nowrap"
+          >
+            All Events
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="pending" className="space-y-4">
+          {pendingModeration.length > 0 ? pendingModeration.map((event) => (
+            <ModerationRow 
+              key={event.id} 
+              event={event} 
+              type="pending" 
+              onAction={handleAction}
+              processingId={processingId}
+            />
+          )) : (
+            <div className="bg-card border border-dashed border-border py-24 rounded-[3rem] text-center">
+              <CheckCircle2 className="w-16 h-16 text-muted-foreground/20 mx-auto mb-4" />
+              <p className="text-muted-foreground font-medium">No events currently pending manual review.</p>
             </div>
-            <div className="flex items-center gap-3">
-              <div className="relative w-full sm:w-64">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input 
-                  placeholder="Search events or hosts..." 
-                  className="pl-9 h-11 bg-card rounded-full" 
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </div>
-            </div>
-          </header>
+          )}
+        </TabsContent>
 
-          <Tabs defaultValue="pending" className="w-full">
-            <TabsList className="bg-secondary/50 p-1 rounded-2xl mb-8 w-full sm:w-auto h-auto sm:h-11 flex overflow-x-auto">
-              <TabsTrigger 
-                value="pending" 
-                className="rounded-xl px-2 sm:px-8 font-bold flex-1 sm:flex-none py-2.5 sm:py-1.5 text-[10px] sm:text-sm whitespace-nowrap"
-              >
-                Pending Review ({pendingModeration.length})
-              </TabsTrigger>
-              <TabsTrigger 
-                value="approved" 
-                className="rounded-xl px-2 sm:px-8 font-bold flex-1 sm:flex-none py-2.5 sm:py-1.5 text-[10px] sm:text-sm whitespace-nowrap"
-              >
-                Auto-Approved ({autoApproved.length})
-              </TabsTrigger>
-              <TabsTrigger 
-                value="all" 
-                className="rounded-xl px-2 sm:px-8 font-bold flex-1 sm:flex-none py-2.5 sm:py-1.5 text-[10px] sm:text-sm whitespace-nowrap"
-              >
-                All Events
-              </TabsTrigger>
-            </TabsList>
+        <TabsContent value="approved" className="space-y-4">
+          {autoApproved.map((event) => (
+            <ModerationRow 
+              key={event.id} 
+              event={event} 
+              type="approved" 
+              onAction={handleAction}
+              processingId={processingId}
+            />
+          ))}
+        </TabsContent>
 
-            <TabsContent value="pending" className="space-y-4">
-              {pendingModeration.length > 0 ? pendingModeration.map((event) => (
-                <ModerationRow 
-                  key={event.id} 
-                  event={event} 
-                  type="pending" 
-                  onAction={handleAction}
-                  processingId={processingId}
-                />
-              )) : (
-                <div className="bg-card border border-dashed border-border py-24 rounded-[3rem] text-center">
-                  <CheckCircle2 className="w-16 h-16 text-muted-foreground/20 mx-auto mb-4" />
-                  <p className="text-muted-foreground font-medium">No events currently pending manual review.</p>
-                </div>
-              )}
-            </TabsContent>
-
-            <TabsContent value="approved" className="space-y-4">
-              {autoApproved.map((event) => (
-                <ModerationRow 
-                  key={event.id} 
-                  event={event} 
-                  type="approved" 
-                  onAction={handleAction}
-                  processingId={processingId}
-                />
-              ))}
-            </TabsContent>
-
-            <TabsContent value="all" className="space-y-4">
-              {filteredEvents.map((event) => (
-                <ModerationRow 
-                  key={event.id} 
-                  event={event} 
-                  type="all" 
-                  onAction={handleAction}
-                  processingId={processingId}
-                />
-              ))}
-            </TabsContent>
-          </Tabs>
-        </div>
-      </main>
+        <TabsContent value="all" className="space-y-4">
+          {filteredEvents.map((event) => (
+            <ModerationRow 
+              key={event.id} 
+              event={event} 
+              type="all" 
+              onAction={handleAction}
+              processingId={processingId}
+            />
+          ))}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

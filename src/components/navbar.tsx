@@ -48,6 +48,9 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Hide global navbar on dashboard pages
+  if (pathname?.startsWith('/dashboard')) return null;
+
   const getIsActive = (path: string) => pathname === path;
 
   return (
