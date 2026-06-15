@@ -121,7 +121,7 @@ export default function HelpCenterPage() {
 
           <div className="space-y-8">
             <Card className="bg-card border border-border sticky top-32">
-              <CardHeader className="p-6">
+              <CardHeader className="p-6 pb-2">
                 <CardTitle className="font-headline text-xl text-left">Still need help?</CardTitle>
                 <CardDescription className="text-left">Our support team is available 24/7 to assist you.</CardDescription>
               </CardHeader>
