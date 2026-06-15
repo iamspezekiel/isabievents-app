@@ -134,8 +134,8 @@ function CreateEventForm() {
   };
 
   return (
-    <div className="min-h-screen bg-background pb-20 pt-20">
-      <header className="border-b border-border bg-card sticky top-0 z-50 pb-4">
+    <div className="min-h-screen bg-background pb-20 pt-0">
+      <header className="border-b border-border bg-card sticky top-0 z-50">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" onClick={() => router.back()}>
@@ -156,7 +156,7 @@ function CreateEventForm() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 pt-12 max-w-4xl">
+      <main className="container mx-auto px-4 pt-6 max-w-4xl">
         {step === 1 && (
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <section className="space-y-6">
