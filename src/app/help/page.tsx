@@ -1,3 +1,4 @@
+
 "use client";
 
 import React from 'react';
@@ -121,17 +122,17 @@ export default function HelpCenterPage() {
 
           <div className="space-y-8">
             <Card className="bg-card border border-border sticky top-32">
-              <CardHeader>
+              <CardHeader className="p-6">
                 <CardTitle className="font-headline text-xl text-left">Still need help?</CardTitle>
                 <CardDescription className="text-left">Our support team is available 24/7 to assist you.</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-4 px-6 pb-6">
+                <Button className="w-full gap-2 rounded-full h-12 no-underline font-bold transition-all border-2 border-transparent hover:bg-primary hover:text-white" asChild>
+                  <Link href="/contact">
+                    <Send className="w-4 h-4" /> Get in Touch
+                  </Link>
+                </Button>
                 <div className="space-y-3 flex flex-col">
-                  <Button className="w-full gap-2 rounded-full h-12 no-underline font-bold transition-all border-2 border-transparent hover:bg-primary hover:text-white" asChild>
-                    <Link href="/contact">
-                      <Send className="w-4 h-4" /> Get in Touch
-                    </Link>
-                  </Button>
                   <Button variant="outline" className="w-full gap-2 rounded-full h-12 no-underline font-bold border-2" asChild>
                     <a href="https://wa.me/2349024244140" target="_blank">
                       <MessageCircle className="w-4 h-4" /> Live Chat

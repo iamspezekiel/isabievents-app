@@ -16,8 +16,8 @@ export default function AccountSupportPage() {
         {`
           (function () {
             var options = {
-              call: "+2349067591253", 
-              whatsapp: "+2349067591253", 
+              call: "+2349024244140", 
+              whatsapp: "+2349024244140", 
               call_to_action: "Contact Us", 
               button_color: "#7E7CFF", 
               position: "left", 
@@ -48,7 +48,7 @@ export default function AccountSupportPage() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-16 max-w-4xl">
+      <main className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="grid gap-12">
           {/* Quick Support Cards */}
           <section className="grid md:grid-cols-2 gap-6">
@@ -98,7 +98,7 @@ export default function AccountSupportPage() {
               <AccordionItem value="item-1" className="border-border">
                 <AccordionTrigger className="text-left text-sm font-bold hover:text-primary">I can't access my registered email address</AccordionTrigger>
                 <AccordionContent className="text-muted-foreground leading-relaxed">
-                  If you've lost access to your registered email, please contact our support team. You will be required to provide alternative proof of identity and potentially your last ticket purchase ID to initiate a secure account recovery process.
+                  If you've lost access to your registered email, please contact our support team at <a href="tel:+2349024244140" className="text-primary font-bold">+234 902 424 4140</a>. You will be required to provide alternative proof of identity to initiate a secure account recovery process.
                 </AccordionContent>
               </AccordionItem>
 
@@ -112,14 +112,14 @@ export default function AccountSupportPage() {
               <AccordionItem value="item-3" className="border-border">
                 <AccordionTrigger className="text-left text-sm font-bold hover:text-primary">How to delete my IsabiEvents account permanently</AccordionTrigger>
                 <AccordionContent className="text-muted-foreground leading-relaxed">
-                  You can request a permanent account deletion under 'Account Settings' in your dashboard. Please note that this action is irreversible; you will lose access to all active tickets, purchase history, and any stored wallet balance.
+                  You can request a permanent account deletion under 'Account Settings' in your dashboard. Please note that this action is irreversible; you will lose access to all active tickets and purchase history.
                 </AccordionContent>
               </AccordionItem>
 
               <AccordionItem value="item-4" className="border-border">
                 <AccordionTrigger className="text-left text-sm font-bold hover:text-primary">Switching from Attendee to Organizer role</AccordionTrigger>
                 <AccordionContent className="text-muted-foreground leading-relaxed">
-                  Every attendee account can be upgraded to an organizer profile. Simply visit your 'Profile Settings', select 'Become an Organizer', and follow the prompts to provide your business information and complete the KYC verification.
+                  Every attendee account can be upgraded to an organizer profile. Simply visit your 'Profile Settings', select 'Become an Organizer', and follow the prompts to complete the KYC verification.
                 </AccordionContent>
               </AccordionItem>
             </Accordion>

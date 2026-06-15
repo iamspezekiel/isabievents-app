@@ -16,8 +16,8 @@ export default function TicketSupportPage() {
         {`
           (function () {
             var options = {
-              call: "+2349067591253", 
-              whatsapp: "+2349067591253", 
+              call: "+2349024244140", 
+              whatsapp: "+2349024244140", 
               call_to_action: "Contact Us", 
               button_color: "#7E7CFF", 
               position: "left", 
@@ -48,7 +48,7 @@ export default function TicketSupportPage() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-16 max-w-4xl">
+      <main className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="grid gap-12">
           <section className="space-y-6">
             <h2 className="font-headline text-xl text-left">Common Ticket Issues</h2>
@@ -98,8 +98,8 @@ export default function TicketSupportPage() {
 
           <section className="text-center pt-12">
             <p className="text-muted-foreground mb-6">Can't find what you're looking for?</p>
-            <Button variant="outline" className="rounded-full gap-2 px-8">
-              <MessageSquare className="w-4 h-4" /> Chat with an Agent
+            <Button variant="outline" className="rounded-full gap-2 px-8" asChild>
+              <a href="https://wa.me/2349024244140" target="_blank"><MessageSquare className="w-4 h-4" /> Chat with an Agent</a>
             </Button>
           </section>
         </div>

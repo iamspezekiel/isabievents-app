@@ -14,8 +14,8 @@ export default function RefundPolicyPage() {
         {`
           (function () {
             var options = {
-              call: "+2349067591253", 
-              whatsapp: "+2349067591253", 
+              call: "+2349024244140", 
+              whatsapp: "+2349024244140", 
               call_to_action: "Contact Us", 
               button_color: "#7E7CFF", 
               position: "left", 
@@ -41,7 +41,7 @@ export default function RefundPolicyPage() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-16 max-w-4xl">
+      <main className="container mx-auto px-4 py-8 max-w-4xl">
         <div className="grid gap-12">
           <section className="prose prose-invert max-w-none space-y-8">
             <div className="space-y-4">
@@ -86,7 +86,7 @@ export default function RefundPolicyPage() {
 
           <div className="text-center pt-10 border-t border-border">
             <p className="text-muted-foreground flex items-center justify-center gap-2">
-              <HelpCircle className="w-4 h-4" /> Have questions about a specific event? Contact the organizer directly.
+              <HelpCircle className="w-4 h-4" /> Have questions about a specific event? <a href="https://wa.me/2349024244140" target="_blank" className="text-primary hover:underline font-bold">Contact support</a> or the organizer.
             </p>
           </div>
         </div>

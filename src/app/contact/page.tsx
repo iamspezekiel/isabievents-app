@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from 'react';
@@ -113,7 +114,7 @@ export default function ContactPage() {
 
           <div className="lg:col-span-2">
             <Card className="bg-card border-border shadow-2xl rounded-[2.5rem] overflow-hidden">
-              <CardContent className="p-8 md:p-12">
+              <CardContent className="p-8 md:p-12 mx-2 md:mx-6">
                 {!submitted ? (
                   <form onSubmit={handleSubmit} className="space-y-6 text-left">
                     <div className="grid md:grid-cols-2 gap-6">
