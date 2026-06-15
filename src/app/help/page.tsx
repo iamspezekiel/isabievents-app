@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -28,8 +27,8 @@ export default function HelpCenterPage() {
         {`
           (function () {
             var options = {
-              call: "+2349067591253", 
-              whatsapp: "+2349067591253", 
+              call: "+2349024244140", 
+              whatsapp: "+2349024244140", 
               call_to_action: "Contact Us", 
               button_color: "#7E7CFF", 
               position: "left", 
@@ -66,7 +65,7 @@ export default function HelpCenterPage() {
       </header>
 
       <main className="container mx-auto px-4 py-8">
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
+        <div className="grid md:grid-cols-3 gap-8 mb-8">
           <HelpCategoryCard icon={Ticket} title="Tickets & Entry" count={12} href="/help/tickets" />
           <HelpCategoryCard icon={CreditCard} title="Payments & Refunds" count={8} href="/help/refunds" />
           <HelpCategoryCard icon={User} title="Account & Profile" count={15} href="/help/account" />
@@ -110,8 +109,8 @@ export default function HelpCenterPage() {
                 {[1, 2, 3].map(i => (
                   <Link key={i} href="#" className="flex items-center justify-between p-4 bg-card border border-border rounded-xl transition-all group no-underline hover:border-primary/30">
                     <div className="space-y-0.5">
-                      <h4 className="font-bold text-[13px]">Protecting your account from ticket scams</h4>
-                      <p className="text-[11px] text-muted-foreground">Safety tips for buying and selling tickets safely.</p>
+                      <h4 className="font-bold text-sm">Protecting your account from ticket scams</h4>
+                      <p className="text-xs text-muted-foreground">Safety tips for buying and selling tickets safely.</p>
                     </div>
                     <ExternalLink className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors" />
                   </Link>
@@ -121,7 +120,7 @@ export default function HelpCenterPage() {
           </div>
 
           <div className="space-y-8">
-            <Card className="bg-primary/5 border-primary/20 sticky top-32">
+            <Card className="bg-card border border-border sticky top-32">
               <CardHeader>
                 <CardTitle className="font-headline text-xl text-left">Still need help?</CardTitle>
                 <CardDescription className="text-left">Our support team is available 24/7 to assist you.</CardDescription>
@@ -134,7 +133,7 @@ export default function HelpCenterPage() {
                     </Link>
                   </Button>
                   <Button variant="outline" className="w-full gap-2 rounded-full h-12 no-underline font-bold border-2" asChild>
-                    <a href="https://wa.me/2349067591253" target="_blank">
+                    <a href="https://wa.me/2349024244140" target="_blank">
                       <MessageCircle className="w-4 h-4" /> Live Chat
                     </a>
                   </Button>
@@ -146,7 +145,7 @@ export default function HelpCenterPage() {
                 </div>
                 <div className="pt-4 border-t border-primary/10 flex items-center justify-center gap-3 text-sm font-bold">
                   <Phone className="w-4 h-4 text-primary" /> 
-                  <a href="tel:+2349067591253" className="hover:text-primary transition-colors">+234 906 759 1253</a>
+                  <a href="tel:+2349024244140" className="hover:text-primary transition-colors">+234 902 424 4140</a>
                 </div>
               </CardContent>
             </Card>

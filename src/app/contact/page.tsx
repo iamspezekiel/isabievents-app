@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -39,8 +38,8 @@ export default function ContactPage() {
         {`
           (function () {
             var options = {
-              call: "+2349067591253", 
-              whatsapp: "+2349067591253", 
+              call: "+2349024244140", 
+              whatsapp: "+2349024244140", 
               call_to_action: "Contact Us", 
               button_color: "#7E7CFF", 
               position: "left", 
@@ -67,7 +66,7 @@ export default function ContactPage() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-16">
+      <main className="container mx-auto px-4 py-8">
         <div className="grid lg:grid-cols-3 gap-16 max-w-6xl mx-auto">
           <div className="lg:col-span-1 space-y-12 text-left">
             <div className="space-y-6">
@@ -81,16 +80,16 @@ export default function ContactPage() {
               <ContactInfo 
                 icon={MessageSquare} 
                 title="Live Chat" 
-                value="0906 759 1253" 
+                value="0902 424 4140" 
                 desc="Available Mon-Fri, 9am - 6pm WAT via WhatsApp."
-                href="https://wa.me/2349067591253"
+                href="https://wa.me/2349024244140"
               />
               <ContactInfo 
                 icon={Phone} 
                 title="Call Us" 
-                value="+234 906 759 1253" 
+                value="+234 902 424 4140" 
                 desc="Official support line for all inquiries."
-                href="tel:+2349067591253"
+                href="tel:+2349024244140"
               />
               <ContactInfo 
                 icon={MapPin} 
