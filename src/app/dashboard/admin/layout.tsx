@@ -13,7 +13,8 @@ import {
   Settings, 
   LogOut, 
   Menu, 
-  Bell 
+  Bell,
+  Mail
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Logo } from '@/components/logo';
@@ -46,6 +47,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <SidebarLink icon={Users} label="User Management" href="/dashboard/admin/users" active={pathname === '/dashboard/admin/users'} onClick={() => setIsMobileMenuOpen(false)} />
       <SidebarLink icon={ShieldCheck} label="Organizer KYC" href="/dashboard/admin/kyc" active={pathname === '/dashboard/admin/kyc'} onClick={() => setIsMobileMenuOpen(false)} />
       <SidebarLink icon={Ticket} label="Event Moderation" href="/dashboard/admin/events" active={pathname === '/dashboard/admin/events'} onClick={() => setIsMobileMenuOpen(false)} />
+      <SidebarLink icon={Mail} label="Newsletter" href="/dashboard/admin/newsletter" active={pathname === '/dashboard/admin/newsletter'} onClick={() => setIsMobileMenuOpen(false)} />
       <SidebarLink icon={BarChart3} label="Financial Reports" href="/dashboard/admin/reports" active={pathname === '/dashboard/admin/reports'} onClick={() => setIsMobileMenuOpen(false)} />
       <SidebarLink icon={Settings} label="System Settings" href="/dashboard/admin/settings" active={pathname === '/dashboard/admin/settings'} onClick={() => setIsMobileMenuOpen(false)} />
     </nav>
