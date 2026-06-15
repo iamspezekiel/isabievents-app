@@ -270,7 +270,7 @@ export default function AttendeeDashboard() {
       <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
         <DialogContent className="bg-card border-border sm:rounded-[2rem] p-0 overflow-hidden max-w-sm w-[94vw] sm:w-full">
           <div className="bg-primary p-6 text-center text-white">
-            <h2 className="font-headline text-xl">IsabiEvents</h2>
+            <DialogTitle className="font-headline text-xl text-white">IsabiEvents</DialogTitle>
             <p className="text-[10px] font-bold uppercase tracking-widest opacity-70">Entry Ticket</p>
           </div>
           <div className="p-6 text-center space-y-6">
