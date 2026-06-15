@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -187,7 +186,7 @@ export default function VendorPortal() {
 
       <main className="flex-1 overflow-auto p-4 md:p-8 pt-0">
         <div className="max-w-2xl mx-auto space-y-6">
-          <Card className="mt-4 border-border bg-card overflow-hidden rounded-[2.5rem] shadow-2xl relative">
+          <Card className="m-4 border-border bg-card overflow-hidden rounded-[2.5rem] shadow-2xl relative">
             <CardContent className="p-0">
               <div className={cn(
                 "aspect-square relative flex flex-col items-center justify-center transition-colors duration-700",
