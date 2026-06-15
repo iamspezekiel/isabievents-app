@@ -277,11 +277,41 @@ export default function AttendeeDashboard() {
             <div className="p-3 bg-white rounded-2xl shadow-xl inline-block">
                <QrCode className="w-40 h-40 text-black" />
             </div>
-            <div className="space-y-1">
-              <h3 className="font-headline text-lg">{viewTicket?.title}</h3>
-              <p className="text-muted-foreground text-xs">{viewTicket?.venue}</p>
+            
+            <div className="space-y-4">
+              <div className="space-y-1">
+                <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Attendee Name</p>
+                <p className="text-xl font-bold">{MOCK_USER.name}</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 border-y border-border/50 py-4">
+                <div className="text-left space-y-1">
+                  <p className="text-[8px] font-black uppercase text-muted-foreground tracking-widest">Ticket ID</p>
+                  <p className="font-mono text-[10px] font-bold uppercase">#TKT-{viewTicket?.id.toUpperCase()}-029</p>
+                </div>
+                <div className="text-right space-y-1">
+                  <p className="text-[8px] font-black uppercase text-muted-foreground tracking-widest">Status</p>
+                  <Badge className="bg-green-500/10 text-green-600 border-none px-2 h-4 text-[7px] font-black uppercase">Confirmed</Badge>
+                </div>
+              </div>
+
+              <div className="space-y-1 text-left">
+                <h3 className="font-headline text-lg text-primary">{viewTicket?.title}</h3>
+                <div className="flex flex-col gap-1 mt-2">
+                  <p className="text-muted-foreground text-xs flex items-center gap-1.5 font-medium">
+                    <Calendar className="w-3 h-3 text-primary" /> 
+                    {mounted ? new Date(viewTicket?.date).toLocaleString('en-NG', { dateStyle: 'medium', timeStyle: 'short' }) : '...'}
+                  </p>
+                  <p className="text-muted-foreground text-xs flex items-center gap-1.5 font-medium">
+                    <MapPin className="w-3 h-3 text-accent" /> {viewTicket?.venue}, {viewTicket?.city}
+                  </p>
+                </div>
+              </div>
             </div>
-            <Button onClick={() => window.print()} className="w-full rounded-full no-print">Download PDF</Button>
+
+            <Button onClick={() => window.print()} className="w-full rounded-full no-print font-bold shadow-lg shadow-primary/20">
+              <Download className="w-4 h-4 mr-2" /> Download Ticket (PDF)
+            </Button>
           </div>
         </DialogContent>
       </Dialog>
