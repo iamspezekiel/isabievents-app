@@ -273,8 +273,8 @@ export default function AttendeeDashboard() {
             <p className="text-[10px] font-bold uppercase tracking-widest opacity-70">Entry Ticket</p>
           </div>
           <div className="p-6 text-center space-y-6">
-            <div className="p-3 bg-white rounded-2xl shadow-xl inline-block">
-               <QrCode className="w-40 h-40 text-black" />
+            <div className="p-4 bg-white rounded-2xl shadow-xl inline-block">
+               <QrCode className="w-64 h-64 text-black transition-all" />
             </div>
             
             <div className="space-y-4">
