@@ -235,7 +235,7 @@ export default function HomePage() {
             ))}
           </div>
 
-          <div className="text-center pt-8">
+          <div className="text-center pt-2">
             <Link href="/discover" className="inline-block px-12 md:px-0 w-full md:w-auto">
               <Button variant="outline" className="w-full md:w-auto rounded-full md:px-12 group border-2 font-bold h-9 md:h-11">
                 Discover More Events <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
