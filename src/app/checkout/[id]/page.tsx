@@ -1,8 +1,8 @@
 
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import React, { useState, useEffect, use } from 'react';
+import { useRouter } from 'next/navigation';
 import { 
   ShieldCheck, 
   CreditCard, 
@@ -36,8 +36,8 @@ import Link from 'next/link';
 
 const NGN_TO_USD_RATE = 1550; // Mock exchange rate
 
-export default function CheckoutPage() {
-  const { id } = useParams();
+export default function CheckoutPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const router = useRouter();
   const { toast } = useToast();
   

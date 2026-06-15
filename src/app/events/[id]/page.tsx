@@ -1,8 +1,7 @@
 
 "use client";
 
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import React, { useEffect, useState, use } from 'react';
 import { Calendar, MapPin, Share2, Heart, ShieldCheck, ChevronRight, Info, Music, Users, Ticket, CheckCircle2, AlertCircle, RefreshCcw } from 'lucide-react';
 import { MOCK_EVENTS } from '@/lib/mock-data';
 import { Button } from "@/components/ui/button";
@@ -15,8 +14,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
 
-export default function EventDetailsPage() {
-  const { id } = useParams();
+export default function EventDetailsPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = use(params);
   const { toast } = useToast();
   
   // Find event by slug or fallback to ID (backward compatibility)
@@ -69,7 +68,7 @@ export default function EventDetailsPage() {
   };
 
   const handleShare = () => {
-    const url = window.location.href;
+    const url = typeof window !== 'undefined' ? window.location.href : '';
     navigator.clipboard.writeText(url);
     toast({
       title: "Link Copied!",
