@@ -86,6 +86,21 @@ export default function VendorPortal() {
     }, 100);
   };
 
+  const handleSimulate = async () => {
+    setScanState('validating');
+    await new Promise(r => setTimeout(r, 1200));
+    const attendee = MOCK_ATTENDEES[Math.floor(Math.random() * MOCK_ATTENDEES.length)];
+    setScanState('success');
+    const entry = {
+      id: attendee.id,
+      name: attendee.name,
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      type: attendee.type
+    };
+    setHistory([entry, ...history]);
+    toast({ title: "Voucher Verified", description: `${attendee.name}'s ${attendee.type} is valid.` });
+  };
+
   const handleValidation = async (ticketId: string) => {
     await stopScanner();
     setScanState('validating');
@@ -215,6 +230,9 @@ export default function VendorPortal() {
                       >
                         <Camera className="w-4 h-4" /> Open Scanner
                       </Button>
+                      <Button variant="ghost" onClick={handleSimulate} className="text-muted-foreground hover:text-white text-[10px]">
+                        Simulate Success
+                      </Button>
                     </div>
                   </div>
                 )}
@@ -236,7 +254,12 @@ export default function VendorPortal() {
 
                 {scanState === 'validating' && (
                   <div className="text-center space-y-6 animate-in fade-in duration-500">
-                    <RefreshCcw className="w-20 h-20 text-primary animate-spin mx-auto" />
+                    <div className="relative">
+                      <RefreshCcw className="w-20 h-20 text-primary animate-spin mx-auto" />
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-10 h-10 bg-primary/20 rounded-full animate-ping" />
+                      </div>
+                    </div>
                     <p className="font-headline text-2xl tracking-tight">Verifying Voucher...</p>
                   </div>
                 )}
@@ -352,9 +375,12 @@ export default function VendorPortal() {
 
           <section className="space-y-6 text-left pt-2">
             <div className="flex items-center justify-between">
-              <h3 className="font-headline text-xl flex items-center gap-2 leading-none">
-                <Activity className="w-5 h-5 text-primary" /> fulfillment Log
-              </h3>
+              <div className="space-y-1">
+                <h3 className="font-headline text-xl flex items-center gap-2 leading-none">
+                  <Activity className="w-5 h-5 text-primary" /> Fulfillment Log
+                </h3>
+                <p className="text-xs text-muted-foreground font-medium">Activity from your current station</p>
+              </div>
               <Button 
                 variant="ghost" 
                 size="sm" 
@@ -385,10 +411,22 @@ export default function VendorPortal() {
                   </div>
                   <div className="text-right shrink-0">
                     <div className="text-xs font-black text-foreground">{entry.time}</div>
-                    <span className="text-[8px] font-black uppercase text-green-600 tracking-tighter block mt-1">Fulfilled</span>
+                    <div className="flex items-center gap-1 justify-end mt-1">
+                       <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
+                       <span className="text-[8px] font-black uppercase text-green-600 tracking-tighter">Fulfilled</span>
+                    </div>
                   </div>
                 </div>
               ))}
+              
+              {history.length === 0 && (
+                <div className="text-center py-20 bg-card/40 rounded-[2.5rem] border border-dashed border-border/50">
+                  <div className="w-14 h-14 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4 opacity-30">
+                    <History className="w-7 h-7" />
+                  </div>
+                  <p className="text-muted-foreground text-sm font-medium">No fulfillments recorded for this session yet.</p>
+                </div>
+              )}
             </div>
           </section>
         </div>
