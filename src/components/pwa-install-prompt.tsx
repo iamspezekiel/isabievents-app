@@ -20,13 +20,13 @@ export function PWAInstallPrompt() {
 
     // Register service worker if supported
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/sw.js').catch(err => {
-        console.error('Service worker registration failed:', err);
-      });
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('SW registered!', reg))
+        .catch(err => console.error('Service worker registration failed:', err));
     }
 
     const handler = (e: any) => {
-      // Prevent the mini-infobar from appearing on mobile
+      // Prevent the default mini-infobar from appearing
       e.preventDefault();
       // Stash the event so it can be triggered later.
       setDeferredPrompt(e);
@@ -42,6 +42,7 @@ export function PWAInstallPrompt() {
 
     // Also check if app is already installed
     window.addEventListener('appinstalled', () => {
+      console.log('PWA was installed');
       setDeferredPrompt(null);
       setShowPrompt(false);
     });
