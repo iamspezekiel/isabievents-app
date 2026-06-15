@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -270,39 +269,39 @@ export default function StaffCheckIn() {
                 )}
 
                 {scanState === 'success' && (
-                  <div className="text-center space-y-8 animate-in zoom-in-95 duration-500 p-8 w-full max-w-sm">
-                    <div className="relative mx-auto w-24 h-24">
+                  <div className="text-center space-y-4 animate-in zoom-in-95 duration-500 p-6 w-full max-w-sm">
+                    <div className="relative mx-auto w-16 h-16">
                       <div className="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-20" />
                       <div className="relative w-full h-full bg-green-500 rounded-full flex items-center justify-center border-4 border-white dark:border-background shadow-xl">
-                        <CheckCircle2 className="w-12 h-12 text-white" />
+                        <CheckCircle2 className="w-8 h-8 text-white" />
                       </div>
                     </div>
                     
-                    <div className="space-y-6">
+                    <div className="space-y-4">
                       <div className="space-y-1">
-                        <h2 className="font-headline text-4xl text-green-500 tracking-tighter uppercase italic leading-none">Access Granted</h2>
-                        <p className="text-[10px] font-black tracking-[0.3em] text-green-600/60 uppercase">Doing Well!</p>
+                        <h2 className="font-headline text-2xl text-green-500 tracking-tighter uppercase italic leading-none">Access Granted</h2>
+                        <p className="text-[9px] font-black tracking-[0.3em] text-green-600/60 uppercase">Doing Well!</p>
                       </div>
                       
-                      <div className="bg-card/40 backdrop-blur-md border border-green-500/20 p-6 rounded-[2rem] shadow-2xl relative overflow-hidden group">
-                        <div className="absolute top-0 right-0 p-4 opacity-10">
-                          <Sparkles className="w-12 h-12 text-green-500" />
+                      <div className="bg-card/40 backdrop-blur-md border border-green-500/20 p-4 rounded-[1.5rem] shadow-2xl relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 p-3 opacity-10">
+                          <Sparkles className="w-8 h-8 text-green-500" />
                         </div>
-                        <div className="relative z-10 text-left space-y-4">
-                          <div className="space-y-1">
-                            <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Attendee Name</p>
-                            <p className="text-2xl font-black leading-none truncate">{history[0]?.name}</p>
+                        <div className="relative z-10 text-left space-y-3">
+                          <div className="space-y-0.5">
+                            <p className="text-[9px] font-black uppercase text-muted-foreground tracking-widest">Attendee Name</p>
+                            <p className="text-lg font-black leading-none truncate">{history[0]?.name}</p>
                           </div>
-                          <div className="flex items-center justify-between gap-4 pt-4 border-t border-border/50">
+                          <div className="flex items-center justify-between gap-3 pt-3 border-t border-border/50">
                             <div className="space-y-0.5">
-                              <p className="text-[9px] font-black uppercase text-muted-foreground tracking-widest">Ticket Type</p>
-                              <Badge className="bg-green-500/10 text-green-600 border-none px-2 h-5 text-[9px] font-black uppercase tracking-tighter">
+                              <p className="text-[8px] font-black uppercase text-muted-foreground tracking-widest">Ticket Type</p>
+                              <Badge className="bg-green-500/10 text-green-600 border-none px-2 h-4 text-[8px] font-black uppercase tracking-tighter">
                                 {history[0]?.type}
                               </Badge>
                             </div>
                             <div className="text-right space-y-0.5">
-                              <p className="text-[9px] font-black uppercase text-muted-foreground tracking-widest">Ticket ID</p>
-                              <p className="font-mono text-[10px] font-bold opacity-60 uppercase">{history[0]?.id}</p>
+                              <p className="text-[8px] font-black uppercase text-muted-foreground tracking-widest">Ticket ID</p>
+                              <p className="font-mono text-[9px] font-bold opacity-60 uppercase">{history[0]?.id}</p>
                             </div>
                           </div>
                         </div>
@@ -311,30 +310,30 @@ export default function StaffCheckIn() {
 
                     <Button 
                       onClick={startScanner} 
-                      className="w-full rounded-full h-14 text-lg font-black bg-green-500 hover:bg-green-600 shadow-xl shadow-green-500/20 gap-3"
+                      className="w-full rounded-full h-11 text-sm font-black bg-green-500 hover:bg-green-600 shadow-xl shadow-green-500/20 gap-2"
                     >
-                      <Scan className="w-5 h-5" /> Scan Next
+                      <Scan className="w-4 h-4" /> Scan Next
                     </Button>
                   </div>
                 )}
 
                 {scanState === 'error' && (
-                  <div className="text-center space-y-8 animate-in zoom-in-95 duration-500 p-8 w-full max-w-sm">
-                    <div className="relative mx-auto w-24 h-24">
+                  <div className="text-center space-y-4 animate-in zoom-in-95 duration-500 p-6 w-full max-w-sm">
+                    <div className="relative mx-auto w-16 h-16">
                       <div className="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-20" />
                       <div className="relative w-full h-full bg-red-500 rounded-full flex items-center justify-center border-4 border-white dark:border-background shadow-xl">
-                        <AlertTriangle className="w-12 h-12 text-white" />
+                        <AlertTriangle className="w-8 h-8 text-white" />
                       </div>
                     </div>
                     
-                    <div className="space-y-6">
+                    <div className="space-y-4">
                       <div className="space-y-1">
-                        <h2 className="font-headline text-4xl text-red-500 tracking-tighter uppercase italic leading-none">Access Denied</h2>
-                        <p className="text-[10px] font-black tracking-[0.3em] text-red-600/60 uppercase">Verification Failed</p>
+                        <h2 className="font-headline text-2xl text-red-500 tracking-tighter uppercase italic leading-none">Access Denied</h2>
+                        <p className="text-[9px] font-black tracking-[0.3em] text-red-600/60 uppercase">Verification Failed</p>
                       </div>
                       
-                      <div className="bg-card/40 backdrop-blur-md border border-red-500/20 p-8 rounded-[2rem] shadow-2xl">
-                        <p className="text-sm font-medium text-muted-foreground leading-relaxed">
+                      <div className="bg-card/40 backdrop-blur-md border border-red-500/20 p-6 rounded-[1.5rem] shadow-2xl">
+                        <p className="text-xs font-medium text-muted-foreground leading-relaxed">
                           This code does not match any valid records or has already been scanned.
                         </p>
                       </div>
@@ -343,9 +342,9 @@ export default function StaffCheckIn() {
                     <Button 
                       onClick={startScanner} 
                       variant="outline"
-                      className="w-full rounded-full h-14 text-lg font-black border-red-500/50 text-red-500 hover:bg-red-500/5 gap-3"
+                      className="w-full rounded-full h-11 text-sm font-black border-red-500/50 text-red-500 hover:bg-red-500/5 gap-2"
                     >
-                      <RefreshCcw className="w-5 h-5" /> Try Again
+                      <RefreshCcw className="w-4 h-4" /> Try Again
                     </Button>
                   </div>
                 )}
