@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Scan, Store, CheckCircle, AlertCircle, RefreshCcw, History, ShoppingBag, X, ArrowLeft, User, Ticket, Activity, Camera, CameraOff, Bell, FileText, CheckCircle2, AlertTriangle, Sparkles, Search } from 'lucide-react';
+import { Scan, Store, CheckCircle, AlertCircle, RefreshCcw, History, ShoppingBag, X, ArrowLeft, User, Ticket, Activity, Camera, CameraOff, Bell, FileText, CheckCircle2, AlertTriangle, Sparkles, Search, UserMinus } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,7 +21,7 @@ const MOCK_ATTENDEES = [
 ];
 
 export default function VendorPortal() {
-  const [scanState, setScanState] = useState<'idle' | 'validating' | 'success' | 'error'>('idle');
+  const [scanState, setScanState] = useState<'idle' | 'validating' | 'success' | 'error' | 'duplicate'>('idle');
   const [manualMode, setManualMode] = useState(false);
   const [lookupQuery, setLookupQuery] = useState('');
   const [isCameraActive, setIsCameraActive] = useState(false);
@@ -101,12 +101,26 @@ export default function VendorPortal() {
     toast({ title: "Voucher Verified", description: `${attendee.name}'s ${attendee.type} is valid.` });
   };
 
+  const handleSimulateDuplicate = async () => {
+    setScanState('validating');
+    await new Promise(r => setTimeout(r, 1000));
+    setScanState('duplicate');
+  };
+
   const handleValidation = async (ticketId: string) => {
     await stopScanner();
     setScanState('validating');
     
     await new Promise(r => setTimeout(r, 1500));
     
+    // Check for duplicates
+    const isDuplicate = history.some(item => item.id.toUpperCase() === ticketId.toUpperCase());
+    if (isDuplicate) {
+      setScanState('duplicate');
+      toast({ variant: "destructive", title: "Already Fulfilled", description: "This voucher has already been used." });
+      return;
+    }
+
     const found = MOCK_ATTENDEES.find(a => 
       ticketId.toUpperCase().includes(a.id.toUpperCase()) || 
       a.id.toUpperCase().includes(ticketId.toUpperCase())
@@ -123,20 +137,8 @@ export default function VendorPortal() {
       setHistory([entry, ...history]);
       toast({ title: "Voucher Verified", description: `${found.name}'s ${found.type} is valid.` });
     } else {
-      if (Math.random() > 0.2) {
-         const random = MOCK_ATTENDEES[Math.floor(Math.random() * MOCK_ATTENDEES.length)];
-         setScanState('success');
-         const entry = {
-           id: ticketId.substring(0, 10).toUpperCase(),
-           name: random.name,
-           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-           type: random.type
-         };
-         setHistory([entry, ...history]);
-      } else {
-        setScanState('error');
-        toast({ variant: "destructive", title: "Invalid Voucher", description: "This code is invalid or has already been used." });
-      }
+      setScanState('error');
+      toast({ variant: "destructive", title: "Invalid Voucher", description: "This code is invalid or not in records." });
     }
   };
 
@@ -148,6 +150,17 @@ export default function VendorPortal() {
     
     await new Promise(r => setTimeout(r, 1200));
     
+    const isDuplicate = history.some(item => 
+      item.id.toLowerCase() === lookupQuery.toLowerCase() ||
+      item.name.toLowerCase() === lookupQuery.toLowerCase()
+    );
+
+    if (isDuplicate) {
+      setScanState('duplicate');
+      setLookupQuery('');
+      return;
+    }
+
     const found = MOCK_ATTENDEES.find(a => 
       a.name.toLowerCase().includes(lookupQuery.toLowerCase()) || 
       a.id.toLowerCase().includes(lookupQuery.toLowerCase())
@@ -207,6 +220,7 @@ export default function VendorPortal() {
                 "aspect-square relative flex flex-col items-center justify-center transition-all duration-1000",
                 scanState === 'success' ? 'bg-gradient-to-br from-green-500/20 via-green-500/5 to-background' : 
                 scanState === 'error' ? 'bg-gradient-to-br from-red-500/20 via-red-500/5 to-background' : 
+                scanState === 'duplicate' ? 'bg-gradient-to-br from-amber-500/20 via-amber-500/5 to-background' :
                 'bg-black/95'
               )}>
                 
@@ -216,23 +230,28 @@ export default function VendorPortal() {
 
                 {scanState === 'idle' && !isCameraActive && (
                   <div className="z-10 text-center space-y-6 p-8">
-                    <div className="w-24 h-24 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-primary/20 animate-in fade-in zoom-in duration-500">
-                      <ShoppingBag className="w-12 h-12 text-primary" />
+                    <div className="w-20 h-20 bg-primary/10 rounded-3xl flex items-center justify-center mx-auto mb-4 border border-primary/20 animate-in fade-in zoom-in duration-500">
+                      <ShoppingBag className="w-10 h-10 text-primary" />
                     </div>
                     <div className="space-y-1">
-                      <p className="text-white font-bold text-xl">Ready to Serve</p>
-                      <p className="text-muted-foreground text-sm">Scan customer vouchers to fulfill orders</p>
+                      <p className="text-white font-bold text-lg">Ready to Serve</p>
+                      <p className="text-muted-foreground text-xs">Scan customer vouchers to fulfill orders</p>
                     </div>
-                    <div className="flex flex-col gap-3 items-center">
+                    <div className="flex flex-col gap-2 items-center">
                       <Button 
                         onClick={startScanner} 
                         className="rounded-full px-6 h-10 text-xs shadow-xl shadow-primary/20 font-black hover:scale-105 transition-transform gap-2.5"
                       >
                         <Camera className="w-4 h-4" /> Open Scanner
                       </Button>
-                      <Button variant="ghost" onClick={handleSimulate} className="text-muted-foreground hover:text-white text-[10px]">
-                        Simulate Success
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button variant="ghost" onClick={handleSimulate} className="text-muted-foreground hover:text-white text-[9px] uppercase font-black tracking-widest">
+                          Simulate Success
+                        </Button>
+                        <Button variant="ghost" onClick={handleSimulateDuplicate} className="text-muted-foreground hover:text-white text-[9px] uppercase font-black tracking-widest">
+                          Simulate Duplicate
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -255,49 +274,49 @@ export default function VendorPortal() {
                 {scanState === 'validating' && (
                   <div className="text-center space-y-6 animate-in fade-in duration-500">
                     <div className="relative">
-                      <RefreshCcw className="w-20 h-20 text-primary animate-spin mx-auto" />
+                      <RefreshCcw className="w-16 h-16 text-primary animate-spin mx-auto" />
                       <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-10 h-10 bg-primary/20 rounded-full animate-ping" />
+                        <div className="w-8 h-8 bg-primary/20 rounded-full animate-ping" />
                       </div>
                     </div>
-                    <p className="font-headline text-2xl tracking-tight">Verifying Voucher...</p>
+                    <p className="font-headline text-xl tracking-tight">Verifying Voucher...</p>
                   </div>
                 )}
 
                 {scanState === 'success' && (
                   <div className="text-center space-y-4 animate-in zoom-in-95 duration-500 p-6 w-full max-w-sm">
-                    <div className="relative mx-auto w-16 h-16">
+                    <div className="relative mx-auto w-14 h-14">
                       <div className="absolute inset-0 bg-green-500 rounded-full animate-ping opacity-20" />
                       <div className="relative w-full h-full bg-green-500 rounded-full flex items-center justify-center border-4 border-white dark:border-background shadow-xl">
-                        <CheckCircle2 className="w-8 h-8 text-white" />
+                        <CheckCircle2 className="w-6 h-6 text-white" />
                       </div>
                     </div>
                     
                     <div className="space-y-4">
                       <div className="space-y-1">
-                        <h2 className="font-headline text-2xl text-green-500 tracking-tighter uppercase italic leading-none">Voucher Valid</h2>
-                        <p className="text-[9px] font-black tracking-[0.3em] text-green-600/60 uppercase">Well Cooked!</p>
+                        <h2 className="font-headline text-xl text-green-500 tracking-tighter uppercase italic leading-none">Voucher Valid</h2>
+                        <p className="text-[8px] font-black tracking-[0.2em] text-green-600/60 uppercase">Well Cooked!</p>
                       </div>
                       
-                      <div className="bg-card/40 backdrop-blur-md border border-green-500/20 p-4 rounded-[1.5rem] shadow-2xl relative overflow-hidden group">
+                      <div className="bg-card/40 backdrop-blur-md border border-green-500/20 p-4 rounded-[1.5rem] shadow-2xl relative overflow-hidden group text-left">
                         <div className="absolute top-0 right-0 p-3 opacity-10">
-                          <Sparkles className="w-8 h-8 text-green-500" />
+                          <Sparkles className="w-6 h-6 text-green-500" />
                         </div>
-                        <div className="relative z-10 text-left space-y-3">
+                        <div className="relative z-10 space-y-2">
                           <div className="space-y-0.5">
-                            <p className="text-[9px] font-black uppercase text-muted-foreground tracking-widest">Customer Name</p>
-                            <p className="text-lg font-black leading-none truncate">{history[0]?.name}</p>
+                            <p className="text-[8px] font-black uppercase text-muted-foreground tracking-widest">Customer Name</p>
+                            <p className="text-base font-black leading-none truncate">{history[0]?.name}</p>
                           </div>
-                          <div className="flex items-center justify-between gap-3 pt-3 border-t border-border/50">
+                          <div className="flex items-center justify-between gap-3 pt-2 border-t border-border/50">
                             <div className="space-y-0.5">
-                              <p className="text-[8px] font-black uppercase text-muted-foreground tracking-widest">Service</p>
-                              <Badge className="bg-green-500/10 text-green-600 border-none px-2 h-4 text-[8px] font-black uppercase tracking-tighter">
+                              <p className="text-[7px] font-black uppercase text-muted-foreground tracking-widest">Service</p>
+                              <Badge className="bg-green-500/10 text-green-600 border-none px-2 h-4 text-[7px] font-black uppercase">
                                 {history[0]?.type}
                               </Badge>
                             </div>
                             <div className="text-right space-y-0.5">
-                              <p className="text-[8px] font-black uppercase text-muted-foreground tracking-widest">Voucher ID</p>
-                              <p className="font-mono text-[9px] font-bold opacity-60 uppercase">{history[0]?.id}</p>
+                              <p className="text-[7px] font-black uppercase text-muted-foreground tracking-widest">ID</p>
+                              <p className="font-mono text-[8px] font-bold opacity-60 uppercase">{history[0]?.id}</p>
                             </div>
                           </div>
                         </div>
@@ -306,26 +325,61 @@ export default function VendorPortal() {
 
                     <Button 
                       onClick={startScanner} 
-                      className="w-full rounded-full h-11 text-sm font-black bg-green-500 hover:bg-green-600 shadow-xl shadow-green-500/20 gap-2"
+                      className="w-full rounded-full h-11 text-xs font-black bg-green-500 hover:bg-green-600 shadow-xl shadow-green-500/20 gap-2"
                     >
                       <Scan className="w-4 h-4" /> Scan Next
                     </Button>
                   </div>
                 )}
 
-                {scanState === 'error' && (
+                {scanState === 'duplicate' && (
                   <div className="text-center space-y-4 animate-in zoom-in-95 duration-500 p-6 w-full max-w-sm">
-                    <div className="relative mx-auto w-16 h-16">
-                      <div className="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-20" />
-                      <div className="relative w-full h-full bg-red-500 rounded-full flex items-center justify-center border-4 border-white dark:border-background shadow-xl">
-                        <AlertTriangle className="w-8 h-8 text-white" />
+                    <div className="relative mx-auto w-14 h-14">
+                      <div className="absolute inset-0 bg-amber-500 rounded-full animate-ping opacity-20" />
+                      <div className="relative w-full h-full bg-amber-500 rounded-full flex items-center justify-center border-4 border-white dark:border-background shadow-xl">
+                        <UserMinus className="w-6 h-6 text-white" />
                       </div>
                     </div>
                     
                     <div className="space-y-4">
                       <div className="space-y-1">
-                        <h2 className="font-headline text-2xl text-red-500 tracking-tighter uppercase italic leading-none">Invalid</h2>
-                        <p className="text-[9px] font-black tracking-[0.3em] text-red-600/60 uppercase">Verification Failed</p>
+                        <h2 className="font-headline text-xl text-amber-500 tracking-tighter uppercase italic leading-none">Already Used</h2>
+                        <p className="text-[8px] font-black tracking-[0.2em] text-amber-600/60 uppercase">Fulfillment Recorded</p>
+                      </div>
+                      
+                      <div className="bg-card/40 backdrop-blur-md border border-amber-500/20 p-5 rounded-[1.5rem] shadow-2xl">
+                        <div className="flex items-center gap-2 mb-2">
+                           <AlertCircle className="w-4 h-4 text-amber-500" />
+                           <p className="text-[10px] font-black uppercase text-amber-600">Verification Alert</p>
+                        </div>
+                        <p className="text-xs font-medium text-muted-foreground leading-relaxed text-left">
+                          This voucher has already been marked as fulfilled during this session.
+                        </p>
+                      </div>
+                    </div>
+
+                    <Button 
+                      onClick={startScanner} 
+                      className="w-full rounded-full h-11 text-xs font-black bg-amber-500 hover:bg-amber-600 shadow-xl shadow-amber-500/20 gap-2"
+                    >
+                      <RefreshCcw className="w-4 h-4" /> Scan Next
+                    </Button>
+                  </div>
+                )}
+
+                {scanState === 'error' && (
+                  <div className="text-center space-y-4 animate-in zoom-in-95 duration-500 p-6 w-full max-w-sm">
+                    <div className="relative mx-auto w-14 h-14">
+                      <div className="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-20" />
+                      <div className="relative w-full h-full bg-red-500 rounded-full flex items-center justify-center border-4 border-white dark:border-background shadow-xl">
+                        <AlertTriangle className="w-6 h-6 text-white" />
+                      </div>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      <div className="space-y-1">
+                        <h2 className="font-headline text-xl text-red-500 tracking-tighter uppercase italic leading-none">Invalid</h2>
+                        <p className="text-[8px] font-black tracking-[0.2em] text-red-600/60 uppercase">Verification Failed</p>
                       </div>
                       
                       <div className="bg-card/40 backdrop-blur-md border border-red-500/20 p-6 rounded-[1.5rem] shadow-2xl">
@@ -338,7 +392,7 @@ export default function VendorPortal() {
                     <Button 
                       onClick={startScanner} 
                       variant="outline"
-                      className="w-full rounded-full h-11 text-sm font-black border-red-500/50 text-red-500 hover:bg-red-500/5 gap-2"
+                      className="w-full rounded-full h-11 text-xs font-black border-red-500/50 text-red-500 hover:bg-red-500/5 gap-2"
                     >
                       <RefreshCcw className="w-4 h-4" /> Try Again
                     </Button>
