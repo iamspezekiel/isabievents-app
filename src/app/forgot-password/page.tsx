@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from 'react';
@@ -39,7 +38,7 @@ export default function ForgotPasswordPage() {
       <div className="w-full max-w-md space-y-8 text-left">
         <div className="text-center space-y-2">
           <Link href="/" className="inline-block mb-4 no-underline">
-            <Logo size="lg" className="mx-auto" />
+            <Logo size="md" className="mx-auto" />
           </Link>
           <p className="text-muted-foreground">We'll send you a link to get back into your account</p>
         </div>

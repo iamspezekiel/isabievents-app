@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState, useEffect, Suspense } from 'react';
@@ -56,7 +55,7 @@ function SignupForm() {
       <div className="w-full max-w-md space-y-8">
         <div className="text-center space-y-2">
           <Link href="/" className="inline-block mb-4 no-underline">
-            <Logo size="lg" className="mx-auto" />
+            <Logo size="md" className="mx-auto" />
           </Link>
           <p className="text-muted-foreground">Experience the best events in Nigeria</p>
         </div>
