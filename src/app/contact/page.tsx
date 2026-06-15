@@ -42,7 +42,7 @@ export default function ContactPage() {
               whatsapp: "+2349024244140", 
               call_to_action: "Contact Us", 
               button_color: "#7E7CFF", 
-              position: "left", 
+              position: "right", 
               order: "call,whatsapp", 
               pre_filled_message: "Hello IsabiEvents, I want to", 
             };
@@ -175,7 +175,7 @@ export default function ContactPage() {
       <section className="bg-primary/5 py-12 border-y border-border">
         <div className="container mx-auto px-4 text-center space-y-8">
            <h2 className="font-headline tracking-tighter">Frequently Asked Questions</h2>
-           <p className="text-muted-foreground max-w-xl mx-auto">Check our comprehensive knowledge base for quick solutions to common issues.</p>
+           <p className="text-muted-foreground max-xl mx-auto">Check our comprehensive knowledge base for quick solutions to common issues.</p>
            <Link href="/help" className="inline-block no-underline">
              <Button size="lg" className="rounded-full px-8 h-12 font-black shadow-2xl shadow-primary/20 gap-3">
                Browse Help Center <ArrowRight className="w-5 h-5" />

@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from 'react';
@@ -20,7 +19,7 @@ export default function TicketSupportPage() {
               whatsapp: "+2349024244140", 
               call_to_action: "Contact Us", 
               button_color: "#7E7CFF", 
-              position: "left", 
+              position: "right", 
               order: "call,whatsapp", 
               pre_filled_message: "Hello IsabiEvents, I want to", 
             };
