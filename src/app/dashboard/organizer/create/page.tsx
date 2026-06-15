@@ -135,7 +135,7 @@ function CreateEventForm() {
 
   return (
     <div className="min-h-screen bg-background pb-20 pt-20">
-      <header className="border-b border-border bg-card sticky top-0 z-50 py-4 mt-16">
+      <header className="border-b border-border bg-card sticky top-0 z-50 pb-4">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center gap-4">
             <Button variant="ghost" size="icon" onClick={() => router.back()}>
