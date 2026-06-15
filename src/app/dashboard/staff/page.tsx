@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -227,11 +228,11 @@ export default function StaffCheckIn() {
                     <div className="flex flex-col gap-3 items-center">
                       <Button 
                         onClick={startScanner} 
-                        className="rounded-full px-8 h-12 text-sm shadow-xl shadow-primary/20 font-black hover:scale-105 transition-transform gap-3"
+                        className="rounded-full px-6 h-10 text-xs shadow-xl shadow-primary/20 font-black hover:scale-105 transition-transform gap-2.5"
                       >
-                        <Camera className="w-5 h-5" /> Launch Scanner
+                        <Camera className="w-4 h-4" /> Launch Scanner
                       </Button>
-                      <Button variant="ghost" onClick={handleSimulate} className="text-muted-foreground hover:text-white text-xs">
+                      <Button variant="ghost" onClick={handleSimulate} className="text-muted-foreground hover:text-white text-[10px]">
                         Simulate Success
                       </Button>
                     </div>

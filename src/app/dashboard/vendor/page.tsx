@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState, useEffect, useRef } from 'react';
@@ -211,9 +212,9 @@ export default function VendorPortal() {
                     <div className="flex flex-col gap-3 items-center">
                       <Button 
                         onClick={startScanner} 
-                        className="rounded-full px-8 h-12 text-sm shadow-xl shadow-primary/20 font-black hover:scale-105 transition-transform gap-3"
+                        className="rounded-full px-6 h-10 text-xs shadow-xl shadow-primary/20 font-black hover:scale-105 transition-transform gap-2.5"
                       >
-                        <Camera className="w-5 h-5" /> Open Scanner
+                        <Camera className="w-4 h-4" /> Open Scanner
                       </Button>
                     </div>
                   </div>
@@ -294,7 +295,7 @@ export default function VendorPortal() {
                   <div className="text-center space-y-8 animate-in zoom-in-95 duration-500 p-8 w-full max-w-sm">
                     <div className="relative mx-auto w-24 h-24">
                       <div className="absolute inset-0 bg-red-500 rounded-full animate-ping opacity-20" />
-                      <div className="relative w-full h-full bg-red-500 rounded-full flex items-center justify-center border-4 border-white dark:border-background shadow-xl">
+                      <div className="relative w-full h-full bg-green-500 rounded-full flex items-center justify-center border-4 border-white dark:border-background shadow-xl">
                         <AlertTriangle className="w-12 h-12 text-white" />
                       </div>
                     </div>
