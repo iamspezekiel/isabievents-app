@@ -82,7 +82,7 @@ export default function AdminKYCManagement() {
                   <Badge variant="outline" className="font-mono text-[10px] opacity-60">ID: {kyc.id}</Badge>
                 </div>
 
-                <div className="flex flex-wrap gap-4 pt-4 border-t border-border">
+                <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-border">
                   <div className="flex items-center gap-3 bg-secondary/30 p-3 rounded-xl border border-border flex-1">
                     <div className="w-10 h-10 rounded-lg bg-background flex items-center justify-center border border-border">
                       <FileText className="w-5 h-5 text-primary" />
@@ -94,11 +94,11 @@ export default function AdminKYCManagement() {
                     <Button variant="ghost" size="icon" className="rounded-full" title="View Document"><Eye className="w-4 h-4" /></Button>
                   </div>
                   
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 w-full sm:w-auto">
                     <Button 
                       onClick={() => handleAction(kyc.id, kyc.name, 'approve')}
                       disabled={processingId === kyc.id}
-                      className="rounded-full bg-green-500 hover:bg-green-600 font-bold px-8 h-11 gap-2 shadow-lg shadow-green-500/10"
+                      className="flex-1 sm:flex-none rounded-full bg-green-500 hover:bg-green-600 font-bold px-8 h-11 gap-2 shadow-lg shadow-green-500/10 min-w-[160px]"
                     >
                       {processingId === kyc.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
                       Approve KYC
@@ -107,7 +107,7 @@ export default function AdminKYCManagement() {
                       onClick={() => handleAction(kyc.id, kyc.name, 'reject')}
                       disabled={processingId === kyc.id}
                       variant="outline" 
-                      className="rounded-full text-red-500 border-red-500/20 hover:bg-red-500/5 font-bold h-11 px-6"
+                      className="flex-1 sm:flex-none rounded-full text-red-500 border-red-500/20 hover:bg-red-500/5 font-bold h-11 px-6 min-w-[100px]"
                     >
                       Reject
                     </Button>
