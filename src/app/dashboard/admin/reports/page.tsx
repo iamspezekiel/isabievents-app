@@ -50,12 +50,37 @@ export default function AdminFinancialReports() {
     setIsExporting(true);
     // Simulate data generation and file download preparation
     await new Promise(r => setTimeout(r, 2000));
-    setIsExporting(false);
     
-    toast({
-      title: "Ledger Exported",
-      description: "The platform financial ledger (PDF/CSV) has been generated and downloaded.",
-    });
+    try {
+      // Create CSV content from platformVolume data
+      const headers = "Month,Gross Transaction Volume (NGN)\n";
+      const rows = platformVolume.map(item => `${item.name},${item.volume}`).join("\n");
+      const csvContent = headers + rows;
+      
+      // Create blob and download link
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `IsabiEvents_Financial_Ledger_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      toast({
+        title: "Ledger Exported",
+        description: "The platform financial ledger (CSV) has been generated and downloaded.",
+      });
+    } catch (error) {
+      toast({
+        variant: "destructive",
+        title: "Export Failed",
+        description: "There was an error generating the ledger file.",
+      });
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   const NavigationLinks = () => (
