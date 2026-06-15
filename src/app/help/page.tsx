@@ -46,7 +46,7 @@ export default function HelpCenterPage() {
       </Script>
 
       {/* Header */}
-      <header className="bg-card border-b border-border pt-56 pb-20 text-center relative overflow-hidden">
+      <header className="bg-card border-b border-border pt-56 pb-12 text-center relative overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-primary/5 blur-[120px] -z-10 rounded-full" />
         <div className="container mx-auto px-4 max-w-4xl space-y-8">
           <div className="space-y-2">
