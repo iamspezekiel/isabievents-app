@@ -14,8 +14,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
 
-export default function EventDetailsPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function EventDetailsPage(props: { params: Promise<{ id: string }> }) {
+  const { id } = use(props.params);
   const { toast } = useToast();
   
   // Find event by slug or fallback to ID (backward compatibility)

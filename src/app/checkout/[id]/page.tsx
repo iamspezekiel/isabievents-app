@@ -36,8 +36,8 @@ import Link from 'next/link';
 
 const NGN_TO_USD_RATE = 1550; // Mock exchange rate
 
-export default function CheckoutPage({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = use(params);
+export default function CheckoutPage(props: { params: Promise<{ id: string }> }) {
+  const { id } = use(props.params);
   const router = useRouter();
   const { toast } = useToast();
   
@@ -363,7 +363,7 @@ export default function CheckoutPage({ params }: { params: Promise<{ id: string 
                   <CheckCircle2 className="w-12 h-12 text-primary" />
                 </div>
                 <h1 className="font-headline">Payment Confirmed!</h1>
-                <p className="text-muted-foreground max-w-md mx-auto leading-relaxed">
+                <p className="text-muted-foreground max-md mx-auto leading-relaxed">
                   Thank you for your purchase. Your secure QR code ticket is now available in your digital wallet.
                 </p>
                 <div className="pt-10 flex flex-col sm:flex-row justify-center gap-4">
