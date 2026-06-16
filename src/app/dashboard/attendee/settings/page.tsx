@@ -1,15 +1,27 @@
 
 "use client";
 
-import React from 'react';
-import { User, ShieldCheck, MapPin } from 'lucide-react';
+import React, { useState } from 'react';
+import { User, ShieldCheck, MapPin, Loader2, AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { CITIES } from '@/lib/mock-data';
+import { useToast } from "@/hooks/use-toast";
 
 const WhatsAppIcon = ({ className }: { className?: string }) => (
   <svg 
@@ -23,6 +35,38 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 );
 
 export default function AttendeeSettingsPage() {
+  const { toast } = useToast();
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Form State
+  const [whatsapp, setWhatsapp] = useState("+2349024244140");
+  const [location, setLocation] = useState("Lagos");
+  const [emailNotifs, setEmailNotifs] = useState(true);
+  const [marketingNotifs, setMarketingNotifs] = useState(false);
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    await new Promise(r => setTimeout(r, 1200));
+    setIsSaving(false);
+    toast({
+      title: "Settings Saved",
+      description: "Your profile information has been updated successfully.",
+    });
+  };
+
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+    await new Promise(r => setTimeout(r, 2000));
+    setIsDeleting(false);
+    toast({
+      variant: "destructive",
+      title: "Account Deleted",
+      description: "Your account has been deactivated. Redirecting...",
+    });
+    // Redirect logic would go here
+  };
+
   return (
     <div className="p-4 md:p-12">
       <div className="max-w-4xl mx-auto space-y-8">
@@ -51,13 +95,18 @@ export default function AttendeeSettingsPage() {
                   <Label htmlFor="whatsapp" className="flex items-center gap-1.5">
                     <WhatsAppIcon className="w-3.5 h-3.5 text-green-500" /> WhatsApp Number
                   </Label>
-                  <Input id="whatsapp" defaultValue="+2349024244140" className="h-11" />
+                  <Input 
+                    id="whatsapp" 
+                    value={whatsapp} 
+                    onChange={(e) => setWhatsapp(e.target.value)}
+                    className="h-11" 
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="location" className="flex items-center gap-1.5">
                     <MapPin className="w-3.5 h-3.5 text-primary" /> Location
                   </Label>
-                  <Select defaultValue="Lagos">
+                  <Select value={location} onValueChange={setLocation}>
                     <SelectTrigger className="h-11">
                       <SelectValue placeholder="Select your city" />
                     </SelectTrigger>
@@ -69,7 +118,10 @@ export default function AttendeeSettingsPage() {
                   </Select>
                 </div>
               </div>
-              <Button className="rounded-full px-8 font-bold">Save Changes</Button>
+              <Button onClick={handleSave} disabled={isSaving} className="rounded-full px-8 font-bold gap-2">
+                {isSaving && <Loader2 className="w-4 h-4 animate-spin" />}
+                Save Changes
+              </Button>
             </CardContent>
           </Card>
 
@@ -83,16 +135,46 @@ export default function AttendeeSettingsPage() {
                   <div className="font-bold">Email Notifications</div>
                   <p className="text-xs text-muted-foreground">Receive reminders for your upcoming events.</p>
                 </div>
-                <Switch checked />
+                <Switch checked={emailNotifs} onCheckedChange={setEmailNotifs} />
               </div>
               <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-xl">
                 <div className="space-y-0.5">
                   <div className="font-bold">Marketing Updates</div>
                   <p className="text-xs text-muted-foreground">Get notified about flash sales and trending events.</p>
                 </div>
-                <Switch />
+                <Switch checked={marketingNotifs} onCheckedChange={setMarketingNotifs} />
               </div>
-              <Button variant="outline" className="rounded-full w-full sm:w-auto text-red-500 hover:text-red-600 border-red-200">Delete Account</Button>
+              
+              <div className="pt-4">
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="outline" className="rounded-full w-full sm:w-auto text-red-500 hover:text-red-600 border-red-200">
+                      Delete Account
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent className="bg-card border-border sm:rounded-[2rem] p-8">
+                    <AlertDialogHeader className="text-left">
+                      <div className="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center mb-4">
+                        <AlertTriangle className="w-6 h-6 text-red-500" />
+                      </div>
+                      <AlertDialogTitle className="font-headline text-2xl">Are you absolutely sure?</AlertDialogTitle>
+                      <AlertDialogDescription className="text-muted-foreground leading-relaxed">
+                        This action cannot be undone. This will permanently delete your account
+                        and remove your ticket data from our servers. You will lose access to all active tickets.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter className="flex-row gap-3 pt-6">
+                      <AlertDialogCancel className="flex-1 rounded-full font-bold h-11 border-2">Cancel</AlertDialogCancel>
+                      <AlertDialogAction 
+                        onClick={handleDeleteAccount}
+                        className="flex-1 rounded-full font-bold h-11 bg-red-500 hover:bg-red-600 text-white border-none"
+                      >
+                        {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Delete Account"}
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
             </CardContent>
           </Card>
         </div>
