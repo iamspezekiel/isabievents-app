@@ -38,7 +38,6 @@ const MOCK_ORDERS = [
 export default function OrderHistoryPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
-  const [downloadingId, setDownloadingId] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
 
   // Ticket Preview State
@@ -60,36 +59,12 @@ export default function OrderHistoryPage() {
     setIsViewOpen(true);
   };
 
-  const handleDownload = async (orderId: string, eventName: string) => {
-    setDownloadingId(orderId);
-    
-    // Find the corresponding event data to generate a real-looking ticket
-    const event = MOCK_EVENTS.find(e => e.title.includes(eventName)) || MOCK_EVENTS[0];
-    
-    // Simulate network delay for document generation
-    await new Promise(r => setTimeout(r, 1000));
-    
-    setDownloadingId(null);
-    setViewTicket(event);
-    setIsViewOpen(true);
-    
-    // Trigger print after a short delay to allow dialog rendering
-    setTimeout(() => {
-      window.print();
-    }, 500);
-
-    toast({
-      title: "Generating PDF",
-      description: `Preparing your ticket for ${eventName}...`,
-    });
-  };
-
   return (
     <div className="p-4 md:p-12">
       <div className="max-w-4xl mx-auto space-y-8 text-left">
         <div className="text-left">
           <h1 className="font-headline mb-2 text-3xl md:text-5xl tracking-tighter">Order History</h1>
-          <p className="text-muted-foreground font-medium">View and download invoices or tickets for all your past purchases.</p>
+          <p className="text-muted-foreground font-medium">View and manage all your past ticket purchases and receipts.</p>
         </div>
 
         <div className="flex gap-4">
@@ -111,8 +86,6 @@ export default function OrderHistoryPage() {
                 key={order.id} 
                 {...order} 
                 onView={() => handleView(order.event)}
-                onDownload={() => handleDownload(order.id, order.event)}
-                isDownloading={downloadingId === order.id}
                />
              ))
            ) : (
@@ -124,7 +97,7 @@ export default function OrderHistoryPage() {
         </div>
       </div>
 
-      {/* Ticket Print Dialog */}
+      {/* Ticket Preview Dialog */}
       <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
         <DialogContent className="bg-card border-border sm:rounded-[2rem] p-0 overflow-hidden max-w-sm w-[94vw] sm:w-full">
           <div className="bg-primary p-6 text-center text-white">
@@ -180,7 +153,7 @@ export default function OrderHistoryPage() {
   );
 }
 
-function OrderRow({ id, event, date, amount, status, onView, onDownload, isDownloading }: any) {
+function OrderRow({ id, event, date, amount, status, onView }: any) {
   return (
     <div className="bg-card border border-border p-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between hover:border-primary/30 transition-all group shadow-sm gap-4">
       <div className="flex items-center gap-4 md:gap-6 text-left">
@@ -213,16 +186,6 @@ function OrderRow({ id, event, date, amount, status, onView, onDownload, isDownl
               title="View Ticket"
             >
               <Eye className="w-5 h-5" />
-            </Button>
-            <Button 
-              variant="ghost" 
-              size="icon" 
-              className="rounded-full h-10 w-10 hover:bg-primary/10 hover:text-primary transition-all shrink-0"
-              onClick={onDownload}
-              disabled={isDownloading}
-              title="Download Ticket"
-            >
-              {isDownloading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
             </Button>
          </div>
       </div>
