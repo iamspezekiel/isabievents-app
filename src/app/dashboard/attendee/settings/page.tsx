@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { User, ShieldCheck, MapPin, Loader2, AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -35,6 +36,7 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 );
 
 export default function AttendeeSettingsPage() {
+  const router = useRouter();
   const { toast } = useToast();
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -57,14 +59,25 @@ export default function AttendeeSettingsPage() {
 
   const handleDeleteAccount = async () => {
     setIsDeleting(true);
-    await new Promise(r => setTimeout(r, 2000));
-    setIsDeleting(false);
+    // Simulate a secure deletion process
+    await new Promise(r => setTimeout(r, 2500));
+    
     toast({
       variant: "destructive",
       title: "Account Deleted",
-      description: "Your account has been deactivated. Redirecting...",
+      description: "Your account has been deactivated. Redirecting to login...",
     });
-    // Redirect logic would go here
+
+    // Mock logout logic
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('isabi_logged_in');
+      localStorage.removeItem('isabi_user_role');
+    }
+
+    setTimeout(() => {
+      setIsDeleting(false);
+      router.push('/login');
+    }, 1000);
   };
 
   return (
@@ -166,7 +179,11 @@ export default function AttendeeSettingsPage() {
                     <AlertDialogFooter className="flex-row gap-3 pt-6">
                       <AlertDialogCancel className="flex-1 rounded-full font-bold h-11 border-2">Cancel</AlertDialogCancel>
                       <AlertDialogAction 
-                        onClick={handleDeleteAccount}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleDeleteAccount();
+                        }}
+                        disabled={isDeleting}
                         className="flex-1 rounded-full font-bold h-11 bg-red-500 hover:bg-red-600 text-white border-none"
                       >
                         {isDeleting ? <Loader2 className="w-4 h-4 animate-spin" /> : "Delete Account"}
