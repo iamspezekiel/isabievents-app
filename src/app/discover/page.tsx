@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose, SheetFooter } from "@/components/ui/sheet";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 import { MOCK_EVENTS, CATEGORIES, CITIES } from '@/lib/mock-data';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -194,7 +195,18 @@ function DiscoverContent() {
             <h2 className="font-headline text-xl">Trending Now</h2>
           </div>
         </div>
-        <Carousel className="w-full">
+        <Carousel 
+          className="w-full"
+          plugins={[
+            Autoplay({
+              delay: 4000,
+            }),
+          ]}
+          opts={{
+            align: "start",
+            loop: true,
+          }}
+        >
           <CarouselContent className="-ml-4">
             {trendingEvents.map((event) => (
               <CarouselItem key={event.id} className="pl-4 md:basis-1/2 lg:basis-1/3">
