@@ -152,7 +152,7 @@ export default function AttendeeSettingsPage() {
                       Delete Account
                     </Button>
                   </AlertDialogTrigger>
-                  <AlertDialogContent className="bg-card border-border sm:rounded-[2rem] p-8">
+                  <AlertDialogContent className="bg-card border-border sm:rounded-[2rem] p-8 max-w-md w-[94vw] sm:w-full">
                     <AlertDialogHeader className="text-left">
                       <div className="w-12 h-12 rounded-2xl bg-red-500/10 flex items-center justify-center mb-4">
                         <AlertTriangle className="w-6 h-6 text-red-500" />
