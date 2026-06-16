@@ -1,13 +1,31 @@
 
 "use client";
 
-import React, { useState } from 'react';
-import { History, Search, Download, Loader2 } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { 
+  History, 
+  Search, 
+  Download, 
+  Loader2, 
+  QrCode, 
+  Calendar, 
+  MapPin, 
+  X,
+  CheckCircle2
+} from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle, 
+  DialogDescription 
+} from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
+import { MOCK_EVENTS, MOCK_USER } from '@/lib/mock-data';
 
 const MOCK_ORDERS = [
   { id: 'ORD-7721', event: 'Lagos Jazz Night', date: 'Oct 12, 2024', amount: '₦15,000', status: 'Success' },
@@ -20,20 +38,42 @@ export default function OrderHistoryPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  // Ticket Preview State
+  const [isViewOpen, setIsViewOpen] = useState(false);
+  const [viewTicket, setViewTicket] = useState<any>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const filteredOrders = MOCK_ORDERS.filter(order => 
     order.event.toLowerCase().includes(searchQuery.toLowerCase()) ||
     order.id.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleDownload = async (id: string) => {
-    setDownloadingId(id);
+  const handleDownload = async (orderId: string, eventName: string) => {
+    setDownloadingId(orderId);
+    
+    // Find the corresponding event data to generate a real-looking ticket
+    const event = MOCK_EVENTS.find(e => e.title.includes(eventName)) || MOCK_EVENTS[0];
+    
     // Simulate network delay for document generation
-    await new Promise(r => setTimeout(r, 1500));
+    await new Promise(r => setTimeout(r, 1000));
+    
     setDownloadingId(null);
+    setViewTicket(event);
+    setIsViewOpen(true);
+    
+    // Trigger print after a short delay to allow dialog rendering
+    setTimeout(() => {
+      window.print();
+    }, 500);
+
     toast({
-      title: "Invoice Downloaded",
-      description: `Invoice ${id} has been saved to your device.`,
+      title: "Generating PDF",
+      description: `Preparing your ticket for ${eventName}...`,
     });
   };
 
@@ -42,7 +82,7 @@ export default function OrderHistoryPage() {
       <div className="max-w-4xl mx-auto space-y-8 text-left">
         <div className="text-left">
           <h1 className="font-headline mb-2 text-3xl md:text-5xl tracking-tighter">Order History</h1>
-          <p className="text-muted-foreground font-medium">View and download invoices for all your past purchases.</p>
+          <p className="text-muted-foreground font-medium">View and download invoices or tickets for all your past purchases.</p>
         </div>
 
         <div className="flex gap-4">
@@ -63,7 +103,7 @@ export default function OrderHistoryPage() {
                <OrderRow 
                 key={order.id} 
                 {...order} 
-                onDownload={() => handleDownload(order.id)}
+                onDownload={() => handleDownload(order.id, order.event)}
                 isDownloading={downloadingId === order.id}
                />
              ))
@@ -75,6 +115,59 @@ export default function OrderHistoryPage() {
            )}
         </div>
       </div>
+
+      {/* Ticket Print Dialog */}
+      <Dialog open={isViewOpen} onOpenChange={setIsViewOpen}>
+        <DialogContent className="bg-card border-border sm:rounded-[2rem] p-0 overflow-hidden max-w-sm w-[94vw] sm:w-full">
+          <div className="bg-primary p-6 text-center text-white">
+            <DialogTitle className="font-headline text-xl text-white">IsabiEvents</DialogTitle>
+            <p className="text-[10px] font-bold uppercase tracking-widest opacity-70">Entry Ticket</p>
+          </div>
+          <div className="p-6 text-center space-y-6">
+            <div className="p-4 bg-white rounded-2xl shadow-xl inline-block">
+               <QrCode className="w-64 h-64 text-black transition-all" />
+            </div>
+            
+            <div className="space-y-4">
+              <div className="space-y-1">
+                <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Attendee Name</p>
+                <p className="text-xl font-bold">{MOCK_USER.name}</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 border-y border-border/50 py-4">
+                <div className="text-left space-y-1">
+                  <p className="text-[8px] font-black uppercase text-muted-foreground tracking-widest">Ticket ID</p>
+                  <p className="font-mono text-[10px] font-bold uppercase">#TKT-{viewTicket?.id.toUpperCase()}-029</p>
+                </div>
+                <div className="text-right space-y-1">
+                  <p className="text-[8px] font-black uppercase text-muted-foreground tracking-widest">Status</p>
+                  <Badge className="bg-green-500/10 text-green-600 border-none px-2 h-4 text-[7px] font-black uppercase">Confirmed</Badge>
+                </div>
+              </div>
+
+              <div className="space-y-1 text-left">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-headline text-lg text-primary">{viewTicket?.title}</h3>
+                  <Badge variant="outline" className="text-[8px] font-black uppercase border-primary/20 text-primary">Standard Pass</Badge>
+                </div>
+                <div className="flex flex-col gap-1 mt-2">
+                  <p className="text-muted-foreground text-xs flex items-center gap-1.5 font-medium">
+                    <Calendar className="w-3.5 h-3.5 text-primary" /> 
+                    {mounted ? new Date(viewTicket?.date).toLocaleString('en-NG', { dateStyle: 'medium', timeStyle: 'short' }) : '...'}
+                  </p>
+                  <p className="text-muted-foreground text-xs flex items-center gap-1.5 font-medium">
+                    <MapPin className="w-3.5 h-3.5 text-accent" /> {viewTicket?.venue}, {viewTicket?.city}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <Button onClick={() => window.print()} className="w-full rounded-full no-print font-bold shadow-lg shadow-primary/20 h-11">
+              <Download className="w-4 h-4 mr-2" /> Download Ticket (PDF)
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
@@ -109,7 +202,7 @@ function OrderRow({ id, event, date, amount, status, onDownload, isDownloading }
           className="rounded-full h-11 w-11 hover:bg-primary/10 hover:text-primary transition-all shrink-0"
           onClick={onDownload}
           disabled={isDownloading}
-          title="Download Invoice"
+          title="Download Ticket"
          >
           {isDownloading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
          </Button>
