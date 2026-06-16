@@ -11,7 +11,8 @@ import {
   Calendar, 
   MapPin, 
   X,
-  CheckCircle2
+  CheckCircle2,
+  Eye
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -52,6 +53,12 @@ export default function OrderHistoryPage() {
     order.event.toLowerCase().includes(searchQuery.toLowerCase()) ||
     order.id.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleView = (eventName: string) => {
+    const event = MOCK_EVENTS.find(e => e.title.includes(eventName)) || MOCK_EVENTS[0];
+    setViewTicket(event);
+    setIsViewOpen(true);
+  };
 
   const handleDownload = async (orderId: string, eventName: string) => {
     setDownloadingId(orderId);
@@ -103,6 +110,7 @@ export default function OrderHistoryPage() {
                <OrderRow 
                 key={order.id} 
                 {...order} 
+                onView={() => handleView(order.event)}
                 onDownload={() => handleDownload(order.id, order.event)}
                 isDownloading={downloadingId === order.id}
                />
@@ -172,7 +180,7 @@ export default function OrderHistoryPage() {
   );
 }
 
-function OrderRow({ id, event, date, amount, status, onDownload, isDownloading }: any) {
+function OrderRow({ id, event, date, amount, status, onView, onDownload, isDownloading }: any) {
   return (
     <div className="bg-card border border-border p-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between hover:border-primary/30 transition-all group shadow-sm gap-4">
       <div className="flex items-center gap-4 md:gap-6 text-left">
@@ -188,7 +196,7 @@ function OrderRow({ id, event, date, amount, status, onDownload, isDownloading }
           </div>
         </div>
       </div>
-      <div className="flex items-center justify-between w-full sm:w-auto gap-4 sm:gap-8 border-t sm:border-none pt-4 sm:pt-0">
+      <div className="flex items-center justify-between w-full sm:w-auto gap-4 sm:gap-6 border-t sm:border-none pt-4 sm:pt-0">
          <div className="text-left sm:text-right">
             <div className="font-black text-primary text-base md:text-lg leading-tight">{amount}</div>
             <Badge variant="secondary" className={cn(
@@ -196,16 +204,27 @@ function OrderRow({ id, event, date, amount, status, onDownload, isDownloading }
               status === 'Success' ? 'bg-green-500/10 text-green-600' : 'bg-secondary text-muted-foreground'
             )}>{status}</Badge>
          </div>
-         <Button 
-          variant="ghost" 
-          size="icon" 
-          className="rounded-full h-11 w-11 hover:bg-primary/10 hover:text-primary transition-all shrink-0"
-          onClick={onDownload}
-          disabled={isDownloading}
-          title="Download Ticket"
-         >
-          {isDownloading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
-         </Button>
+         <div className="flex items-center gap-1">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="rounded-full h-10 w-10 hover:bg-primary/10 hover:text-primary transition-all shrink-0"
+              onClick={onView}
+              title="View Ticket"
+            >
+              <Eye className="w-5 h-5" />
+            </Button>
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              className="rounded-full h-10 w-10 hover:bg-primary/10 hover:text-primary transition-all shrink-0"
+              onClick={onDownload}
+              disabled={isDownloading}
+              title="Download Ticket"
+            >
+              {isDownloading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />}
+            </Button>
+         </div>
       </div>
     </div>
   );
