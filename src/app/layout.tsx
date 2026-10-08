@@ -4,6 +4,7 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/components/auth-provider";
+import { WatchupProvider } from "@/components/watchup-provider";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
@@ -36,17 +37,19 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AuthProvider>
-            <div className="flex flex-col min-h-screen">
-              <Navbar />
-              <main className="flex-grow">
-                {children}
-              </main>
-              <Footer />
-            </div>
-            <PWAInstallPrompt />
-            <Toaster />
-          </AuthProvider>
+          <WatchupProvider>
+            <AuthProvider>
+              <div className="flex flex-col min-h-screen">
+                <Navbar />
+                <main className="flex-grow">
+                  {children}
+                </main>
+                <Footer />
+              </div>
+              <PWAInstallPrompt />
+              <Toaster />
+            </AuthProvider>
+          </WatchupProvider>
         </ThemeProvider>
       </body>
     </html>
