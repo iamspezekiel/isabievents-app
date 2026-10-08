@@ -10,6 +10,7 @@ import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/co
 import { cn } from "@/lib/utils";
 import { Logo } from '@/components/logo';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { DASHBOARD_PATHS, useAuth, type Role } from '@/components/auth-provider';
 
 const NAV_LINKS = [
   { name: 'Discover', href: '/discover' },
@@ -22,13 +23,14 @@ const NAV_LINKS = [
 
 export function Navbar() {
   const pathname = usePathname();
+  const { profile } = useAuth();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  
-  // Mock login state for demo purposes
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userRole, setUserRole] = useState('attendee');
+
+  const isLoggedIn = !!profile;
+  const userRole: Role = profile?.role || 'attendee';
+  const dashboardHref = DASHBOARD_PATHS[userRole] || '/dashboard/attendee';
 
   useEffect(() => {
     setMounted(true);
@@ -36,15 +38,6 @@ export function Navbar() {
       setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener('scroll', handleScroll);
-    
-    // Check for mock login session
-    if (typeof window !== 'undefined') {
-      const isLogged = localStorage.getItem('isabi_logged_in') === 'true';
-      const role = localStorage.getItem('isabi_user_role') || 'attendee';
-      setIsLoggedIn(isLogged);
-      setUserRole(role);
-    }
-    
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -92,7 +85,7 @@ export function Navbar() {
             
             {isLoggedIn ? (
               <Button size="sm" className="rounded-full px-6 shadow-xl shadow-primary/20 font-bold no-underline h-9 md:h-11 gap-2" asChild>
-                <Link href={userRole === 'organizer' ? '/dashboard/organizer' : '/dashboard/attendee'}>
+                <Link href={dashboardHref}>
                   <LayoutDashboard className="w-4 h-4" /> Dashboard
                 </Link>
               </Button>
@@ -111,7 +104,7 @@ export function Navbar() {
           <div className="sm:hidden flex items-center gap-2">
              {mounted && <ThemeToggle />}
              <Button variant="ghost" size="icon" asChild className="no-underline">
-                <Link href={isLoggedIn ? (userRole === 'organizer' ? '/dashboard/organizer' : '/dashboard/attendee') : '/login'}>
+                <Link href={isLoggedIn ? dashboardHref : '/login'}>
                   {isLoggedIn ? <LayoutDashboard className="w-5 h-5" /> : <User className="w-5 h-5" />}
                 </Link>
              </Button>
@@ -149,7 +142,7 @@ export function Navbar() {
                   <div className="flex flex-col gap-3 pt-6">
                     {isLoggedIn ? (
                       <Button className="w-full rounded-2xl h-12 font-bold shadow-xl shadow-primary/20 no-underline gap-2" asChild onClick={() => setIsOpen(false)}>
-                        <Link href={userRole === 'organizer' ? '/dashboard/organizer' : '/dashboard/attendee'}>
+                        <Link href={dashboardHref}>
                           <LayoutDashboard className="w-5 h-5" /> Dashboard
                         </Link>
                       </Button>

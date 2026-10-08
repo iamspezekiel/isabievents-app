@@ -69,7 +69,7 @@ export default function PrivacyPolicyPage() {
               <h2 className="font-headline text-2xl">Data Security</h2>
             </div>
             <p className="text-muted-foreground leading-relaxed">
-              We implement industry-standard security measures to protect your data. All sensitive financial information is handled by PCI-DSS compliant partners like Paystack and Flutterwave. We never store your full card details on our servers.
+              We implement industry-standard security measures to protect your data. All sensitive financial information is handled by PCI-DSS compliant partners like Bachs. We never store your full card details on our servers.
             </p>
           </section>
 

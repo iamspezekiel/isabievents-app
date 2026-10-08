@@ -132,24 +132,11 @@ export default function AdminSystemSettings() {
             <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-2xl border border-border">
               <div className="flex items-center gap-4">
                 <div className="w-10 h-10 rounded-xl bg-background flex items-center justify-center border border-border">
-                  <span className="text-xs font-black text-[#09A5DB]">PY</span>
+                  <span className="text-xs font-black text-[#7E7CFF]">BA</span>
                 </div>
                 <div className="space-y-0.5">
-                  <p className="font-bold text-sm">Paystack</p>
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Standard Gateway</p>
-                </div>
-              </div>
-              <Switch defaultChecked />
-            </div>
-            
-            <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-2xl border border-border">
-              <div className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-xl bg-background flex items-center justify-center border border-border">
-                  <span className="text-xs font-black text-[#FB9129]">FW</span>
-                </div>
-                <div className="space-y-0.5">
-                  <p className="font-bold text-sm">Flutterwave</p>
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Backup Gateway</p>
+                  <p className="font-bold text-sm">Bachs</p>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Primary Gateway (NGN & USD)</p>
                 </div>
               </div>
               <Switch defaultChecked />

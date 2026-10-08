@@ -18,6 +18,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Logo } from '@/components/logo';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { AuthGuard } from '@/components/auth-guard';
+import { useAuth } from '@/components/auth-provider';
 
 export function SidebarLink({ icon: Icon, label, active, href = "#", onClick }: any) {
   return (
@@ -39,6 +41,7 @@ export function SidebarLink({ icon: Icon, label, active, href = "#", onClick }: 
 export default function OrganizerLayout({ children }: { children: React.ReactNode }) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const { signOut } = useAuth();
 
   const NavigationLinks = () => (
     <nav className="flex-1 space-y-1">
@@ -52,6 +55,7 @@ export default function OrganizerLayout({ children }: { children: React.ReactNod
   );
 
   return (
+    <AuthGuard role="organizer">
     <div className="min-h-screen bg-background flex flex-col md:flex-row">
       {/* Desktop Side Navigation */}
       <aside className="w-64 bg-sidebar border-r border-sidebar-border p-6 flex flex-col hidden md:flex sticky top-0 h-screen overflow-y-auto">
@@ -62,7 +66,7 @@ export default function OrganizerLayout({ children }: { children: React.ReactNod
         </div>
         <NavigationLinks />
         <div className="pt-6 border-t border-sidebar-border mt-auto">
-          <SidebarLink icon={LogOut} label="Log Out" href="/login" />
+          <SidebarLink icon={LogOut} label="Log Out" href="/login" onClick={() => signOut()} />
         </div>
       </aside>
 
@@ -94,7 +98,7 @@ export default function OrganizerLayout({ children }: { children: React.ReactNod
               </SheetHeader>
               <NavigationLinks />
               <div className="pt-6 border-t border-border mt-auto">
-                <SidebarLink icon={LogOut} label="Log Out" href="/login" />
+                <SidebarLink icon={LogOut} label="Log Out" href="/login" onClick={() => signOut()} />
               </div>
             </SheetContent>
           </Sheet>
@@ -106,5 +110,6 @@ export default function OrganizerLayout({ children }: { children: React.ReactNod
         {children}
       </main>
     </div>
+    </AuthGuard>
   );
 }

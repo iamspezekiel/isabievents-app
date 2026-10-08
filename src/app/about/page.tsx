@@ -160,7 +160,7 @@ export default function AboutPage() {
                 <FeatureItem 
                   icon={CreditCard}
                   title="Built for Local Payments" 
-                  desc="Seamless integration with Paystack & Flutterwave for Card, Transfer, and USSD." 
+                  desc="Seamless integration with Bachs for NGN & USD Card and Bank Transfer payments." 
                 />
                 <FeatureItem 
                   icon={Lock}

@@ -54,6 +54,35 @@ function CreateEventForm() {
   const [features, setFeatures] = useState<string[]>([]);
   const [currentFeature, setCurrentFeature] = useState('');
 
+  // Cover image (uploaded to Cloudflare R2 via /api/upload)
+  const [coverImage, setCoverImage] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const handleCoverSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const form = new FormData();
+      form.append('file', file);
+      form.append('folder', 'events');
+      const res = await fetch('/api/upload', {method: 'POST', body: form});
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Upload failed.');
+      setCoverImage(data.url);
+      toast({title: 'Cover Uploaded', description: 'Your image is stored on Cloudflare R2.'});
+    } catch (err) {
+      toast({
+        variant: 'destructive',
+        title: 'Upload Failed',
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
+    }
+    setUploading(false);
+    e.target.value = '';
+  };
+
   // Simulate loading existing event data in edit mode
   useEffect(() => {
     if (isEdit) {
@@ -362,10 +391,37 @@ function CreateEventForm() {
                     <CardTitle className="text-lg font-bold">Media</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <div className="aspect-video bg-secondary/50 rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-secondary transition-colors">
-                      <ImageIcon className="w-8 h-8 text-muted-foreground" />
-                      <span className="text-base text-muted-foreground font-medium">Upload Event Cover</span>
-                      <span className="text-xs text-muted-foreground">Recommended: 1200x600px</span>
+                    <div className="aspect-video bg-secondary/50 rounded-xl border-2 border-dashed border-border flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-secondary transition-colors overflow-hidden relative"
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      {coverImage ? (
+                        <>
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
+                          <img src={coverImage} alt="Event cover" className="absolute inset-0 w-full h-full object-cover" />
+                          <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <span className="text-white font-bold text-sm">Change Cover</span>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          {uploading ? (
+                            <Loader2 className="w-8 h-8 text-primary animate-spin" />
+                          ) : (
+                            <ImageIcon className="w-8 h-8 text-muted-foreground" />
+                          )}
+                          <span className="text-base text-muted-foreground font-medium">
+                            {uploading ? 'Uploading to R2…' : 'Upload Event Cover'}
+                          </span>
+                          <span className="text-xs text-muted-foreground">Recommended: 1200x600px · stored on Cloudflare R2</span>
+                        </>
+                      )}
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/avif,image/gif"
+                        className="hidden"
+                        onChange={handleCoverSelect}
+                      />
                     </div>
                   </CardContent>
                 </Card>

@@ -89,18 +89,10 @@ export function Footer() {
         <div className="border-t border-border pt-8 pb-2 flex flex-col lg:flex-row items-center justify-between gap-8">
           {/* Payment Partner Logos */}
           <div className="flex flex-wrap items-center justify-center gap-6 md:gap-10 opacity-60 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700">
-            {/* Paystack */}
+            {/* Bachs */}
             <div className="flex items-center gap-2 group cursor-default">
-              <svg className="w-5 h-5 text-[#09A5DB]" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm0 18.75c-3.728 0-6.75-3.022-6.75-6.75s3.022-6.75 6.75-6.75 6.75 3.022 6.75 6.75-3.022 6.75-6.75 6.75z"/>
-                <path d="M12 7.5c-2.485 0-4.5 2.015-4.5 4.5s2.015 4.5 4.5 4.5 4.5-2.015 4.5-4.5-2.015-4.5-4.5-4.5zm0 6.75c-1.243 0-2.25-1.007-2.25-2.25s1.007-2.25 2.25-2.25 2.25 1.007 2.25 2.25-1.007 2.25-2.25-2.25z"/>
-              </svg>
-              <span className="text-[11px] font-black tracking-tighter uppercase text-foreground">Paystack</span>
-            </div>
-            {/* Flutterwave */}
-            <div className="flex items-center gap-2 group cursor-default">
-              <div className="w-5 h-5 bg-[#FB9129] rounded-full flex items-center justify-center text-[10px] font-black text-white italic shadow-sm">F</div>
-              <span className="text-[11px] font-black tracking-tighter uppercase text-foreground">Flutterwave</span>
+              <div className="w-5 h-5 bg-[#7E7CFF] rounded-full flex items-center justify-center text-[10px] font-black text-white shadow-sm">B</div>
+              <span className="text-[11px] font-black tracking-tighter uppercase text-foreground">Bachs</span>
             </div>
             {/* SolanaPay */}
             <div className="flex items-center gap-3 group cursor-default">

@@ -8,7 +8,7 @@
 - PostgreSQL Ticket Architecture: High-concurrency database structure managing real-time inventory, ticket transfers, and entry logs using PostgreSQL.
 - Organizer Performance Console: A robust dashboard for tracking sales charts, conversion rates, and revenue management.
 - Gate Entry Tool: A mobile-optimized scanning interface for event staff to validate QR tickets and monitor entry flow with duplicate detection.
-- Integrated Payment Settlements: Native integration with Paystack and Flutterwave for automated ticket payments and organizer payouts.
+- Integrated Payment Settlements: Native integration with Bachs for automated NGN & USD ticket payments and organizer payouts.
 
 ## Style Guidelines:
 

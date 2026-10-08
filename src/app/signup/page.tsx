@@ -10,12 +10,14 @@ import Link from 'next/link';
 import { Mail, Lock, User, ShieldCheck, Loader2, Eye, EyeOff } from 'lucide-react';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Logo } from '@/components/logo';
+import { DASHBOARD_PATHS, useAuth, type Role } from '@/components/auth-provider';
 import { useToast } from "@/hooks/use-toast";
 
 function SignupForm() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { toast } = useToast();
+  const { signUp } = useAuth();
   const [role, setRole] = useState('attendee');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -32,22 +34,29 @@ function SignupForm() {
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
-    // Simulate API delay
-    await new Promise(r => setTimeout(r, 1500));
-    
-    setLoading(false);
-    toast({
-      title: "Account Created!",
-      description: `Welcome to IsabiEvents as an ${role}.`,
-    });
-    
-    // Redirect based on role
-    if (role === 'organizer') {
-      router.push('/dashboard/organizer');
-    } else {
-      router.push('/dashboard/attendee');
+
+    const form = e.target as HTMLFormElement;
+    const data = new FormData(form);
+    const name = String(data.get('fullname') || '').trim();
+    const email = String(data.get('email') || '').trim();
+    const password = String(data.get('password') || '');
+
+    try {
+      const profile = await signUp({name, email, password, role: role as Role});
+      toast({
+        title: "Account Created!",
+        description: `Welcome to IsabiEvents as a${role === 'organizer' ? 'n organizer' : 'n attendee'}.`,
+      });
+      router.push(DASHBOARD_PATHS[profile.role] || '/dashboard/attendee');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Could not create your account.';
+      toast({
+        variant: "destructive",
+        title: "Signup Failed",
+        description: message.replace('Firebase: ', ''),
+      });
     }
+    setLoading(false);
   };
 
   return (
@@ -86,14 +95,14 @@ function SignupForm() {
                   <Label htmlFor="fullname">Full Name</Label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input id="fullname" placeholder="John Doe" className="pl-10 h-9 md:h-11 bg-secondary/50" required />
+                    <Input id="fullname" name="fullname" placeholder="John Doe" className="pl-10 h-9 md:h-11 bg-secondary/50" required />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email Address</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input id="email" type="email" placeholder="john@example.com" className="pl-10 h-9 md:h-11 bg-secondary/50" required />
+                    <Input id="email" name="email" type="email" placeholder="john@example.com" className="pl-10 h-9 md:h-11 bg-secondary/50" required />
                   </div>
                 </div>
                 <div className="space-y-2">
@@ -102,6 +111,7 @@ function SignupForm() {
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input 
                       id="password" 
+                      name="password"
                       type={showPassword ? "text" : "password"} 
                       placeholder="••••••••" 
                       className="pl-10 pr-10 h-9 md:h-11 bg-secondary/50" 

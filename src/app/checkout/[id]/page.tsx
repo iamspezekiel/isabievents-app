@@ -23,7 +23,8 @@ import {
   Eye,
   EyeOff
 } from 'lucide-react';
-import { MOCK_EVENTS, MOCK_USERS } from '@/lib/mock-data';
+import { MOCK_EVENTS } from '@/lib/mock-data';
+import { useAuth } from '@/components/auth-provider';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -40,6 +41,7 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
   const { id } = use(props.params);
   const router = useRouter();
   const { toast } = useToast();
+  const { signIn } = useAuth();
   
   // Find event by slug or fallback to ID
   const event = MOCK_EVENTS.find(e => e.slug === id || e.id === id) || MOCK_EVENTS[0];
@@ -48,6 +50,7 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
   const [quantity, setQuantity] = useState(1);
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState('card');
+  const [currency, setCurrency] = useState<'NGN' | 'USD'>('NGN');
   
   // Attendee Info State
   const [checkoutMode, setCheckoutMode] = useState<'guest' | 'login'>('login');
@@ -65,33 +68,70 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
 
   const totalNaira = event.price.min * quantity;
   const totalUsd = (totalNaira / NGN_TO_USD_RATE).toFixed(2);
+  const totalToCharge = currency === 'USD' ? Number(totalUsd) : totalNaira;
+
+  // Handle return from the hosted Bachs checkout (success_url / cancel_url).
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const qs = new URLSearchParams(window.location.search);
+    const sessionId = qs.get('session_id');
+    const status = qs.get('status');
+
+    if (status === 'cancelled') {
+      toast({ variant: 'destructive', title: 'Payment Cancelled', description: 'You can try again whenever you are ready.' });
+      setStep(2);
+      return;
+    }
+
+    if (sessionId) {
+      (async () => {
+        setLoading(true);
+        try {
+          const res = await fetch(`/api/bachs/checkout/verify?session_id=${encodeURIComponent(sessionId)}`);
+          const data = await res.json();
+          if (data.paid || data.demo) {
+            setStep(3);
+            toast({ title: 'Payment Successful!', description: 'Your tickets have been generated and sent to your email.' });
+          } else {
+            setStep(2);
+            toast({ variant: 'destructive', title: 'Payment Not Confirmed', description: `Session status: ${data.status || 'unknown'}. You can retry the payment.` });
+          }
+        } catch {
+          setStep(2);
+          toast({ variant: 'destructive', title: 'Verification Failed', description: 'Could not confirm your payment. Your ticket will appear once the payment settles.' });
+        }
+        setLoading(false);
+        // Clean the URL so refreshes don't re-verify.
+        window.history.replaceState({}, '', window.location.pathname);
+      })();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleLogin = async () => {
     setLoading(true);
-    await new Promise(r => setTimeout(r, 1000));
-    
-    const user = MOCK_USERS.find(u => 
-      (u.email === loginEmail || loginEmail.toLowerCase() === 'attendee') && 
-      u.password === loginPassword &&
-      (u.role === 'attendee')
-    );
-    
-    if (user) {
+    try {
+      // Demo convenience: typing "Attendee" resolves to the demo attendee account.
+      const email = loginEmail.trim().toLowerCase() === 'attendee' ? 'attendee@isabievents.ng' : loginEmail;
+      const profile = await signIn(email, loginPassword);
+      if (profile.role !== 'attendee') {
+        throw new Error('Checkout requires an attendee account.');
+      }
       setIsLoggedIn(true);
       setAttendeeInfo({
-        fullname: user.name,
-        email: user.email,
+        fullname: profile.name,
+        email: profile.email,
         phone: '+234 812 345 6789'
       });
       toast({
         title: "Logged in successfully",
-        description: `Welcome back, ${user.name}!`,
+        description: `Welcome back, ${profile.name}!`,
       });
-    } else {
+    } catch (err) {
       toast({
         variant: "destructive",
         title: "Login failed",
-        description: "Invalid credentials. Use 'Attendee' and 'password123'.",
+        description: err instanceof Error ? err.message : "Invalid credentials. Use 'Attendee' and 'password123'.",
       });
     }
     setLoading(false);
@@ -99,15 +139,57 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
 
   const handlePayment = async () => {
     setLoading(true);
-    await new Promise(r => setTimeout(r, 2500));
-    setLoading(false);
-    setStep(3);
-    toast({
-      title: "Payment Successful!",
-      description: paymentMethod === 'solana' 
-        ? `Transaction confirmed on Solana. ${totalUsd} USDC received.`
-        : "Your tickets have been generated and sent to your email.",
-    });
+    try {
+      const res = await fetch('/api/bachs/checkout', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          eventId: event.id,
+          eventSlug: event.slug,
+          eventTitle: event.title,
+          quantity,
+          unitPrice: currency === 'USD' ? Number(totalUsd) : event.price.min,
+          currency,
+          buyer: {
+            name: attendeeInfo.fullname,
+            email: attendeeInfo.email,
+            phone: attendeeInfo.phone,
+          },
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok) {
+        throw new Error(data.error || 'Could not start checkout.');
+      }
+
+      if (data.demo || !data.checkoutUrl) {
+        // BACHS_API_KEY not configured — legacy in-app demo payment.
+        await new Promise(r => setTimeout(r, 2500));
+        setStep(3);
+        toast({
+          title: "Payment Successful! (Demo)",
+          description: paymentMethod === 'solana'
+            ? `Transaction confirmed on Solana. ${totalUsd} USDC received.`
+            : "Your tickets have been generated and sent to your email.",
+        });
+        return;
+      }
+
+      // Real hosted Bachs checkout — redirect the browser.
+      try {
+        sessionStorage.setItem('bachs_checkout_id', data.checkoutId || '');
+      } catch { /* ignore */ }
+      window.location.href = data.checkoutUrl;
+      return; // keep loading spinner until navigation takes over
+    } catch (err) {
+      toast({
+        variant: 'destructive',
+        title: 'Payment Could Not Start',
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
+      setLoading(false);
+    }
   };
 
   const handleContinueToPayment = () => {
@@ -304,6 +386,23 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
                   )}
                 </div>
                 
+                <div className="grid grid-cols-2 gap-2 p-1.5 bg-secondary/50 rounded-2xl">
+                  <button
+                    type="button"
+                    onClick={() => setCurrency('NGN')}
+                    className={`py-2.5 rounded-xl text-sm font-black transition-all ${currency === 'NGN' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-muted-foreground hover:text-foreground'}`}
+                  >
+                    ₦ NGN
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setCurrency('USD')}
+                    className={`py-2.5 rounded-xl text-sm font-black transition-all ${currency === 'USD' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-muted-foreground hover:text-foreground'}`}
+                  >
+                    $ USD
+                  </button>
+                </div>
+
                 <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="grid gap-4">
                   <PaymentOption id="card" label="Card Payment" icon={CreditCard} description="Visa, Mastercard, Verve" />
                   <PaymentOption id="bank" label="Bank Transfer" icon={Landmark} description="Direct bank transfer" />
@@ -340,8 +439,8 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
                         <span>{paymentMethod === 'solana' ? 'Confirming on Chain...' : 'Processing...'}</span>
                       </div>
                     ) : (
-                      paymentMethod === 'solana' 
-                        ? `Pay ${totalUsd} USDC` 
+                      currency === 'USD'
+                        ? `Pay $${Number(totalUsd).toFixed(2)}`
                         : `Pay ₦${totalNaira.toLocaleString()}`
                     )}
                   </Button>

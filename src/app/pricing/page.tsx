@@ -146,7 +146,7 @@ export default function PricingPage() {
             />
             <PricingFaq 
               q="What payment methods are supported?" 
-              a="We support all major Nigerian payment methods through Paystack, Flutterwave, and SolanaPay, including Card (Visa, Mastercard, Verve), Bank Transfer, USSD, and Solana (USDC/USDT)." 
+              a="We support major Nigerian payment methods through Bachs — Card (Visa, Mastercard, Verve), Bank Transfer, and USD Card payments — plus SolanaPay for USDC/USDT." 
             />
           </div>
         </div>

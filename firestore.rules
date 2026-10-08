@@ -1,0 +1,50 @@
+rules_version = '2';
+
+// Firestore security rules for IsabiEvents.
+// Deploy with: firebase deploy --only firestore:rules
+//
+// The dashboards are guarded client-side (AuthGuard), but these rules are the
+// real authorization: users can only read/write their own profile, and
+// orders/tickets are written server-side (webhook / API routes using the
+// Admin SDK, which bypasses rules).
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Public read of published events; writes are admin/organizer only
+    // (server-side via Admin SDK in this prototype).
+    match /events/{eventId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // A user may read and update their OWN profile document (uid == doc id).
+    // Role escalation is blocked: role can only be set at creation by the
+    // trusted signup flow, and cannot be changed afterwards by the client.
+    match /users/{userId} {
+      allow read, delete: if request.auth != null && request.auth.uid == userId;
+      allow create: if request.auth != null && request.auth.uid == userId
+                    && request.resource.data.role in ['attendee', 'organizer'];
+      allow update: if request.auth != null && request.auth.uid == userId
+                    && request.resource.data.role == resource.data.role;
+    }
+
+    // Orders: only the buying user (by email) may read; writes are server-only.
+    match /orders/{orderId} {
+      allow read: if request.auth != null
+                  && request.auth.token.email == resource.data.buyer.email;
+      allow write: if false; // created by /api/bachs/checkout + webhook (Admin SDK)
+    }
+
+    // Tickets: readable by the owning buyer only; writes are server-only.
+    match /tickets/{ticketId} {
+      allow read: if request.auth != null
+                  && request.auth.token.email == resource.data.buyerEmail;
+      allow write: if false; // issued by webhook (Admin SDK)
+    }
+
+    // Webhook dedup ledger — server only.
+    match /webhook_events/{eventId} {
+      allow read, write: if false;
+    }
+  }
+}

@@ -7,14 +7,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardDescription, CardFooter } from "@/components/ui/card";
 import Link from 'next/link';
-import { Mail, Lock, Loader2, ShieldCheck, User, LayoutDashboard, Eye, EyeOff, Store } from 'lucide-react';
+import { Mail, Lock, Loader2, Eye, EyeOff } from 'lucide-react';
 import { Logo } from '@/components/logo';
-import { MOCK_USERS } from '@/lib/mock-data';
+import { DASHBOARD_PATHS, useAuth } from '@/components/auth-provider';
 import { useToast } from "@/hooks/use-toast";
 
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { signIn, signInWithGoogle } = useAuth();
   const [loading, setLoading] = useState<string | null>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,35 +24,49 @@ export default function LoginPage() {
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading('form');
-    
-    const user = MOCK_USERS.find(u => u.email === email && u.password === password);
-    
-    await new Promise(r => setTimeout(r, 1500));
-    
-    if (user) {
+
+    try {
+      const profile = await signIn(email, password);
       toast({
         title: "Login Successful",
-        description: `Welcome back, ${user.name}!`,
+        description: `Welcome back, ${profile.name}!`,
       });
-      router.push(user.dashboard);
-    } else {
+      router.push(DASHBOARD_PATHS[profile.role] || '/dashboard/attendee');
+    } catch (err) {
       toast({
         variant: "destructive",
         title: "Login Failed",
-        description: "Invalid email or password. Try a Quick Login.",
+        description: err instanceof Error ? err.message : "Invalid email or password.",
       });
     }
     setLoading(null);
   };
 
-  const handleQuickLogin = async (user: typeof MOCK_USERS[0]) => {
-    setLoading(user.role);
-    await new Promise(r => setTimeout(r, 800));
-    toast({
-      title: "Quick Login Used",
-      description: `Logged in as ${user.role}: ${user.name}`,
-    });
-    router.push(user.dashboard);
+  const handleGoogleLogin = async () => {
+    setLoading('google');
+    try {
+      const profile = await signInWithGoogle();
+      toast({
+        title: "Signed in with Google",
+        description: `Welcome, ${profile.name || profile.email}!`,
+      });
+      router.push(DASHBOARD_PATHS[profile.role] || '/dashboard/attendee');
+    } catch (err) {
+      const code = (err as {code?: string})?.code || '';
+      const messages: Record<string, string> = {
+        'auth/popup-closed-by-user': 'The Google popup was closed before sign-in finished.',
+        'auth/popup-blocked': 'Popup blocked — allow popups for this site and try again.',
+        'auth/cancelled-popup-request': 'Sign-in was cancelled.',
+        'auth/unauthorized-domain': 'Add this domain to Firebase → Authentication → Settings → Authorized domains.',
+        'auth/operation-not-allowed': 'Google sign-in is not enabled yet — enable it in Firebase → Authentication → Sign-in method.',
+        'auth/account-exists-with-different-credential': 'An account with this email already exists — try email/password sign-in.',
+      };
+      toast({
+        variant: "destructive",
+        title: "Google Sign-In Failed",
+        description: messages[code] || (err instanceof Error ? err.message : 'Could not sign in with Google.'),
+      });
+    }
     setLoading(null);
   };
 
@@ -124,44 +139,19 @@ export default function LoginPage() {
                 <span className="w-full border-t border-border" />
               </div>
               <div className="relative flex justify-center text-xs uppercase">
-                <span className="bg-card px-2 text-muted-foreground font-black tracking-widest">Quick Login</span>
-              </div>
-            </div>
-            
-            <div className="grid grid-cols-2 gap-3 w-full">
-              {MOCK_USERS.map((user) => (
-                <Button 
-                  key={user.role}
-                  variant="outline" 
-                  className="rounded-xl no-underline h-8 md:h-10 px-2 justify-start gap-2 text-[10px] font-black uppercase tracking-tighter"
-                  onClick={() => handleQuickLogin(user)}
-                  disabled={!!loading}
-                >
-                  {loading === user.role ? (
-                    <Loader2 className="w-3 h-3 animate-spin" />
-                  ) : (
-                    user.role === 'admin' ? <ShieldCheck className="w-3 h-3 text-primary" /> :
-                    user.role === 'organizer' ? <LayoutDashboard className="w-3 h-3 text-primary" /> :
-                    user.role === 'staff' ? <ShieldCheck className="w-3 h-3 text-accent" /> :
-                    user.role === 'vendor' ? <Store className="w-3 h-3 text-primary" /> :
-                    <User className="w-3 h-3 text-muted-foreground" />
-                  )}
-                  {user.role}
-                </Button>
-              ))}
-            </div>
-
-            <div className="relative w-full">
-              <div className="absolute inset-0 flex items-center">
-                <span className="w-full border-t border-border" />
-              </div>
-              <div className="relative flex justify-center text-xs uppercase">
                 <span className="bg-card px-2 text-muted-foreground font-bold">Social Login</span>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-4 w-full">
-              <Button variant="outline" className="rounded-xl no-underline font-bold h-8 md:h-10">Google</Button>
-              <Button variant="outline" className="rounded-xl no-underline font-bold h-8 md:h-10">Apple</Button>
+              <Button
+                variant="outline"
+                className="rounded-xl no-underline font-bold h-8 md:h-10 gap-2"
+                onClick={handleGoogleLogin}
+                disabled={!!loading}
+              >
+                {loading === 'google' ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Google'}
+              </Button>
+              <Button variant="outline" className="rounded-xl no-underline font-bold h-8 md:h-10" disabled>Apple</Button>
             </div>
           </CardFooter>
         </Card>

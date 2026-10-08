@@ -8,6 +8,8 @@ import { Ticket, History, Heart, Bell, Settings, LogOut, Menu } from 'lucide-rea
 import { Button } from "@/components/ui/button";
 import { Logo } from '@/components/logo';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { AuthGuard } from '@/components/auth-guard';
+import { useAuth } from '@/components/auth-provider';
 
 export function SidebarLink({ icon: Icon, label, active, href = "#", onClick }: any) {
   return (
@@ -29,6 +31,7 @@ export function SidebarLink({ icon: Icon, label, active, href = "#", onClick }: 
 export default function AttendeeLayout({ children }: { children: React.ReactNode }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const pathname = usePathname();
+  const { signOut } = useAuth();
 
   const Navigation = () => (
     <nav className="flex-1 space-y-1">
@@ -41,6 +44,7 @@ export default function AttendeeLayout({ children }: { children: React.ReactNode
   );
 
   return (
+    <AuthGuard role="attendee">
     <div className="min-h-screen bg-background flex flex-col lg:flex-row">
       {/* Sidebar for Desktop */}
       <aside className="hidden lg:flex w-72 bg-card/30 border-r border-border p-8 flex-col sticky top-0 h-screen overflow-y-auto no-print">
@@ -49,7 +53,7 @@ export default function AttendeeLayout({ children }: { children: React.ReactNode
         </Link>
         <Navigation />
         <div className="pt-8 border-t border-border mt-auto">
-          <SidebarLink icon={LogOut} label="Log Out" href="/login" />
+          <SidebarLink icon={LogOut} label="Log Out" href="/login" onClick={() => signOut()} />
         </div>
       </aside>
 
@@ -79,7 +83,7 @@ export default function AttendeeLayout({ children }: { children: React.ReactNode
               </SheetHeader>
               <Navigation />
               <div className="pt-8 border-t border-border mt-auto">
-                <SidebarLink icon={LogOut} label="Log Out" href="/login" />
+                <SidebarLink icon={LogOut} label="Log Out" href="/login" onClick={() => signOut()} />
               </div>
             </SheetContent>
           </Sheet>
@@ -91,5 +95,6 @@ export default function AttendeeLayout({ children }: { children: React.ReactNode
         {children}
       </main>
     </div>
+    </AuthGuard>
   );
 }

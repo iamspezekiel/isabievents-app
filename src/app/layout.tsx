@@ -3,6 +3,7 @@ import type {Metadata} from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AuthProvider } from "@/components/auth-provider";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
@@ -35,15 +36,17 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex flex-col min-h-screen">
-            <Navbar />
-            <main className="flex-grow">
-              {children}
-            </main>
-            <Footer />
-          </div>
-          <PWAInstallPrompt />
-          <Toaster />
+          <AuthProvider>
+            <div className="flex flex-col min-h-screen">
+              <Navbar />
+              <main className="flex-grow">
+                {children}
+              </main>
+              <Footer />
+            </div>
+            <PWAInstallPrompt />
+            <Toaster />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>

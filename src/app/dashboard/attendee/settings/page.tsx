@@ -22,6 +22,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { CITIES } from '@/lib/mock-data';
+import { useAuth } from '@/components/auth-provider';
 import { useToast } from "@/hooks/use-toast";
 
 const WhatsAppIcon = ({ className }: { className?: string }) => (
@@ -38,6 +39,7 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 export default function AttendeeSettingsPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { signOut } = useAuth();
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -68,11 +70,8 @@ export default function AttendeeSettingsPage() {
       description: "Your account has been deactivated. Redirecting to login...",
     });
 
-    // Mock logout logic
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('isabi_logged_in');
-      localStorage.removeItem('isabi_user_role');
-    }
+    // Sign out of Firebase (or demo session) before redirecting
+    await signOut();
 
     setTimeout(() => {
       setIsDeleting(false);
