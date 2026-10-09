@@ -8,7 +8,7 @@
  */
 import {NextResponse} from 'next/server';
 import {createCheckoutSession, isBachsConfigured, type BachsCurrency} from '@/lib/bachs';
-import {createOrder, isDbConfigured, type OrderDoc} from '@/lib/db';
+import type {OrderDoc} from '@/lib/db';
 
 export const runtime = 'nodejs';
 
@@ -116,8 +116,15 @@ export async function POST(req: Request) {
       buyerUid: body.buyerUid,
     };
 
-    if (isDbConfigured()) {
-      await createOrder(order);
+    // Lazy-load the Firestore layer so a module-load problem can never take
+    // down checkout creation itself (and surfaces a clear error if it exists).
+    try {
+      const db = await import('@/lib/db');
+      if (db.isDbConfigured()) {
+        await db.createOrder(order);
+      }
+    } catch (err) {
+      console.error('[api/bachs/checkout] order persistence unavailable:', err);
     }
 
     return NextResponse.json({

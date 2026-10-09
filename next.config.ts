@@ -1,6 +1,9 @@
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
+  // firebase-admin must stay external to the bundle on serverless hosts
+  // (Vercel) — bundling it breaks its dynamic requires at cold start.
+  serverExternalPackages: ['firebase-admin'],
   /* config options here */
   typescript: {
     ignoreBuildErrors: true,

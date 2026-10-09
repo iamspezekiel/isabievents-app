@@ -11,9 +11,7 @@
  */
 import {NextResponse} from 'next/server';
 import {verifyBachsSignature} from '@/lib/bachs';
-import {getAdminDb} from '@/lib/firebase-admin';
 import {sendPaymentConfirmationEmail} from '@/lib/email';
-import {findOrderByCheckoutId, issueTicketsForOrder, updateOrder, isDbConfigured} from '@/lib/db';
 
 export const runtime = 'nodejs';
 
@@ -36,9 +34,10 @@ function extractCheckoutId(data: unknown): string | null {
   return match ? match[0] : null;
 }
 
-async function markEventProcessed(eventId: string): Promise<boolean> {
+type AdminDb = NonNullable<ReturnType<(typeof import('@/lib/firebase-admin'))['getAdminDb']>>;
+
+async function markEventProcessed(eventId: string, adminDb: AdminDb | null): Promise<boolean> {
   // Returns true if this is a NEW event (false = duplicate delivery).
-  const adminDb = getAdminDb();
   if (adminDb) {
     try {
       const ref = adminDb.collection('webhook_events').doc(eventId);
@@ -79,7 +78,22 @@ export async function POST(req: Request) {
   }
 
   const eventId = event.id || `no_id_${Date.now()}`;
-  const isNew = await markEventProcessed(eventId);
+
+  // Lazily load the Firestore-backed modules (firebase-admin is heavy and
+  // historically breaks when bundled for serverless). A load failure now
+  // returns a readable JSON error instead of an opaque 500 page.
+  let getAdminDb: (typeof import('@/lib/firebase-admin'))['getAdminDb'];
+  let db: typeof import('@/lib/db');
+  try {
+    getAdminDb = (await import('@/lib/firebase-admin')).getAdminDb;
+    db = await import('@/lib/db');
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error('[webhook] failed to load server modules:', err);
+    return NextResponse.json({error: `Server modules failed to load: ${message}`}, {status: 503});
+  }
+
+  const isNew = await markEventProcessed(eventId, getAdminDb());
   if (!isNew) {
     return NextResponse.json({received: true, duplicate: true});
   }
@@ -89,14 +103,14 @@ export async function POST(req: Request) {
   try {
     if (type === 'checkout.completed' || type === 'collection.succeeded') {
       const checkoutId = extractCheckoutId(event.data);
-      if (checkoutId && isDbConfigured()) {
-        const order = await findOrderByCheckoutId(checkoutId);
+      if (checkoutId && db.isDbConfigured()) {
+        const order = await db.findOrderByCheckoutId(checkoutId);
         if (order && order.status !== 'paid') {
-          await updateOrder(order.id, {
+          await db.updateOrder(order.id, {
             status: 'paid',
             paidAt: new Date().toISOString(),
           });
-          await issueTicketsForOrder({...order, status: 'paid'});
+          await db.issueTicketsForOrder({...order, status: 'paid'});
           console.log(`[webhook] order ${order.id} fulfilled for ${checkoutId}`);
 
           // Email the buyer their tickets + alert the admin (no-op without SMTP).
@@ -122,10 +136,10 @@ export async function POST(req: Request) {
       }
     } else if (type === 'collection.failed' || type === 'checkout.expired') {
       const checkoutId = extractCheckoutId(event.data);
-      if (checkoutId && isDbConfigured()) {
-        const order = await findOrderByCheckoutId(checkoutId);
+      if (checkoutId && db.isDbConfigured()) {
+        const order = await db.findOrderByCheckoutId(checkoutId);
         if (order && order.status === 'pending') {
-          await updateOrder(order.id, {status: 'failed'});
+          await db.updateOrder(order.id, {status: 'failed'});
         }
       }
     }
