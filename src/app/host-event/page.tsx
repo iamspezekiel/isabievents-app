@@ -40,7 +40,7 @@ export default function OrganizerLandingPage() {
             </p>
             
             <div className="flex flex-col sm:flex-row justify-center lg:justify-start gap-4 w-full px-8 sm:px-0">
-              <Link href="/signup?role=organizer" className="flex-1 lg:flex-none">
+              <Link href="/organizer/signup" className="flex-1 lg:flex-none">
                 <Button size="lg" className="rounded-full gap-2 shadow-xl shadow-primary/20 w-full h-11 px-8">
                   Host Now <ArrowRight className="w-4 h-4" />
                 </Button>

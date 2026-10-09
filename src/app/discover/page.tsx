@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose, SheetFooter } from "@/components/ui/sheet";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { CATEGORIES, CITIES } from '@/lib/mock-data';
+import { CATEGORIES, CITIES } from '@/lib/constants';
 import { useEvents } from '@/hooks/use-events';
 import { toggleFavorite } from '@/lib/favorites';
 import Image from 'next/image';

@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { CATEGORIES } from '@/lib/mock-data';
+import { CATEGORIES } from '@/lib/constants';
 import { 
   Music, 
   Trophy, 

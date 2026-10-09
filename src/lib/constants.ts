@@ -1,4 +1,9 @@
-﻿
+/**
+ * Static platform constants — categories and Nigerian cities used for
+ * filters, selects and event creation. This used to live in `mock-data.ts`;
+ * it contains configuration only, never fake records.
+ */
+
 export const CATEGORIES = [
   { id: 'concerts', name: 'Concerts', icon: 'Music' },
   { id: 'festivals', name: 'Festivals', icon: 'Trophy' },

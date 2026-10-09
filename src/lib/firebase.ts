@@ -3,10 +3,9 @@
 /**
  * Firebase client initialization.
  *
- * Configuration is read from NEXT_PUBLIC_* environment variables so the app
- * can be pointed at any Firebase project without code changes. When the
- * variables are missing the app runs in "demo mode": auth and data fall back
- * to the in-memory mock data in `src/lib/mock-data.ts`.
+ * Configuration is read from NEXT_PUBLIC_* environment variables. All data
+ * comes from live Firestore — there is no mock/demo fallback. When the
+ * variables are missing, reads return empty results and auth is disabled.
  *
  * Fill in `.env.local` (see `.env.example`) to enable real Firebase auth + Firestore.
  */

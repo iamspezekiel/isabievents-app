@@ -15,12 +15,14 @@ export function AuthGuard({
   role,
   children,
 }: {
-  /** Required role for this area; omitted = any signed-in user. */
-  role?: Role;
+  /** Required role(s) for this area; omitted = any signed-in user. */
+  role?: Role | Role[];
   children: React.ReactNode;
 }) {
   const {loading, profile} = useAuth();
   const router = useRouter();
+
+  const allowed = !role || (Array.isArray(role) ? role.includes(profile?.role as Role) : profile?.role === role);
 
   useEffect(() => {
     if (loading) return;
@@ -28,12 +30,12 @@ export function AuthGuard({
       router.replace('/login');
       return;
     }
-    if (role && profile.role !== role) {
+    if (!allowed) {
       router.replace(DASHBOARD_PATHS[profile.role] || '/login');
     }
-  }, [loading, profile, role, router]);
+  }, [loading, profile, allowed, router]);
 
-  if (loading || !profile || (role && profile.role !== role)) {
+  if (loading || !profile || !allowed) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />

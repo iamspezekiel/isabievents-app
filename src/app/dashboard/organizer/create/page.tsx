@@ -25,7 +25,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { generateEventCopy } from '@/ai/flows/organizer-ai-copy-generator';
-import { CATEGORIES, CITIES } from '@/lib/mock-data';
+import { CATEGORIES, CITIES } from '@/lib/constants';
 import { getEvent } from '@/lib/client-db';
 import { apiFetch } from '@/lib/api-fetch';
 

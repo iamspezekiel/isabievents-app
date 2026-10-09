@@ -11,7 +11,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Link from 'next/link';
-import { CITIES } from '@/lib/mock-data';
+import { CITIES } from '@/lib/constants';
 
 const WhatsAppIcon = ({ className }: { className?: string }) => (
   <svg 

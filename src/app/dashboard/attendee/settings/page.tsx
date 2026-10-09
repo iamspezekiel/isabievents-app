@@ -21,7 +21,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { CITIES } from '@/lib/mock-data';
+import { CITIES } from '@/lib/constants';
 import { useAuth } from '@/components/auth-provider';
 import { useToast } from "@/hooks/use-toast";
 import { apiFetch } from '@/lib/api-fetch';

@@ -62,7 +62,7 @@ export default function PricingPage() {
                 </div>
 
                 <div className="pt-6">
-                  <Link href="/signup?role=organizer">
+                  <Link href="/organizer/signup">
                     <Button className="w-full transition-all rounded-full shadow-xl shadow-primary/20 hover:-translate-y-0.5 font-bold">
                       Create Your First Event
                     </Button>
@@ -160,7 +160,7 @@ export default function PricingPage() {
             Join 1,200+ Nigerian organizers who are already scaling their businesses with IsabiEvents.
           </p>
           <div className="flex flex-row items-center justify-center gap-4">
-            <Link href="/signup?role=organizer" className="flex-1 no-underline sm:flex-none">
+            <Link href="/organizer/signup" className="flex-1 no-underline sm:flex-none">
               <Button className="w-full transition-all rounded-full shadow-xl shadow-primary/20 hover:-translate-y-0.5 font-bold">
                 Get Started Now
               </Button>

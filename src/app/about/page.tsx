@@ -201,7 +201,7 @@ export default function AboutPage() {
                 Explore Events
               </Button>
             </Link>
-            <Link href="/signup?role=organizer" className="flex-1 no-underline sm:flex-none">
+            <Link href="/organizer/signup" className="flex-1 no-underline sm:flex-none">
               <Button variant="outline" className="w-full font-bold backdrop-blur-sm bg-background/50 border-2 rounded-full md:px-12">
                 Host Event
               </Button>

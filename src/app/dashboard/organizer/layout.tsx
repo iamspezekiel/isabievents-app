@@ -55,7 +55,8 @@ export default function OrganizerLayout({ children }: { children: React.ReactNod
   );
 
   return (
-    <AuthGuard role="organizer">
+    // Admin also manages events here (admin acts as the organizer/owner).
+    <AuthGuard role={['organizer', 'admin']}>
     <div className="min-h-screen bg-background flex flex-col md:flex-row">
       {/* Desktop Side Navigation */}
       <aside className="w-64 bg-sidebar border-r border-sidebar-border p-6 flex flex-col hidden md:flex sticky top-0 h-screen overflow-y-auto">

@@ -35,7 +35,7 @@ export default function OrganizerLandingPage() {
               From secret beach parties to national tech conferences. IsabiEvents provides the tools you need to sell out fast and manage with ease.
             </p>
             <div className="flex flex-row justify-center lg:justify-start gap-4 w-full px-12 lg:px-0">
-              <Link href="/signup?role=organizer" className="flex-1 lg:flex-none">
+              <Link href="/organizer/signup" className="flex-1 lg:flex-none">
                 <Button size="lg" className="rounded-full gap-2 shadow-xl shadow-primary/20 w-full">
                   Host Now <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
                 </Button>

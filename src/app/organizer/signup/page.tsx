@@ -1,18 +1,22 @@
 "use client";
 
-import React, { useState, Suspense } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import Link from 'next/link';
-import { Mail, Lock, User, ShieldCheck, Loader2, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, User, ShieldCheck, Loader2, Eye, EyeOff, CalendarCheck } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { DASHBOARD_PATHS, useAuth, type Role } from '@/components/auth-provider';
 import { useToast } from "@/hooks/use-toast";
 
-function SignupForm() {
+/**
+ * Organizer Portal sign-up — creates accounts with the organizer role only.
+ * Admin accounts cannot be created here (admin is login-only).
+ */
+export default function OrganizerSignupPage() {
   const router = useRouter();
   const { toast } = useToast();
   const { signUp } = useAuth();
@@ -29,20 +33,19 @@ function SignupForm() {
     const email = String(data.get('email') || '').trim();
     const password = String(data.get('password') || '');
 
-    const role = 'attendee';
     try {
-      const profile = await signUp({name, email, password, role: role as Role});
+      const profile = await signUp({name, email, password, role: 'organizer' as Role});
       // Fire-and-forget welcome + admin notification emails (no-op without SMTP).
       fetch('/api/email/welcome', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({name, email, role, method: 'signup'}),
+        body: JSON.stringify({name, email, role: 'organizer', method: 'signup'}),
       }).catch(() => undefined);
       toast({
-        title: "Account Created!",
-        description: `Welcome to IsabiEvents, ${name.split(' ')[0]}!`,
+        title: "Organizer Account Created!",
+        description: `Welcome, ${name.split(' ')[0]} — you're ready to host.`,
       });
-      router.push(DASHBOARD_PATHS[profile.role] || '/dashboard/attendee');
+      router.push(DASHBOARD_PATHS[profile.role] || DASHBOARD_PATHS.organizer);
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Could not create your account.';
       toast({
@@ -61,13 +64,16 @@ function SignupForm() {
           <Link href="/" className="inline-block mb-4 no-underline">
             <Logo size="md" className="mx-auto" />
           </Link>
-          <p className="text-muted-foreground">Experience the best events in Nigeria</p>
+          <div className="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-4 py-1.5 text-xs font-black uppercase tracking-widest text-primary">
+            <CalendarCheck className="w-3.5 h-3.5" /> Organizer Portal
+          </div>
+          <p className="text-muted-foreground">Create events, sell tickets and grow your audience</p>
         </div>
 
         <Card className="bg-card border-border shadow-2xl overflow-hidden">
           <CardHeader className="text-center">
-            <CardTitle>Create Account</CardTitle>
-            <CardDescription>Join as an attendee and get tickets to the best events</CardDescription>
+            <CardTitle>Create Organizer Account</CardTitle>
+            <CardDescription>Start hosting events on IsabiEvents</CardDescription>
           </CardHeader>
           <form onSubmit={handleSignup}>
             <CardContent className="space-y-6 px-10 md:px-6">
@@ -76,26 +82,26 @@ function SignupForm() {
                   <Label htmlFor="fullname">Full Name</Label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input id="fullname" name="fullname" placeholder="John Doe" className="pl-10 h-9 md:h-11 bg-secondary/50" required />
+                    <Input id="fullname" name="fullname" placeholder="Your name or brand" className="pl-10 h-9 md:h-11 bg-secondary/50" required />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email Address</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input id="email" name="email" type="email" placeholder="john@example.com" className="pl-10 h-9 md:h-11 bg-secondary/50" required />
+                    <Input id="email" name="email" type="email" placeholder="organizer@example.com" className="pl-10 h-9 md:h-11 bg-secondary/50" required />
                   </div>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password">Password</Label>
                   <div className="relative">
                     <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input 
-                      id="password" 
+                    <Input
+                      id="password"
                       name="password"
-                      type={showPassword ? "text" : "password"} 
-                      placeholder="••••••••" 
-                      className="pl-10 pr-10 h-9 md:h-11 bg-secondary/50" 
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      className="pl-10 pr-10 h-9 md:h-11 bg-secondary/50"
                       required
                     />
                     <button
@@ -120,31 +126,20 @@ function SignupForm() {
               </div>
 
               <Button type="submit" className="w-full rounded-xl mt-6 no-underline h-9 md:h-11" disabled={loading}>
-                {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : "Create Account"}
+                {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : "Create Organizer Account"}
               </Button>
             </CardContent>
           </form>
+          <CardFooter className="flex flex-col gap-3 px-10 md:px-6">
+            <p className="text-center text-sm text-muted-foreground">
+              Already an organizer? <Link href="/organizer/login" className="text-primary font-bold no-underline">Organizer Sign In</Link>
+            </p>
+            <p className="text-center text-sm text-muted-foreground">
+              Just buying tickets? <Link href="/signup" className="text-primary font-bold no-underline">Attendee Sign Up</Link>
+            </p>
+          </CardFooter>
         </Card>
-
-        <p className="text-center text-sm text-muted-foreground">
-          Already have an account? <Link href="/login" className="text-primary font-bold no-underline">Sign In</Link>
-        </p>
-        <p className="text-center text-sm text-muted-foreground">
-          Hosting events? <Link href="/organizer/signup" className="text-primary font-bold no-underline">Create an Organizer account</Link>
-        </p>
       </div>
     </div>
-  );
-}
-
-export default function SignupPage() {
-  return (
-    <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
-      </div>
-    }>
-      <SignupForm />
-    </Suspense>
   );
 }

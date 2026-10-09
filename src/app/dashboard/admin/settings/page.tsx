@@ -20,7 +20,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { CITIES } from '@/lib/mock-data';
+import { CITIES } from '@/lib/constants';
 import { apiFetch } from '@/lib/api-fetch';
 import { useAuth } from '@/components/auth-provider';
 

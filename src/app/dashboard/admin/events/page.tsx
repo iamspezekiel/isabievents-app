@@ -10,7 +10,9 @@ import {
   ExternalLink, 
   Loader2,
   UserCheck,
-  Ban
+  Ban,
+  Pencil,
+  Trash2
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -21,17 +23,55 @@ import { apiFetch } from '@/lib/api-fetch';
 import type { EventDoc } from '@/lib/db';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function AdminEventsManagement() {
   const [searchQuery, setSearchQuery] = useState('');
-  const {events: allEvents} = useEvents();
+  const {events: allEvents, refetch} = useEvents();
   const [events, setEvents] = useState<EventDoc[]>([]);
   const [processingId, setProcessingId] = useState<string | null>(null);
+  const [eventToDelete, setEventToDelete] = useState<EventDoc | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
     setEvents(allEvents);
   }, [allEvents]);
+
+  // Admin is the organizer/owner — can delete any event listing.
+  const confirmDeleteEvent = async () => {
+    if (!eventToDelete) return;
+    try {
+      const res = await apiFetch('/api/events', {
+        method: 'DELETE',
+        body: JSON.stringify({id: eventToDelete.id}),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Could not delete the event.');
+      setEvents(prev => prev.filter(e => e.id !== eventToDelete.id));
+      refetch();
+      toast({
+        title: "Event Deleted",
+        description: `"${eventToDelete.title}" has been removed from the platform.`,
+      });
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Delete Failed",
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
+    } finally {
+      setEventToDelete(null);
+    }
+  };
 
   const handleAction = async (id: string, title: string, action: 'approve' | 'reject') => {
     setProcessingId(id);
@@ -126,6 +166,7 @@ export default function AdminEventsManagement() {
               event={event} 
               type="pending" 
               onAction={handleAction}
+              onDelete={setEventToDelete}
               processingId={processingId}
             />
           )) : (
@@ -143,6 +184,7 @@ export default function AdminEventsManagement() {
               event={event} 
               type="approved" 
               onAction={handleAction}
+              onDelete={setEventToDelete}
               processingId={processingId}
             />
           ))}
@@ -155,19 +197,44 @@ export default function AdminEventsManagement() {
               event={event} 
               type="all" 
               onAction={handleAction}
+              onDelete={setEventToDelete}
               processingId={processingId}
             />
           ))}
         </TabsContent>
       </Tabs>
+
+      <AlertDialog open={!!eventToDelete} onOpenChange={(open) => !open && setEventToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this event?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently remove &quot;{eventToDelete?.title}&quot; from the platform. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                confirmDeleteEvent();
+              }}
+              className="bg-red-500 hover:bg-red-600 text-white border-none font-bold"
+            >
+              Delete Event
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
 
-function ModerationRow({ event, type, onAction, processingId }: { 
+function ModerationRow({ event, type, onAction, onDelete, processingId }: { 
   event: any, 
   type: string, 
   onAction: (id: string, title: string, action: 'approve' | 'reject') => void,
+  onDelete: (event: any) => void,
   processingId: string | null
 }) {
   const isVerified = event.organizer?.verified;
@@ -227,9 +294,25 @@ function ModerationRow({ event, type, onAction, processingId }: {
         ) : (
           <Badge className="bg-green-500/10 text-green-500 border-none py-2 px-4 rounded-full font-bold">Live & Verified</Badge>
         )}
-        <Link href={`/events/${event.slug}`} className="no-underline">
-          <Button variant="ghost" size="icon" className="rounded-full h-10 w-10"><ExternalLink className="w-4 h-4" /></Button>
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link href={`/dashboard/organizer/create?id=${event.id}`} className="no-underline">
+            <Button variant="outline" size="sm" className="rounded-full h-10 w-10 p-0 border-border hover:border-primary/40" title="Edit event">
+              <Pencil className="w-4 h-4" />
+            </Button>
+          </Link>
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-full h-10 w-10 p-0 border-border hover:border-red-500/40 text-red-500 hover:text-red-600"
+            title="Delete event"
+            onClick={() => onDelete(event)}
+          >
+            <Trash2 className="w-4 h-4" />
+          </Button>
+          <Link href={`/events/${event.slug}`} className="no-underline">
+            <Button variant="ghost" size="icon" className="rounded-full h-10 w-10"><ExternalLink className="w-4 h-4" /></Button>
+          </Link>
+        </div>
       </div>
     </div>
   );
