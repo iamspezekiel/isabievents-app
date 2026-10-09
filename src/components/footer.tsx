@@ -96,14 +96,14 @@ export function Footer() {
               </div>
               <div className="flex flex-col items-start leading-none">
                 <span className="text-[11px] font-black tracking-tighter uppercase text-foreground">Crypto</span>
-                <span className="text-[7px] font-black uppercase text-muted-foreground tracking-[0.1em]">USDC / USDT / ETH</span>
+                <span className="text-[7px] font-black uppercase text-muted-foreground tracking-[0.1em]">USDC / USDT / SOL</span>
               </div>
             </div>
           </div>
           
           {/* Responsive Copyright */}
           <div className="text-center lg:text-right text-xs font-black uppercase tracking-widest text-muted-foreground/50 leading-relaxed text-balance max-w-xs md:max-w-none mx-auto lg:mx-0">
-            Copyright © 2026 · IsabiEvents Technology · All Rights Reserved
+            Copyright © 2026 · IsabiEvents · All Rights Reserved
           </div>
         </div>
       </div>
