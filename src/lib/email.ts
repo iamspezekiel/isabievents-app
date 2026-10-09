@@ -12,7 +12,7 @@ import nodemailer, {type Transporter} from 'nodemailer';
 export const isEmailConfigured = () =>
   Boolean(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS);
 
-const ADMIN_EMAIL = () => process.env.ADMIN_EMAIL || 'admin@isabievents.ng';
+const ADMIN_EMAIL = () => process.env.ADMIN_EMAIL || 'isabideveloper@gmail.com';
 
 let transporter: Transporter | null = null;
 

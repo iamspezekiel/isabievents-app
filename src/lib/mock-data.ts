@@ -189,9 +189,9 @@ export const MOCK_USER = {
 export const MOCK_USERS = [
   {
     name: 'Admin Master',
-    email: 'admin@isabievents.ng',
+    email: 'isabideveloper@gmail.com',
     whatsapp: '+2349024244140',
-    password: 'password123',
+    password: 'Password123',
     role: 'admin',
     dashboard: '/dashboard/admin'
   },

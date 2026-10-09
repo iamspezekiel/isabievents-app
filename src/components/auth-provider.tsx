@@ -58,6 +58,18 @@ const ROLE_KEY = 'isabi_user_role';
 const LOGGED_IN_KEY = 'isabi_logged_in';
 const PROFILE_KEY = 'isabi_profile';
 
+/**
+ * Primary super-admin account. Always resolves to the `admin` role so a login
+ * with this address lands on /dashboard/admin even when the Firestore profile
+ * doc is missing or stale (e.g. first Google sign-in). The seeded profile doc
+ * already carries role `admin` (written server-side by `npm run seed`).
+ */
+export const PRIMARY_ADMIN_EMAIL = 'isabideveloper@gmail.com';
+
+function isAdminEmail(email: string | null | undefined): boolean {
+  return Boolean(email) && email!.trim().toLowerCase() === PRIMARY_ADMIN_EMAIL;
+}
+
 function readStoredProfile(): AuthProfile | null {
   if (typeof window === 'undefined') return null;
   try {
@@ -88,7 +100,7 @@ function storeProfile(profile: AuthProfile | null) {
 }
 
 async function loadProfileFromFirestore(firebaseUser: User): Promise<AuthProfile> {
-  let role: Role = 'attendee';
+  let role: Role = isAdminEmail(firebaseUser.email) ? 'admin' : 'attendee';
   let name = firebaseUser.displayName || '';
   try {
     const snap = await getDoc(doc(db!, 'users', firebaseUser.uid));
@@ -100,6 +112,8 @@ async function loadProfileFromFirestore(firebaseUser: User): Promise<AuthProfile
   } catch (err) {
     console.warn('[auth] failed to load user profile:', err);
   }
+  // The primary admin address always wins over a stale/missing profile doc.
+  if (isAdminEmail(firebaseUser.email)) role = 'admin';
   return {uid: firebaseUser.uid, name, email: firebaseUser.email || '', role};
 }
 
@@ -205,7 +219,7 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
     const cred = await signInWithPopup(auth, provider);
 
     // First Google sign-in: create the profile doc with a default role.
-    let role: Role = 'attendee';
+    let role: Role = isAdminEmail(cred.user.email) ? 'admin' : 'attendee';
     const name = cred.user.displayName || '';
     try {
       const snap = await getDoc(doc(db!, 'users', cred.user.uid));
@@ -222,6 +236,9 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
     } catch (err) {
       console.warn('[auth] google profile write failed:', err);
     }
+
+    // The primary admin address always wins over a stale/missing profile doc.
+    if (isAdminEmail(cred.user.email)) role = 'admin';
 
     const next: AuthProfile = {
       uid: cred.user.uid,

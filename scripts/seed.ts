@@ -1,7 +1,8 @@
 /**
  * Seeds Firestore with the demo data from src/lib/mock-data.ts:
  *  - events collection (10 events)
- *  - demo Auth users (one per role, password `password123`) + profile docs
+ *  - demo Auth users (one per role; admin `isabideveloper@gmail.com` /
+ *    `Password123`, the rest `password123`) + profile docs
  *
  * Usage:
  *   1. Fill FIREBASE_SERVICE_ACCOUNT_KEY (or GOOGLE_APPLICATION_CREDENTIALS)
@@ -86,7 +87,8 @@ async function main() {
   }
 
   console.log('\n✓ Seed complete.');
-  console.log('  Logins: admin|organizer|staff|vendor|attendee@isabievents.ng / password123');
+  console.log('  Logins: admin → isabideveloper@gmail.com / Password123');
+  console.log('          organizer|staff|vendor|attendee@isabievents.ng / password123');
 }
 
 main().catch((err) => {
