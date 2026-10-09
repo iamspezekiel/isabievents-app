@@ -40,17 +40,40 @@ async function callerRole(uid: string): Promise<string | null> {
 
 export const isResponse = (v: string | NextResponse): v is NextResponse => v instanceof NextResponse;
 
-/** Any signed-in user. Returns the uid or a 401 response. */
+/**
+ * Produces the right error for a failed auth attempt: a 503 with a clear
+ * message when server credentials are missing/broken (so production issues
+ * are diagnosable), or a plain 401 when the token is simply invalid.
+ */
+async function authFailure(): Promise<NextResponse> {
+  try {
+    const {getAdminAuth} = await import('@/lib/firebase-admin');
+    if (!getAdminAuth()) {
+      return NextResponse.json(
+        {error: 'Server credentials missing — set FIREBASE_SERVICE_ACCOUNT_KEY (see /api/health/firebase).'},
+        {status: 503}
+      );
+    }
+  } catch (err) {
+    return NextResponse.json(
+      {error: `Firebase Admin failed to load: ${err instanceof Error ? err.message : String(err)}`},
+      {status: 503}
+    );
+  }
+  return NextResponse.json({error: 'Unauthorized.'}, {status: 401});
+}
+
+/** Any signed-in user. Returns the uid or an error response. */
 export async function requireAuth(req: Request): Promise<string | NextResponse> {
   const uid = await decodedUid(req);
-  if (!uid) return NextResponse.json({error: 'Unauthorized.'}, {status: 401});
+  if (!uid) return authFailure();
   return uid;
 }
 
 /** Signed-in admin only. Returns the uid or an error response. */
 export async function requireAdmin(req: Request): Promise<string | NextResponse> {
   const uid = await decodedUid(req);
-  if (!uid) return NextResponse.json({error: 'Unauthorized.'}, {status: 401});
+  if (!uid) return authFailure();
   const role = await callerRole(uid);
   if (role !== 'admin') return NextResponse.json({error: 'Admin access required.'}, {status: 403});
   return uid;
@@ -59,7 +82,7 @@ export async function requireAdmin(req: Request): Promise<string | NextResponse>
 /** Signed-in gate/operator roles (staff, vendor, organizer, admin). */
 export async function requireOperator(req: Request): Promise<string | NextResponse> {
   const uid = await decodedUid(req);
-  if (!uid) return NextResponse.json({error: 'Unauthorized.'}, {status: 401});
+  if (!uid) return authFailure();
   const role = await callerRole(uid);
   if (!role || !['staff', 'vendor', 'organizer', 'admin'].includes(role)) {
     return NextResponse.json({error: 'Operator access required.'}, {status: 403});
