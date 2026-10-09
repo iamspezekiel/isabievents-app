@@ -23,7 +23,7 @@ import {
   Eye,
   EyeOff
 } from 'lucide-react';
-import { MOCK_EVENTS } from '@/lib/mock-data';
+import { useEvents } from '@/hooks/use-events';
 import { useAuth } from '@/components/auth-provider';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,8 +43,9 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
   const { toast } = useToast();
   const { signIn, signUp, signInWithGoogle, profile, loading: authLoading } = useAuth();
   
-  // Find event by slug or fallback to ID
-  const event = MOCK_EVENTS.find(e => e.slug === id || e.id === id) || MOCK_EVENTS[0];
+  // Load the real event from Firestore by slug or ID.
+  const { events: allEvents, loading: eventsLoading } = useEvents();
+  const event = allEvents.find(e => e.slug === id || e.id === id) ?? null;
   
   const [step, setStep] = useState(1);
   const [quantity, setQuantity] = useState(1);
@@ -72,7 +73,7 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
   const [signupPassword, setSignupPassword] = useState('');
   const [showSignupPassword, setShowSignupPassword] = useState(false);
 
-  const totalNaira = event.price.min * quantity;
+  const totalNaira = (event?.price.min ?? 0) * quantity;
   const totalUsd = (totalNaira / NGN_TO_USD_RATE).toFixed(2);
   const totalToCharge = currency === 'USD' ? Number(totalUsd) : totalNaira;
 
@@ -144,9 +145,7 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
   const handleLogin = async () => {
     setLoading('form');
     try {
-      // Demo convenience: typing "Attendee" resolves to the demo attendee account.
-      const email = loginEmail.trim().toLowerCase() === 'attendee' ? 'attendee@isabievents.ng' : loginEmail;
-      const profile = await signIn(email, loginPassword);
+      const profile = await signIn(loginEmail.trim(), loginPassword);
       if (profile.role !== 'attendee') {
         throw new Error('Checkout requires an attendee account.');
       }
@@ -164,7 +163,7 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
       toast({
         variant: "destructive",
         title: "Login failed",
-        description: err instanceof Error ? err.message : "Invalid credentials. Use 'Attendee' and 'password123'.",
+        description: err instanceof Error ? err.message : "Invalid email or password.",
       });
     }
     setLoading(false);
@@ -230,6 +229,7 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
   };
 
   const handlePayment = async () => {
+    if (!event) return;
     setLoading(true);
     try {
       const res = await fetch('/api/bachs/checkout', {
@@ -237,7 +237,7 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({
           eventId: event.id,
-          eventSlug: event.slug,
+          eventSlug: event.slug || event.id,
           eventTitle: event.title,
           quantity,
           unitPrice: currency === 'USD' ? Number(totalUsd) : event.price.min,
@@ -256,15 +256,9 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
         throw new Error(data.error || 'Could not start checkout.');
       }
 
-      if (data.demo || !data.checkoutUrl) {
-        // BACHS_API_KEY not configured — legacy in-app demo payment.
-        await new Promise(r => setTimeout(r, 2500));
-        setStep(3);
-        toast({
-          title: "Payment Successful! (Demo)",
-          description: "Your tickets have been generated and sent to your email.",
-        });
-        return;
+      if (!data.checkoutUrl) {
+        // Production requires the hosted Bachs checkout — no demo fallback.
+        throw new Error('Payment gateway is not configured. Please try again later or contact support.');
       }
 
       // Real hosted Bachs checkout — redirect the browser.
@@ -294,6 +288,25 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
     }
     setStep(2);
   };
+
+  if (!event) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4 px-4 text-center">
+        {eventsLoading ? (
+          <>
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <p className="text-muted-foreground">Loading checkout…</p>
+          </>
+        ) : (
+          <>
+            <h1 className="font-headline text-2xl">Event not found</h1>
+            <p className="text-muted-foreground">This event may have been removed or the link is incorrect.</p>
+            <Link href="/discover" className="text-primary font-bold">Back to Discover</Link>
+          </>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground pt-48 pb-12">

@@ -8,52 +8,23 @@
  *
  * Fallbacks:
  *   1. Admin SDK when server credentials exist (production path)
- *   2. Client SDK via instance-method chaining (demo/dev path)
- *   3. In-memory mock data when Firebase is not configured at all
+ *   2. Client SDK via instance-method chaining (browser path)
+ *   Without Firebase configured every read resolves to an empty result —
+ *   there is no in-memory mock data in production.
  *
  * Collections:
  *   users/{uid}      � profile + role (written on signup)
- *   events/{id}      � event listings (seeded via `npm run seed`)
+ *   events/{id}      � event listings (created by organizers)
  *   orders/{id}      � checkout orders (created by /api/bachs/checkout)
  *   tickets/{id}     � issued QR tickets (created when an order is paid)
  *   webhook_events/{eventId} � Bachs webhook dedup ledger
  */
 import {db, isFirebaseConfigured} from '@/lib/firebase';
 import {getAdminDb} from '@/lib/firebase-admin';
-import {MOCK_EVENTS} from '@/lib/mock-data';
 
-export type OrderStatus = 'pending' | 'paid' | 'failed' | 'refunded';
-
-export interface OrderDoc {
-  id: string;
-  eventId: string;
-  eventSlug: string;
-  eventTitle: string;
-  quantity: number;
-  unitPrice: number;
-  amount: number;
-  currency: 'NGN' | 'USD';
-  status: OrderStatus;
-  checkoutId?: string;
-  checkoutUrl?: string;
-  buyer: {name: string; email: string; phone?: string};
-  buyerUid?: string;
-  paymentMethod?: string;
-  paidAt?: string;
-  createdAt?: unknown;
-}
-
-export interface TicketDoc {
-  id: string;
-  orderId: string;
-  eventId: string;
-  eventTitle: string;
-  holderName: string;
-  buyerEmail: string;
-  code: string; // QR payload, e.g. TKT-<orderId short>
-  status: 'active' | 'used' | 'transferred';
-  createdAt?: unknown;
-}
+// Shared document types (pure types — see ./db-types, also re-exported here).
+import type {OrderStatus, EventDoc, OrderDoc, TicketDoc} from './db-types';
+export type {OrderStatus, EventDoc, OrderDoc, TicketDoc} from './db-types';
 
 interface Snap {
   empty: boolean;
@@ -114,50 +85,45 @@ const stripUndefined = <T>(value: T): T => {
   return value;
 };
 
-/**
- * Reads all events. Admin ? client ? mock, in that order.
- */
-export async function getEvents(): Promise<(typeof MOCK_EVENTS)[number][]> {
+/** Reads all events (Admin SDK on the server, client SDK in the browser). */
+export async function getEvents(): Promise<EventDoc[]> {
   try {
     const adminDb = getAdminDb();
     if (adminDb) {
       const snap = (await adminDb.collection('events').get()) as unknown as Snap;
-      if (!snap.empty) return snap.docs.map((d) => ({id: d.id, ...d.data()})) as (typeof MOCK_EVENTS)[number][];
+      if (!snap.empty) return snap.docs.map((d) => ({id: d.id, ...d.data()})) as EventDoc[];
     } else if (isFirebaseConfigured && db) {
       const cdb = db as unknown as ClientFirestore;
       const snap = (await cdb.collection('events').get()) as unknown as Snap;
-      if (!snap.empty) return snap.docs.map((d) => ({id: d.id, ...d.data()})) as (typeof MOCK_EVENTS)[number][];
-    } else {
-      return MOCK_EVENTS;
+      if (!snap.empty) return snap.docs.map((d) => ({id: d.id, ...d.data()})) as EventDoc[];
     }
   } catch (err) {
-    console.warn('[db] getEvents failed, using mock data:', err);
-    return MOCK_EVENTS;
+    console.warn('[db] getEvents failed:', err);
   }
-  return MOCK_EVENTS;
+  return [];
 }
 
 /** Find a single event by document id or slug. */
-export async function getEvent(idOrSlug: string): Promise<(typeof MOCK_EVENTS)[number] | null> {
+export async function getEvent(idOrSlug: string): Promise<EventDoc | null> {
   try {
     const adminDb = getAdminDb();
     if (adminDb) {
       const snap = await adminDb.collection('events').doc(idOrSlug).get();
-      if (snap.exists) return {id: snap.id, ...snap.data()} as (typeof MOCK_EVENTS)[number];
+      if (snap.exists) return {id: snap.id, ...snap.data()} as EventDoc;
       const all = await getEvents();
-      return all.find((e) => (e as {slug?: string}).slug === idOrSlug) ?? null;
+      return all.find((e) => e.slug === idOrSlug) ?? null;
     }
     if (isFirebaseConfigured && db) {
       const cdb = db as unknown as ClientFirestore;
       const snap = await cdb.collection('events').doc(idOrSlug).get();
-      if (snap.exists) return {id: snap.id, ...snap.data()} as (typeof MOCK_EVENTS)[number];
+      if (snap.exists) return {id: snap.id, ...snap.data()} as EventDoc;
       const all = await getEvents();
-      return all.find((e) => (e as {slug?: string}).slug === idOrSlug) ?? null;
+      return all.find((e) => e.slug === idOrSlug) ?? null;
     }
   } catch (err) {
-    console.warn('[db] getEvent failed, using mock data:', err);
+    console.warn('[db] getEvent failed:', err);
   }
-  return MOCK_EVENTS.find((e) => e.id === idOrSlug || e.slug === idOrSlug) ?? null;
+  return null;
 }
 
 /** Create (or replace) an order document. Used by the Bachs checkout API. */

@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   ShieldCheck, 
   CheckCircle2, 
@@ -14,37 +14,61 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { apiFetch } from '@/lib/api-fetch';
 
-const INITIAL_PENDING_KYC = [
-  { id: 'KYC-8821', name: 'Startup Kano Hub', type: 'Company', date: '2024-10-24T14:20:00', document: 'CAC_RC_772.pdf' },
-  { id: 'KYC-9012', name: 'Funmi Olabisi', type: 'Individual', date: '2024-10-24T16:45:00', document: 'NIN_VERIFY.jpg' },
-  { id: 'KYC-9930', name: 'Gidi Vibes Ent.', type: 'Company', date: '2024-10-23T09:10:00', document: 'LIRS_TAX_CER.pdf' },
-];
+interface KycRow {
+  id: string;
+  name: string;
+  type: string;
+  date: string;
+  document: string;
+}
 
 export default function AdminKYCManagement() {
-  const [kycRequests, setKycRequests] = useState(INITIAL_PENDING_KYC);
+  const [kycRequests, setKycRequests] = useState<KycRow[]>([]);
   const [processingId, setProcessingId] = useState<string | null>(null);
   const { toast } = useToast();
 
+  useEffect(() => {
+    apiFetch('/api/kyc')
+      .then((r) => r.json())
+      .then((d) => {
+        if (Array.isArray(d?.submissions)) setKycRequests(d.submissions as KycRow[]);
+      })
+      .catch(() => undefined);
+  }, []);
+
   const handleAction = async (id: string, name: string, action: 'approve' | 'reject') => {
     setProcessingId(id);
-    // Simulate network delay
-    await new Promise(r => setTimeout(r, 1200));
-    
-    setKycRequests(prev => prev.filter(req => req.id !== id));
-    setProcessingId(null);
-
-    if (action === 'approve') {
-      toast({
-        title: "KYC Approved",
-        description: `${name} has been upgraded to a verified organizer status.`
+    try {
+      const res = await apiFetch('/api/kyc', {
+        method: 'PATCH',
+        body: JSON.stringify({id, action}),
       });
-    } else {
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Review action failed.');
+
+      setKycRequests(prev => prev.filter(req => req.id !== id));
+      if (action === 'approve') {
+        toast({
+          title: "KYC Approved",
+          description: `${name} has been upgraded to a verified organizer status.`
+        });
+      } else {
+        toast({
+          variant: "destructive",
+          title: "Verification Declined",
+          description: `The KYC request for ${name} has been rejected.`
+        });
+      }
+    } catch (err) {
       toast({
         variant: "destructive",
-        title: "Verification Declined",
-        description: `The KYC request for ${name} has been rejected.`
+        title: "Action Failed",
+        description: err instanceof Error ? err.message : 'Please try again.'
       });
+    } finally {
+      setProcessingId(null);
     }
   };
 

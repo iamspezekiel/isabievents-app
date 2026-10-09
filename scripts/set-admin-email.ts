@@ -4,8 +4,7 @@
  *  - Firebase Auth : renames the legacy admin login (or creates the account)
  *  - Firestore     : syncs users/{uid} → {email, role: 'admin'}
  *
- * The target password is taken from MOCK_USERS (admin entry) so the login
- * stays `isabideveloper@gmail.com` / `Password123`.
+ * The admin account constants used below (name/password/whatsapp).
  *
  * Usage:
  *   npx tsx scripts/set-admin-email.ts           # dry run (prints the plan)
@@ -15,7 +14,6 @@ import 'dotenv/config';
 import {initializeApp, cert, getApps} from 'firebase-admin/app';
 import {getAuth} from 'firebase-admin/auth';
 import {getFirestore} from 'firebase-admin/firestore';
-import {MOCK_USERS} from '../src/lib/mock-data';
 
 /** The new admin login (Firebase Auth normalises to lowercase). */
 const TARGET_EMAIL = 'isabideveloper@gmail.com';
@@ -23,7 +21,12 @@ const TARGET_EMAIL = 'isabideveloper@gmail.com';
 const LEGACY_EMAILS = ['admin@isabievents.ng'];
 
 const APPLY = process.argv.includes('--apply');
-const adminUser = MOCK_USERS.find((u) => u.role === 'admin')!;
+const adminUser = {
+  name: 'Admin Master',
+  email: TARGET_EMAIL,
+  password: 'Password123',
+  whatsapp: '+2349024244140',
+};
 
 async function main() {
   const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;

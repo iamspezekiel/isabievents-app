@@ -1,14 +1,17 @@
 
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   ShieldAlert, 
   Zap, 
   CreditCard, 
   User, 
   MapPin, 
-  AlertTriangle 
+  AlertTriangle,
+  Mail,
+  Loader2,
+  Send
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -18,15 +21,82 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { CITIES } from '@/lib/mock-data';
+import { apiFetch } from '@/lib/api-fetch';
 
 export default function AdminSystemSettings() {
   const { toast } = useToast();
 
-  const handleSave = () => {
-    toast({
-      title: "System Updated",
-      description: "Global platform configuration has been synchronized.",
-    });
+  // SMTP settings — loaded from the server, saved to Firestore settings/smtp.
+  const [smtp, setSmtp] = useState({host: '', port: '', user: '', pass: '', from: '', adminEmail: ''});
+  const [hasPassword, setHasPassword] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [testing, setTesting] = useState(false);
+  const [smtpStatus, setSmtpStatus] = useState<{ok: boolean; msg: string} | null>(null);
+
+  useEffect(() => {
+    apiFetch('/api/admin/smtp')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.error) return;
+        setSmtp({
+          host: d.host || '',
+          port: d.port ? String(d.port) : '',
+          user: d.user || '',
+          pass: '',
+          from: d.from || '',
+          adminEmail: d.adminEmail || '',
+        });
+        setHasPassword(Boolean(d.hasPassword));
+      })
+      .catch(() => undefined);
+  }, []);
+
+  const setField = (key: keyof typeof smtp, value: string) =>
+    setSmtp((prev) => ({...prev, [key]: value}));
+
+  const handleSaveSmtp = async () => {
+    setSaving(true);
+    setSmtpStatus(null);
+    try {
+      const res = await apiFetch('/api/admin/smtp', {
+        method: 'POST',
+        body: JSON.stringify({
+          ...smtp,
+          port: smtp.port ? Number(smtp.port) : undefined,
+        }),
+      });
+      const d = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(d.error || 'Save failed.');
+      if (smtp.pass) setHasPassword(true);
+      setSmtp((prev) => ({...prev, pass: ''}));
+      setSmtpStatus({ok: true, msg: 'SMTP settings saved.'});
+      toast({title: 'SMTP Saved', description: 'Server emails now use these settings.'});
+    } catch (err) {
+      setSmtpStatus({ok: false, msg: err instanceof Error ? err.message : 'Save failed.'});
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleTestEmail = async () => {
+    setTesting(true);
+    setSmtpStatus(null);
+    try {
+      const res = await apiFetch('/api/admin/smtp/test', {
+        method: 'POST',
+        body: JSON.stringify({to: smtp.adminEmail, smtp}),
+      });
+      const d = await res.json().catch(() => ({}));
+      if (!d.ok) throw new Error(d.error || 'Test failed.');
+      setSmtpStatus({ok: true, msg: `Test email sent to ${d.to}`});
+      toast({title: 'Test Email Sent', description: `Delivered to ${d.to} — check your inbox (and spam).`});
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Test failed.';
+      setSmtpStatus({ok: false, msg});
+      toast({variant: 'destructive', title: 'Email Test Failed', description: msg});
+    } finally {
+      setTesting(false);
+    }
   };
 
   return (
@@ -36,8 +106,9 @@ export default function AdminSystemSettings() {
           <h1 className="font-headline text-3xl md:text-5xl">System Config</h1>
           <p className="text-muted-foreground font-medium">Control global fees, security protocols, and maintenance modes.</p>
         </div>
-        <Button onClick={handleSave} className="rounded-full shadow-lg shadow-primary/20 h-11 font-bold px-10">
-          Apply Changes
+        <Button onClick={handleSaveSmtp} disabled={saving || testing} className="rounded-full shadow-lg shadow-primary/20 h-11 font-bold px-10">
+          {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+          Save Changes
         </Button>
       </header>
 
@@ -154,6 +225,66 @@ export default function AdminSystemSettings() {
               </div>
               <Switch defaultChecked />
             </div>
+          </CardContent>
+        </Card>
+
+        {/* Email (SMTP) */}
+        <Card className="border-border bg-card text-left">
+          <CardHeader>
+            <CardTitle className="text-lg flex items-center gap-2">
+              <Mail className="w-5 h-5 text-primary" /> Email (SMTP)
+            </CardTitle>
+            <CardDescription>
+              Change the outbound email settings and send a real test — used for receipts, QR tickets, and admin alerts.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid sm:grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="smtp-host">SMTP Host</Label>
+                <Input id="smtp-host" value={smtp.host} onChange={(e) => setField('host', e.target.value)} placeholder="mail.yourdomain.com" className="h-11 bg-secondary/30 border-none rounded-xl" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="smtp-port">Port</Label>
+                <Input id="smtp-port" type="number" value={smtp.port} onChange={(e) => setField('port', e.target.value)} placeholder="465" className="h-11 bg-secondary/30 border-none rounded-xl" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="smtp-user">Username</Label>
+                <Input id="smtp-user" value={smtp.user} onChange={(e) => setField('user', e.target.value)} placeholder="smtp_user" autoComplete="off" className="h-11 bg-secondary/30 border-none rounded-xl" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="smtp-pass">Password</Label>
+                <Input id="smtp-pass" type="password" value={smtp.pass} onChange={(e) => setField('pass', e.target.value)} placeholder={hasPassword ? '•••••••• (saved — leave blank to keep)' : 'SMTP password'} autoComplete="new-password" className="h-11 bg-secondary/30 border-none rounded-xl" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="smtp-from">From</Label>
+                <Input id="smtp-from" value={smtp.from} onChange={(e) => setField('from', e.target.value)} placeholder="Isabi Events &lt;events@yourdomain.com&gt;" className="h-11 bg-secondary/30 border-none rounded-xl" />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="smtp-admin">Admin notifications to</Label>
+                <Input id="smtp-admin" type="email" value={smtp.adminEmail} onChange={(e) => setField('adminEmail', e.target.value)} placeholder="admin@example.com" className="h-11 bg-secondary/30 border-none rounded-xl" />
+              </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+              <Button onClick={handleSaveSmtp} disabled={saving || testing} className="rounded-full h-11 font-bold gap-2">
+                {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
+                Save SMTP Settings
+              </Button>
+              <Button onClick={handleTestEmail} variant="outline" disabled={saving || testing} className="rounded-full h-11 font-bold gap-2">
+                {testing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                Send Test Email
+              </Button>
+              {smtpStatus && (
+                <span className={`text-sm font-bold ${smtpStatus.ok ? 'text-green-500' : 'text-red-500'}`}>
+                  {smtpStatus.msg}
+                </span>
+              )}
+            </div>
+
+            <p className="text-xs text-muted-foreground">
+              Blank fields fall back to the server (.env) configuration. The saved password is never displayed here.
+            </p>
           </CardContent>
         </Card>
 

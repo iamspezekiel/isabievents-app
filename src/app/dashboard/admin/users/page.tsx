@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Search, 
   Mail, 
@@ -21,7 +21,6 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogDescription } from "@/components/ui/dialog";
-import { MOCK_USERS } from '@/lib/mock-data';
 import {
   Table,
   TableBody,
@@ -37,6 +36,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
+import { apiFetch } from '@/lib/api-fetch';
+
+interface UserRow {
+  uid: string;
+  name: string;
+  email: string;
+  role: string;
+}
 
 export default function AdminUserManagement() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
@@ -44,12 +51,25 @@ export default function AdminUserManagement() {
   const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
 
+  const [users, setUsers] = useState<UserRow[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(true);
+
   const [newAdmin, setNewAdmin] = useState({
     name: '',
     email: '',
   });
 
-  const filteredUsers = MOCK_USERS.filter(user => 
+  useEffect(() => {
+    apiFetch('/api/admin/users')
+      .then((r) => r.json())
+      .then((d) => {
+        if (Array.isArray(d?.users)) setUsers(d.users as UserRow[]);
+      })
+      .catch(() => undefined)
+      .finally(() => setLoadingUsers(false));
+  }, []);
+
+  const filteredUsers = users.filter(user => 
     user.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
     user.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
@@ -66,15 +86,31 @@ export default function AdminUserManagement() {
     }
 
     setIsSubmitting(true);
-    await new Promise(r => setTimeout(r, 1500));
-    setIsSubmitting(false);
-    setIsAddDialogOpen(false);
-    setNewAdmin({ name: '', email: '' });
+    try {
+      const res = await apiFetch('/api/admin/users', {
+        method: 'POST',
+        body: JSON.stringify(newAdmin),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Failed to create admin.');
 
-    toast({
-      title: "Admin Invited",
-      description: `An invitation has been sent to ${newAdmin.email}.`
-    });
+      setUsers(prev => [...prev, {uid: data.uid, name: newAdmin.name, email: data.email, role: 'admin'}]
+        .sort((a, b) => a.name.localeCompare(b.name)));
+      setIsAddDialogOpen(false);
+      setNewAdmin({ name: '', email: '' });
+      toast({
+        title: "Admin Account Created",
+        description: `${data.email} — temporary password: ${data.tempPassword}. Share it securely.`
+      });
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Failed to Create Admin",
+        description: err instanceof Error ? err.message : 'Please try again.'
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (

@@ -26,19 +26,19 @@ import {
 } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
-import { MOCK_EVENTS, MOCK_USER } from '@/lib/mock-data';
-
-const MOCK_ORDERS = [
-  { id: 'ORD-7721', event: 'Lagos Jazz Night', date: 'Oct 12, 2024', amount: '₦15,000', status: 'Success' },
-  { id: 'ORD-5529', event: 'Naija Tech Summit', date: 'Sep 28, 2024', amount: '₦0', status: 'Free' },
-  { id: 'ORD-3310', event: 'Beach Bash Lagos', date: 'Aug 15, 2024', amount: '₦10,000', status: 'Success' },
-  { id: 'ORD-9912', event: 'Calabar Carnival', date: 'Dec 27, 2023', amount: '₦0', status: 'Free' },
-];
+import { useAuth } from '@/components/auth-provider';
+import { useEvents } from '@/hooks/use-events';
+import { getOrdersForEmail } from '@/lib/client-db';
+import type { EventDoc, OrderDoc } from '@/lib/db-types';
 
 export default function OrderHistoryPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
   const [mounted, setMounted] = useState(false);
+  const { profile } = useAuth();
+  const { events } = useEvents();
+  const [orders, setOrders] = useState<OrderDoc[]>([]);
+  const [loading, setLoading] = useState(true);
 
   // Ticket Preview State
   const [isViewOpen, setIsViewOpen] = useState(false);
@@ -48,14 +48,39 @@ export default function OrderHistoryPage() {
     setMounted(true);
   }, []);
 
-  const filteredOrders = MOCK_ORDERS.filter(order => 
+  useEffect(() => {
+    if (!profile?.email) {
+      setLoading(false);
+      return;
+    }
+    getOrdersForEmail(profile.email)
+      .then(setOrders)
+      .catch(() => undefined)
+      .finally(() => setLoading(false));
+  }, [profile?.email]);
+
+  const rows = orders
+    .filter(o => o.status === 'paid' || o.status === 'refunded')
+    .map(o => {
+      const ts = o.paidAt || (typeof o.createdAt === 'string' ? o.createdAt : '');
+      return {
+        id: o.id,
+        event: o.eventTitle,
+        date: ts ? new Date(ts).toLocaleDateString('en-NG', {dateStyle: 'medium'}) : '—',
+        amount: o.currency === 'USD' ? `$${o.amount.toFixed(2)}` : `₦${o.amount.toLocaleString()}`,
+        status: o.status === 'paid' ? 'Success' : 'Refunded',
+        eventId: o.eventId,
+      };
+    });
+
+  const filteredOrders = rows.filter(order => 
     order.event.toLowerCase().includes(searchQuery.toLowerCase()) ||
     order.id.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const handleView = (eventName: string) => {
-    const event = MOCK_EVENTS.find(e => e.title.includes(eventName)) || MOCK_EVENTS[0];
-    setViewTicket(event);
+  const handleView = (eventId: string) => {
+    const ev = events.find(e => e.id === eventId || e.slug === eventId) ?? null;
+    setViewTicket(ev);
     setIsViewOpen(true);
   };
 
@@ -85,7 +110,7 @@ export default function OrderHistoryPage() {
                <OrderRow 
                 key={order.id} 
                 {...order} 
-                onView={() => handleView(order.event)}
+                onView={() => handleView(order.eventId)}
                />
              ))
            ) : (
@@ -112,7 +137,7 @@ export default function OrderHistoryPage() {
             <div className="space-y-4">
               <div className="space-y-1">
                 <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Attendee Name</p>
-                <p className="text-xl font-bold">{MOCK_USER.name}</p>
+                <p className="text-xl font-bold">{profile?.name || profile?.email || '—'}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-4 border-y border-border/50 py-4">

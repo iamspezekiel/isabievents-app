@@ -27,11 +27,11 @@
 ```bash
 npm install
 cp .env.example .env   # then fill in credentials (see below)
-npm run seed           # optional: seed Firestore with demo events + users (needs FIREBASE_SERVICE_ACCOUNT_KEY)
+npm run seed           # ensure the admin account exists (needs FIREBASE_SERVICE_ACCOUNT_KEY)
 npm run dev            # http://localhost:9002
 ```
 
-The app runs in **demo mode** for any service left unconfigured (mock data, simulated payments, skipped emails) — enable services one by one via `.env`.
+There is no demo/mock mode â€” auth and Firestore must be configured for the app to run; unconfigured services (SMTP, payments, storage) no-op with a logged warning ï¿½ enable services one by one via `.env`.
 
 ### Environment variables (all listed in `.env.example`)
 | Group | Keys |
@@ -45,7 +45,7 @@ The app runs in **demo mode** for any service left unconfigured (mock data, simu
 | AI (optional) | `GOOGLE_API_KEY` |
 
 ### Production checklist
-1. **Hosting must use the same env vars** — production does not read your local `.env` (e.g. Firebase App Hosting ? backend ? Environment variables).
-2. **Firebase ? Authentication ? Authorized domains** — add your production domain (required for Google sign-in and password-reset redirects).
-3. **Bachs webhook** — Developer Portal ? Webhooks ? add destination `https://<your-domain>/api/webhooks/bachs` (events: `checkout.completed`, `collection.succeeded`, `collection.failed`). Fulfilment requires `FIREBASE_SERVICE_ACCOUNT_KEY` server-side.
-4. **Firestore rules** — deploy with `firebase deploy --only firestore:rules` (rules file included).
+1. **Hosting must use the same env vars** ï¿½ production does not read your local `.env` (e.g. Firebase App Hosting ? backend ? Environment variables).
+2. **Firebase ? Authentication ? Authorized domains** ï¿½ add your production domain (required for Google sign-in and password-reset redirects).
+3. **Bachs webhook** ï¿½ Developer Portal ? Webhooks ? add destination `https://<your-domain>/api/webhooks/bachs` (events: `checkout.completed`, `collection.succeeded`, `collection.failed`). Fulfilment requires `FIREBASE_SERVICE_ACCOUNT_KEY` server-side.
+4. **Firestore rules** ï¿½ deploy with `firebase deploy --only firestore:rules` (rules file included).

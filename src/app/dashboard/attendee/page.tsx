@@ -29,7 +29,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { MOCK_USER, MOCK_EVENTS, CATEGORIES } from '@/lib/mock-data';
+import { CATEGORIES } from '@/lib/mock-data';
+import { useEvents } from '@/hooks/use-events';
+import { useAuth } from '@/components/auth-provider';
+import { getTicketsForEmail, getOrdersForEmail } from '@/lib/client-db';
+import type { EventDoc, OrderDoc, TicketDoc } from '@/lib/db-types';
+import { getFavorites } from '@/lib/favorites';
+import { apiFetch } from '@/lib/api-fetch';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { attendeePersonalizedEventRecommendations } from '@/ai/flows/attendee-personalized-event-recommendations';
@@ -54,20 +60,39 @@ export default function AttendeeDashboard() {
   const [viewTicket, setViewTicket] = useState<any>(null);
 
   const { toast } = useToast();
+  const { profile } = useAuth();
+  const { events } = useEvents();
+  const [tickets, setTickets] = useState<TicketDoc[]>([]);
+  const [pastOrders, setPastOrders] = useState<OrderDoc[]>([]);
+  const [savedCount, setSavedCount] = useState(0);
+  const recsRunRef = React.useRef(false);
 
   useEffect(() => {
     setMounted(true);
-    fetchRecommendations();
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('isabi_offline_tickets');
       if (saved) setIsOfflineReady(true);
+      setSavedCount(getFavorites().length);
     }
-  }, []);
+    if (profile?.email) {
+      getTicketsForEmail(profile.email).then(setTickets).catch(() => undefined);
+      getOrdersForEmail(profile.email).then(setPastOrders).catch(() => undefined);
+    }
+  }, [profile?.email]);
+
+  // Run AI recommendations once the real event list has loaded.
+  useEffect(() => {
+    if (events.length > 0 && !recsRunRef.current) {
+      recsRunRef.current = true;
+      fetchRecommendations(events);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [events]);
 
   const handleSyncOffline = async () => {
     setIsSyncing(true);
     await new Promise(r => setTimeout(r, 2000));
-    localStorage.setItem('isabi_offline_tickets', JSON.stringify(MOCK_EVENTS.slice(0, 3)));
+    localStorage.setItem('isabi_offline_tickets', JSON.stringify(tickets.slice(0, 3)));
     setIsSyncing(false);
     setIsOfflineReady(true);
     toast({
@@ -76,26 +101,39 @@ export default function AttendeeDashboard() {
     });
   };
 
-  const fetchRecommendations = async () => {
+  const fetchRecommendations = async (eventsList: EventDoc[]) => {
     setLoadingRecs(true);
     try {
+      if (eventsList.length === 0) {
+        setRecommendations([]);
+        return;
+      }
+      let past: string[] = [];
+      if (profile?.email) {
+        try {
+          const orders = await getOrdersForEmail(profile.email);
+          past = orders.filter((o) => o.status === 'paid').map((o) => o.eventTitle);
+        } catch {
+          /* no order history */
+        }
+      }
       const result = await attendeePersonalizedEventRecommendations({
-        pastPurchases: ['Lagos Jazz Night', 'Naija Tech Summit'],
-        savedEvents: ['Gidi Festival'],
-        browsingHistory: ['Calabar Carnival', 'Abuja Praise Festival'],
+        pastPurchases: past.slice(0, 10),
+        savedEvents: [],
+        browsingHistory: [],
         eventCategories: CATEGORIES.map(c => c.name),
-        availableEvents: MOCK_EVENTS.map(e => ({
+        availableEvents: eventsList.map(e => ({
           id: e.id,
           title: e.title,
           category: e.category,
-          description: e.description
+          description: e.description || ''
         }))
       });
       
-      const recommendedEvents = MOCK_EVENTS.filter(e => result.recommendedEventIds.includes(e.id));
-      setRecommendations(recommendedEvents.length > 0 ? recommendedEvents : MOCK_EVENTS.slice(3, 6));
+      const recommendedEvents = eventsList.filter(e => result.recommendedEventIds.includes(e.id));
+      setRecommendations(recommendedEvents.length > 0 ? recommendedEvents : eventsList.slice(0, 3));
     } catch (error) {
-      setRecommendations(MOCK_EVENTS.slice(3, 6));
+      setRecommendations(eventsList.slice(0, 3));
     } finally {
       setLoadingRecs(false);
     }
@@ -106,16 +144,55 @@ export default function AttendeeDashboard() {
       toast({ variant: "destructive", title: "Email Required", description: "Please enter the recipient's email address." });
       return;
     }
+    if (!transferTicket?.ticketId) {
+      toast({ variant: "destructive", title: "No Ticket Selected", description: "Select a ticket to transfer." });
+      return;
+    }
     setIsTransferring(true);
-    await new Promise(r => setTimeout(r, 2000));
-    setIsTransferring(false);
-    setIsTransferOpen(false);
-    setTransferEmail('');
-    toast({
-      title: "Ticket Transferred!",
-      description: `Your ticket for ${transferTicket.title} has been sent to ${transferEmail}.`,
-    });
+    try {
+      const res = await apiFetch('/api/tickets/transfer', {
+        method: 'POST',
+        body: JSON.stringify({ticketId: transferTicket.ticketId, toEmail: transferEmail.trim()}),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Transfer failed.');
+      setTickets(prev => prev.filter(t => t.id !== transferTicket.ticketId));
+      toast({
+        title: "Ticket Transferred!",
+        description: `Your ticket for ${transferTicket.title} has been sent to ${transferEmail}.`,
+      });
+      setIsTransferOpen(false);
+      setTransferEmail('');
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Transfer Failed",
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
+    } finally {
+      setIsTransferring(false);
+    }
   };
+
+  // Real ticket cards: join purchased tickets with their event documents.
+  const upcomingTickets = tickets
+    .filter(t => t.status !== 'used' && t.status !== 'transferred')
+    .map(t => {
+      const ev = events.find(e => e.id === t.eventId) as EventDoc | undefined;
+      return {
+        id: t.id,
+        ticketId: t.id,
+        code: t.code,
+        title: t.eventTitle || ev?.title || 'Event',
+        image: ev?.image || 'https://placehold.co/600x600?text=Event',
+        date: ev?.date || String(t.createdAt || new Date().toISOString()),
+        venue: ev?.venue || '—',
+        city: ev?.city || '',
+      };
+    });
+  const activeCount = tickets.filter(t => t.status === 'active').length;
+  const usedCount = tickets.filter(t => t.status === 'used').length;
+  const paidOrders = pastOrders.filter(o => o.status === 'paid');
 
   return (
     <div className="p-4 md:p-8 lg:p-12 space-y-8 md:space-y-12 max-w-5xl mx-auto">
@@ -157,8 +234,8 @@ export default function AttendeeDashboard() {
 
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1 text-left">
-          <h1 className="font-headline text-3xl md:text-5xl tracking-tighter">Hi, {MOCK_USER.name} 👋</h1>
-          <p className="text-muted-foreground font-medium">You have {MOCK_USER.wallet.active} upcoming experiences.</p>
+          <h1 className="font-headline text-3xl md:text-5xl tracking-tighter">Hi, {profile?.name || profile?.email?.split('@')[0] || 'there'} 👋</h1>
+          <p className="text-muted-foreground font-medium">You have {activeCount} upcoming {activeCount === 1 ? 'ticket' : 'tickets'}.</p>
         </div>
         <Link href="/discover" className="w-full sm:w-auto no-underline">
           <Button className="w-full rounded-full px-8 shadow-xl shadow-primary/20 h-11 font-bold">Discover Events</Button>
@@ -166,9 +243,9 @@ export default function AttendeeDashboard() {
       </header>
 
       <div className="grid grid-cols-3 gap-2 md:gap-6">
-        <StatBox label="Active" value={MOCK_USER.wallet.active} color="primary" icon={Ticket} />
-        <StatBox label="Used" value={MOCK_USER.wallet.used} color="accent" icon={History} />
-        <StatBox label="Saved" value={5} color="white" icon={Heart} />
+        <StatBox label="Active" value={activeCount} color="primary" icon={Ticket} />
+        <StatBox label="Used" value={usedCount} color="accent" icon={History} />
+        <StatBox label="Saved" value={savedCount} color="white" icon={Heart} />
       </div>
 
       <Tabs defaultValue="upcoming" className="w-full">
@@ -178,9 +255,15 @@ export default function AttendeeDashboard() {
         </TabsList>
 
         <TabsContent value="upcoming" className="space-y-6">
-          {MOCK_EVENTS.slice(0, 3).map((event) => (
+          {upcomingTickets.length === 0 ? (
+            <div className="text-center py-16 bg-card/20 rounded-[2rem] border border-dashed border-border/50">
+              <Ticket className="w-10 h-10 text-muted-foreground/30 mx-auto mb-4" />
+              <p className="text-muted-foreground font-medium">No upcoming tickets yet.</p>
+              <Link href="/discover" className="inline-block mt-4 text-primary font-bold text-sm">Browse events →</Link>
+            </div>
+          ) : upcomingTickets.map((event) => (
             <TicketCard 
-              key={event.id} 
+              key={event.ticketId} 
               event={event} 
               mounted={mounted} 
               offline={isOfflineReady} 
@@ -192,10 +275,27 @@ export default function AttendeeDashboard() {
         </TabsContent>
 
         <TabsContent value="past" className="pt-12">
-          <div className="text-center py-24 bg-card/20 rounded-[3rem] border border-dashed border-border/50">
-            <History className="w-16 h-16 text-muted-foreground mx-auto mb-6 opacity-10" />
-            <p className="text-muted-foreground font-medium">No past events recorded yet.</p>
-          </div>
+          {paidOrders.length === 0 ? (
+            <div className="text-center py-24 bg-card/20 rounded-[3rem] border border-dashed border-border/50">
+              <History className="w-16 h-16 text-muted-foreground mx-auto mb-6 opacity-10" />
+              <p className="text-muted-foreground font-medium">No past events recorded yet.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {paidOrders.map((order) => (
+                <div key={order.id} className="bg-card border border-border p-5 rounded-2xl flex items-center justify-between text-left">
+                  <div>
+                    <p className="font-bold">{order.eventTitle}</p>
+                    <p className="text-xs text-muted-foreground font-mono">{order.id}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold text-primary">{order.currency === 'USD' ? `$${order.amount.toFixed(2)}` : `₦${order.amount.toLocaleString()}`}</p>
+                    <p className="text-[10px] text-muted-foreground">{order.paidAt ? new Date(order.paidAt).toLocaleDateString('en-NG', {dateStyle: 'medium'}) : ''}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </TabsContent>
       </Tabs>
 
@@ -215,7 +315,7 @@ export default function AttendeeDashboard() {
             [1,2,3].map(i => <div key={i} className="h-48 bg-card animate-pulse rounded-3xl" />)
           ) : (
             recommendations.map((event) => (
-              <Link key={event.id} href={`/events/${event.slug}`} className="group">
+              <Link key={event.id} href={`/events/${event.slug || event.id}`} className="group">
                 <div className="bg-card border border-border rounded-3xl overflow-hidden hover:border-primary/50 transition-all p-4 h-full flex flex-col">
                   <div className="relative aspect-video rounded-2xl overflow-hidden mb-4">
                     <img src={event.image} alt="" className="object-cover w-full h-full group-hover:scale-105 transition-transform" />
@@ -280,13 +380,13 @@ export default function AttendeeDashboard() {
             <div className="space-y-4">
               <div className="space-y-1">
                 <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Attendee Name</p>
-                <p className="text-xl font-bold">{MOCK_USER.name}</p>
+                <p className="text-xl font-bold">{profile?.name || profile?.email || '—'}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-4 border-y border-border/50 py-4">
                 <div className="text-left space-y-1">
                   <p className="text-[8px] font-black uppercase text-muted-foreground tracking-widest">Ticket ID</p>
-                  <p className="font-mono text-[10px] font-bold uppercase">#TKT-{viewTicket?.id.toUpperCase()}-029</p>
+                  <p className="font-mono text-[10px] font-bold uppercase">#{viewTicket?.code || viewTicket?.id?.toUpperCase() || ''}</p>
                 </div>
                 <div className="text-right space-y-1">
                   <p className="text-[8px] font-black uppercase text-muted-foreground tracking-widest">Status</p>
@@ -358,7 +458,7 @@ function TicketCard({ event, mounted, offline, onTransfer, onView, onDownload }:
       <div className="flex-1 p-6 md:p-10 flex flex-col text-left">
         <div className="flex items-center justify-between mb-6">
           <Badge className="bg-primary text-white border-none text-[10px] font-black uppercase">CONFIRMED</Badge>
-          <span className="text-[10px] text-muted-foreground font-mono opacity-60">#TKT-{event.id.toUpperCase()}</span>
+          <span className="text-[10px] text-muted-foreground font-mono opacity-60">#{event.code || `TKT-${event.id.toUpperCase()}`}</span>
         </div>
         <div className="space-y-4 flex-1">
           <h3 className="font-headline text-2xl md:text-3xl line-clamp-1">{event.title}</h3>

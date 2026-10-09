@@ -11,16 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import Link from 'next/link';
 import { Html5Qrcode } from 'html5-qrcode';
 import { cn } from '@/lib/utils';
-
-const MOCK_ATTENDEES = [
-  { name: 'Sylvanus P. Ezekiel', type: 'VIP Pass', id: 'TKT-E1-029' },
-  { name: 'Chioma Okereke', type: 'Standard Entry', id: 'TKT-E3-112' },
-  { name: 'Tunde Bakare', type: 'Early Bird', id: 'TKT-E2-005' },
-  { name: 'Aisha Bello', type: 'VIP Pass', id: 'TKT-E1-088' },
-  { name: 'Emeka Nwosu', type: 'Exhibitor', id: 'TKT-V-992' },
-  { name: 'Fatima Yusuf', type: 'Standard Entry', id: 'TKT-E10-441' },
-  { name: 'Olumide Williams', type: 'Speaker', id: 'TKT-E2-SPK' },
-];
+import { apiFetch } from '@/lib/api-fetch';
 
 export default function StaffCheckIn() {
   const [scanState, setScanState] = useState<'idle' | 'validating' | 'success' | 'error' | 'duplicate'>('idle');
@@ -32,11 +23,7 @@ export default function StaffCheckIn() {
   
   const scannerRef = useRef<Html5Qrcode | null>(null);
   
-  const [history, setHistory] = useState<any[]>([
-    { id: 'TKT-E1-029', name: 'Sylvanus P. Ezekiel', time: '10:45 AM', type: 'VIP Pass' },
-    { id: 'TKT-E3-112', name: 'Chioma Okereke', time: '10:42 AM', type: 'Standard Entry' },
-    { id: 'TKT-E2-005', name: 'Tunde Bakare', time: '10:35 AM', type: 'Early Bird' },
-  ]);
+  const [history, setHistory] = useState<any[]>([]);
   
   const { toast } = useToast();
 
@@ -92,56 +79,38 @@ export default function StaffCheckIn() {
   const handleValidation = async (ticketId: string) => {
     await stopScanner();
     setScanState('validating');
-    
-    await new Promise(r => setTimeout(r, 1500));
-    
-    // Check if already scanned in current session
-    const isDuplicate = history.some(item => item.id.toUpperCase() === ticketId.toUpperCase());
-    
-    if (isDuplicate) {
-      setScanState('duplicate');
-      toast({ variant: "destructive", title: "Duplicate Entry", description: "This ticket has already been scanned." });
-      return;
-    }
+    try {
+      const res = await apiFetch('/api/tickets/validate', {
+        method: 'POST',
+        body: JSON.stringify({code: ticketId, checkIn: true}),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Lookup failed.');
 
-    const attendee = MOCK_ATTENDEES.find(a => 
-      ticketId.toUpperCase().includes(a.id.toUpperCase()) || 
-      a.id.toUpperCase().includes(ticketId.toUpperCase())
-    );
-
-    if (attendee) {
+      if (!data.found) {
+        setScanState('error');
+        toast({ variant: "destructive", title: "Invalid Ticket", description: "This code does not match any valid records." });
+        return;
+      }
+      const dup = data.ticket.status === 'used' ||
+        history.some(item => item.id.toUpperCase() === String(data.code).toUpperCase());
+      if (dup) {
+        setScanState('duplicate');
+        toast({ variant: "destructive", title: "Duplicate Entry", description: "This ticket has already been scanned." });
+        return;
+      }
       setScanState('success');
-      const entry = {
-        id: attendee.id,
-        name: attendee.name,
+      setHistory(prev => [{
+        id: data.code,
+        name: data.ticket.holderName,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        type: attendee.type
-      };
-      setHistory([entry, ...history]);
-      toast({ title: "Access Granted", description: `${attendee.name} checked in.` });
-    } else {
+        type: data.ticket.eventTitle || 'Ticket',
+      }, ...prev]);
+      toast({ title: "Access Granted", description: `${data.ticket.holderName} checked in.` });
+    } catch (err) {
       setScanState('error');
-      toast({ variant: "destructive", title: "Invalid Ticket", description: "This code does not match any valid records." });
+      toast({ variant: "destructive", title: "Validation Failed", description: err instanceof Error ? err.message : 'Please try again.' });
     }
-  };
-
-  const handleSimulate = async () => {
-    setScanState('validating');
-    await new Promise(r => setTimeout(r, 1200));
-    const attendee = MOCK_ATTENDEES[Math.floor(Math.random() * MOCK_ATTENDEES.length)];
-    setScanState('success');
-    setHistory([{
-      id: attendee.id,
-      name: attendee.name,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      type: attendee.type
-    }, ...history]);
-  };
-
-  const handleSimulateDuplicate = async () => {
-    setScanState('validating');
-    await new Promise(r => setTimeout(r, 1000));
-    setScanState('duplicate');
   };
 
   const handleManualLookup = async () => {
@@ -150,37 +119,39 @@ export default function StaffCheckIn() {
     setScanState('validating');
     setManualMode(false);
     
-    await new Promise(r => setTimeout(r, 1200));
-    
-    const isDuplicate = history.some(item => 
-      item.id.toLowerCase() === lookupQuery.toLowerCase() ||
-      item.name.toLowerCase() === lookupQuery.toLowerCase()
-    );
+    try {
+      const res = await apiFetch('/api/tickets/validate', {
+        method: 'POST',
+        body: JSON.stringify({code: lookupQuery, checkIn: true}),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Lookup failed.');
 
-    if (isDuplicate) {
-      setScanState('duplicate');
-      setLookupQuery('');
-      return;
-    }
-
-    const found = MOCK_ATTENDEES.find(a => 
-      a.name.toLowerCase().includes(lookupQuery.toLowerCase()) || 
-      a.id.toLowerCase().includes(lookupQuery.toLowerCase())
-    );
-
-    if (found) {
+      if (!data.found) {
+        setScanState('error');
+        toast({ variant: "destructive", title: "Not Found", description: "No ticket found matching that code." });
+        setLookupQuery('');
+        return;
+      }
+      const dup = data.ticket.status === 'used' ||
+        history.some(item => item.id.toUpperCase() === String(data.code).toUpperCase());
+      if (dup) {
+        setScanState('duplicate');
+        toast({ variant: "destructive", title: "Duplicate Entry", description: "This ticket has already been scanned." });
+        setLookupQuery('');
+        return;
+      }
       setScanState('success');
-      const entry = {
-        id: found.id,
-        name: found.name,
+      setHistory(prev => [{
+        id: data.code,
+        name: data.ticket.holderName,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        type: found.type
-      };
-      setHistory([entry, ...history]);
-      toast({ title: "Found Attendee", description: `${found.name} validated manually.` });
-    } else {
+        type: data.ticket.eventTitle || 'Ticket',
+      }, ...prev]);
+      toast({ title: "Found Attendee", description: `${data.ticket.holderName} validated manually.` });
+    } catch (err) {
       setScanState('error');
-      toast({ variant: "destructive", title: "Not Found", description: "No attendee found matching that ID or Name." });
+      toast({ variant: "destructive", title: "Validation Failed", description: err instanceof Error ? err.message : 'Please try again.' });
     }
     setLookupQuery('');
   };
@@ -246,14 +217,6 @@ export default function StaffCheckIn() {
                       >
                         <Camera className="w-4 h-4" /> Launch Scanner
                       </Button>
-                      <div className="flex gap-2">
-                        <Button variant="ghost" onClick={handleSimulate} className="text-muted-foreground hover:text-white text-[9px] uppercase font-black tracking-widest">
-                          Simulate Success
-                        </Button>
-                        <Button variant="ghost" onClick={handleSimulateDuplicate} className="text-muted-foreground hover:text-white text-[9px] uppercase font-black tracking-widest">
-                          Simulate Duplicate
-                        </Button>
-                      </div>
                     </div>
                   </div>
                 )}
@@ -558,7 +521,7 @@ export default function StaffCheckIn() {
             <CardContent className="space-y-6 p-8">
               <div className="space-y-2 text-left">
                 <Input 
-                  placeholder="ID (e.g. TKT-E1-029) or Name" 
+                  placeholder="Ticket code (e.g. TKT-8CHARSXX-1)" 
                   className="h-14 bg-secondary border-none text-lg rounded-xl"
                   value={lookupQuery}
                   onChange={(e) => setLookupQuery(e.target.value)}
@@ -573,7 +536,7 @@ export default function StaffCheckIn() {
                 </Button>
               </div>
               <p className="text-[10px] text-center text-muted-foreground uppercase tracking-widest font-black">
-                Pro Tip: Search for "Sylvanus" or "TKT-E1-029"
+                Enter the exact code from the ticket or QR payload
               </p>
             </CardContent>
           </Card>

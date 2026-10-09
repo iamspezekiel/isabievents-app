@@ -78,11 +78,7 @@ function readStoredProfile(): AuthProfile | null {
   } catch {
     /* corrupted storage — ignore */
   }
-  // Legacy demo session from the pre-Firebase login.
-  if (localStorage.getItem(LOGGED_IN_KEY) === 'true') {
-    const role = (localStorage.getItem(ROLE_KEY) || 'attendee') as Role;
-    return {uid: `demo_${role}`, name: 'Demo User', email: `${role}@isabievents.ng`, role};
-  }
+  // Legacy demo session cleanup: only the cached profile is trusted.
   return null;
 }
 
@@ -156,20 +152,8 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
       return next;
     }
 
-    // Demo mode: resolve against MOCK_USERS.
-    const {MOCK_USERS} = await import('@/lib/mock-data');
-    const match = MOCK_USERS.find((u) => u.email === email && u.password === password);
-    if (!match) throw new Error('Invalid email or password.');
-    const next: AuthProfile = {
-      uid: `demo_${match.role}`,
-      name: match.name,
-      email: match.email,
-      role: match.role as Role,
-      whatsapp: match.whatsapp,
-    };
-    setProfile(next);
-    storeProfile(next);
-    return next;
+    // Production requires Firebase — there is no demo/mock login anymore.
+    throw new Error('Firebase authentication is not configured.');
   }, []);
 
   const signUp = useCallback(
@@ -201,11 +185,8 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
         return next;
       }
 
-      // Demo mode: accept anything, mimic success.
-      const next: AuthProfile = {uid: `demo_${role}`, name, email, role};
-      setProfile(next);
-      storeProfile(next);
-      return next;
+      // Production requires Firebase — there is no demo/mock signup anymore.
+      throw new Error('Firebase authentication is not configured.');
     },
     []
   );

@@ -1,8 +1,7 @@
 /**
- * Seeds Firestore with the demo data from src/lib/mock-data.ts:
- *  - events collection (10 events)
- *  - demo Auth users (one per role; admin `isabideveloper@gmail.com` /
- *    `Password123`, the rest `password123`) + profile docs
+ * Production bootstrap: ensures the admin account exists in Firebase Auth +
+ * Firestore. No demo events or demo users are seeded — the database holds
+ * only real data.
  *
  * Usage:
  *   1. Fill FIREBASE_SERVICE_ACCOUNT_KEY (or GOOGLE_APPLICATION_CREDENTIALS)
@@ -19,7 +18,13 @@ config(); // also allow plain .env
 import {initializeApp, cert, getApps} from 'firebase-admin/app';
 import {getAuth} from 'firebase-admin/auth';
 import {getFirestore} from 'firebase-admin/firestore';
-import {MOCK_EVENTS, MOCK_USERS} from '../src/lib/mock-data';
+
+const ADMIN = {
+  name: 'Admin Master',
+  email: 'isabideveloper@gmail.com',
+  password: 'Password123',
+  whatsapp: '+2349024244140',
+};
 
 async function main() {
   const serviceAccount = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
@@ -42,56 +47,40 @@ async function main() {
   const db = getFirestore();
   const auth = getAuth();
 
-  // ---- 1. Events ----------------------------------------------------------
-  console.log(`Seeding ${MOCK_EVENTS.length} events…`);
-  const eventBatch = db.batch();
-  for (const event of MOCK_EVENTS) {
-    const ref = db.collection('events').doc(event.id);
-    eventBatch.set(ref, {...event, updatedAt: new Date().toISOString()}, {merge: true});
-  }
-  await eventBatch.commit();
-  console.log(`  ✓ events written (${MOCK_EVENTS.map((e) => e.id).join(', ')})`);
-
-  // ---- 2. Demo users (Auth + profile docs) --------------------------------
-  console.log(`Seeding ${MOCK_USERS.length} demo users…`);
-  for (const user of MOCK_USERS) {
-    let uid: string;
-    try {
-      const existing = await auth.getUserByEmail(user.email);
-      uid = existing.uid;
-      console.log(`  • ${user.email} already exists — updating password/profile`);
-      await auth.updateUser(uid, {password: user.password, displayName: user.name});
-    } catch {
-      const created = await auth.createUser({
-        email: user.email,
-        password: user.password,
-        displayName: user.name,
-      });
-      uid = created.uid;
-      console.log(`  ✓ created ${user.email}`);
-    }
-
-    await db
-      .collection('users')
-      .doc(uid)
-      .set(
-        {
-          name: user.name,
-          email: user.email,
-          role: user.role,
-          whatsapp: user.whatsapp,
-          updatedAt: new Date().toISOString(),
-        },
-        {merge: true}
-      );
+  let uid: string;
+  try {
+    const existing = await auth.getUserByEmail(ADMIN.email);
+    uid = existing.uid;
+    await auth.updateUser(uid, {password: ADMIN.password, displayName: ADMIN.name});
+    console.log(`  • ${ADMIN.email} already exists — password/profile updated`);
+  } catch {
+    const created = await auth.createUser({
+      email: ADMIN.email,
+      password: ADMIN.password,
+      displayName: ADMIN.name,
+    });
+    uid = created.uid;
+    console.log(`  ✓ created ${ADMIN.email}`);
   }
 
-  console.log('\n✓ Seed complete.');
-  console.log('  Logins: admin → isabideveloper@gmail.com / Password123');
-  console.log('          organizer|staff|vendor|attendee@isabievents.ng / password123');
+  await db
+    .collection('users')
+    .doc(uid)
+    .set(
+      {
+        name: ADMIN.name,
+        email: ADMIN.email,
+        role: 'admin',
+        whatsapp: ADMIN.whatsapp,
+        updatedAt: new Date().toISOString(),
+      },
+      {merge: true}
+    );
+
+  console.log('\n✓ Admin ready: isabideveloper@gmail.com / Password123');
 }
 
 main().catch((err) => {
-  console.error('✗ Seed failed:', err);
+  console.error('✗ Bootstrap failed:', err);
   process.exit(1);
 });

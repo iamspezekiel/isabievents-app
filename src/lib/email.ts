@@ -1,37 +1,104 @@
 /**
  * Transactional email (SMTP via nodemailer) — server only.
  *
- * Configure in .env:
- *   SMTP_HOST, SMTP_PORT (587), SMTP_USER, SMTP_PASS, SMTP_FROM, ADMIN_EMAIL
+ * Configuration resolution (per field):
+ *   1. Firestore `settings/smtp` — editable + testable from the admin dashboard
+ *   2. Environment (.env): SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS,
+ *      SMTP_FROM, ADMIN_EMAIL
  *
- * When SMTP is not configured every send is a logged no-op, so the app never
- * breaks in demo mode.
+ * When nothing is configured every send is a logged no-op, so the app never
+ * breaks. Dashboard changes take effect within ~60s or immediately after
+ * invalidateSmtpCache().
  */
 import nodemailer, {type Transporter} from 'nodemailer';
 
+export interface SmtpConfig {
+  host: string;
+  port: number;
+  user: string;
+  pass: string;
+  from: string;
+  adminEmail: string;
+}
+
+/** True when the base env SMTP settings are present (informational flag). */
 export const isEmailConfigured = () =>
   Boolean(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS);
 
-const ADMIN_EMAIL = () => process.env.ADMIN_EMAIL || 'isabideveloper@gmail.com';
+const envConfig = (): SmtpConfig => ({
+  host: process.env.SMTP_HOST || '',
+  port: Number(process.env.SMTP_PORT || 587),
+  user: process.env.SMTP_USER || '',
+  pass: process.env.SMTP_PASS || '',
+  from: process.env.SMTP_FROM || '',
+  adminEmail: process.env.ADMIN_EMAIL || 'isabideveloper@gmail.com',
+});
 
+const CONFIG_TTL = 60_000;
+let cachedConfig: {at: number; cfg: SmtpConfig} | null = null;
 let transporter: Transporter | null = null;
+let transporterSig = '';
 
-function getTransporter(): Transporter | null {
-  if (!isEmailConfigured()) return null;
-  if (!transporter) {
-    const port = Number(process.env.SMTP_PORT || 587);
-    transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port,
-      secure: port === 465,
-      auth: {user: process.env.SMTP_USER, pass: process.env.SMTP_PASS},
-    });
-  }
-  return transporter;
+/** Drop the cached config (called after the admin saves new SMTP settings). */
+export function invalidateSmtpCache() {
+  cachedConfig = null;
+  transporter = null;
+  transporterSig = '';
 }
 
-function fromAddress(): string {
-  return process.env.SMTP_FROM || `IsabiEvents <${process.env.SMTP_USER || 'no-reply@isabievents.ng'}>`;
+/** Merged effective config: Firestore settings/smtp overrides env per field. */
+export async function resolveSmtpConfig(): Promise<SmtpConfig> {
+  if (cachedConfig && Date.now() - cachedConfig.at < CONFIG_TTL) return cachedConfig.cfg;
+  const base = envConfig();
+  let stored: Partial<SmtpConfig> = {};
+  try {
+    const {getAdminDb} = await import('@/lib/firebase-admin');
+    const adminDb = getAdminDb();
+    if (adminDb) {
+      const snap = await adminDb.collection('settings').doc('smtp').get();
+      if (snap.exists) {
+        const d = snap.data() as Record<string, unknown>;
+        stored = {
+          host: typeof d.host === 'string' ? d.host : '',
+          port: typeof d.port === 'number' ? d.port : 0,
+          user: typeof d.user === 'string' ? d.user : '',
+          pass: typeof d.pass === 'string' ? d.pass : '',
+          from: typeof d.from === 'string' ? d.from : '',
+          adminEmail: typeof d.adminEmail === 'string' ? d.adminEmail : '',
+        };
+      }
+    }
+  } catch {
+    /* settings read failed — env fallback */
+  }
+  const cfg: SmtpConfig = {
+    host: stored.host || base.host,
+    port: stored.port || base.port,
+    user: stored.user || base.user,
+    pass: stored.pass || base.pass,
+    from: stored.from || base.from,
+    adminEmail: stored.adminEmail || base.adminEmail,
+  };
+  cachedConfig = {at: Date.now(), cfg};
+  return cfg;
+}
+
+const adminEmail = async () => (await resolveSmtpConfig()).adminEmail;
+
+async function getTransporter(): Promise<Transporter | null> {
+  const cfg = await resolveSmtpConfig();
+  if (!cfg.host || !cfg.user || !cfg.pass) return null;
+  const sig = `${cfg.host}:${cfg.port}:${cfg.user}:${cfg.pass}`;
+  if (!transporter || transporterSig !== sig) {
+    transporter = nodemailer.createTransport({
+      host: cfg.host,
+      port: cfg.port,
+      secure: cfg.port === 465,
+      auth: {user: cfg.user, pass: cfg.pass},
+    });
+    transporterSig = sig;
+  }
+  return transporter;
 }
 
 const PRIMARY = '#7E7CFF';
@@ -65,13 +132,15 @@ const p = (text: string) =>
   `<p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#3d3d4d;">${text}</p>`;
 
 async function send(opts: {to: string | string[]; subject: string; html: string; text?: string}): Promise<boolean> {
-  const tx = getTransporter();
-  if (!tx) {
-    console.warn(`[email] SMTP not configured — skipped "${opts.subject}" to ${opts.to}`);
-    return false;
-  }
   try {
-    await tx.sendMail({from: fromAddress(), to: opts.to, subject: opts.subject, html: opts.html, text: opts.text});
+    const cfg = await resolveSmtpConfig();
+    const tx = await getTransporter();
+    if (!tx) {
+      console.warn(`[email] SMTP not configured — skipped "${opts.subject}" to ${opts.to}`);
+      return false;
+    }
+    const from = cfg.from || `IsabiEvents <${cfg.user}>`;
+    await tx.sendMail({from, to: opts.to, subject: opts.subject, html: opts.html, text: opts.text});
     console.log(`[email] sent "${opts.subject}" to ${opts.to}`);
     return true;
   } catch (err) {
@@ -82,6 +151,26 @@ async function send(opts: {to: string | string[]; subject: string; html: string;
 
 const money = (amount: number, currency: 'NGN' | 'USD') =>
   currency === 'USD' ? `$${amount.toFixed(2)}` : `₦${amount.toLocaleString()}`;
+
+const escapeHtml = (s: string) =>
+  s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+/** Admin newsletter campaign — real send to one recipient. */
+export async function sendNewsletterEmail(to: string, subject: string, body: string): Promise<boolean> {
+  const paragraphs = body
+    .split(/\n{2,}/)
+    .map(
+      (p) =>
+        `<p style="margin:0 0 14px;font-size:14px;line-height:1.7;color:#3d3d4d;white-space:pre-wrap;">${escapeHtml(p).replace(/\n/g, '<br/>')}</p>`
+    )
+    .join('');
+  return send({
+    to,
+    subject,
+    html: layout(subject, paragraphs),
+    text: body,
+  });
+}
 
 /** Sent after account creation (main signup, checkout signup, or Google). */
 export async function sendWelcomeEmail(name: string, email: string): Promise<boolean> {
@@ -130,7 +219,7 @@ export async function sendPaymentConfirmationEmail(opts: {
   });
   // Admin visibility of every sale.
   await send({
-    to: ADMIN_EMAIL(),
+    to: await adminEmail(),
     subject: `💸 New sale — ${opts.eventTitle} (${money(opts.amount, opts.currency)})`,
     html: layout(
       'New ticket sale',
@@ -145,7 +234,7 @@ export async function sendPaymentConfirmationEmail(opts: {
 /** Contact-us form → forwarded to the admin inbox. */
 export async function sendContactEmail(opts: {name: string; email: string; subject?: string; message: string}): Promise<boolean> {
   return send({
-    to: ADMIN_EMAIL(),
+    to: await adminEmail(),
     subject: `📨 Contact form: ${opts.subject || 'New message'} (from ${opts.name})`,
     html: layout(
       'New contact message',
@@ -161,7 +250,7 @@ export async function sendContactEmail(opts: {name: string; email: string; subje
 /** Newsletter subscribe → admin notification + subscriber confirmation. */
 export async function sendSubscribeEmail(subscriberEmail: string): Promise<boolean> {
   await send({
-    to: ADMIN_EMAIL(),
+    to: await adminEmail(),
     subject: `🆕 New newsletter subscriber — ${subscriberEmail}`,
     html: layout(
       'New newsletter subscriber',
@@ -184,7 +273,7 @@ export async function sendSubscribeEmail(subscriberEmail: string): Promise<boole
 /** New-user alert to admin (signup of any kind). */
 export async function sendAdminNewUserEmail(opts: {name: string; email: string; role: string; method: string}): Promise<boolean> {
   return send({
-    to: ADMIN_EMAIL(),
+    to: await adminEmail(),
     subject: `👋 New ${opts.role} signup — ${opts.email}`,
     html: layout(
       'New account created',

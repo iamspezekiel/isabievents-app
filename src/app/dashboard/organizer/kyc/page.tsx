@@ -21,6 +21,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { apiFetch } from '@/lib/api-fetch';
 
 export default function KYCVerificationPage() {
   const router = useRouter();
@@ -37,16 +38,37 @@ export default function KYCVerificationPage() {
   });
 
   const handleSubmit = async () => {
+    if (!formData.idType || !formData.idNumber) {
+      toast({
+        variant: "destructive",
+        title: "Missing Information",
+        description: "Please select an ID type and enter the ID number.",
+      });
+      return;
+    }
     setLoading(true);
-    // Simulate API submission
-    await new Promise(r => setTimeout(r, 2000));
-    setLoading(false);
-    
-    toast({
-      title: "Verification Submitted",
-      description: "Our team will review your documents within 48 hours.",
-    });
-    router.push('/dashboard/organizer/settings');
+    try {
+      const res = await apiFetch('/api/kyc', {
+        method: 'POST',
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Submission failed.');
+
+      toast({
+        title: "Verification Submitted",
+        description: "Our team will review your documents within 48 hours.",
+      });
+      router.push('/dashboard/organizer/settings');
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Submission Failed",
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

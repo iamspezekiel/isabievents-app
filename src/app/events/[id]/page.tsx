@@ -2,8 +2,9 @@
 "use client";
 
 import React, { useEffect, useState, use } from 'react';
-import { Calendar, MapPin, Share2, Heart, ShieldCheck, ChevronRight, Info, Music, Users, Ticket, CheckCircle2, AlertCircle, RefreshCcw } from 'lucide-react';
-import { MOCK_EVENTS } from '@/lib/mock-data';
+import { Calendar, MapPin, Share2, Heart, ShieldCheck, ChevronRight, Info, Music, Users, Ticket, CheckCircle2, AlertCircle, RefreshCcw, Loader2 } from 'lucide-react';
+import { useEvents } from '@/hooks/use-events';
+import { toggleFavorite } from '@/lib/favorites';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -18,8 +19,10 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
   const { id } = use(props.params);
   const { toast } = useToast();
   
-  // Find event by slug or fallback to ID (backward compatibility)
-  const event = MOCK_EVENTS.find(e => e.slug === id || e.id === id) || MOCK_EVENTS[0];
+  const { events, loading } = useEvents();
+
+  // Find the real event by slug or ID (backward compatibility).
+  const event = events.find(e => e.slug === id || e.id === id) ?? null;
   
   const [faqs, setFaqs] = useState<any[]>([]);
   const [loadingFaqs, setLoadingFaqs] = useState(true);
@@ -30,11 +33,11 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
   const [quantity, setQuantity] = useState(1);
   const [tierPrice, setTierPrice] = useState(0);
 
-  async function fetchFaqs() {
+  async function fetchFaqs(description: string) {
     setLoadingFaqs(true);
     setFaqError(false);
     try {
-      const generated = await generateFaqs({ description: event.description });
+      const generated = await generateFaqs({ description });
       setFaqs(generated);
     } catch (err: any) {
       setFaqError(true);
@@ -45,8 +48,10 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
 
   useEffect(() => {
     setMounted(true);
-    fetchFaqs();
-  }, [event.description]);
+    if (event) fetchFaqs(event.description);
+    else setLoadingFaqs(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [event?.description]);
 
   const handleTierSelect = (name: string | null, price: number = 0) => {
     if (selectedTier === name) {
@@ -61,9 +66,11 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
   };
 
   const handleBookmark = () => {
+    if (!event) return;
+    const added = toggleFavorite(event.id);
     toast({
-      title: "Saved to Favorites",
-      description: "This event has been added to your digital wallet."
+      title: added ? "Saved to Favorites" : "Removed from Favorites",
+      description: added ? "This event has been added to your saved list." : "This event was removed from your favorites."
     });
   };
 
@@ -75,6 +82,25 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
       description: "Event link has been copied to your clipboard."
     });
   };
+
+  if (!event) {
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-4 px-4 text-center pt-20">
+        {loading ? (
+          <>
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <p className="text-muted-foreground">Loading event…</p>
+          </>
+        ) : (
+          <>
+            <h1 className="font-headline text-3xl">Event not found</h1>
+            <p className="text-muted-foreground">This event may have been removed or the link is incorrect.</p>
+            <Link href="/discover" className="text-primary font-bold">Back to Discover</Link>
+          </>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -182,7 +208,7 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
                   <div className="text-center py-12 bg-secondary/20 rounded-2xl border border-dashed border-border/50">
                     <AlertCircle className="w-12 h-12 text-muted-foreground mx-auto mb-4 opacity-50" />
                     <h4 className="font-bold mb-2 text-sm">Service Temporarily Busy</h4>
-                    <Button variant="outline" size="sm" onClick={fetchFaqs} className="rounded-full gap-2">
+                    <Button variant="outline" size="sm" onClick={() => event && fetchFaqs(event.description)} className="rounded-full gap-2">
                       <RefreshCcw className="w-4 h-4" /> Retry AI FAQs
                     </Button>
                   </div>
@@ -242,7 +268,7 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
                 <Card className="border-border bg-card/50 p-6 rounded-2xl hover:border-primary/30 transition-all group">
                   <div className="flex items-center gap-4">
                     <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-primary/20">
-                      <Image src={event.organizer.avatar} alt={event.organizer.name} fill className="object-cover" />
+                      <Image src={event.organizer.avatar || 'https://placehold.co/100x100?text=Org'} alt={event.organizer.name} fill className="object-cover" />
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">

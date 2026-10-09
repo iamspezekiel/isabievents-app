@@ -11,7 +11,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose, SheetFooter } from "@/components/ui/sheet";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import Autoplay from "embla-carousel-autoplay";
-import { MOCK_EVENTS, CATEGORIES, CITIES } from '@/lib/mock-data';
+import { CATEGORIES, CITIES } from '@/lib/mock-data';
+import { useEvents } from '@/hooks/use-events';
+import { toggleFavorite } from '@/lib/favorites';
 import Image from 'next/image';
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
@@ -20,6 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 function DiscoverContent() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
+  const { events, loading } = useEvents();
   
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -57,14 +60,14 @@ function DiscoverContent() {
   }, [searchParams]);
 
   const filteredEvents = useMemo(() => {
-    return MOCK_EVENTS.filter(event => {
+    return events.filter(event => {
       const searchLower = search.toLowerCase().trim();
       const matchesSearch = !searchLower || 
                            event.title.toLowerCase().includes(searchLower) || 
-                           event.description.toLowerCase().includes(searchLower) ||
-                           event.venue.toLowerCase().includes(searchLower) ||
-                           event.tags.some(tag => tag.toLowerCase().includes(searchLower)) ||
-                           event.organizer.name.toLowerCase().includes(searchLower);
+                           (event.description || '').toLowerCase().includes(searchLower) ||
+                           (event.venue || '').toLowerCase().includes(searchLower) ||
+                           (event.tags || []).some(tag => tag.toLowerCase().includes(searchLower)) ||
+                           (event.organizer?.name || '').toLowerCase().includes(searchLower);
       
       const matchesCategory = selectedCategory === 'all' || event.category === selectedCategory;
       const matchesCity = selectedCity === 'all' || event.city === selectedCity;
@@ -74,16 +77,17 @@ function DiscoverContent() {
 
       return matchesSearch && matchesCategory && matchesCity && matchesPrice;
     }).slice(0, displayLimit);
-  }, [search, selectedCategory, selectedCity, priceFilter, displayLimit]);
+  }, [events, search, selectedCategory, selectedCity, priceFilter, displayLimit]);
 
-  const trendingEvents = MOCK_EVENTS.slice(0, 5);
+  const trendingEvents = events.slice(0, 5);
 
-  const handleBookmark = (e: React.MouseEvent) => {
+  const handleBookmark = (e: React.MouseEvent, id: string) => {
     e.preventDefault();
     e.stopPropagation();
+    const added = toggleFavorite(id);
     toast({
-      title: "Saved to Favorites",
-      description: "This event has been added to your digital wallet."
+      title: added ? "Saved to Favorites" : "Removed from Favorites",
+      description: added ? "You can find it in your saved list." : "This event was removed from your favorites."
     });
   };
 
@@ -315,7 +319,7 @@ function DiscoverContent() {
                     size="icon" 
                     variant="secondary" 
                     className="w-7 h-7 md:w-10 md:h-10 rounded-full bg-black/40 backdrop-blur-md border-none text-white hover:bg-black/60 transition-colors"
-                    onClick={handleBookmark}
+                    onClick={(e) => handleBookmark(e, event.id)}
                   >
                     <Heart className="w-3 h-3 md:w-5 md:h-5" />
                   </Button>
@@ -353,7 +357,7 @@ function DiscoverContent() {
         ))}
       </div>
 
-      {filteredEvents.length === 0 && (
+      {!loading && filteredEvents.length === 0 && (
         <div className="text-center py-32 bg-card/20 rounded-[3rem] border border-dashed border-border/50">
           <Search className="w-16 h-16 text-muted-foreground mx-auto mb-6 opacity-20" />
           <h3 className="text-2xl font-headline mb-3">No results found</h3>

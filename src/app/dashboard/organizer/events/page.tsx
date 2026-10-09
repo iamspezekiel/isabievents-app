@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Ticket, 
   Plus, 
@@ -34,26 +34,67 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { MOCK_EVENTS } from '@/lib/mock-data';
 import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
+import { useEvents } from '@/hooks/use-events';
+import { apiFetch } from '@/lib/api-fetch';
+import { useAuth } from '@/components/auth-provider';
+import type { EventDoc } from '@/lib/db';
 
 export default function MyEventsPage() {
   const [isCancelDialogOpen, setIsCancelDialogOpen] = useState(false);
-  const [eventToCancel, setEventToCancel] = useState<any>(null);
+  const [eventToCancel, setEventToCancel] = useState<EventDoc | null>(null);
   const { toast } = useToast();
+  const { profile } = useAuth();
+  const { events: allEvents, refetch } = useEvents();
+  const [eventStats, setEventStats] = useState<Record<string, {sold: number; revenueNgn: number}>>({});
+  const [removedIds, setRemovedIds] = useState<string[]>([]);
 
-  const handleCancelIntent = (event: any) => {
+  // My events: admins see everything; organizers see what they created.
+  const isMine = (e: EventDoc) => {
+    if (!profile) return false;
+    if (profile.role === 'admin') return true;
+    const meta = e as {organizerEmail?: string; organizerUid?: string};
+    return meta.organizerEmail === profile.email || meta.organizerUid === profile.uid;
+  };
+  const myEvents = allEvents.filter((e) => isMine(e) && !removedIds.includes(e.id));
+
+  useEffect(() => {
+    apiFetch('/api/events/stats')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d && d.stats) setEventStats(d.stats);
+      })
+      .catch(() => undefined);
+  }, []);
+
+  const handleCancelIntent = (event: EventDoc) => {
     setEventToCancel(event);
     setIsCancelDialogOpen(true);
   };
 
-  const confirmCancelEvent = () => {
-    if (eventToCancel) {
-      toast({
-        title: "Cancellation Successful",
-        description: `"${eventToCancel.title}" has been removed and ticket holders notified.`,
+  const confirmCancelEvent = async () => {
+    if (!eventToCancel) return;
+    try {
+      const res = await apiFetch('/api/events', {
+        method: 'DELETE',
+        body: JSON.stringify({id: eventToCancel.id}),
       });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Could not cancel the event.');
+      setRemovedIds((prev) => [...prev, eventToCancel.id]);
+      refetch();
+      toast({
+        title: "Event Cancelled",
+        description: `"${eventToCancel.title}" has been unlisted from the marketplace.`,
+      });
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Cancellation Failed",
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
+    } finally {
       setIsCancelDialogOpen(false);
       setEventToCancel(null);
     }
@@ -85,7 +126,13 @@ export default function MyEventsPage() {
         </div>
 
         <div className="grid gap-6">
-          {MOCK_EVENTS.slice(0, 4).map((event) => (
+          {myEvents.length === 0 && (
+            <div className="text-center py-24 bg-card/20 rounded-[3rem] border border-dashed border-border/50">
+              <Ticket className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
+              <p className="text-muted-foreground font-medium">You have no events yet. Create your first event to go live.</p>
+            </div>
+          )}
+          {myEvents.map((event) => (
             <Card key={event.id} className="overflow-hidden border-border hover:border-primary/30 transition-all shadow-sm">
               <CardContent className="p-0 flex flex-col sm:flex-row">
                 <div className="relative w-full sm:w-48 aspect-video sm:aspect-square">
@@ -104,16 +151,17 @@ export default function MyEventsPage() {
                     <div className="flex flex-wrap items-center gap-8 flex-1">
                       <div className="space-y-0.5">
                         <span className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Tickets Sold</span>
-                        <div className="font-bold">42/100</div>
+                        <div className="font-bold">{eventStats[event.id]?.sold ?? 0}/{event.inventory ?? '—'}</div>
                       </div>
                       <div className="space-y-0.5">
                         <span className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Revenue</span>
-                        <div className="font-bold text-primary">₦210,000</div>
+                        <div className="font-bold text-primary">₦{(eventStats[event.id]?.revenueNgn ?? 0).toLocaleString()}</div>
                       </div>
                       <div className="space-y-0.5">
                         <span className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Status</span>
-                        <div className="flex items-center gap-1 text-green-500 font-bold text-sm">
-                          <div className="w-1.5 h-1.5 rounded-full bg-green-500" /> Live
+                        <div className={`flex items-center gap-1 font-bold text-sm ${new Date(event.date).getTime() >= Date.now() ? 'text-green-500' : 'text-muted-foreground'}`}>
+                          <div className={`w-1.5 h-1.5 rounded-full ${new Date(event.date).getTime() >= Date.now() ? 'bg-green-500' : 'bg-muted-foreground'}`} />{' '}
+                          {new Date(event.date).getTime() >= Date.now() ? 'Live' : 'Ended'}
                         </div>
                       </div>
                     </div>
@@ -122,7 +170,7 @@ export default function MyEventsPage() {
                       <Link href={`/dashboard/organizer/create?id=${event.id}`} className="flex-1 lg:flex-none">
                         <Button variant="outline" size="sm" className="w-full rounded-full h-10 font-bold px-6">Edit</Button>
                       </Link>
-                      <Link href={`/events/${event.slug}`} className="flex-1 lg:flex-none">
+                      <Link href={`/events/${event.slug || event.id}`} className="flex-1 lg:flex-none">
                          <Button size="sm" variant="ghost" className="w-full rounded-full gap-2 h-10 font-bold px-6">View <ExternalLink className="w-3.5 h-3.5" /></Button>
                       </Link>
                       

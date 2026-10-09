@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Search, 
   CheckCircle2, 
@@ -16,22 +16,43 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import Link from 'next/link';
-import { MOCK_EVENTS } from '@/lib/mock-data';
+import { useEvents } from '@/hooks/use-events';
+import { apiFetch } from '@/lib/api-fetch';
+import type { EventDoc } from '@/lib/db';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 
 export default function AdminEventsManagement() {
   const [searchQuery, setSearchQuery] = useState('');
-  const [events, setEvents] = useState(MOCK_EVENTS);
+  const {events: allEvents} = useEvents();
+  const [events, setEvents] = useState<EventDoc[]>([]);
   const [processingId, setProcessingId] = useState<string | null>(null);
   const { toast } = useToast();
 
+  useEffect(() => {
+    setEvents(allEvents);
+  }, [allEvents]);
+
   const handleAction = async (id: string, title: string, action: 'approve' | 'reject') => {
     setProcessingId(id);
-    // Simulate network delay
-    await new Promise(r => setTimeout(r, 1000));
+    // Persist the moderation action server-side.
+    let failed = '';
+    try {
+      const res = await apiFetch('/api/admin/events', {method: 'PATCH', body: JSON.stringify({id, action})});
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) failed = data.error || 'Moderation action failed.';
+    } catch (err) {
+      failed = err instanceof Error ? err.message : 'Network error.';
+    }
+    if (failed) {
+      setProcessingId(null);
+      toast({variant: 'destructive', title: 'Action Failed', description: failed});
+      return;
+    }
     
-    setEvents(prev => prev.filter(e => e.id !== id));
+    setEvents(prev => action === 'approve'
+      ? prev.map(e => e.id === id ? {...e, organizer: {...(e.organizer || {}), verified: true}} : e)
+      : prev.filter(e => e.id !== id));
     setProcessingId(null);
 
     if (action === 'approve') {
@@ -50,11 +71,11 @@ export default function AdminEventsManagement() {
 
   const filteredEvents = events.filter(event => 
     event.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    event.organizer.name.toLowerCase().includes(searchQuery.toLowerCase())
+    (event.organizer?.name || '').toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const pendingModeration = filteredEvents.filter(event => !event.organizer.verified);
-  const autoApproved = filteredEvents.filter(event => event.organizer.verified);
+  const pendingModeration = filteredEvents.filter(event => !event.organizer?.verified);
+  const autoApproved = filteredEvents.filter(event => event.organizer?.verified);
 
   return (
     <div className="p-4 md:p-12 space-y-8">
@@ -149,7 +170,7 @@ function ModerationRow({ event, type, onAction, processingId }: {
   onAction: (id: string, title: string, action: 'approve' | 'reject') => void,
   processingId: string | null
 }) {
-  const isVerified = event.organizer.verified;
+  const isVerified = event.organizer?.verified;
   const isProcessing = processingId === event.id;
 
   return (

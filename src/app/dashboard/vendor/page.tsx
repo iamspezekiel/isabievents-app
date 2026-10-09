@@ -11,14 +11,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import Link from 'next/link';
 import { Html5Qrcode } from 'html5-qrcode';
 import { cn } from '@/lib/utils';
-
-const MOCK_ATTENDEES = [
-  { name: 'Sylvanus P. Ezekiel', type: 'Meal Voucher', id: 'VCH-M-029' },
-  { name: 'Chioma Okereke', type: 'Drink Token', id: 'VCH-D-112' },
-  { name: 'Tunde Bakare', type: 'VIP Meal', id: 'VCH-V-005' },
-  { name: 'Aisha Bello', type: 'Drink Token', id: 'VCH-D-088' },
-  { name: 'Emeka Nwosu', type: 'Meal Voucher', id: 'VCH-M-992' },
-];
+import { apiFetch } from '@/lib/api-fetch';
 
 export default function VendorPortal() {
   const [scanState, setScanState] = useState<'idle' | 'validating' | 'success' | 'error' | 'duplicate'>('idle');
@@ -30,10 +23,7 @@ export default function VendorPortal() {
   
   const scannerRef = useRef<Html5Qrcode | null>(null);
   
-  const [history, setHistory] = useState<any[]>([
-    { id: 'VCH-M-029', name: 'Sylvanus P. Ezekiel', time: '12:15 PM', type: 'Meal Voucher' },
-    { id: 'VCH-D-112', name: 'Chioma Okereke', time: '12:10 PM', type: 'Drink Token' },
-  ]);
+  const [history, setHistory] = useState<any[]>([]);
   
   const { toast } = useToast();
 
@@ -86,59 +76,40 @@ export default function VendorPortal() {
     }, 100);
   };
 
-  const handleSimulate = async () => {
-    setScanState('validating');
-    await new Promise(r => setTimeout(r, 1200));
-    const attendee = MOCK_ATTENDEES[Math.floor(Math.random() * MOCK_ATTENDEES.length)];
-    setScanState('success');
-    const entry = {
-      id: attendee.id,
-      name: attendee.name,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      type: attendee.type
-    };
-    setHistory([entry, ...history]);
-    toast({ title: "Voucher Verified", description: `${attendee.name}'s ${attendee.type} is valid.` });
-  };
-
-  const handleSimulateDuplicate = async () => {
-    setScanState('validating');
-    await new Promise(r => setTimeout(r, 1000));
-    setScanState('duplicate');
-  };
-
   const handleValidation = async (ticketId: string) => {
     await stopScanner();
     setScanState('validating');
-    
-    await new Promise(r => setTimeout(r, 1500));
-    
-    // Check for duplicates
-    const isDuplicate = history.some(item => item.id.toUpperCase() === ticketId.toUpperCase());
-    if (isDuplicate) {
-      setScanState('duplicate');
-      toast({ variant: "destructive", title: "Already Fulfilled", description: "This voucher has already been used." });
-      return;
-    }
+    try {
+      const res = await apiFetch('/api/tickets/validate', {
+        method: 'POST',
+        body: JSON.stringify({code: ticketId, checkIn: true}),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Lookup failed.');
 
-    const found = MOCK_ATTENDEES.find(a => 
-      ticketId.toUpperCase().includes(a.id.toUpperCase()) || 
-      a.id.toUpperCase().includes(ticketId.toUpperCase())
-    );
-
-    if (found) {
+      if (!data.found) {
+        setScanState('error');
+        toast({ variant: "destructive", title: "Invalid Voucher", description: "This code is invalid or not in records." });
+        return;
+      }
+      const dup = data.ticket.status === 'used' ||
+        history.some(item => item.id.toUpperCase() === String(data.code).toUpperCase());
+      if (dup) {
+        setScanState('duplicate');
+        toast({ variant: "destructive", title: "Already Fulfilled", description: "This ticket has already been used." });
+        return;
+      }
       setScanState('success');
-      const entry = {
-        id: found.id,
-        name: found.name,
+      setHistory(prev => [{
+        id: data.code,
+        name: data.ticket.holderName,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        type: found.type
-      };
-      setHistory([entry, ...history]);
-      toast({ title: "Voucher Verified", description: `${found.name}'s ${found.type} is valid.` });
-    } else {
+        type: data.ticket.eventTitle || 'Ticket',
+      }, ...prev]);
+      toast({ title: "Ticket Verified", description: `${data.ticket.holderName}'s ticket is valid.` });
+    } catch (err) {
       setScanState('error');
-      toast({ variant: "destructive", title: "Invalid Voucher", description: "This code is invalid or not in records." });
+      toast({ variant: "destructive", title: "Validation Failed", description: err instanceof Error ? err.message : 'Please try again.' });
     }
   };
 
@@ -148,37 +119,39 @@ export default function VendorPortal() {
     setScanState('validating');
     setManualMode(false);
     
-    await new Promise(r => setTimeout(r, 1200));
-    
-    const isDuplicate = history.some(item => 
-      item.id.toLowerCase() === lookupQuery.toLowerCase() ||
-      item.name.toLowerCase() === lookupQuery.toLowerCase()
-    );
+    try {
+      const res = await apiFetch('/api/tickets/validate', {
+        method: 'POST',
+        body: JSON.stringify({code: lookupQuery, checkIn: true}),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Lookup failed.');
 
-    if (isDuplicate) {
-      setScanState('duplicate');
-      setLookupQuery('');
-      return;
-    }
-
-    const found = MOCK_ATTENDEES.find(a => 
-      a.name.toLowerCase().includes(lookupQuery.toLowerCase()) || 
-      a.id.toLowerCase().includes(lookupQuery.toLowerCase())
-    );
-
-    if (found) {
+      if (!data.found) {
+        setScanState('error');
+        toast({ variant: "destructive", title: "Not Found", description: "No ticket found matching that code." });
+        setLookupQuery('');
+        return;
+      }
+      const dup = data.ticket.status === 'used' ||
+        history.some(item => item.id.toUpperCase() === String(data.code).toUpperCase());
+      if (dup) {
+        setScanState('duplicate');
+        toast({ variant: "destructive", title: "Already Fulfilled", description: "This ticket has already been used." });
+        setLookupQuery('');
+        return;
+      }
       setScanState('success');
-      const entry = {
-        id: found.id,
-        name: found.name,
+      setHistory(prev => [{
+        id: data.code,
+        name: data.ticket.holderName,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        type: found.type
-      };
-      setHistory([entry, ...history]);
-      toast({ title: "Found Voucher", description: `${found.name} validated manually.` });
-    } else {
+        type: data.ticket.eventTitle || 'Ticket',
+      }, ...prev]);
+      toast({ title: "Found Ticket", description: `${data.ticket.holderName} validated manually.` });
+    } catch (err) {
       setScanState('error');
-      toast({ variant: "destructive", title: "Not Found", description: "No voucher found matching that ID or Name." });
+      toast({ variant: "destructive", title: "Validation Failed", description: err instanceof Error ? err.message : 'Please try again.' });
     }
     setLookupQuery('');
   };
@@ -244,14 +217,6 @@ export default function VendorPortal() {
                       >
                         <Camera className="w-4 h-4" /> Open Scanner
                       </Button>
-                      <div className="flex gap-2">
-                        <Button variant="ghost" onClick={handleSimulate} className="text-muted-foreground hover:text-white text-[9px] uppercase font-black tracking-widest">
-                          Simulate Success
-                        </Button>
-                        <Button variant="ghost" onClick={handleSimulateDuplicate} className="text-muted-foreground hover:text-white text-[9px] uppercase font-black tracking-widest">
-                          Simulate Duplicate
-                        </Button>
-                      </div>
                     </div>
                   </div>
                 )}

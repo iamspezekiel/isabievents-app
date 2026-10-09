@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Users, 
   Ticket, 
@@ -19,27 +19,38 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts';
 import Link from 'next/link';
-import { MOCK_EVENTS } from '@/lib/mock-data';
+import { useEvents } from '@/hooks/use-events';
+import { apiFetch } from '@/lib/api-fetch';
 
-const performanceData = [
-  { name: 'Mon', revenue: 450000 },
-  { name: 'Tue', revenue: 520000 },
-  { name: 'Wed', revenue: 380000 },
-  { name: 'Thu', revenue: 650000 },
-  { name: 'Fri', revenue: 820000 },
-  { name: 'Sat', revenue: 1200000 },
-  { name: 'Sun', revenue: 950000 },
-];
+interface Stats {
+  revenueNgn: number;
+  users: number;
+  events: number;
+  paidOrders: number;
+  pendingHosts: number;
+  series: {name: string; revenue: number}[];
+}
 
 export default function AdminDashboard() {
   const [searchQuery, setSearchQuery] = useState('');
+  const {events} = useEvents();
+  const [stats, setStats] = useState<Stats | null>(null);
 
-  // Logic: Auto-approve verified organizers. Only show unverified ones in the queue.
-  const moderationQueue = MOCK_EVENTS.filter(event => {
+  useEffect(() => {
+    apiFetch('/api/admin/stats')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d && !d.error) setStats(d as Stats);
+      })
+      .catch(() => undefined);
+  }, []);
+
+  // Real moderation queue: hosts that are not verified yet.
+  const moderationQueue = events.filter(event => {
     const matchesSearch = !searchQuery || 
                          event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         event.organizer.name.toLowerCase().includes(searchQuery.toLowerCase());
-    return !event.organizer.verified && matchesSearch;
+                         (event.organizer?.name || '').toLowerCase().includes(searchQuery.toLowerCase());
+    return !event.organizer?.verified && matchesSearch;
   });
 
   return (
@@ -65,10 +76,10 @@ export default function AdminDashboard() {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <AdminStatCard label="Total Revenue" value="₦24,840,000" icon={DollarSign} trend="+18% WoW" color="primary" />
-        <AdminStatCard label="Active Users" value="52,402" icon={Users} trend="+1,200 New" color="accent" />
-        <AdminStatCard label="Live Events" value="1,248" icon={Ticket} trend="+42 Today" color="primary" />
-        <AdminStatCard label="KYC Pending" value="18" icon={ShieldCheck} trend="Action Required" color="destructive" />
+        <AdminStatCard label="Total Revenue" value={`₦${(stats?.revenueNgn ?? 0).toLocaleString()}`} icon={DollarSign} trend={`${stats?.paidOrders ?? 0} paid orders`} color="primary" />
+        <AdminStatCard label="Active Users" value={(stats?.users ?? 0).toLocaleString()} icon={Users} trend="Registered accounts" color="accent" />
+        <AdminStatCard label="Live Events" value={(stats?.events ?? 0).toLocaleString()} icon={Ticket} trend="Listed on platform" color="primary" />
+        <AdminStatCard label="Hosts Pending" value={(stats?.pendingHosts ?? 0).toLocaleString()} icon={ShieldCheck} trend={stats?.pendingHosts ? 'Action Required' : 'All clear'} color={stats?.pendingHosts ? 'destructive' : 'primary'} />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -83,7 +94,7 @@ export default function AdminDashboard() {
           <CardContent>
             <div className="h-[350px] w-full mt-4">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={performanceData}>
+                <AreaChart data={stats?.series ?? []}>
                   <defs>
                     <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.1}/>
@@ -111,25 +122,21 @@ export default function AdminDashboard() {
             <CardDescription>Events requiring moderation.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <ActivityItem 
-              title="Flagged Event" 
-              desc="Gidi Vibes Party - Lagos" 
-              type="warning" 
-              time="2m ago" 
-            />
-            <ActivityItem 
-              title="Large Payout" 
-              desc="₦4.2M - Smooth Events" 
-              type="info" 
-              time="15m ago" 
-            />
-            <ActivityItem 
-              title="KYC Submission" 
-              desc="Startup Kano Hub" 
-              type="success" 
-              time="1h ago" 
-            />
-            <Button variant="ghost" className="w-full text-primary hover:text-primary/80 font-bold h-11">View All Alerts</Button>
+            {events.filter((e) => !e.organizer?.verified).slice(0, 3).map((event) => (
+              <ActivityItem
+                key={event.id}
+                title="Host awaiting review"
+                desc={event.title}
+                type="warning"
+                time="pending"
+              />
+            ))}
+            {events.filter((e) => !e.organizer?.verified).length === 0 && (
+              <p className="text-sm text-muted-foreground text-center py-6">Nothing critical right now.</p>
+            )}
+            <Link href="/dashboard/admin/events">
+              <Button variant="ghost" className="w-full text-primary hover:text-primary/80 font-bold h-11">View All Alerts</Button>
+            </Link>
           </CardContent>
         </Card>
       </div>
@@ -161,7 +168,7 @@ export default function AdminDashboard() {
                     <Badge className="bg-yellow-500/10 text-yellow-600 border-none text-[8px] font-black uppercase">Unverified Host</Badge>
                   </div>
                   <div className="text-xs text-muted-foreground">
-                    Organizer: <span className="text-foreground font-medium">{event.organizer.name}</span> · Venue: {event.venue}
+                    Organizer: <span className="text-foreground font-medium">{event.organizer?.name || '—'}</span> · Venue: {event.venue}
                   </div>
                 </div>
               </div>

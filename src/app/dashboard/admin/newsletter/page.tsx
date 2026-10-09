@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   Mail, 
   Send, 
@@ -31,24 +31,38 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
+import { apiFetch } from '@/lib/api-fetch';
 
-const INITIAL_HISTORY = [
-  { id: 'NSL-001', subject: 'Lagos Jazz Night 2026 - Early Bird Access', audience: 'All Users', sentDate: '2024-10-20', openRate: '42%' },
-  { id: 'NSL-002', subject: 'New Guidelines for Organizers', audience: 'Organizers', sentDate: '2024-10-15', openRate: '68%' },
-  { id: 'NSL-003', subject: 'Exclusive: Naija Tech Summit Speakers', audience: 'Attendees', sentDate: '2024-10-10', openRate: '35%' },
-];
+interface Campaign {
+  id: string;
+  subject: string;
+  audience: string;
+  sentDate: string;
+  recipients: number;
+}
 
 export default function AdminNewsletterPage() {
   const [loading, setLoading] = useState(false);
   const [loadingAI, setLoadingAI] = useState(false);
   const { toast } = useToast();
-  const [history, setHistory] = useState(INITIAL_HISTORY);
+  const [history, setHistory] = useState<Campaign[]>([]);
+  const [reach, setReach] = useState({users: 0, subscribers: 0});
 
   const [formData, setFormData] = useState({
     audience: 'all',
     subject: '',
     content: ''
   });
+
+  useEffect(() => {
+    apiFetch('/api/newsletter')
+      .then((r) => r.json())
+      .then((d) => {
+        if (Array.isArray(d?.campaigns)) setHistory(d.campaigns as Campaign[]);
+        if (d?.reach) setReach(d.reach);
+      })
+      .catch(() => undefined);
+  }, []);
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,32 +76,53 @@ export default function AdminNewsletterPage() {
     }
 
     setLoading(true);
-    await new Promise(r => setTimeout(r, 2000));
-    
-    const newEntry = {
-      id: `NSL-${Math.floor(Math.random() * 1000).toString().padStart(3, '0')}`,
-      subject: formData.subject,
-      audience: formData.audience === 'all' ? 'All Users' : formData.audience.charAt(0).toUpperCase() + formData.audience.slice(1),
-      sentDate: new Date().toISOString().split('T')[0],
-      openRate: '0%' // New campaigns start at 0%
-    };
+    try {
+      const res = await apiFetch('/api/newsletter', {
+        method: 'POST',
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Campaign failed.');
 
-    setHistory([newEntry, ...history]);
-    setLoading(false);
-    
-    toast({
-      title: "Newsletter Sent",
-      description: `Your campaign has been queued for ${formData.audience} users.`,
-    });
-    setFormData({ audience: 'all', subject: '', content: '' });
+      if (data.campaign) setHistory((prev) => [data.campaign as Campaign, ...prev]);
+      toast({
+        title: "Newsletter Sent",
+        description: data.warning
+          ? data.warning
+          : `Campaign delivered to ${data.campaign?.recipients ?? 0} recipient(s).`,
+      });
+      setFormData({ audience: 'all', subject: '', content: '' });
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Campaign Failed",
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDelete = (id: string) => {
-    setHistory(history.filter(item => item.id !== id));
-    toast({
-      title: "Campaign Deleted",
-      description: "The newsletter record has been removed from history."
-    });
+  const handleDelete = async (id: string) => {
+    try {
+      const res = await apiFetch('/api/newsletter', {
+        method: 'DELETE',
+        body: JSON.stringify({id}),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Delete failed.');
+      setHistory(prev => prev.filter(item => item.id !== id));
+      toast({
+        title: "Campaign Deleted",
+        description: "The newsletter record has been removed from history."
+      });
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Delete Failed",
+        description: err instanceof Error ? err.message : 'Please try again.'
+      });
+    }
   };
 
   const handleUseAI = async () => {
@@ -101,17 +136,15 @@ export default function AdminNewsletterPage() {
     }
 
     setLoadingAI(true);
-    // Simulation of AI content generation
-    await new Promise(r => setTimeout(r, 1500));
+    // Deterministic auto-draft template (instant — no external AI call).
+    setFormData(prev => ({
+      ...prev,
+      content: `Hello IsabiEvents Community!\n\nWe are excited to share some updates regarding: ${prev.subject}.\n\nIt's a vibrant time for events across Nigeria, and we want to ensure you don't miss out on the latest shared experiences.\n\nStay tuned for more updates and see you at the next event!\n\nBest regards,\nThe IsabiEvents Team`
+    }));
     setLoadingAI(false);
     
-    setFormData({
-      ...formData,
-      content: `Hello IsabiEvents Community!\n\nWe are excited to share some updates regarding: ${formData.subject}.\n\nIt's a vibrant time for events across Nigeria, and we want to ensure you don't miss out on the latest shared experiences.\n\nStay tuned for more updates and see you at the next event!\n\nBest regards,\nThe IsabiEvents Team`
-    });
-
     toast({
-      title: "AI Draft Generated",
+      title: "Draft Generated",
       description: "You can now edit the generated content."
     });
   };
@@ -145,9 +178,9 @@ export default function AdminNewsletterPage() {
                         <SelectValue placeholder="Select audience" />
                       </SelectTrigger>
                       <SelectContent className="bg-card border-border">
-                        <SelectItem value="all">All Users (50,000+)</SelectItem>
-                        <SelectItem value="attendees">Attendees (48,000+)</SelectItem>
-                        <SelectItem value="organizers">Organizers (1,200+)</SelectItem>
+                        <SelectItem value="all">All Users</SelectItem>
+                        <SelectItem value="attendees">Attendees</SelectItem>
+                        <SelectItem value="organizers">Organizers</SelectItem>
                         <SelectItem value="staff">Staff & Vendors</SelectItem>
                       </SelectContent>
                     </Select>
@@ -197,7 +230,6 @@ export default function AdminNewsletterPage() {
                     {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
                     Launch Campaign
                   </Button>
-                  <Button type="button" variant="outline" className="rounded-full h-12 px-8 border-2">Save Draft</Button>
                 </div>
               </form>
             </CardContent>
@@ -214,7 +246,7 @@ export default function AdminNewsletterPage() {
               <div className="flex items-center justify-between">
                 <div className="space-y-0.5 text-left">
                   <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Total Reach</p>
-                  <p className="text-3xl font-black">52,402</p>
+                  <p className="text-3xl font-black">{(reach.users + reach.subscribers).toLocaleString()}</p>
                 </div>
                 <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center">
                   <Users className="w-6 h-6 text-primary" />
@@ -222,11 +254,12 @@ export default function AdminNewsletterPage() {
               </div>
               <div className="space-y-4">
                 <div className="flex justify-between items-center text-xs">
-                  <span className="text-muted-foreground">Email Deliverability</span>
-                  <span className="font-bold text-green-500">99.2%</span>
+                  <span className="text-muted-foreground">Registered users</span>
+                  <span className="font-bold text-primary">{reach.users.toLocaleString()}</span>
                 </div>
-                <div className="h-1.5 bg-secondary rounded-full overflow-hidden">
-                  <div className="h-full bg-green-500 w-[99%]" />
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-muted-foreground">Newsletter subscribers</span>
+                  <span className="font-bold text-green-500">{reach.subscribers.toLocaleString()}</span>
                 </div>
               </div>
             </CardContent>
@@ -263,7 +296,7 @@ export default function AdminNewsletterPage() {
                   <TableHead className="font-black text-[10px] uppercase tracking-widest pl-6 py-4">Subject</TableHead>
                   <TableHead className="font-black text-[10px] uppercase tracking-widest">Audience</TableHead>
                   <TableHead className="font-black text-[10px] uppercase tracking-widest">Sent Date</TableHead>
-                  <TableHead className="font-black text-[10px] uppercase tracking-widest">Open Rate</TableHead>
+                  <TableHead className="font-black text-[10px] uppercase tracking-widest">Recipients</TableHead>
                   <TableHead className="text-right pr-6"></TableHead>
                 </TableRow>
               </TableHeader>
@@ -278,12 +311,11 @@ export default function AdminNewsletterPage() {
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <BarChart3 className="w-3.5 h-3.5 text-primary" />
-                        <span className="font-black text-sm">{item.openRate}</span>
+                        <span className="font-black text-sm">{item.recipients} sent</span>
                       </div>
                     </TableCell>
                     <TableCell className="text-right pr-6">
                       <div className="flex items-center justify-end gap-2">
-                        <Button variant="ghost" size="icon" className="rounded-full h-8 w-8"><Eye className="w-4 h-4" /></Button>
                         <Button 
                           variant="ghost" 
                           size="icon" 

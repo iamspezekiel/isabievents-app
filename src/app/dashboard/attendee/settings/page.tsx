@@ -24,6 +24,9 @@ import {
 import { CITIES } from '@/lib/mock-data';
 import { useAuth } from '@/components/auth-provider';
 import { useToast } from "@/hooks/use-toast";
+import { apiFetch } from '@/lib/api-fetch';
+import { doc, setDoc } from 'firebase/firestore';
+import { db, isFirebaseConfigured } from '@/lib/firebase';
 
 const WhatsAppIcon = ({ className }: { className?: string }) => (
   <svg 
@@ -39,7 +42,7 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 export default function AttendeeSettingsPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const { signOut } = useAuth();
+  const { signOut, profile } = useAuth();
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -50,33 +53,67 @@ export default function AttendeeSettingsPage() {
   const [marketingNotifs, setMarketingNotifs] = useState(false);
 
   const handleSave = async () => {
+    if (!profile) {
+      toast({ variant: "destructive", title: "Not Signed In", description: "Sign in to save your settings." });
+      return;
+    }
+    if (!isFirebaseConfigured || !db) {
+      toast({ variant: "destructive", title: "Not Configured", description: "Firestore is not configured." });
+      return;
+    }
     setIsSaving(true);
-    await new Promise(r => setTimeout(r, 1200));
-    setIsSaving(false);
-    toast({
-      title: "Settings Saved",
-      description: "Your profile information has been updated successfully.",
-    });
+    try {
+      await setDoc(
+        doc(db, 'users', profile.uid),
+        {
+          whatsapp,
+          city: location,
+          notifications: {email: emailNotifs, marketing: marketingNotifs},
+          updatedAt: new Date().toISOString(),
+        },
+        {merge: true}
+      );
+      toast({
+        title: "Settings Saved",
+        description: "Your profile information has been updated successfully.",
+      });
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Save Failed",
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const handleDeleteAccount = async () => {
     setIsDeleting(true);
-    // Simulate a secure deletion process
-    await new Promise(r => setTimeout(r, 2500));
-    
-    toast({
-      variant: "destructive",
-      title: "Account Deleted",
-      description: "Your account has been deactivated. Redirecting to login...",
-    });
+    try {
+      const res = await apiFetch('/api/account', {method: 'DELETE'});
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Account deletion failed.');
 
-    // Sign out of Firebase (or demo session) before redirecting
-    await signOut();
+      toast({
+        variant: "destructive",
+        title: "Account Deleted",
+        description: "Your account has been deleted. Redirecting to login...",
+      });
 
-    setTimeout(() => {
+      await signOut();
+      setTimeout(() => {
+        setIsDeleting(false);
+        router.push('/login');
+      }, 1000);
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Deletion Failed",
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
       setIsDeleting(false);
-      router.push('/login');
-    }, 1000);
+    }
   };
 
   return (

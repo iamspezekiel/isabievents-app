@@ -2,16 +2,24 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Ticket, Search, QrCode, Download, Share2, Calendar, MapPin, ArrowLeft, ShieldCheck, CloudOff, Cloud } from 'lucide-react';
+import { Ticket, Search, QrCode, Download, Share2, Calendar, MapPin, ArrowLeft, ShieldCheck, CloudOff, Cloud, Loader2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { MOCK_EVENTS } from '@/lib/mock-data';
+import { useAuth } from '@/components/auth-provider';
+import { useEvents } from '@/hooks/use-events';
+import { getTicketsForEmail } from '@/lib/client-db';
+import type { EventDoc, TicketDoc } from '@/lib/db-types';
 import Link from 'next/link';
 
 export default function TicketGalleryPage() {
   const [mounted, setMounted] = useState(false);
   const [isOfflineReady, setIsOfflineReady] = useState(false);
+  const { profile } = useAuth();
+  const { events } = useEvents();
+  const [tickets, setTickets] = useState<TicketDoc[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
     setMounted(true);
@@ -20,6 +28,35 @@ export default function TicketGalleryPage() {
       if (saved) setIsOfflineReady(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (!profile?.email) {
+      setLoading(false);
+      return;
+    }
+    getTicketsForEmail(profile.email)
+      .then(setTickets)
+      .catch(() => undefined)
+      .finally(() => setLoading(false));
+  }, [profile?.email]);
+
+  const cards = tickets
+    .filter((t) => t.status !== 'transferred')
+    .map((t) => {
+      const ev = events.find((e) => e.id === t.eventId) as EventDoc | undefined;
+      return {
+        key: t.id,
+        code: t.code,
+        status: t.status,
+        title: t.eventTitle || ev?.title || 'Event',
+        date: ev?.date || String(t.createdAt || new Date().toISOString()),
+        venue: ev?.venue || '—',
+      };
+    })
+    .filter((c) => {
+      const q = query.toLowerCase().trim();
+      return !q || c.title.toLowerCase().includes(q) || c.code.toLowerCase().includes(q);
+    });
 
   return (
     <div className="min-h-screen bg-background pt-20">
@@ -47,20 +84,26 @@ export default function TicketGalleryPage() {
             </div>
             <div className="relative w-full md:w-96">
               <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
-              <Input placeholder="Search tickets..." className="pl-10 h-12 bg-secondary border-none" />
+              <Input placeholder="Search tickets..." className="pl-10 h-12 bg-secondary border-none" value={query} onChange={(e) => setQuery(e.target.value)} />
             </div>
           </div>
         </div>
       </header>
 
       <main className="container mx-auto px-4 py-12">
+        {loading && (
+          <div className="flex flex-col items-center justify-center py-32 gap-4">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <p className="text-muted-foreground">Loading your tickets…</p>
+          </div>
+        )}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {MOCK_EVENTS.map((event) => (
-            <div key={event.id} className="group bg-card border border-border rounded-3xl overflow-hidden hover:border-primary/50 transition-all flex flex-col shadow-2xl">
+          {cards.map((event) => (
+            <div key={event.key} className="group bg-card border border-border rounded-3xl overflow-hidden hover:border-primary/50 transition-all flex flex-col shadow-2xl">
               <div className="relative aspect-[4/2] bg-secondary/50 p-6 flex items-center justify-between border-b border-dashed border-border/50">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <div className="text-[10px] uppercase font-black tracking-widest text-primary">Confirmed Access</div>
+                    <div className="text-[10px] uppercase font-black tracking-widest text-primary">{event.status === 'used' ? 'Used Entry' : 'Confirmed Access'}</div>
                     {isOfflineReady && <ShieldCheck className="w-3 h-3 text-green-500" title="Available offline" />}
                   </div>
                   <h3 className="font-headline text-lg line-clamp-1">{event.title}</h3>
@@ -90,8 +133,8 @@ export default function TicketGalleryPage() {
                 </div>
 
                 <div className="pt-4 flex items-center justify-between">
-                  <Badge variant="outline" className="rounded-full border-primary/20 text-primary font-mono">#TKT-{event.id.toUpperCase()}-029</Badge>
-                  <span className="text-xs text-muted-foreground">Standard Pass</span>
+                  <Badge variant="outline" className="rounded-full border-primary/20 text-primary font-mono">#{event.code}</Badge>
+                  <span className="text-xs text-muted-foreground">{event.status === 'used' ? 'Used' : 'Standard Pass'}</span>
                 </div>
               </div>
 
@@ -110,7 +153,7 @@ export default function TicketGalleryPage() {
           ))}
         </div>
 
-        {MOCK_EVENTS.length === 0 && (
+        {!loading && cards.length === 0 && (
           <div className="text-center py-32 space-y-6">
             <div className="w-20 h-20 bg-secondary rounded-full flex items-center justify-center mx-auto">
               <Ticket className="w-10 h-10 text-muted-foreground opacity-20" />

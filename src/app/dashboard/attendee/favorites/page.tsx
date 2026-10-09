@@ -1,11 +1,13 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Heart, MapPin, Calendar, Trash2, Plus } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { MOCK_EVENTS } from '@/lib/mock-data';
+import { useEvents } from '@/hooks/use-events';
+import { getFavorites, removeFavorite } from '@/lib/favorites';
+import type { EventDoc } from '@/lib/db';
 import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
 
@@ -17,15 +19,23 @@ import { useToast } from "@/hooks/use-toast";
  * - Call-to-action to discover more events when list is empty.
  */
 export default function FavoritesPage() {
-  const [favorites, setFavorites] = useState(MOCK_EVENTS.slice(4, 8));
+  const {events} = useEvents();
+  const [favIds, setFavIds] = useState<string[]>([]);
   const { toast } = useToast();
+
+  useEffect(() => {
+    setFavIds(getFavorites());
+  }, []);
+
+  const favorites: EventDoc[] = events.filter(e => favIds.includes(e.id));
 
   const handleRemove = (e: React.MouseEvent, id: string, title: string) => {
     // Prevent the card link from firing when clicking the remove button
     e.preventDefault();
     e.stopPropagation();
     
-    setFavorites(prev => prev.filter(item => item.id !== id));
+    removeFavorite(id);
+    setFavIds(prev => prev.filter(x => x !== id));
     
     toast({
       title: "Removed from Favorites",

@@ -33,7 +33,9 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { CATEGORIES, MOCK_EVENTS } from '@/lib/mock-data';
+import { CATEGORIES } from '@/lib/mock-data';
+import { useEvents } from '@/hooks/use-events';
+import { toggleFavorite } from '@/lib/favorites';
 import Image from 'next/image';
 import Link from 'next/link';
 import { cn } from "@/lib/utils";
@@ -49,6 +51,7 @@ export default function HomePage() {
   const [displayLimit, setDisplayLimit] = useState(9);
   const [mounted, setMounted] = useState(false);
   const { toast } = useToast();
+  const { events } = useEvents();
 
   useEffect(() => {
     setMounted(true);
@@ -68,9 +71,10 @@ export default function HomePage() {
   const handleBookmark = (e: React.MouseEvent, id: string) => {
     e.preventDefault();
     e.stopPropagation();
+    const added = toggleFavorite(id);
     toast({
-      title: "Saved to Favorites",
-      description: "You can access this event in your digital wallet."
+      title: added ? "Saved to Favorites" : "Removed from Favorites",
+      description: added ? "You can access this event in your saved list." : "This event was removed from your favorites."
     });
   };
 
@@ -176,7 +180,7 @@ export default function HomePage() {
           </div>
           
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 mb-12">
-            {MOCK_EVENTS.slice(0, displayLimit).map((event) => (
+            {events.slice(0, displayLimit).map((event) => (
               <Link key={event.id} href={`/events/${event.slug || event.id}`}>
                 <div className="group bg-card border border-border rounded-[1.25rem] md:rounded-[2.5rem] overflow-hidden hover:border-primary/50 transition-all flex flex-col h-full hover:shadow-2xl hover:shadow-primary/5">
                   <div className="relative aspect-[16/10] overflow-hidden">

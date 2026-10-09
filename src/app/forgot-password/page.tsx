@@ -27,13 +27,12 @@ export default function ForgotPasswordPage() {
     setLoading(true);
 
     try {
-      if (isFirebaseMode && auth) {
-        // Real Firebase password-reset email to the user's inbox.
-        await sendPasswordResetEmail(auth, email.trim());
-      } else {
-        // Demo mode: no backend — simulate the flow.
-        await new Promise(r => setTimeout(r, 1200));
+      if (!isFirebaseMode || !auth) {
+        // Production requires Firebase — there is no simulated reset.
+        throw new Error('Password reset requires Firebase configuration.');
       }
+      // Real Firebase password-reset email to the user's inbox.
+      await sendPasswordResetEmail(auth, email.trim());
       setLoading(false);
       setSubmitted(true);
       toast({

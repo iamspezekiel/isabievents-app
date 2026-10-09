@@ -25,7 +25,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { generateEventCopy } from '@/ai/flows/organizer-ai-copy-generator';
-import { CATEGORIES, MOCK_EVENTS } from '@/lib/mock-data';
+import { CATEGORIES, CITIES } from '@/lib/mock-data';
+import { getEvent } from '@/lib/client-db';
+import { apiFetch } from '@/lib/api-fetch';
 
 function CreateEventForm() {
   const router = useRouter();
@@ -37,6 +39,7 @@ function CreateEventForm() {
   
   const [step, setStep] = useState(1);
   const [loadingAI, setLoadingAI] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   
   const [formData, setFormData] = useState({
     name: '',
@@ -45,6 +48,7 @@ function CreateEventForm() {
     description: '',
     policies: '',
     venue: '',
+    city: '',
     date: '',
     time: '',
     price: '',
@@ -83,26 +87,35 @@ function CreateEventForm() {
     e.target.value = '';
   };
 
-  // Simulate loading existing event data in edit mode
+  // Edit mode: load the real event from Firestore.
   useEffect(() => {
-    if (isEdit) {
-      const event = MOCK_EVENTS.find(e => e.id === eventId);
-      if (event) {
+    if (!isEdit || !eventId) return;
+    let alive = true;
+    getEvent(eventId)
+      .then((event) => {
+        if (!event || !alive) return;
+        const extra = event as {summary?: string; policies?: string};
+        const [datePart, timePart] = String(event.date || '').split('T');
         setFormData({
           name: event.title,
           category: event.category,
-          summary: event.description.substring(0, 100) + '...',
-          description: event.description,
-          policies: "Standard IsabiEvents event policies apply.",
-          venue: event.venue,
-          date: event.date.split('T')[0],
-          time: event.date.split('T')[1].substring(0, 5),
-          price: event.price.min.toString(),
-          capacity: event.inventory.toString(),
+          summary: extra.summary || (event.description || '').substring(0, 100),
+          description: event.description || '',
+          policies: extra.policies || '',
+          venue: event.venue || '',
+          city: event.city || '',
+          date: datePart || '',
+          time: (timePart || '').substring(0, 5),
+          price: String(event.price?.min ?? 0),
+          capacity: String(event.inventory ?? ''),
         });
-        setFeatures(event.tags);
-      }
-    }
+        setCoverImage(event.image || '');
+        setFeatures(Array.isArray(event.tags) ? event.tags : []);
+      })
+      .catch(() => undefined);
+    return () => {
+      alive = false;
+    };
   }, [isEdit, eventId]);
 
   const handleAddFeature = () => {
@@ -155,11 +168,53 @@ function CreateEventForm() {
   };
 
   const handleSubmit = async () => {
-    toast({
-      title: isEdit ? "Event Updated!" : "Event Created!",
-      description: isEdit ? "Your changes have been saved." : "Your event is being processed and will be live shortly.",
-    });
-    router.push('/dashboard/organizer');
+    if (!formData.name.trim() || !formData.venue.trim() || !formData.date) {
+      toast({
+        variant: "destructive",
+        title: "Missing Information",
+        description: "Event name, venue and date are required.",
+      });
+      return;
+    }
+    setSubmitting(true);
+    try {
+      const payload = {
+        title: formData.name.trim(),
+        category: formData.category || 'community',
+        city: formData.city,
+        venue: formData.venue.trim(),
+        date: `${formData.date}T${formData.time || '00:00'}:00`,
+        image: coverImage,
+        description: formData.description.trim() || formData.summary.trim(),
+        summary: formData.summary.trim(),
+        policies: formData.policies.trim(),
+        price: Number(formData.price) || 0,
+        inventory: Number(formData.capacity) || 0,
+        tags: features,
+      };
+      const res = await apiFetch('/api/events', {
+        method: isEdit ? 'PATCH' : 'POST',
+        body: JSON.stringify(isEdit ? {id: eventId, ...payload} : payload),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Could not save the event.');
+
+      toast({
+        title: isEdit ? "Event Updated!" : "Event Created!",
+        description: isEdit
+          ? "Your changes have been saved."
+          : "Your event is live on the marketplace.",
+      });
+      router.push('/dashboard/organizer');
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Save Failed",
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -180,7 +235,6 @@ function CreateEventForm() {
                 <div key={i} className={`h-1.5 w-8 rounded-full transition-colors ${step >= i ? 'bg-primary' : 'bg-secondary'}`} />
               ))}
             </div>
-            <Button variant="ghost" className="font-bold">Save Draft</Button>
           </div>
         </div>
       </header>
@@ -232,6 +286,19 @@ function CreateEventForm() {
                         onChange={(e) => setFormData({...formData, venue: e.target.value})}
                       />
                     </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="city">City</Label>
+                    <Select value={formData.city} onValueChange={(v) => setFormData({...formData, city: v})}>
+                      <SelectTrigger className="h-11">
+                        <SelectValue placeholder="Select city" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {CITIES.map(city => (
+                          <SelectItem key={city} value={city}>{city}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
@@ -445,8 +512,9 @@ function CreateEventForm() {
 
             <div className="pt-8 flex justify-between">
               <Button variant="ghost" onClick={() => setStep(2)} className="rounded-full px-8 font-bold h-11">Back</Button>
-              <Button onClick={handleSubmit} className="rounded-full px-12 h-11 font-bold gap-2 shadow-xl shadow-primary/20">
-                {isEdit ? 'Save Changes' : 'Launch Event'} <CheckCircle2 className="w-5 h-5" />
+              <Button onClick={handleSubmit} disabled={submitting} className="rounded-full px-12 h-11 font-bold gap-2 shadow-xl shadow-primary/20">
+                {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : isEdit ? 'Save Changes' : 'Launch Event'}
+                {!submitting && <CheckCircle2 className="w-5 h-5" />}
               </Button>
             </div>
           </div>
