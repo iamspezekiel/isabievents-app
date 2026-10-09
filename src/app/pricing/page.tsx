@@ -146,7 +146,7 @@ export default function PricingPage() {
             />
             <PricingFaq 
               q="What payment methods are supported?" 
-              a="We support major Nigerian payment methods through Bachs — Card (Visa, Mastercard, Verve), Bank Transfer, and USD Card payments — plus SolanaPay for USDC/USDT." 
+              a="Every payment runs through Bachs: Card (Visa, Mastercard, Verve) in NGN or USD, Nigerian Bank Transfer in NGN, and Crypto (USDC/USDT) in USD." 
             />
           </div>
         </div>

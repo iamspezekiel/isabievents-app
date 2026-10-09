@@ -1,9 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { Logo } from '@/components/logo';
-import { Mail, Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
+import { NewsletterForm } from '@/components/newsletter-form';
+import { Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
 
 export function Footer() {
   return (
@@ -17,17 +16,8 @@ export function Footer() {
             </h3>
             <p className="text-muted-foreground font-medium">Get first access to Nigerian concerts, festivals, and tech summits.</p>
           </div>
-          <div className="w-full lg:max-w-md flex flex-col sm:flex-row gap-3">
-            <div className="relative flex-1">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input 
-                placeholder="yourname@example.com" 
-                className="h-11 pl-12 rounded-xl bg-background border-border text-sm focus-visible:ring-primary shadow-sm"
-              />
-            </div>
-            <Button className="h-9 md:h-11 px-8 rounded-xl text-xs md:text-sm shadow-lg shadow-primary/20 font-bold">
-              Subscribe
-            </Button>
+          <div className="w-full lg:max-w-md">
+            <NewsletterForm />
           </div>
         </div>
 
@@ -94,7 +84,7 @@ export function Footer() {
               <div className="w-5 h-5 bg-[#7E7CFF] rounded-full flex items-center justify-center text-[10px] font-black text-white shadow-sm">B</div>
               <span className="text-[11px] font-black tracking-tighter uppercase text-foreground">Bachs</span>
             </div>
-            {/* SolanaPay */}
+            {/* Crypto (via Bachs) */}
             <div className="flex items-center gap-3 group cursor-default">
               <div className="flex items-center -space-x-1.5">
                 <div className="w-5 h-5 bg-[#2775CA] rounded-full border-2 border-background flex items-center justify-center shadow-sm">
@@ -105,7 +95,7 @@ export function Footer() {
                 </div>
               </div>
               <div className="flex flex-col items-start leading-none">
-                <span className="text-[11px] font-black tracking-tighter uppercase text-foreground">SolanaPay</span>
+                <span className="text-[11px] font-black tracking-tighter uppercase text-foreground">Crypto</span>
                 <span className="text-[7px] font-black uppercase text-muted-foreground tracking-[0.1em]">USDC / USDT</span>
               </div>
             </div>

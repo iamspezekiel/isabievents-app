@@ -12,6 +12,7 @@
 import {NextResponse} from 'next/server';
 import {verifyBachsSignature} from '@/lib/bachs';
 import {getAdminDb} from '@/lib/firebase-admin';
+import {sendPaymentConfirmationEmail} from '@/lib/email';
 import {findOrderByCheckoutId, issueTicketsForOrder, updateOrder, isDbConfigured} from '@/lib/db';
 
 export const runtime = 'nodejs';
@@ -97,6 +98,26 @@ export async function POST(req: Request) {
           });
           await issueTicketsForOrder({...order, status: 'paid'});
           console.log(`[webhook] order ${order.id} fulfilled for ${checkoutId}`);
+
+          // Email the buyer their tickets + alert the admin (no-op without SMTP).
+          const tickets = Array.from(
+            {length: order.quantity},
+            (_, i) => `TKT-${order.id.toUpperCase().slice(0, 8)}-${i + 1}`
+          );
+          try {
+            await sendPaymentConfirmationEmail({
+              name: order.buyer.name,
+              email: order.buyer.email,
+              eventTitle: order.eventTitle,
+              quantity: order.quantity,
+              amount: order.amount,
+              currency: order.currency,
+              orderId: order.id,
+              tickets,
+            });
+          } catch (err) {
+            console.warn('[webhook] payment email failed:', err);
+          }
         }
       }
     } else if (type === 'collection.failed' || type === 'checkout.expired') {

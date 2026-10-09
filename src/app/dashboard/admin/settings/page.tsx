@@ -148,8 +148,8 @@ export default function AdminSystemSettings() {
                   <span className="text-xs font-black text-[#2775CA]">$</span>
                 </div>
                 <div className="space-y-0.5">
-                  <p className="font-bold text-sm">SolanaPay (USDC/USDT)</p>
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Web3 Channel</p>
+                  <p className="font-bold text-sm">Crypto (USDC/USDT)</p>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Bachs Crypto Corridor (USD)</p>
                 </div>
               </div>
               <Switch defaultChecked />

@@ -9,11 +9,15 @@ import { Card, CardContent, CardHeader, CardDescription, CardFooter } from "@/co
 import Link from 'next/link';
 import { Mail, ArrowLeft, CheckCircle2, Loader2 } from 'lucide-react';
 import { Logo } from '@/components/logo';
+import { useAuth } from '@/components/auth-provider';
 import { useToast } from "@/hooks/use-toast";
+import { sendPasswordResetEmail } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
   const { toast } = useToast();
+  const { isFirebaseMode } = useAuth();
   const [loading, setLoading] = useState(false);
   const [email, setEmail] = useState('');
   const [submitted, setSubmitted] = useState(false);
@@ -21,16 +25,36 @@ export default function ForgotPasswordPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    
-    // Simulate API call
-    await new Promise(r => setTimeout(r, 1500));
-    
-    setLoading(false);
-    setSubmitted(true);
-    toast({
-      title: "Reset link sent",
-      description: `If an account exists for ${email}, you will receive a password reset link shortly.`,
-    });
+
+    try {
+      if (isFirebaseMode && auth) {
+        // Real Firebase password-reset email to the user's inbox.
+        await sendPasswordResetEmail(auth, email.trim());
+      } else {
+        // Demo mode: no backend — simulate the flow.
+        await new Promise(r => setTimeout(r, 1200));
+      }
+      setLoading(false);
+      setSubmitted(true);
+      toast({
+        title: "Reset link sent",
+        description: `If an account exists for ${email}, you will receive a password reset link shortly.`,
+      });
+    } catch (err) {
+      const code = (err as {code?: string})?.code || '';
+      const messages: Record<string, string> = {
+        'auth/user-not-found': 'No account exists for that email address.',
+        'auth/invalid-email': 'That email address is not valid.',
+        'auth/too-many-requests': 'Too many attempts — please wait a minute and try again.',
+        'auth/unauthorized-domain': 'Add this domain to Firebase → Authentication → Settings → Authorized domains.',
+      };
+      setLoading(false);
+      toast({
+        variant: "destructive",
+        title: "Could not send reset link",
+        description: messages[code] || (err instanceof Error ? err.message : 'Please try again later.'),
+      });
+    }
   };
 
   return (

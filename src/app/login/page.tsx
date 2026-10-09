@@ -142,16 +142,15 @@ export default function LoginPage() {
                 <span className="bg-card px-2 text-muted-foreground font-bold">Social Login</span>
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-4 w-full">
+            <div className="w-full">
               <Button
                 variant="outline"
-                className="rounded-xl no-underline font-bold h-8 md:h-10 gap-2"
+                className="w-full rounded-xl no-underline font-bold h-8 md:h-10 gap-2"
                 onClick={handleGoogleLogin}
                 disabled={!!loading}
               >
-                {loading === 'google' ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Google'}
+                {loading === 'google' ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Continue with Google'}
               </Button>
-              <Button variant="outline" className="rounded-xl no-underline font-bold h-8 md:h-10" disabled>Apple</Button>
             </div>
           </CardFooter>
         </Card>

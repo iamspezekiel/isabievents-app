@@ -233,7 +233,7 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
                   </div>
 
                   <p className="text-center text-[10px] text-muted-foreground mt-6 uppercase font-bold tracking-widest">
-                    Secured by Bachs & SolanaPay
+                    Secured by Bachs
                   </p>
                 </CardContent>
               </Card>

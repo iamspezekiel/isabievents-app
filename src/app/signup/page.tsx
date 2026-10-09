@@ -43,6 +43,12 @@ function SignupForm() {
 
     try {
       const profile = await signUp({name, email, password, role: role as Role});
+      // Fire-and-forget welcome + admin notification emails (no-op without SMTP).
+      fetch('/api/email/welcome', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({name, email, role, method: 'signup'}),
+      }).catch(() => undefined);
       toast({
         title: "Account Created!",
         description: `Welcome to IsabiEvents as a${role === 'organizer' ? 'n organizer' : 'n attendee'}.`,

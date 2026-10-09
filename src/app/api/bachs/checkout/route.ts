@@ -19,8 +19,29 @@ interface CheckoutRequestBody {
   quantity: number;
   unitPrice: number; // in event currency's major unit (e.g. NGN naira)
   currency?: BachsCurrency;
+  /** Bachs payment corridor: card, bank transfer (NGN), or crypto (USD). */
+  paymentMethod?: 'card' | 'bank' | 'crypto';
   buyer: {name: string; email: string; phone?: string};
   buyerUid?: string;
+}
+
+/**
+ * Maps the UI payment method to Bachs payment corridors and forces the
+ * currency each corridor can charge (bank = NGN, crypto = USD).
+ */
+function resolveCorridor(method: string | undefined, currency: BachsCurrency): {corridors: string[]; currency: BachsCurrency} {
+  switch (method) {
+    case 'bank':
+      return {corridors: ['NGN_BANK_TRANSFER'], currency: 'NGN'};
+    case 'crypto':
+      return {corridors: ['CRYPTO'], currency: 'USD'};
+    case 'card':
+    default:
+      return {
+        corridors: currency === 'USD' ? ['USD_CARD'] : ['NGN_CARD'],
+        currency,
+      };
+  }
 }
 
 export async function POST(req: Request) {
@@ -32,7 +53,8 @@ export async function POST(req: Request) {
   }
 
   const {eventId, eventSlug, eventTitle, quantity, unitPrice, buyer} = body;
-  const currency: BachsCurrency = body.currency === 'USD' ? 'USD' : 'NGN';
+  const requestedCurrency: BachsCurrency = body.currency === 'USD' ? 'USD' : 'NGN';
+  const {corridors, currency} = resolveCorridor(body.paymentMethod, requestedCurrency);
 
   if (!eventId || !eventTitle || !buyer?.email || !buyer?.name) {
     return NextResponse.json({error: 'Missing required checkout fields.'}, {status: 400});
@@ -53,7 +75,18 @@ export async function POST(req: Request) {
 
   try {
     const orderId = `ord_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
-    const origin = new URL(req.url).origin;
+    // Bachs only accepts HTTPS redirect URLs. On localhost, use APP_BASE_URL
+    // (your deployed origin) or a tunnel URL so checkout can complete.
+    const origin = (process.env.APP_BASE_URL || new URL(req.url).origin).replace(/\/$/, '');
+    if (!origin.startsWith('https://')) {
+      return NextResponse.json(
+        {
+          error:
+            'Bachs requires HTTPS success/cancel URLs. Set APP_BASE_URL in .env to your public HTTPS origin (e.g. https://events.isabi.cloud) or run a tunnel (cloudflared/ngrok) and use that URL.',
+        },
+        {status: 400}
+      );
+    }
     const successPath = `/checkout/${encodeURIComponent(eventSlug || eventId)}`;
     const successUrl = `${origin}${successPath}?session_id={CHECKOUT_ID}&status=success`;
     const cancelUrl = `${origin}${successPath}?status=cancelled`;
@@ -64,6 +97,7 @@ export async function POST(req: Request) {
       customer: {email: buyer.email, name: buyer.name},
       successUrl,
       cancelUrl,
+      paymentMethodTypes: corridors,
     });
 
     const order: Omit<OrderDoc, 'createdAt'> = {

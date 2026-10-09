@@ -18,18 +18,51 @@ export default function ContactPage() {
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [subject, setSubject] = useState('');
+
+  const SUBJECT_LABELS: Record<string, string> = {
+    payouts: 'Payouts & Settlements',
+    ticketing: 'Ticket Issues',
+    verification: 'Organizer Verification',
+    technical: 'Technical Support',
+    other: 'Other Inquiries',
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    const formEl = e.target as HTMLFormElement;
+    const data = new FormData(formEl);
+    const name = String(data.get('name') || '').trim();
+    const email = String(data.get('email') || '').trim();
+    const message = String(data.get('message') || '').trim();
+
+    if (!subject) {
+      toast({variant: 'destructive', title: 'Select a reason', description: 'Pick why you are contacting us.'});
+      return;
+    }
+
     setLoading(true);
-    // Simulate API delay
-    await new Promise(r => setTimeout(r, 1500));
+    try {
+      const res = await fetch('/api/email/contact', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({name, email, subject: SUBJECT_LABELS[subject] || subject, message}),
+      });
+      const out = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(out.error || 'Could not send your message.');
+      setSubmitted(true);
+      toast({
+        title: "Message Sent",
+        description: "Our support team will get back to you within 24 hours.",
+      });
+    } catch (err) {
+      toast({
+        variant: 'destructive',
+        title: 'Could Not Send Message',
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
+    }
     setLoading(false);
-    setSubmitted(true);
-    toast({
-      title: "Message Sent",
-      description: "Our support team will get back to you within 24 hours.",
-    });
   };
 
   return (
@@ -119,16 +152,16 @@ export default function ContactPage() {
                     <div className="grid md:grid-cols-2 gap-6">
                       <div className="space-y-2">
                         <Label htmlFor="name" className="text-xs font-black uppercase tracking-widest text-muted-foreground/70 pl-1">Your Name</Label>
-                        <Input id="name" placeholder="John Doe" required className="h-12 bg-secondary/30 border-none rounded-xl" />
+                        <Input id="name" name="name" placeholder="John Doe" required className="h-12 bg-secondary/30 border-none rounded-xl" />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="email" className="text-xs font-black uppercase tracking-widest text-muted-foreground/70 pl-1">Email Address</Label>
-                        <Input id="email" type="email" placeholder="john@example.com" required className="h-12 bg-secondary/30 border-none rounded-xl" />
+                        <Input id="email" name="email" type="email" placeholder="john@example.com" required className="h-12 bg-secondary/30 border-none rounded-xl" />
                       </div>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="subject" className="text-xs font-black uppercase tracking-widest text-muted-foreground/70 pl-1">Reason for Contact</Label>
-                      <Select required>
+                      <Select required value={subject} onValueChange={setSubject}>
                         <SelectTrigger className="h-12 bg-secondary/30 border-none rounded-xl">
                           <SelectValue placeholder="Select a reason" />
                         </SelectTrigger>
@@ -143,7 +176,7 @@ export default function ContactPage() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="message" className="text-xs font-black uppercase tracking-widest text-muted-foreground/70 pl-1">Message</Label>
-                      <Textarea id="message" placeholder="Tell us how we can help..." className="min-h-[150px] bg-secondary/30 border-none rounded-xl resize-none" required />
+                      <Textarea id="message" name="message" placeholder="Tell us how we can help..." className="min-h-[150px] bg-secondary/30 border-none rounded-xl resize-none" required />
                     </div>
                     <Button type="submit" disabled={loading} className="w-full h-14 rounded-2xl font-black uppercase tracking-widest shadow-xl shadow-primary/20 gap-3">
                       {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}

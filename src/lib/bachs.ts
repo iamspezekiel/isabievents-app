@@ -73,12 +73,24 @@ export async function createCheckoutSession(
     body: JSON.stringify(body),
   });
 
-  const json = await res.json().catch(() => ({}));
+  const raw = await res.text();
+  let json: Record<string, unknown> = {};
+  try {
+    json = JSON.parse(raw) as Record<string, unknown>;
+  } catch {
+    /* non-JSON error body — keep raw */
+  }
   if (!res.ok) {
-    const message = json?.message || json?.error?.message || `Bachs error (${res.status})`;
+    const err = json.error as {message?: string; code?: string} | undefined;
+    const message =
+      (json.message as string) ||
+      err?.message ||
+      err?.code ||
+      (raw ? raw.slice(0, 300) : '') ||
+      `Bachs error (${res.status})`;
     throw new Error(message);
   }
-  return json as CreateCheckoutSessionResult;
+  return json as unknown as CreateCheckoutSessionResult;
 }
 
 export interface CheckoutSessionStatus {

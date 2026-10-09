@@ -41,19 +41,19 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
   const { id } = use(props.params);
   const router = useRouter();
   const { toast } = useToast();
-  const { signIn } = useAuth();
+  const { signIn, signUp, signInWithGoogle, profile, loading: authLoading } = useAuth();
   
   // Find event by slug or fallback to ID
   const event = MOCK_EVENTS.find(e => e.slug === id || e.id === id) || MOCK_EVENTS[0];
   
   const [step, setStep] = useState(1);
   const [quantity, setQuantity] = useState(1);
-  const [loading, setLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState('card');
+  const [loading, setLoading] = useState<boolean | 'form' | 'signup' | 'google' | null>(false);
+  const [paymentMethod, setPaymentMethod] = useState<'card' | 'bank' | 'crypto'>('card');
   const [currency, setCurrency] = useState<'NGN' | 'USD'>('NGN');
   
   // Attendee Info State
-  const [checkoutMode, setCheckoutMode] = useState<'guest' | 'login'>('login');
+  const [checkoutMode, setCheckoutMode] = useState<'guest' | 'login' | 'signup'>('login');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [attendeeInfo, setAttendeeInfo] = useState({
     fullname: '',
@@ -66,9 +66,42 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
   const [loginPassword, setLoginPassword] = useState('');
   const [showLoginPassword, setShowLoginPassword] = useState(false);
 
+  // Checkout-only signup state (distinct from the main /signup page: attendee-only)
+  const [signupName, setSignupName] = useState('');
+  const [signupEmail, setSignupEmail] = useState('');
+  const [signupPassword, setSignupPassword] = useState('');
+  const [showSignupPassword, setShowSignupPassword] = useState(false);
+
   const totalNaira = event.price.min * quantity;
   const totalUsd = (totalNaira / NGN_TO_USD_RATE).toFixed(2);
   const totalToCharge = currency === 'USD' ? Number(totalUsd) : totalNaira;
+
+  // Already signed in? Skip the login/signup step entirely.
+  useEffect(() => {
+    if (!authLoading && profile) {
+      setIsLoggedIn(true);
+      setAttendeeInfo(prev => ({
+        fullname: prev.fullname || profile.name,
+        email: prev.email || profile.email,
+        phone: prev.phone
+      }));
+    }
+  }, [authLoading, profile]);
+
+  // Card supports NGN + USD; bank transfer is NGN-only; crypto is USD-only.
+  const handleSelectMethod = (method: 'card' | 'bank' | 'crypto') => {
+    setPaymentMethod(method);
+    if (method === 'bank') setCurrency('NGN');
+    if (method === 'crypto') setCurrency('USD');
+  };
+
+  const fireWelcomeEmail = (name: string, email: string, method: string) => {
+    fetch('/api/email/welcome', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({name, email, role: 'attendee', method}),
+    }).catch(() => undefined);
+  };
 
   // Handle return from the hosted Bachs checkout (success_url / cancel_url).
   useEffect(() => {
@@ -109,7 +142,7 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
   }, []);
 
   const handleLogin = async () => {
-    setLoading(true);
+    setLoading('form');
     try {
       // Demo convenience: typing "Attendee" resolves to the demo attendee account.
       const email = loginEmail.trim().toLowerCase() === 'attendee' ? 'attendee@isabievents.ng' : loginEmail;
@@ -137,6 +170,65 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
     setLoading(false);
   };
 
+  // Checkout-only signup: instant attendee account, then straight into the order.
+  const handleCheckoutSignUp = async () => {
+    if (!signupName.trim() || !signupEmail.trim() || signupPassword.length < 6) {
+      toast({
+        variant: "destructive",
+        title: "Missing Information",
+        description: "Enter your name, a valid email, and a password of at least 6 characters.",
+      });
+      return;
+    }
+    setLoading('signup');
+    try {
+      await signUp({name: signupName.trim(), email: signupEmail.trim(), password: signupPassword, role: 'attendee'});
+      fireWelcomeEmail(signupName.trim(), signupEmail.trim(), 'checkout signup');
+      setIsLoggedIn(true);
+      setAttendeeInfo({fullname: signupName.trim(), email: signupEmail.trim(), phone: ''});
+      toast({
+        title: "Account Created",
+        description: "You're all set — continue to payment below.",
+      });
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Signup Failed",
+        description: err instanceof Error ? err.message.replace('Firebase: ', '') : 'Could not create your account.',
+      });
+    }
+    setLoading(null);
+  };
+
+  const handleCheckoutGoogle = async () => {
+    setLoading('google');
+    try {
+      const prof = await signInWithGoogle();
+      fireWelcomeEmail(prof.name || '', prof.email, 'google');
+      setIsLoggedIn(true);
+      setAttendeeInfo(prev => ({...prev, fullname: prof.name, email: prof.email}));
+      toast({
+        title: "Signed in with Google",
+        description: `Welcome${prof.name ? `, ${prof.name}` : ''} — continue to payment below.`,
+      });
+    } catch (err) {
+      const code = (err as {code?: string})?.code || '';
+      const messages: Record<string, string> = {
+        'auth/popup-closed-by-user': 'The Google popup was closed before sign-in finished.',
+        'auth/popup-blocked': 'Popup blocked — allow popups for this site and try again.',
+        'auth/cancelled-popup-request': 'Sign-in was cancelled.',
+        'auth/unauthorized-domain': 'Add this domain to Firebase → Authentication → Settings → Authorized domains.',
+        'auth/operation-not-allowed': 'Google sign-in is not enabled yet — enable it in Firebase → Authentication → Sign-in method.',
+      };
+      toast({
+        variant: "destructive",
+        title: "Google Sign-In Failed",
+        description: messages[code] || (err instanceof Error ? err.message : 'Could not sign in with Google.'),
+      });
+    }
+    setLoading(null);
+  };
+
   const handlePayment = async () => {
     setLoading(true);
     try {
@@ -150,6 +242,7 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
           quantity,
           unitPrice: currency === 'USD' ? Number(totalUsd) : event.price.min,
           currency,
+          paymentMethod,
           buyer: {
             name: attendeeInfo.fullname,
             email: attendeeInfo.email,
@@ -169,9 +262,7 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
         setStep(3);
         toast({
           title: "Payment Successful! (Demo)",
-          description: paymentMethod === 'solana'
-            ? `Transaction confirmed on Solana. ${totalUsd} USDC received.`
-            : "Your tickets have been generated and sent to your email.",
+          description: "Your tickets have been generated and sent to your email.",
         });
         return;
       }
@@ -219,22 +310,15 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
 
                 {!isLoggedIn ? (
                   <Tabs value={checkoutMode} onValueChange={(v: any) => setCheckoutMode(v)} className="w-full">
-                    <TabsList className="grid grid-cols-2 bg-secondary/50 p-1 rounded-2xl mb-8">
+                    <TabsList className="grid grid-cols-3 bg-secondary/50 p-1 rounded-2xl mb-8">
                       <TabsTrigger value="login" className="rounded-xl font-bold py-3">Sign In</TabsTrigger>
+                      <TabsTrigger value="signup" className="rounded-xl font-bold py-3">Sign Up</TabsTrigger>
                       <TabsTrigger value="guest" className="rounded-xl font-bold py-3">Guest</TabsTrigger>
                     </TabsList>
 
                     <TabsContent value="login" className="space-y-6 mt-0">
                       <Card className="border-border bg-card/50">
                         <CardContent className="pt-6 space-y-4">
-                          <div className="bg-primary/5 border border-primary/10 p-3 rounded-xl flex items-start gap-3 mb-2">
-                            <div className="space-y-1">
-                               <p className="text-[11px] font-bold text-primary uppercase tracking-widest">Demo Credentials</p>
-                               <p className="text-[11px] text-muted-foreground">Username: <span className="font-bold text-foreground">Attendee</span></p>
-                               <p className="text-[11px] text-muted-foreground">Password: <span className="font-bold text-foreground">password123</span></p>
-                            </div>
-                          </div>
-
                           <div className="space-y-2">
                             <Label htmlFor="login-email">Email or Username</Label>
                             <Input 
@@ -269,9 +353,22 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
                           <Button 
                             className="w-full rounded-xl font-bold h-11" 
                             onClick={handleLogin}
-                            disabled={loading}
+                            disabled={!!loading}
                           >
-                            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Sign In & Continue"}
+                            {loading === 'form' ? <Loader2 className="w-4 h-4 animate-spin" /> : "Sign In & Continue"}
+                          </Button>
+                          <div className="relative py-1">
+                            <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-border" /></div>
+                            <div className="relative flex justify-center text-[10px] uppercase"><span className="bg-card px-2 text-muted-foreground font-bold">or</span></div>
+                          </div>
+                          <Button
+                            variant="outline"
+                            className="w-full rounded-xl font-bold h-11"
+                            onClick={handleCheckoutGoogle}
+                            disabled={!!loading}
+                          >
+                            {loading === 'google' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                            Continue with Google
                           </Button>
                         </CardContent>
                       </Card>
@@ -280,9 +377,86 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
                           Signing in allows you to save this ticket to your digital wallet and track your orders.
                         </p>
                         <p className="text-center text-sm">
-                          Don&apos;t have an account? <Link href="/signup" className="text-primary font-bold hover:underline">Sign Up</Link>
+                          New here? Use the <button type="button" onClick={() => setCheckoutMode('signup')} className="text-primary font-bold hover:underline bg-transparent border-0 p-0 cursor-pointer">Sign Up</button> tab to create an account in seconds.
                         </p>
                       </div>
+                    </TabsContent>
+
+                    <TabsContent value="signup" className="space-y-6 mt-0">
+                      <Card className="border-border bg-card/50">
+                        <CardContent className="pt-6 space-y-4">
+                          <div className="space-y-2">
+                            <Label htmlFor="signup-name">Full Name</Label>
+                            <div className="relative">
+                              <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                              <Input
+                                id="signup-name"
+                                placeholder="Enter your full name"
+                                className="bg-background h-11 pl-10"
+                                value={signupName}
+                                onChange={(e) => setSignupName(e.target.value)}
+                              />
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="signup-email">Email Address</Label>
+                            <div className="relative">
+                              <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                              <Input
+                                id="signup-email"
+                                type="email"
+                                placeholder="you@example.com"
+                                className="bg-background h-11 pl-10"
+                                value={signupEmail}
+                                onChange={(e) => setSignupEmail(e.target.value)}
+                              />
+                            </div>
+                          </div>
+                          <div className="space-y-2">
+                            <Label htmlFor="signup-password">Password</Label>
+                            <div className="relative">
+                              <Input
+                                id="signup-password"
+                                type={showSignupPassword ? 'text' : 'password'}
+                                placeholder="At least 6 characters"
+                                className="bg-background h-11 pr-10"
+                                value={signupPassword}
+                                onChange={(e) => setSignupPassword(e.target.value)}
+                              />
+                              <button
+                                type="button"
+                                onClick={() => setShowSignupPassword(!showSignupPassword)}
+                                className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                              >
+                                {showSignupPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                              </button>
+                            </div>
+                          </div>
+                          <Button
+                            className="w-full rounded-xl font-bold h-11"
+                            onClick={handleCheckoutSignUp}
+                            disabled={!!loading}
+                          >
+                            {loading === 'signup' ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Create Account & Continue'}
+                          </Button>
+                          <div className="relative py-1">
+                            <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-border" /></div>
+                            <div className="relative flex justify-center text-[10px] uppercase"><span className="bg-card px-2 text-muted-foreground font-bold">or</span></div>
+                          </div>
+                          <Button
+                            variant="outline"
+                            className="w-full rounded-xl font-bold h-11"
+                            onClick={handleCheckoutGoogle}
+                            disabled={!!loading}
+                          >
+                            {loading === 'google' ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                            Continue with Google
+                          </Button>
+                        </CardContent>
+                      </Card>
+                      <p className="text-center text-xs text-muted-foreground">
+                        Your account keeps your tickets safe and speeds up your next checkout.
+                      </p>
                     </TabsContent>
 
                     <TabsContent value="guest" className="space-y-6 mt-0">
@@ -373,44 +547,38 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
 
             {step === 2 && (
               <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
-                <div className="flex items-center justify-between">
-                  <div className="text-left">
-                    <h1 className="font-headline">Select Payment</h1>
-                    <p className="text-xs text-muted-foreground mt-1">Paying as: {attendeeInfo.fullname}</p>
-                  </div>
-                  {paymentMethod === 'solana' && (
-                    <div className="flex items-center gap-2 text-xs font-black text-primary animate-pulse">
-                      <Zap className="w-3 h-3 fill-current" />
-                      INSTANT CONFIRMATION
-                    </div>
-                  )}
+                <div className="text-left">
+                  <h1 className="font-headline">Select Payment</h1>
+                  <p className="text-xs text-muted-foreground mt-1">Paying as: {attendeeInfo.fullname}</p>
                 </div>
                 
                 <div className="grid grid-cols-2 gap-2 p-1.5 bg-secondary/50 rounded-2xl">
                   <button
                     type="button"
                     onClick={() => setCurrency('NGN')}
-                    className={`py-2.5 rounded-xl text-sm font-black transition-all ${currency === 'NGN' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-muted-foreground hover:text-foreground'}`}
+                    disabled={paymentMethod === 'crypto'}
+                    className={`py-2.5 rounded-xl text-sm font-black transition-all disabled:opacity-40 disabled:cursor-not-allowed ${currency === 'NGN' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-muted-foreground hover:text-foreground'}`}
                   >
                     ₦ NGN
                   </button>
                   <button
                     type="button"
                     onClick={() => setCurrency('USD')}
-                    className={`py-2.5 rounded-xl text-sm font-black transition-all ${currency === 'USD' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-muted-foreground hover:text-foreground'}`}
+                    disabled={paymentMethod === 'bank'}
+                    className={`py-2.5 rounded-xl text-sm font-black transition-all disabled:opacity-40 disabled:cursor-not-allowed ${currency === 'USD' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-muted-foreground hover:text-foreground'}`}
                   >
                     $ USD
                   </button>
                 </div>
 
-                <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="grid gap-4">
-                  <PaymentOption id="card" label="Card Payment" icon={CreditCard} description="Visa, Mastercard, Verve" />
-                  <PaymentOption id="bank" label="Bank Transfer" icon={Landmark} description="Direct bank transfer" />
+                <RadioGroup value={paymentMethod} onValueChange={handleSelectMethod} className="grid gap-4">
+                  <PaymentOption id="card" label="Card Payment" icon={CreditCard} description="Visa, Mastercard, Verve — NGN or USD" />
+                  <PaymentOption id="bank" label="Bank Transfer" icon={Landmark} description="Nigerian bank transfer (NGN)" />
                   <PaymentOption 
-                    id="solana" 
-                    label="SolanaPay" 
+                    id="crypto" 
+                    label="Crypto" 
                     icon={Coins} 
-                    description="Pay with USDC or USDT" 
+                    description="Pay with USDC or USDT (USD)" 
                     badge="FAST"
                   />
                 </RadioGroup>
@@ -420,9 +588,9 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
                   <div className="space-y-1">
                     <p className="text-sm font-bold">Secure Transaction</p>
                     <p className="text-xs text-muted-foreground leading-relaxed">
-                      {paymentMethod === 'solana' 
-                        ? "SolanaPay uses direct wallet-to-wallet transfers. No middleman, zero fees, near-instant."
-                        : "Your payment is protected by bank-level encryption. We do not store your private financial data."}
+                      {paymentMethod === 'crypto' 
+                        ? "Crypto payments are processed by Bachs. Pay with USDC or USDT and your ticket is issued once the payment settles."
+                        : "Your payment is protected by bank-level encryption via Bachs. We do not store your private financial data."}
                     </p>
                   </div>
                 </div>
@@ -430,26 +598,28 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
                 <div className="pt-6 flex flex-col gap-3">
                   <Button 
                     onClick={handlePayment} 
-                    disabled={loading}
+                    disabled={!!loading}
                     className="w-full rounded-full shadow-xl shadow-primary/20 h-11 font-bold"
                   >
                     {loading ? (
                       <div className="flex items-center gap-3">
                         <Loader2 className="w-5 h-5 animate-spin" />
-                        <span>{paymentMethod === 'solana' ? 'Confirming on Chain...' : 'Processing...'}</span>
+                        <span>Redirecting to Bachs…</span>
                       </div>
                     ) : (
-                      currency === 'USD'
-                        ? `Pay $${Number(totalUsd).toFixed(2)}`
-                        : `Pay ₦${totalNaira.toLocaleString()}`
+                      paymentMethod === 'crypto'
+                        ? `Pay $${Number(totalUsd).toFixed(2)} in Crypto`
+                        : currency === 'USD'
+                          ? `Pay $${Number(totalUsd).toFixed(2)}`
+                          : `Pay ₦${totalNaira.toLocaleString()}`
                     )}
                   </Button>
                   <Button variant="ghost" onClick={() => setStep(1)} className="font-bold h-11">
                     Back to Attendee Details
                   </Button>
-                  {paymentMethod === 'solana' && (
+                  {paymentMethod === 'crypto' && (
                     <p className="text-[10px] text-center text-muted-foreground mt-4 uppercase font-black tracking-widest">
-                      Rate: 1 USD ≈ ₦{NGN_TO_USD_RATE}
+                      Rate: 1 USD ≈ ₦{NGN_TO_USD_RATE.toLocaleString()}
                     </p>
                   )}
                 </div>
@@ -519,10 +689,10 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
                     <div className="flex justify-between items-baseline">
                       <span className="font-bold text-lg">Total</span>
                       <div className="text-right">
-                        <span className="block font-black text-3xl text-primary tracking-tighter">₦{totalNaira.toLocaleString()}</span>
-                        {paymentMethod === 'solana' && (
+                        <span className="block font-black text-3xl text-primary tracking-tighter">{currency === 'USD' ? `$${Number(totalUsd).toFixed(2)}` : `₦${totalNaira.toLocaleString()}`}</span>
+                        {currency === 'NGN' && (
                           <span className="text-xs font-black text-accent uppercase tracking-widest animate-in fade-in">
-                            ≈ {totalUsd} USDC
+                            ≈ ${totalUsd} USD
                           </span>
                         )}
                       </div>
