@@ -59,6 +59,15 @@ export async function POST(req: Request) {
   if (!eventId || !eventTitle || !buyer?.email || !buyer?.name) {
     return NextResponse.json({error: 'Missing required checkout fields.'}, {status: 400});
   }
+
+  // Crypto payments are temporarily paused — Bachs card (NGN/USD) and
+  // NGN bank transfer remain available. Remove this guard to re-enable.
+  if (body.paymentMethod === 'crypto') {
+    return NextResponse.json(
+      {error: 'Crypto payments are temporarily paused. Please pay with Card or Bank Transfer.'},
+      {status: 400}
+    );
+  }
   const qty = Math.max(1, Math.min(20, Math.floor(Number(quantity) || 1)));
   const price = Math.max(0, Number(unitPrice) || 0);
   const amount = price * qty;

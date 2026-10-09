@@ -578,8 +578,9 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
                     id="crypto" 
                     label="Crypto" 
                     icon={Coins} 
-                    description="Pay with USDC or USDT (USD)" 
-                    badge="FAST"
+                    description="USDC / USDT — coming back soon" 
+                    badge="Paused"
+                    disabled
                   />
                 </RadioGroup>
 
@@ -718,13 +719,13 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
   );
 }
 
-function PaymentOption({ id, label, icon: Icon, description, badge }: any) {
+function PaymentOption({ id, label, icon: Icon, description, badge, disabled }: any) {
   return (
     <div className="relative">
-      <RadioGroupItem value={id} id={id} className="peer sr-only" />
+      <RadioGroupItem value={id} id={id} className="peer sr-only" disabled={disabled} />
       <Label
         htmlFor={id}
-        className="flex items-center gap-5 p-5 rounded-2xl border-2 border-border bg-card cursor-pointer transition-all peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 hover:bg-secondary/40 relative overflow-hidden"
+        className={`flex items-center gap-5 p-5 rounded-2xl border-2 border-border bg-card relative overflow-hidden transition-all peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary/5 ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:bg-secondary/40'}`}
       >
         <div className="w-12 h-12 rounded-xl bg-secondary flex items-center justify-center peer-data-[state=checked]:bg-primary/20 shrink-0">
           <Icon className="w-6 h-6 text-muted-foreground peer-data-[state=checked]:text-primary" />
@@ -733,7 +734,7 @@ function PaymentOption({ id, label, icon: Icon, description, badge }: any) {
           <div className="flex items-center gap-2">
             <span className="font-bold text-lg leading-none">{label}</span>
             {badge && (
-              <span className="bg-primary/10 text-primary text-[8px] font-black px-1.5 py-0.5 rounded-sm uppercase tracking-widest">
+              <span className={`${disabled ? 'bg-muted text-muted-foreground' : 'bg-primary/10 text-primary'} text-[8px] font-black px-1.5 py-0.5 rounded-sm uppercase tracking-widest`}>
                 {badge}
               </span>
             )}

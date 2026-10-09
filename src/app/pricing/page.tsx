@@ -146,7 +146,7 @@ export default function PricingPage() {
             />
             <PricingFaq 
               q="What payment methods are supported?" 
-              a="Every payment runs through Bachs: Card (Visa, Mastercard, Verve) in NGN or USD, Nigerian Bank Transfer in NGN, and Crypto (USDC/USDT) in USD." 
+              a="Every card and bank payment runs through Bachs: Card (Visa, Mastercard, Verve) in NGN or USD, and Nigerian Bank Transfer in NGN. Crypto (USDC/USDT) is temporarily paused." 
             />
           </div>
         </div>

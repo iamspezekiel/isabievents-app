@@ -114,7 +114,7 @@ export default function OrganizerLandingPage() {
             <FeatureCard 
               icon={ShieldCheck} 
               title="Secure Payments" 
-              description="Instant settlements via Bachs — cards, bank transfer, and crypto."
+              description="Instant settlements via Bachs — cards (NGN & USD) and bank transfer."
             />
             <FeatureCard 
               icon={Users} 

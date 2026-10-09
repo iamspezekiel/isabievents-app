@@ -149,7 +149,7 @@ export default function AdminSystemSettings() {
                 </div>
                 <div className="space-y-0.5">
                   <p className="font-bold text-sm">Crypto (USDC/USDT)</p>
-                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Bachs Crypto Corridor (USD)</p>
+                  <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Paused — Card &amp; Bank Only</p>
                 </div>
               </div>
               <Switch defaultChecked />
