@@ -1,6 +1,6 @@
 import {NextResponse} from 'next/server';
 import {requireAuth, isResponse} from '@/lib/admin-auth';
-import {getAdminAuth, getAdminDb} from '@/lib/firebase-admin';
+import {admin} from '@/lib/server-admin';
 
 export const runtime = 'nodejs';
 
@@ -11,6 +11,7 @@ export const runtime = 'nodejs';
 export async function DELETE(req: Request) {
   const uid = await requireAuth(req);
   if (isResponse(uid)) return uid;
+  const {getAdminAuth, getAdminDb} = await admin();
   const auth = getAdminAuth();
   if (!auth) return NextResponse.json({error: 'Server credentials missing.'}, {status: 503});
 

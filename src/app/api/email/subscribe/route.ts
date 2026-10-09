@@ -4,7 +4,7 @@
  */
 import {NextResponse} from 'next/server';
 import {isEmailConfigured, sendSubscribeEmail} from '@/lib/email';
-import {getAdminDb} from '@/lib/firebase-admin';
+import {admin} from '@/lib/server-admin';
 
 export const runtime = 'nodejs';
 
@@ -24,6 +24,7 @@ export async function POST(req: Request) {
   // Persist for the admin newsletter audience (best-effort, server-side).
   let stored = false;
   try {
+    const {getAdminDb} = await admin();
     const db = getAdminDb();
     if (db) {
       const docId = email.toLowerCase().replace(/[.#$[\]/]/g, '_');

@@ -1,7 +1,7 @@
 import {NextResponse} from 'next/server';
 import {randomBytes} from 'crypto';
 import {requireAdmin, isResponse} from '@/lib/admin-auth';
-import {getAdminAuth, getAdminDb} from '@/lib/firebase-admin';
+import {admin} from '@/lib/server-admin';
 
 export const runtime = 'nodejs';
 
@@ -18,6 +18,7 @@ interface UserRow {
 export async function GET(req: Request) {
   const uid = await requireAdmin(req);
   if (isResponse(uid)) return uid;
+  const {getAdminDb} = await admin();
   const db = getAdminDb();
   if (!db) return NextResponse.json({error: 'Server credentials missing.'}, {status: 503});
 
@@ -41,6 +42,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const uid = await requireAdmin(req);
   if (isResponse(uid)) return uid;
+  const {getAdminAuth, getAdminDb} = await admin();
   const auth = getAdminAuth();
   const db = getAdminDb();
   if (!auth || !db) return NextResponse.json({error: 'Server credentials missing.'}, {status: 503});

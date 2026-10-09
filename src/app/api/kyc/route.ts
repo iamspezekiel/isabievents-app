@@ -1,6 +1,6 @@
 import {NextResponse} from 'next/server';
 import {requireAdmin, requireOrganizer, isResponse} from '@/lib/admin-auth';
-import {getAdminDb} from '@/lib/firebase-admin';
+import {admin} from '@/lib/server-admin';
 
 export const runtime = 'nodejs';
 
@@ -12,6 +12,7 @@ export const runtime = 'nodejs';
 export async function POST(req: Request) {
   const uid = await requireOrganizer(req);
   if (isResponse(uid)) return uid;
+  const {getAdminDb} = await admin();
   const db = getAdminDb();
   if (!db) return NextResponse.json({error: 'Server credentials missing.'}, {status: 503});
 
@@ -59,6 +60,7 @@ export async function POST(req: Request) {
 export async function GET(req: Request) {
   const uid = await requireAdmin(req);
   if (isResponse(uid)) return uid;
+  const {getAdminDb} = await admin();
   const db = getAdminDb();
   if (!db) return NextResponse.json({error: 'Server credentials missing.'}, {status: 503});
 
@@ -89,6 +91,7 @@ export async function GET(req: Request) {
 export async function PATCH(req: Request) {
   const uid = await requireAdmin(req);
   if (isResponse(uid)) return uid;
+  const {getAdminDb} = await admin();
   const db = getAdminDb();
   if (!db) return NextResponse.json({error: 'Server credentials missing.'}, {status: 503});
 

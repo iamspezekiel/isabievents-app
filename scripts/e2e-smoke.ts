@@ -109,6 +109,21 @@ async function main() {
   check('GET /api/kyc', kycRes.ok && Array.isArray(kyc.submissions),
     `${kyc.submissions?.length} pending submission(s)`);
 
+  // ---- admin settings persistence ---------------------------------------
+  const set1 = await (await authed('/api/admin/settings')).json();
+  const origCity = set1.settings?.city || 'Abuja';
+  const newCity = origCity === 'Lagos' ? 'Abuja' : 'Lagos';
+  const saveRes = await authed('/api/admin/settings', {
+    method: 'POST',
+    body: JSON.stringify({...set1.settings, city: newCity}),
+  });
+  const saveBody = await saveRes.json().catch(() => ({}));
+  const set2 = await (await authed('/api/admin/settings')).json();
+  check('POST/GET /api/admin/settings persists', saveRes.ok && set2.settings?.city === newCity && !saveBody.error,
+    `city ${origCity} → ${newCity} → ${set2.settings?.city}`);
+  // restore original value
+  await authed('/api/admin/settings', {method: 'POST', body: JSON.stringify({...set1.settings, city: origCity})});
+
   // ---- ticket validation (admin is an operator) ---------------------------
   const valRes = await authed('/api/tickets/validate', {
     method: 'POST',

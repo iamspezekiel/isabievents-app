@@ -4,17 +4,20 @@
  * The client sends `Authorization: Bearer <Firebase ID token>` (obtained from
  * `auth.currentUser.getIdToken()`); the Admin SDK verifies it and the caller's
  * role is read from the users/{uid} profile doc.
+ *
+ * firebase-admin is loaded lazily — a static SDK import crashes Vercel
+ * serverless functions at cold start (empty 500 from the platform).
  */
 import {NextResponse} from 'next/server';
-import {getAdminAuth, getAdminDb} from '@/lib/firebase-admin';
 
 async function decodedUid(req: Request): Promise<string | null> {
   const header = req.headers.get('authorization') || '';
   const token = header.startsWith('Bearer ') ? header.slice(7).trim() : null;
   if (!token) return null;
-  const auth = getAdminAuth();
-  if (!auth) return null;
   try {
+    const {getAdminAuth} = await import('@/lib/firebase-admin');
+    const auth = getAdminAuth();
+    if (!auth) return null;
     const decoded = await auth.verifyIdToken(token);
     return decoded.uid;
   } catch {
@@ -24,9 +27,10 @@ async function decodedUid(req: Request): Promise<string | null> {
 
 /** Caller role from Firestore, or null when the profile is missing. */
 async function callerRole(uid: string): Promise<string | null> {
-  const db = getAdminDb();
-  if (!db) return null;
   try {
+    const {getAdminDb} = await import('@/lib/firebase-admin');
+    const db = getAdminDb();
+    if (!db) return null;
     const snap = await db.collection('users').doc(uid).get();
     return snap.exists ? ((snap.data() as {role?: string}).role ?? null) : null;
   } catch {

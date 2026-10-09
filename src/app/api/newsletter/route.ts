@@ -1,6 +1,6 @@
 import {NextResponse} from 'next/server';
 import {requireAdmin, isResponse} from '@/lib/admin-auth';
-import {getAdminDb} from '@/lib/firebase-admin';
+import {admin} from '@/lib/server-admin';
 import {sendNewsletterEmail} from '@/lib/email';
 
 export const runtime = 'nodejs';
@@ -16,6 +16,7 @@ const AUDIENCE_LABELS: Record<string, string> = {
 export async function GET(req: Request) {
   const uid = await requireAdmin(req);
   if (isResponse(uid)) return uid;
+  const {getAdminDb} = await admin();
   const db = getAdminDb();
   if (!db) return NextResponse.json({error: 'Server credentials missing.'}, {status: 503});
 
@@ -51,6 +52,7 @@ export async function GET(req: Request) {
 export async function POST(req: Request) {
   const uid = await requireAdmin(req);
   if (isResponse(uid)) return uid;
+  const {getAdminDb} = await admin();
   const db = getAdminDb();
   if (!db) return NextResponse.json({error: 'Server credentials missing.'}, {status: 503});
 
@@ -130,6 +132,7 @@ export async function POST(req: Request) {
 export async function DELETE(req: Request) {
   const uid = await requireAdmin(req);
   if (isResponse(uid)) return uid;
+  const {getAdminDb} = await admin();
   const db = getAdminDb();
   if (!db) return NextResponse.json({error: 'Server credentials missing.'}, {status: 503});
 

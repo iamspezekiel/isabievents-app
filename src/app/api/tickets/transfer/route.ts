@@ -1,5 +1,5 @@
 import {NextResponse} from 'next/server';
-import {getAdminAuth, getAdminDb} from '@/lib/firebase-admin';
+import {admin} from '@/lib/server-admin';
 
 export const runtime = 'nodejs';
 
@@ -12,6 +12,7 @@ export async function POST(req: Request) {
   try {
     const header = req.headers.get('authorization') || '';
     const token = header.startsWith('Bearer ') ? header.slice(7).trim() : null;
+    const {getAdminAuth, getAdminDb} = await admin();
     const auth = getAdminAuth();
     const db = getAdminDb();
     if (!token || !auth || !db) {

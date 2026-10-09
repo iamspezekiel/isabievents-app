@@ -1,7 +1,7 @@
 import {NextResponse} from 'next/server';
 import {randomBytes} from 'crypto';
 import {requireOrganizer, isResponse} from '@/lib/admin-auth';
-import {getAdminDb} from '@/lib/firebase-admin';
+import {admin} from '@/lib/server-admin';
 
 export const runtime = 'nodejs';
 
@@ -32,6 +32,7 @@ interface EventBody {
 export async function POST(req: Request) {
   const uid = await requireOrganizer(req);
   if (isResponse(uid)) return uid;
+  const {getAdminDb} = await admin();
   const db = getAdminDb();
   if (!db) return NextResponse.json({error: 'Server credentials missing.'}, {status: 503});
 
@@ -95,6 +96,7 @@ export async function POST(req: Request) {
 export async function PATCH(req: Request) {
   const uid = await requireOrganizer(req);
   if (isResponse(uid)) return uid;
+  const {getAdminDb} = await admin();
   const db = getAdminDb();
   if (!db) return NextResponse.json({error: 'Server credentials missing.'}, {status: 503});
 
@@ -145,6 +147,7 @@ export async function PATCH(req: Request) {
 export async function DELETE(req: Request) {
   const uid = await requireOrganizer(req);
   if (isResponse(uid)) return uid;
+  const {getAdminDb} = await admin();
   const db = getAdminDb();
   if (!db) return NextResponse.json({error: 'Server credentials missing.'}, {status: 503});
 

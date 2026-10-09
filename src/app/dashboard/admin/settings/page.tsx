@@ -22,9 +22,36 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { CITIES } from '@/lib/mock-data';
 import { apiFetch } from '@/lib/api-fetch';
+import { useAuth } from '@/components/auth-provider';
+
+interface AppSettings {
+  fullName: string;
+  city: string;
+  platformFee: number | string;
+  requireKyc: boolean;
+  autoSettlements: boolean;
+  gatewayBachs: boolean;
+  gatewayCrypto: boolean;
+  maintenance: boolean;
+}
+
+const DEFAULT_APP: AppSettings = {
+  fullName: 'Admin Master',
+  city: 'Abuja',
+  platformFee: '2.5',
+  requireKyc: true,
+  autoSettlements: true,
+  gatewayBachs: true,
+  gatewayCrypto: true,
+  maintenance: false,
+};
 
 export default function AdminSystemSettings() {
   const { toast } = useToast();
+  const { loading: authLoading } = useAuth();
+
+  // Platform settings — persisted to Firestore settings/app.
+  const [app, setApp] = useState<AppSettings>(DEFAULT_APP);
 
   // SMTP settings — loaded from the server, saved to Firestore settings/smtp.
   const [smtp, setSmtp] = useState({host: '', port: '', user: '', pass: '', from: '', adminEmail: ''});
@@ -34,6 +61,24 @@ export default function AdminSystemSettings() {
   const [smtpStatus, setSmtpStatus] = useState<{ok: boolean; msg: string} | null>(null);
 
   useEffect(() => {
+    if (authLoading) return;
+    apiFetch('/api/admin/settings')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.settings) {
+          setApp({
+            fullName: d.settings.fullName || DEFAULT_APP.fullName,
+            city: d.settings.city || DEFAULT_APP.city,
+            platformFee: String(d.settings.platformFee ?? DEFAULT_APP.platformFee),
+            requireKyc: d.settings.requireKyc !== false,
+            autoSettlements: d.settings.autoSettlements !== false,
+            gatewayBachs: d.settings.gatewayBachs !== false,
+            gatewayCrypto: d.settings.gatewayCrypto !== false,
+            maintenance: Boolean(d.settings.maintenance),
+          });
+        }
+      })
+      .catch(() => undefined);
     apiFetch('/api/admin/smtp')
       .then((r) => r.json())
       .then((d) => {
@@ -49,10 +94,68 @@ export default function AdminSystemSettings() {
         setHasPassword(Boolean(d.hasPassword));
       })
       .catch(() => undefined);
-  }, []);
+  }, [authLoading]);
 
   const setField = (key: keyof typeof smtp, value: string) =>
     setSmtp((prev) => ({...prev, [key]: value}));
+
+  const setAppField = <K extends keyof AppSettings>(key: K, value: AppSettings[K]) =>
+    setApp((prev) => ({...prev, [key]: value}));
+
+  const refreshSmtpFromServer = () => {
+    apiFetch('/api/admin/smtp')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.error) return;
+        setSmtp({
+          host: d.host || '',
+          port: d.port ? String(d.port) : '',
+          user: d.user || '',
+          pass: '',
+          from: d.from || '',
+          adminEmail: d.adminEmail || '',
+        });
+        setHasPassword(Boolean(d.hasPassword));
+      })
+      .catch(() => undefined);
+  };
+
+  /** Header "Save Changes" — persists platform settings AND SMTP together. */
+  const handleSaveAll = async () => {
+    setSaving(true);
+    setSmtpStatus(null);
+    try {
+      const [settingsRes, smtpRes] = await Promise.all([
+        apiFetch('/api/admin/settings', {
+          method: 'POST',
+          body: JSON.stringify({...app, platformFee: Number(app.platformFee) || 0}),
+        }),
+        apiFetch('/api/admin/smtp', {
+          method: 'POST',
+          body: JSON.stringify({
+            ...smtp,
+            port: smtp.port ? Number(smtp.port) : undefined,
+          }),
+        }),
+      ]);
+      const s1 = await settingsRes.json().catch(() => ({}));
+      const s2 = await smtpRes.json().catch(() => ({}));
+      if (!settingsRes.ok) throw new Error(s1.error || 'Settings save failed.');
+      if (!smtpRes.ok) throw new Error(s2.error || 'SMTP save failed.');
+
+      if (smtp.pass) setHasPassword(true);
+      setSmtp((prev) => ({...prev, pass: ''}));
+      refreshSmtpFromServer();
+      setSmtpStatus({ok: true, msg: 'All settings saved.'});
+      toast({title: 'Settings Saved', description: 'Platform configuration and SMTP settings were saved.'});
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : 'Save failed.';
+      setSmtpStatus({ok: false, msg});
+      toast({variant: 'destructive', title: 'Save Failed', description: msg});
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const handleSaveSmtp = async () => {
     setSaving(true);
@@ -69,6 +172,7 @@ export default function AdminSystemSettings() {
       if (!res.ok) throw new Error(d.error || 'Save failed.');
       if (smtp.pass) setHasPassword(true);
       setSmtp((prev) => ({...prev, pass: ''}));
+      refreshSmtpFromServer();
       setSmtpStatus({ok: true, msg: 'SMTP settings saved.'});
       toast({title: 'SMTP Saved', description: 'Server emails now use these settings.'});
     } catch (err) {
@@ -106,7 +210,7 @@ export default function AdminSystemSettings() {
           <h1 className="font-headline text-3xl md:text-5xl">System Config</h1>
           <p className="text-muted-foreground font-medium">Control global fees, security protocols, and maintenance modes.</p>
         </div>
-        <Button onClick={handleSaveSmtp} disabled={saving || testing} className="rounded-full shadow-lg shadow-primary/20 h-11 font-bold px-10">
+        <Button onClick={handleSaveAll} disabled={saving || testing} className="rounded-full shadow-lg shadow-primary/20 h-11 font-bold px-10">
           {saving ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
           Save Changes
         </Button>
@@ -125,13 +229,13 @@ export default function AdminSystemSettings() {
             <div className="grid sm:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label>Full Name</Label>
-                <Input defaultValue="Admin Master" className="h-11 bg-secondary/30 border-none rounded-xl" />
+                <Input value={app.fullName} onChange={(e) => setAppField('fullName', e.target.value)} className="h-11 bg-secondary/30 border-none rounded-xl" />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="location" className="flex items-center gap-1.5">
                   <MapPin className="w-3.5 h-3.5 text-primary" /> Primary Operating Base
                 </Label>
-                <Select defaultValue="Abuja">
+                <Select value={app.city} onValueChange={(v) => setAppField('city', v)}>
                   <SelectTrigger className="h-11 bg-secondary/30 border-none rounded-xl">
                     <SelectValue placeholder="Select your city" />
                   </SelectTrigger>
@@ -158,7 +262,7 @@ export default function AdminSystemSettings() {
             <div className="grid sm:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label>Standard Platform Fee (%)</Label>
-                <Input defaultValue="2.5" className="h-11 bg-secondary/30 border-none rounded-xl" />
+                <Input value={String(app.platformFee)} onChange={(e) => setAppField('platformFee', e.target.value)} className="h-11 bg-secondary/30 border-none rounded-xl" />
                 <p className="text-[10px] text-muted-foreground">Commission percentage taken from every paid ticket sold.</p>
               </div>
             </div>
@@ -178,7 +282,7 @@ export default function AdminSystemSettings() {
                 <p className="font-bold text-sm">Require KYC for Listing</p>
                 <p className="text-xs text-muted-foreground">Prevent unverified hosts from creating any events.</p>
               </div>
-              <Switch checked />
+              <Switch checked={app.requireKyc} onCheckedChange={(v) => setAppField('requireKyc', v)} />
             </div>
             
             <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-2xl border border-border">
@@ -186,7 +290,7 @@ export default function AdminSystemSettings() {
                 <p className="font-bold text-sm">Automated Settlements</p>
                 <p className="text-xs text-muted-foreground">Disable manual approval for verified organizer payouts.</p>
               </div>
-              <Switch checked />
+              <Switch checked={app.autoSettlements} onCheckedChange={(v) => setAppField('autoSettlements', v)} />
             </div>
           </CardContent>
         </Card>
@@ -210,7 +314,7 @@ export default function AdminSystemSettings() {
                   <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Primary Gateway (NGN & USD)</p>
                 </div>
               </div>
-              <Switch defaultChecked />
+              <Switch checked={app.gatewayBachs} onCheckedChange={(v) => setAppField('gatewayBachs', v)} />
             </div>
 
             <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-2xl border border-border">
@@ -223,7 +327,7 @@ export default function AdminSystemSettings() {
                   <p className="text-[10px] text-muted-foreground uppercase tracking-widest font-bold">Bachs Crypto Corridor (USD)</p>
                 </div>
               </div>
-              <Switch defaultChecked />
+              <Switch checked={app.gatewayCrypto} onCheckedChange={(v) => setAppField('gatewayCrypto', v)} />
             </div>
           </CardContent>
         </Card>
@@ -301,7 +405,7 @@ export default function AdminSystemSettings() {
                 <p className="font-bold text-sm text-red-600 uppercase tracking-tighter">Maintenance Mode</p>
                 <p className="text-xs text-muted-foreground">Take the platform offline for scheduled updates.</p>
               </div>
-              <Switch />
+              <Switch checked={app.maintenance} onCheckedChange={(v) => setAppField('maintenance', v)} />
             </div>
             <div className="flex gap-4">
               <Button variant="outline" className="flex-1 rounded-xl h-11 border-red-500/20 text-red-600 hover:bg-red-500/5 font-bold">
