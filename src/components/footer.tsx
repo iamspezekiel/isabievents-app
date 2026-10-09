@@ -84,6 +84,21 @@ export function Footer() {
               <div className="w-5 h-5 bg-[#7E7CFF] rounded-full flex items-center justify-center text-[10px] font-black text-white shadow-sm">B</div>
               <span className="text-[11px] font-black tracking-tighter uppercase text-foreground">Bachs</span>
             </div>
+            {/* Crypto (via Bachs) */}
+            <div className="flex items-center gap-3 group cursor-default">
+              <div className="flex items-center -space-x-1.5">
+                <div className="w-5 h-5 bg-[#2775CA] rounded-full border-2 border-background flex items-center justify-center shadow-sm">
+                  <span className="text-[7px] font-black text-white leading-none">$</span>
+                </div>
+                <div className="w-5 h-5 bg-[#26A17B] rounded-full border-2 border-background flex items-center justify-center shadow-sm">
+                  <span className="text-[7px] font-black text-white leading-none">₮</span>
+                </div>
+              </div>
+              <div className="flex flex-col items-start leading-none">
+                <span className="text-[11px] font-black tracking-tighter uppercase text-foreground">Crypto</span>
+                <span className="text-[7px] font-black uppercase text-muted-foreground tracking-[0.1em]">USDC / USDT / ETH</span>
+              </div>
+            </div>
           </div>
           
           {/* Responsive Copyright */}

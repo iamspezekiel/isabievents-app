@@ -578,9 +578,8 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
                     id="crypto" 
                     label="Crypto" 
                     icon={Coins} 
-                    description="USDC / USDT — coming back soon" 
-                    badge="Paused"
-                    disabled
+                    description="USDC, USDT, ETH, SOL & more (USD)" 
+                    badge="USD"
                   />
                 </RadioGroup>
 
