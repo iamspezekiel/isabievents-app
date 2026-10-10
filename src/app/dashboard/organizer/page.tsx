@@ -87,7 +87,7 @@ export default function OrganizerDashboard() {
   };
 
   return (
-    <div className="p-4 md:p-12 space-y-8">
+    <div className="p-4 pb-16 md:p-12 md:pb-16 space-y-8">
       {showTrustTip && (
         <div className="bg-primary/10 border border-primary/20 p-4 px-6 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 animate-in slide-in-from-top-4 duration-500">
           <div className="flex items-center gap-3">
@@ -194,7 +194,16 @@ export default function OrganizerDashboard() {
       </div>
 
       <div className="space-y-6">
-         <h2 className="font-headline text-xl text-left">Upcoming Events</h2>
+         <div className="flex items-center justify-between gap-4 flex-wrap">
+           <h2 className="font-headline text-xl text-left">Upcoming Events</h2>
+           {myEvents.length > 0 && (
+             <Link href="/dashboard/organizer/events" className="no-underline">
+               <Button variant="ghost" size="sm" className="rounded-full font-bold gap-2 text-primary">
+                 View All Events ({myEvents.length}) <ArrowRight className="w-4 h-4" />
+               </Button>
+             </Link>
+           )}
+         </div>
          {upcoming.length > 0 ? (
            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-left">
              {upcoming.slice(0, 4).map((event) => (

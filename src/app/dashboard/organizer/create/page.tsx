@@ -495,7 +495,7 @@ function CreateEventForm() {
               </div>
 
               <Card className="bg-primary/10 border-primary/20 border text-left">
-                <CardContent className="p-6 flex items-start gap-4">
+                <CardContent className="p-6 pb-16 flex items-start gap-4">
                   <AlertCircle className="w-6 h-6 text-primary shrink-0 mt-1" />
                   <div className="space-y-1">
                     <h4 className="font-bold text-primary">Pre-launch Checklist</h4>

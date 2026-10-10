@@ -150,7 +150,7 @@ export default function AdminNewsletterPage() {
   };
 
   return (
-    <div className="p-4 md:p-12 space-y-8">
+    <div className="p-4 pb-16 md:p-12 md:pb-16 space-y-8">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="text-left space-y-1">
           <h1 className="font-headline text-3xl md:text-5xl">Newsletter</h1>
@@ -289,8 +289,8 @@ export default function AdminNewsletterPage() {
           <History className="w-6 h-6 text-primary" /> Sent Campaigns
         </h2>
         <Card className="border-border bg-card overflow-hidden">
-          <CardContent className="p-0">
-            <Table>
+          <CardContent className="p-0 overflow-x-auto">
+            <Table className="min-w-[720px]">
               <TableHeader>
                 <TableRow className="bg-secondary/20 hover:bg-secondary/20 border-none">
                   <TableHead className="font-black text-[10px] uppercase tracking-widest pl-6 py-4">Subject</TableHead>

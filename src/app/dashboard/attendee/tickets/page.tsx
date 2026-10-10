@@ -116,7 +116,7 @@ export default function TicketGalleryPage() {
                 <div className="absolute -bottom-3 -right-3 w-6 h-6 bg-background rounded-full" />
               </div>
 
-              <div className="p-6 flex-1 space-y-4">
+              <div className="p-6 pb-16 flex-1 space-y-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <span className="text-[10px] text-muted-foreground uppercase font-bold">Date</span>

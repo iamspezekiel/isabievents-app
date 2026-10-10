@@ -59,7 +59,7 @@ function DiscoverContent() {
     if (price !== null) setPriceFilter(price);
   }, [searchParams]);
 
-  const filteredEvents = useMemo(() => {
+  const matchingEvents = useMemo(() => {
     return events.filter(event => {
       const searchLower = search.toLowerCase().trim();
       const matchesSearch = !searchLower || 
@@ -76,8 +76,12 @@ function DiscoverContent() {
                           (priceFilter === 'paid' && event.price.min > 0);
 
       return matchesSearch && matchesCategory && matchesCity && matchesPrice;
-    }).slice(0, displayLimit);
-  }, [events, search, selectedCategory, selectedCity, priceFilter, displayLimit]);
+    });
+  }, [events, search, selectedCategory, selectedCity, priceFilter]);
+
+  // Page through the full result set so every event stays reachable.
+  const filteredEvents = matchingEvents.slice(0, displayLimit);
+  const remaining = matchingEvents.length - filteredEvents.length;
 
   const trendingEvents = events.slice(0, 5);
 
@@ -356,6 +360,19 @@ function DiscoverContent() {
           </Link>
         ))}
       </div>
+
+      {remaining > 0 && (
+        <div className="flex justify-center pt-8 pb-4">
+          <Button
+            variant="outline"
+            className="rounded-full px-10 h-12 font-bold border-2 gap-2"
+            onClick={() => setDisplayLimit((limit) => limit + 9)}
+          >
+            Load More Events
+            <span className="text-muted-foreground font-black text-xs">({remaining})</span>
+          </Button>
+        </div>
+      )}
 
       {!loading && filteredEvents.length === 0 && (
         <div className="text-center py-32 bg-card/20 rounded-[3rem] border border-dashed border-border/50">

@@ -106,7 +106,7 @@ export default function OrganizerSettingsPage() {
   };
 
   return (
-    <div className="p-4 md:p-12">
+    <div className="p-4 pb-16 md:p-12 md:pb-16">
       <div className="max-w-4xl mx-auto space-y-8">
         <div className="text-left">
           <h1 className="font-headline mb-2 text-3xl md:text-5xl">Account Settings</h1>

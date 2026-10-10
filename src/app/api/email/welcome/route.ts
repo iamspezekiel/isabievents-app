@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     return NextResponse.json({error: 'A valid email is required.'}, {status: 400});
   }
 
-  const welcome = await sendWelcomeEmail(name, email);
+  const welcome = await sendWelcomeEmail(name, email, body.role || 'attendee');
   await sendAdminNewUserEmail({
     name,
     email,

@@ -173,14 +173,64 @@ export async function sendNewsletterEmail(to: string, subject: string, body: str
 }
 
 /** Sent after account creation (main signup, checkout signup, or Google). */
-export async function sendWelcomeEmail(name: string, email: string): Promise<boolean> {
+export async function sendWelcomeEmail(
+  name: string,
+  email: string,
+  role: string = 'attendee'
+): Promise<boolean> {
+  const base = process.env.APP_BASE_URL || 'https://events.isabi.cloud';
+  const who = name ? `, ${name}` : '';
+
+  // Organizer + staff get dedicated onboarding emails (different copy,
+  // subject, and calls-to-action); attendees keep the marketplace welcome.
+  if (role === 'organizer') {
+    return send({
+      to: email,
+      subject: 'Welcome, Organizer! Let’s sell out your first event 🚀',
+      html: layout(
+        `You’re live as an organizer${who}!`,
+        p(`Your IsabiEvents organizer account is ready. Create your event page in minutes, sell tickets with secure Bachs checkout, and track sales from your dashboard — all in one place.`) +
+          `<a href="${base}/dashboard/organizer/create" style="display:inline-block;background:${PRIMARY};color:#fff;padding:12px 28px;border-radius:999px;font-weight:bold;text-decoration:none;margin-right:10px;">Create Your First Event</a>` +
+          `<a href="${base}/dashboard/organizer" style="display:inline-block;background:#fff;color:${PRIMARY};padding:12px 28px;border-radius:999px;font-weight:bold;text-decoration:none;border:1px solid ${PRIMARY};">Open Dashboard</a>` +
+          p(`<strong>Quick start checklist:</strong>`) +
+          `<ul style="margin:0 0 18px;padding-left:22px;color:#55556a;line-height:1.9;">` +
+          `<li>Create your first event — title, venue, date and ticket price.</li>` +
+          `<li>Complete KYC verification to unlock payouts (settled 48 hours after each event).</li>` +
+          `<li>Add gate staff from <strong>Vendors &amp; Staff</strong> so they get their own scanner access.</li>` +
+          `</ul>` +
+          `<p style="margin:0;font-size:12px;color:#8a8a99;">If you did not create this account, you can safely ignore this email.</p>`
+      ),
+      text: `Welcome! Your IsabiEvents organizer account is ready. Create your first event at ${base}/dashboard/organizer/create`,
+    });
+  }
+
+  if (role === 'staff') {
+    return send({
+      to: email,
+      subject: 'Welcome to the event team! Your scanner access is ready 🎫',
+      html: layout(
+        `You’ve been added as staff${who}!`,
+        p(`An organizer has added you to their event team. Open the staff scanner to validate tickets at the gate — each scan checks the QR code against the live ticket list, so entry stays fast and fraud-free.`) +
+          `<a href="${base}/dashboard/staff" style="display:inline-block;background:${PRIMARY};color:#fff;padding:12px 28px;border-radius:999px;font-weight:bold;text-decoration:none;">Open Staff Scanner</a>` +
+          p(`<strong>How it works:</strong>`) +
+          `<ul style="margin:0 0 18px;padding-left:22px;color:#55556a;line-height:1.9;">` +
+          `<li>Sign in with this email and open <strong>Dashboard → Staff</strong>.</li>` +
+          `<li>Ask your organizer for the event and door/gate codes.</li>` +
+          `<li>Scan each attendee’s QR ticket — valid tickets turn green, duplicates and fakes are rejected.</li>` +
+          `</ul>` +
+          `<p style="margin:0;font-size:12px;color:#8a8a99;">If you were not added to a team, contact your event organizer or reply to this email.</p>`
+      ),
+      text: `You've been added as staff on IsabiEvents. Open your scanner at ${base}/dashboard/staff`,
+    });
+  }
+
   return send({
     to: email,
     subject: 'Welcome to IsabiEvents! 🎟️',
     html: layout(
-      `Welcome${name ? `, ${name}` : ''}!`,
+      `Welcome${who}!`,
       p(`Your IsabiEvents account is ready. Discover the best Nigerian concerts, festivals, tech summits and more — and check out in seconds with our secure Bachs checkout.`) +
-        `<a href="${process.env.APP_BASE_URL || 'https://events.isabi.cloud'}/discover" style="display:inline-block;background:${PRIMARY};color:#fff;padding:12px 28px;border-radius:999px;font-weight:bold;text-decoration:none;">Discover Events</a>` +
+        `<a href="${base}/discover" style="display:inline-block;background:${PRIMARY};color:#fff;padding:12px 28px;border-radius:999px;font-weight:bold;text-decoration:none;">Discover Events</a>` +
         `<p style="margin:18px 0 0;font-size:12px;color:#8a8a99;">If you did not create this account, you can safely ignore this email.</p>`
     ),
     text: 'Welcome to IsabiEvents! Your account is ready.',

@@ -190,7 +190,7 @@ export default function AdminUserManagement() {
   };
 
   return (
-    <div className="p-4 md:p-12 space-y-8">
+    <div className="p-4 pb-16 md:p-12 md:pb-16 space-y-8">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="text-left space-y-1">
           <h1 className="font-headline text-3xl md:text-5xl">User Directory</h1>
@@ -253,7 +253,7 @@ export default function AdminUserManagement() {
       </header>
 
       <Card className="border-border bg-card">
-        <CardContent className="p-0">
+        <CardContent className="p-0 overflow-x-auto">
           <div className="p-4 md:p-6 border-b border-border flex flex-row gap-3 md:gap-4 justify-between items-center">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -271,7 +271,7 @@ export default function AdminUserManagement() {
             </div>
           </div>
           
-          <Table>
+          <Table className="min-w-[720px]">
             <TableHeader>
               <TableRow className="bg-secondary/20 hover:bg-secondary/20">
                 <TableHead className="font-black text-[10px] uppercase tracking-widest pl-6">User</TableHead>

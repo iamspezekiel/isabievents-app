@@ -185,7 +185,7 @@ export default function VendorPortal() {
         </div>
       </header>
 
-      <main className="flex-1 overflow-auto p-4 md:p-8 pt-0">
+      <main className="flex-1 overflow-auto p-4 pb-16 md:p-8 md:pb-16 pt-6">
         <div className="max-w-2xl mx-auto space-y-6">
           <Card className="m-4 border-border bg-card overflow-hidden rounded-[2.5rem] shadow-2xl relative">
             <CardContent className="p-0">

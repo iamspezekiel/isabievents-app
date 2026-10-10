@@ -44,7 +44,7 @@ export default function FavoritesPage() {
   };
 
   return (
-    <div className="p-4 md:p-12">
+    <div className="p-4 pb-16 md:p-12 md:pb-16">
       <div className="max-w-5xl mx-auto space-y-8">
         <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 text-left">
           <div className="space-y-1">

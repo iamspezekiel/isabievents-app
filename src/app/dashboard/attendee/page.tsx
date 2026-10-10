@@ -195,7 +195,7 @@ export default function AttendeeDashboard() {
   const paidOrders = pastOrders.filter(o => o.status === 'paid');
 
   return (
-    <div className="p-4 md:p-8 lg:p-12 space-y-8 md:space-y-12 max-w-5xl mx-auto">
+    <div className="p-4 pb-16 md:p-8 md:pb-16 lg:p-12 lg:pb-16 space-y-8 md:space-y-12 max-w-5xl mx-auto">
       {showOfflineBanner && (
         <div className={cn(
           "relative p-4 px-6 rounded-3xl border flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-500",
