@@ -27,18 +27,18 @@ export default function NotFound() {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col items-center justify-start p-4 pt-40 pb-20 text-center overflow-hidden">
+    <div className="min-h-screen bg-background flex flex-col items-center justify-start p-4 pt-24 sm:pt-40 pb-16 text-center overflow-x-hidden">
       {/* Background decoration */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/5 blur-[120px] -z-10 rounded-full" />
-      
-      <div className="max-w-md w-full space-y-8 animate-in fade-in zoom-in-95 duration-700">
-        <div className="flex justify-center mb-8">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-screen max-w-[600px] aspect-square bg-primary/5 blur-[120px] -z-10 rounded-full" />
+
+      <div className="max-w-md w-full space-y-6 sm:space-y-8 animate-in fade-in zoom-in-95 duration-700">
+        <div className="flex justify-center mb-4 sm:mb-8">
           <Logo size="lg" />
         </div>
 
         <div className="relative">
           {/* Stylized 404 Background Text */}
-          <h1 className="text-[120px] md:text-[160px] font-black tracking-tighter leading-none text-primary/10 select-none">
+          <h1 className="text-[96px] sm:text-[120px] md:text-[160px] font-black tracking-tighter leading-none text-primary/10 select-none">
             404
           </h1>
           {/* Floating Search Icon */}
@@ -50,27 +50,27 @@ export default function NotFound() {
         </div>
 
         <div className="space-y-3">
-          <h2 className="text-3xl md:text-4xl font-headline font-black tracking-tight text-foreground">Lost in the crowd?</h2>
-          <p className="text-muted-foreground text-sm md:text-base leading-relaxed">
-            We couldn't find the page you're looking for. It might have been moved, or the link has expired.
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-headline font-black tracking-tight text-foreground">Lost in the crowd?</h2>
+          <p className="text-muted-foreground text-sm md:text-base leading-relaxed px-2">
+            We couldn&apos;t find the page you&apos;re looking for. It might have been moved, or the link has expired.
           </p>
         </div>
 
-        <div className="flex flex-row gap-3 pt-6 px-6 md:px-0">
+        <div className="flex flex-col sm:flex-row gap-3 pt-4 sm:pt-6 px-0 sm:px-6 w-full">
           <Button 
             onClick={() => router.back()}
-            className="flex-1 h-10 md:h-14 rounded-2xl font-bold shadow-xl shadow-primary/20 gap-2 text-xs md:text-base"
+            className="w-full sm:flex-1 h-11 md:h-14 rounded-2xl font-bold shadow-xl shadow-primary/20 gap-2 text-xs md:text-base"
           >
             <ArrowLeft className="w-4 h-4" /> Go Back
           </Button>
-          <Button asChild variant="ghost" className="flex-1 h-10 md:h-14 rounded-2xl font-bold gap-2 text-muted-foreground hover:text-foreground text-xs md:text-base">
+          <Button asChild variant="ghost" className="w-full sm:flex-1 h-11 md:h-14 rounded-2xl font-bold gap-2 text-muted-foreground hover:text-foreground text-xs md:text-base">
             <Link href="/" className="no-underline">
               <Home className="w-4 h-4" /> Home
             </Link>
           </Button>
         </div>
 
-        <div className="pt-16 flex items-center justify-center gap-6 opacity-30">
+        <div className="pt-8 sm:pt-16 flex items-center justify-center gap-6 opacity-30 flex-wrap">
            <div className="flex items-center gap-2">
              <MapPin className="w-4 h-4" />
              <span className="text-[10px] font-black uppercase tracking-[0.2em]">Lost?</span>

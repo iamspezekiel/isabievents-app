@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#17113B"/>
+      <stop offset="100%" stop-color="#3A2485"/>
+    </linearGradient>
+    <linearGradient id="acc" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7D7AFF"/>
+      <stop offset="100%" stop-color="#FF7AD9"/>
+    </linearGradient>
+    <linearGradient id="shirt" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#7D7AFF"/>
+      <stop offset="100%" stop-color="#5B4BE0"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#bg)"/>
+  <!-- decorative rings -->
+  <circle cx="640" cy="160" r="120" fill="none" stroke="#7D7AFF" stroke-opacity="0.35" stroke-width="18"/>
+  <circle cx="130" cy="820" r="90" fill="none" stroke="#FF7AD9" stroke-opacity="0.3" stroke-width="16"/>
+  <circle cx="120" cy="160" r="10" fill="#FFD166"/>
+  <circle cx="700" cy="700" r="8" fill="#66F0D0"/>
+  <rect x="640" y="420" width="16" height="16" rx="4" fill="#FFD166" transform="rotate(25 648 428)"/>
+  <!-- laptop with rising chart -->
+  <g transform="translate(410 540)">
+    <rect x="0" y="0" width="320" height="210" rx="20" fill="#0C0921"/>
+    <rect x="14" y="14" width="292" height="182" rx="12" fill="#1B1440"/>
+    <g fill="#7D7AFF">
+      <rect x="44" y="126" width="38" height="52" rx="8"/>
+      <rect x="98" y="102" width="38" height="76" rx="8"/>
+      <rect x="152" y="78" width="38" height="100" rx="8" fill="#A46BFF"/>
+      <rect x="206" y="52" width="38" height="126" rx="8" fill="#FF7AD9"/>
+    </g>
+    <polyline points="60,120 114,96 168,72 222,48 274,34" fill="none" stroke="#FFD166" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="274" cy="34" r="10" fill="#FFD166"/>
+    <rect x="60" y="196" width="200" height="26" rx="13" fill="#0C0921"/>
+    <rect x="30" y="222" width="260" height="14" rx="7" fill="#0C0921"/>
+  </g>
+  <!-- organizer figure -->
+  <g>
+    <!-- head -->
+    <circle cx="270" cy="330" r="74" fill="#2B1B6B"/>
+    <path d="M196 320 a74 74 0 0 1 148 0 v-16 a74 60 0 0 0 -148 0z" fill="#0C0921"/>
+    <!-- body -->
+    <path d="M270 414 c-96 0 -156 66 -156 156 v220 h312 V570 c0 -90 -60 -156 -156 -156z" fill="url(#shirt)"/>
+    <!-- arm holding phone -->
+    <path d="M408 560 c46 24 74 66 74 118 l-52 14 c-4 -40 -22 -70 -54 -88z" fill="#5B4BE0"/>
+    <rect x="392" y="640" width="84" height="150" rx="16" fill="#0C0921"/>
+    <rect x="400" y="652" width="68" height="126" rx="10" fill="#1B1440"/>
+    <rect x="408" y="666" width="52" height="34" rx="8" fill="url(#acc)"/>
+    <rect x="408" y="712" width="52" height="8" rx="4" fill="#FFFFFF" opacity="0.5"/>
+    <rect x="408" y="728" width="36" height="8" rx="4" fill="#FFFFFF" opacity="0.35"/>
+    <rect x="408" y="752" width="52" height="16" rx="8" fill="#66F0D0"/>
+    <!-- other arm -->
+    <path d="M132 560 c-46 24 -74 66 -74 118 l52 14 c4 -40 22 -70 54 -88z" fill="#5B4BE0"/>
+    <!-- lanyard -->
+    <path d="M240 430 l30 70 30 -70" fill="none" stroke="#FFD166" stroke-width="8" stroke-linecap="round"/>
+    <rect x="252" y="496" width="36" height="46" rx="8" fill="#FFFFFF"/>
+    <rect x="258" y="504" width="24" height="14" rx="3" fill="#0C0921"/>
+    <!-- legs -->
+    <rect x="176" y="790" width="86" height="150" rx="26" fill="#0C0921"/>
+    <rect x="278" y="790" width="86" height="150" rx="26" fill="#0C0921"/>
+  </g>
+  <!-- floating check chip -->
+  <g transform="translate(430 300)">
+    <rect width="300" height="96" rx="26" fill="#FFFFFF"/>
+    <circle cx="52" cy="48" r="26" fill="#7D7AFF"/>
+    <path d="M40 48 l9 10 17 -20" stroke="#FFFFFF" stroke-width="6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="94" y="28" width="170" height="16" rx="8" fill="#17113B" opacity="0.9"/>
+    <rect x="94" y="56" width="120" height="12" rx="6" fill="#17113B" opacity="0.4"/>
+  </g>
+</svg>

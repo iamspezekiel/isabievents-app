@@ -48,9 +48,14 @@ export default function OrganizerLandingPage() {
             </div>
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6 pt-2">
               <div className="flex -space-x-3">
-                {[1, 2, 3, 4].map(i => (
-                  <div key={i} className="w-10 h-10 rounded-full border-2 border-background overflow-hidden relative bg-secondary">
-                    <Image src={`https://picsum.photos/seed/org${i}/40/40`} alt="" fill />
+                {[
+                  {initials: 'LA', color: 'bg-primary text-white'},
+                  {initials: 'AK', color: 'bg-accent text-white'},
+                  {initials: 'BJ', color: 'bg-emerald-500 text-white'},
+                  {initials: 'CO', color: 'bg-amber-500 text-white'},
+                ].map(a => (
+                  <div key={a.initials} className={`w-10 h-10 rounded-full border-2 border-background flex items-center justify-center text-[11px] font-black ${a.color}`}>
+                    {a.initials}
                   </div>
                 ))}
               </div>
@@ -63,7 +68,7 @@ export default function OrganizerLandingPage() {
           <div className="relative animate-in fade-in zoom-in-95 duration-1000 block w-full h-full min-h-[350px] lg:min-h-[550px]">
             <div className="relative h-full w-full rounded-3xl overflow-hidden border border-border shadow-2xl">
               <Image 
-                src="https://picsum.photos/seed/organizer-hero/800/1000" 
+                src="/organizer-hero.svg" 
                 alt="Organizer success" 
                 fill 
                 className="object-cover"

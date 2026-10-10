@@ -138,7 +138,7 @@ export default function HelpCenterPage() {
                     </a>
                   </Button>
                   <Button variant="outline" className="w-full gap-2 rounded-full h-12 no-underline font-bold border-2" asChild>
-                    <Link href="mailto:support@isabievents.ng">
+                    <Link href="mailto:support@events.isabi.cloud">
                       <Mail className="w-4 h-4" /> Email Support
                     </Link>
                   </Button>

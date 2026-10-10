@@ -201,7 +201,7 @@ export default function DeveloperApiPage() {
             </div>
             <CodeBlock 
               title="Authenticate with cURL"
-              code={`curl https://api.isabievents.ng/v1/events \\
+              code={`curl https://api.events.isabi.cloud/v1/events \\
   -H "Authorization: Bearer YOUR_SECRET_KEY"`}
             />
           </section>
@@ -226,7 +226,7 @@ export default function DeveloperApiPage() {
             <CodeBlock 
               title="GET /v1/events"
               code={`// List all trending events in Lagos
-const response = await fetch('https://api.isabievents.ng/v1/events?city=lagos', {
+const response = await fetch('https://api.events.isabi.cloud/v1/events?city=lagos', {
   headers: {
     'Authorization': 'Bearer YOUR_API_KEY'
   }
@@ -244,7 +244,7 @@ console.log(data.events);`}
             </p>
             <CodeBlock 
               title="POST /v1/tickets/generate"
-              code={`const ticket = await fetch('https://api.isabievents.ng/v1/tickets/generate', {
+              code={`const ticket = await fetch('https://api.events.isabi.cloud/v1/tickets/generate', {
   method: 'POST',
   body: JSON.stringify({
     event_id: 'e1',

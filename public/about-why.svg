@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="800" height="600">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#151038"/>
+      <stop offset="100%" stop-color="#33207B"/>
+    </linearGradient>
+    <linearGradient id="acc" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7D7AFF"/>
+      <stop offset="100%" stop-color="#FF7AD9"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="600" fill="url(#bg)"/>
+  <!-- phone -->
+  <rect x="90" y="70" width="300" height="470" rx="42" fill="#0C0921"/>
+  <rect x="106" y="86" width="268" height="438" rx="30" fill="#1B1440"/>
+  <rect x="196" y="96" width="88" height="14" rx="7" fill="#0C0921"/>
+  <!-- ticket on screen -->
+  <rect x="130" y="140" width="220" height="130" rx="18" fill="url(#acc)"/>
+  <circle cx="344" cy="205" r="14" fill="#1B1440"/>
+  <circle cx="136" cy="205" r="14" fill="#1B1440"/>
+  <rect x="150" y="162" width="120" height="12" rx="6" fill="#FFFFFF" opacity="0.9"/>
+  <rect x="150" y="184" width="80" height="10" rx="5" fill="#FFFFFF" opacity="0.6"/>
+  <!-- QR -->
+  <g fill="#FFFFFF">
+    <rect x="150" y="216" width="60" height="40" rx="6" opacity="0.95"/>
+    <rect x="156" y="222" width="14" height="14" fill="#1B1440"/>
+    <rect x="190" y="222" width="14" height="14" fill="#1B1440"/>
+    <rect x="156" y="240" width="14" height="10" fill="#1B1440"/>
+    <rect x="176" y="236" width="28" height="14" fill="#1B1440"/>
+  </g>
+  <rect x="150" y="300" width="180" height="12" rx="6" fill="#7D7AFF" opacity="0.8"/>
+  <rect x="150" y="324" width="140" height="10" rx="5" fill="#FFFFFF" opacity="0.35"/>
+  <rect x="150" y="346" width="160" height="10" rx="5" fill="#FFFFFF" opacity="0.35"/>
+  <rect x="150" y="400" width="220" height="46" rx="23" fill="url(#acc)"/>
+  <text x="260" y="430" font-family="Poppins, Inter, Arial, sans-serif" font-size="18" font-weight="700" fill="#FFFFFF" text-anchor="middle">Get Ticket</text>
+  <!-- floating chart card -->
+  <rect x="430" y="110" width="300" height="190" rx="26" fill="#FFFFFF"/>
+  <rect x="454" y="136" width="120" height="14" rx="7" fill="#151038" opacity="0.85"/>
+  <rect x="454" y="160" width="80" height="10" rx="5" fill="#151038" opacity="0.35"/>
+  <g fill="#7D7AFF">
+    <rect x="456" y="240" width="34" height="42" rx="8"/>
+    <rect x="502" y="216" width="34" height="66" rx="8"/>
+    <rect x="548" y="192" width="34" height="90" rx="8" fill="#A46BFF"/>
+    <rect x="594" y="170" width="34" height="112" rx="8" fill="#FF7AD9"/>
+  </g>
+  <polyline points="470,236 516,210 562,186 608,162 672,146" fill="none" stroke="#FFD166" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="672" cy="146" r="9" fill="#FFD166"/>
+  <!-- floating payout chip -->
+  <rect x="470" y="340" width="260" height="90" rx="24" fill="url(#acc)"/>
+  <circle cx="516" cy="385" r="24" fill="#FFFFFF" fill-opacity="0.2"/>
+  <path d="M508 385 l6 7 12 -14" stroke="#FFFFFF" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="554" y="364" width="150" height="14" rx="7" fill="#FFFFFF" opacity="0.95"/>
+  <rect x="554" y="390" width="110" height="10" rx="5" fill="#FFFFFF" opacity="0.6"/>
+  <!-- small badge -->
+  <rect x="430" y="462" width="180" height="56" rx="28" fill="#0C0921"/>
+  <circle cx="464" cy="490" r="14" fill="#66F0D0"/>
+  <path d="M457 490 l5 6 10 -12" stroke="#0C0921" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="488" y="484" width="102" height="12" rx="6" fill="#FFFFFF" opacity="0.8"/>
+</svg>

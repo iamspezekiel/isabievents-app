@@ -98,7 +98,7 @@ export default function PrivacyPolicyPage() {
           <div className="text-center space-y-6 pt-10 border-t border-border">
             <div className="flex items-center justify-center gap-2 text-muted-foreground">
               <Mail className="w-4 h-4" />
-              <span>privacy@isabievents.ng</span>
+              <span>privacy@events.isabi.cloud</span>
             </div>
             <p className="text-xs text-muted-foreground max-w-md mx-auto">
               If you have any concerns regarding your privacy or data usage on IsabiEvents, please contact our Data Protection Officer.

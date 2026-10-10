@@ -36,7 +36,7 @@ export default function AboutPage() {
             <div className="relative group flex-1 h-full min-h-[500px]">
               <div className="relative h-full w-full rounded-[3.5rem] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.2)] z-10">
                 <Image 
-                  src="https://picsum.photos/seed/story_v12/800/1200" 
+                  src="/about-story.svg" 
                   alt="The IsabiEvents Story" 
                   fill 
                   className="object-cover transition-transform duration-700 group-hover:scale-105"
@@ -176,7 +176,7 @@ export default function AboutPage() {
           </div>
           <div className="relative flex-1 w-full aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl">
             <Image 
-              src="https://picsum.photos/seed/why_isabi_v10/800/600" 
+              src="/about-why.svg" 
               alt="Innovation" 
               fill 
               className="object-cover"

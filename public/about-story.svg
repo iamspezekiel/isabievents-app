@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1200" width="800" height="1200">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#1B1440"/>
+      <stop offset="55%" stop-color="#2B1B6B"/>
+      <stop offset="100%" stop-color="#7D7AFF"/>
+    </linearGradient>
+    <linearGradient id="beam" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#FFD166" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#FFD166" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="stage" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#7D7AFF"/>
+      <stop offset="100%" stop-color="#FF7AD9"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="800" height="1200" fill="url(#sky)"/>
+  <circle cx="400" cy="430" r="320" fill="url(#glow)"/>
+  <!-- light beams -->
+  <polygon points="160,60 240,60 360,560 60,560" fill="url(#beam)" opacity="0.55"/>
+  <polygon points="560,60 640,60 740,560 440,560" fill="url(#beam)" opacity="0.45"/>
+  <polygon points="360,40 440,40 520,540 280,540" fill="url(#beam)" opacity="0.6"/>
+  <!-- confetti -->
+  <rect x="120" y="180" width="14" height="14" rx="3" fill="#FFD166" transform="rotate(20 127 187)"/>
+  <rect x="650" y="150" width="14" height="14" rx="3" fill="#FF7AD9" transform="rotate(-15 657 157)"/>
+  <circle cx="240" cy="120" r="8" fill="#7D7AFF"/>
+  <circle cx="560" cy="200" r="7" fill="#FFD166"/>
+  <rect x="700" y="330" width="12" height="12" rx="3" fill="#66F0D0" transform="rotate(35 706 336)"/>
+  <circle cx="90" cy="330" r="6" fill="#FF7AD9"/>
+  <!-- stage -->
+  <rect x="80" y="560" width="640" height="26" rx="13" fill="url(#stage)"/>
+  <rect x="140" y="586" width="520" height="120" rx="10" fill="#140F33"/>
+  <!-- performer silhouette -->
+  <g fill="#0C0921">
+    <circle cx="400" cy="500" r="34"/>
+    <path d="M400 538 c-46 0 -78 34 -78 78 v60 h156 v-60 c0 -44 -32 -78 -78 -78z"/>
+    <rect x="352" y="640" width="30" height="70" rx="12"/>
+    <rect x="418" y="640" width="30" height="70" rx="12"/>
+  </g>
+  <!-- mic -->
+  <line x1="452" y1="540" x2="510" y2="470" stroke="#0C0921" stroke-width="10" stroke-linecap="round"/>
+  <circle cx="516" cy="462" r="16" fill="#0C0921"/>
+  <!-- crowd silhouettes -->
+  <g fill="#0A0720">
+    <circle cx="90" cy="880" r="46"/><rect x="34" y="920" width="112" height="220" rx="40"/>
+    <circle cx="210" cy="910" r="42"/><rect x="160" y="946" width="100" height="200" rx="36"/>
+    <circle cx="330" cy="872" r="48"/><rect x="272" y="914" width="116" height="230" rx="42"/>
+    <circle cx="452" cy="906" r="44"/><rect x="398" y="946" width="108" height="205" rx="38"/>
+    <circle cx="574" cy="876" r="46"/><rect x="518" y="918" width="112" height="225" rx="40"/>
+    <circle cx="700" cy="908" r="44"/><rect x="646" y="948" width="108" height="200" rx="38"/>
+  </g>
+  <!-- raised hands -->
+  <g stroke="#0A0720" stroke-width="20" stroke-linecap="round">
+    <line x1="150" y1="900" x2="130" y2="800"/>
+    <line x1="270" y1="880" x2="292" y2="776"/>
+    <line x1="520" y1="890" x2="500" y2="790"/>
+    <line x1="640" y1="910" x2="664" y2="812"/>
+  </g>
+  <!-- brand tag -->
+  <rect x="250" y="1088" width="300" height="52" rx="26" fill="#FFFFFF" fill-opacity="0.12"/>
+  <text x="400" y="1122" font-family="Poppins, Inter, Arial, sans-serif" font-size="24" font-weight="700" fill="#FFFFFF" text-anchor="middle">IsabiEvents</text>
+</svg>

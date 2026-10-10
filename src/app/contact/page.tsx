@@ -106,9 +106,9 @@ export default function ContactPage() {
               <ContactInfo 
                 icon={Mail} 
                 title="Email Us" 
-                value="support@isabievents.ng" 
+                value="support@events.isabi.cloud" 
                 desc="For general inquiries and support."
-                href="mailto:support@isabievents.ng"
+                href="mailto:support@events.isabi.cloud"
               />
               <ContactInfo 
                 icon={MessageSquare} 
@@ -123,12 +123,6 @@ export default function ContactPage() {
                 value="+234 902 424 4140" 
                 desc="Official support line for all inquiries."
                 href="tel:+2349024244140"
-              />
-              <ContactInfo 
-                icon={MapPin} 
-                title="Headquarters" 
-                value="Victoria Island, Lagos" 
-                desc="Nigeria's event technology hub."
               />
             </div>
 

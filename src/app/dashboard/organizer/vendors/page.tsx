@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Users, Plus, Mail, ShieldCheck, Loader2, User, UserPlus, Trash2, Edit, Phone, Info, ShoppingBag } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -13,6 +13,9 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { useAuth } from '@/components/auth-provider';
 
 const WhatsAppIcon = ({ className }: { className?: string }) => (
   <svg 
@@ -25,15 +28,39 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
   </svg>
 );
 
+interface Vendor {
+  id: string;
+  name: string;
+  role: string;
+  status: string;
+  email: string;
+  whatsapp: string;
+}
+
 export default function VendorsManagementPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const { profile } = useAuth();
 
-  const [vendors, setVendors] = useState([
-    { id: '1', name: "Main Gate Team", role: "Staff", status: "Active", email: "gate1@isabievents.ng", whatsapp: "+2348000000001" },
-    { id: '2', name: "Cold Sips Drinks", role: "Vendor", status: "Active", email: "drinks@vendor.ng", whatsapp: "+2348000000002" },
-  ]);
+  // Real team list — persisted on the signed-in organizer's profile doc.
+  const [vendors, setVendors] = useState<Vendor[]>([]);
+
+  useEffect(() => {
+    if (profile) {
+      const saved = (profile as {vendors?: Vendor[]}).vendors;
+      setVendors(Array.isArray(saved) ? saved : []);
+    }
+  }, [profile]);
+
+  const persist = async (next: Vendor[]) => {
+    if (!profile?.uid || !db) return;
+    try {
+      await updateDoc(doc(db, 'users', profile.uid), {vendors: next});
+    } catch (err) {
+      console.warn('[vendors] persist failed:', err);
+    }
+  };
 
   const [newVendor, setNewVendor] = useState({
     name: '',
@@ -53,9 +80,8 @@ export default function VendorsManagementPage() {
     }
 
     setIsLoading(true);
-    await new Promise(r => setTimeout(r, 1000));
-    
-    const vendor = {
+
+    const vendor: Vendor = {
       id: Math.random().toString(36).substr(2, 9),
       name: newVendor.name,
       email: newVendor.email,
@@ -64,7 +90,9 @@ export default function VendorsManagementPage() {
       status: 'Active'
     };
 
-    setVendors([vendor, ...vendors]);
+    const next = [vendor, ...vendors];
+    setVendors(next);
+    await persist(next);
     setIsLoading(false);
     setIsAddDialogOpen(false);
     setNewVendor({ name: '', email: '', whatsapp: '', role: 'Vendor' });
@@ -76,7 +104,9 @@ export default function VendorsManagementPage() {
   };
 
   const handleDeleteVendor = (id: string) => {
-    setVendors(vendors.filter(v => v.id !== id));
+    const next = vendors.filter(v => v.id !== id);
+    setVendors(next);
+    persist(next);
     toast({
       title: "Member Removed",
       description: "The team member has been removed successfully."

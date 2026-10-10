@@ -119,7 +119,7 @@ function layout(title: string, bodyHtml: string): string {
           ${bodyHtml}
         </td></tr>
         <tr><td style="padding:20px 32px;border-top:1px solid #e6e6ef;">
-          <p style="margin:0;font-size:12px;color:#8a8a99;">IsabiEvents — Nigeria's premier ticket marketplace · <a href="https://isabievents.ng" style="color:${PRIMARY};">isabievents.ng</a></p>
+          <p style="margin:0;font-size:12px;color:#8a8a99;">IsabiEvents — Nigeria's premier ticket marketplace · <a href="https://events.isabi.cloud" style="color:${PRIMARY};">events.isabi.cloud</a></p>
         </td></tr>
       </table>
     </td></tr>
@@ -180,7 +180,7 @@ export async function sendWelcomeEmail(name: string, email: string): Promise<boo
     html: layout(
       `Welcome${name ? `, ${name}` : ''}!`,
       p(`Your IsabiEvents account is ready. Discover the best Nigerian concerts, festivals, tech summits and more — and check out in seconds with our secure Bachs checkout.`) +
-        `<a href="${process.env.APP_BASE_URL || 'https://isabievents.ng'}/discover" style="display:inline-block;background:${PRIMARY};color:#fff;padding:12px 28px;border-radius:999px;font-weight:bold;text-decoration:none;">Discover Events</a>` +
+        `<a href="${process.env.APP_BASE_URL || 'https://events.isabi.cloud'}/discover" style="display:inline-block;background:${PRIMARY};color:#fff;padding:12px 28px;border-radius:999px;font-weight:bold;text-decoration:none;">Discover Events</a>` +
         `<p style="margin:18px 0 0;font-size:12px;color:#8a8a99;">If you did not create this account, you can safely ignore this email.</p>`
     ),
     text: 'Welcome to IsabiEvents! Your account is ready.',
@@ -264,7 +264,7 @@ export async function sendSubscribeEmail(subscriberEmail: string): Promise<boole
     html: layout(
       "You're subscribed!",
       p(`Thanks for subscribing to the IsabiEvents newsletter — you'll get first access to Nigerian concerts, festivals, and tech summits.`) +
-        `<a href="${process.env.APP_BASE_URL || 'https://isabievents.ng'}/discover" style="display:inline-block;background:${PRIMARY};color:#fff;padding:12px 28px;border-radius:999px;font-weight:bold;text-decoration:none;">Browse Events</a>`
+        `<a href="${process.env.APP_BASE_URL || 'https://events.isabi.cloud'}/discover" style="display:inline-block;background:${PRIMARY};color:#fff;padding:12px 28px;border-radius:999px;font-weight:bold;text-decoration:none;">Browse Events</a>`
     ),
     text: 'Thanks for subscribing to the IsabiEvents newsletter!',
   });

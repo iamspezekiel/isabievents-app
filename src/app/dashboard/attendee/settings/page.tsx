@@ -134,11 +134,11 @@ export default function AttendeeSettingsPage() {
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="fullname">Full Name</Label>
-                  <Input id="fullname" defaultValue="Sylvanus P. Ezekiel" className="h-11 bg-secondary/50 cursor-not-allowed" readOnly />
+                  <Input id="fullname" value={profile?.name || ''} className="h-11 bg-secondary/50 cursor-not-allowed" readOnly />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email Address</Label>
-                  <Input id="email" defaultValue="attendee@isabievents.ng" className="h-11 bg-secondary/50 cursor-not-allowed" readOnly />
+                  <Input id="email" value={profile?.email || ''} className="h-11 bg-secondary/50 cursor-not-allowed" readOnly />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="whatsapp" className="flex items-center gap-1.5">

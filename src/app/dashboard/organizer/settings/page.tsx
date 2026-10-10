@@ -3,16 +3,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { User, ShieldCheck, ChevronRight, MapPin, Trash2, Loader2 } from 'lucide-react';
+import { User, ShieldCheck, ChevronRight, Trash2, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Link from 'next/link';
-import { CITIES } from '@/lib/constants';
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/components/auth-provider';
@@ -45,7 +43,6 @@ export default function OrganizerSettingsPage() {
   const { toast } = useToast();
   const { profile, signOut } = useAuth();
   const [whatsapp, setWhatsapp] = useState('');
-  const [city, setCity] = useState('Lagos');
   const [saving, setSaving] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -54,7 +51,6 @@ export default function OrganizerSettingsPage() {
   useEffect(() => {
     if (profile) {
       setWhatsapp((profile as {whatsapp?: string}).whatsapp || '');
-      setCity((profile as {city?: string}).city || 'Lagos');
     }
   }, [profile]);
 
@@ -66,7 +62,7 @@ export default function OrganizerSettingsPage() {
     }
     setSaving(true);
     try {
-      await updateDoc(doc(db, 'users', profile.uid), {whatsapp, city});
+      await updateDoc(doc(db, 'users', profile.uid), {whatsapp});
       toast({title: 'Profile Saved', description: 'Your brand profile has been updated.'});
     } catch (err) {
       toast({
@@ -166,21 +162,6 @@ export default function OrganizerSettingsPage() {
                     <WhatsAppIcon className="w-3.5 h-3.5 text-green-500" /> WhatsApp Number
                   </Label>
                   <Input id="whatsapp" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="+234..." className="h-11" />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="location" className="flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-primary" /> Brand Headquarters
-                  </Label>
-                  <Select value={city} onValueChange={setCity}>
-                    <SelectTrigger className="h-11">
-                      <SelectValue placeholder="Select your city" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {CITIES.map(c => (
-                        <SelectItem key={c} value={c}>{c}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
                 </div>
               </div>
               <Button className="rounded-full px-8 font-bold" onClick={handleSaveProfile} disabled={saving || !profile}>

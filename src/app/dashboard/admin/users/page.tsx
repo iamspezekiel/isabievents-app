@@ -233,7 +233,7 @@ export default function AdminUserManagement() {
                     <Input 
                       id="admin-email" 
                       type="email"
-                      placeholder="admin@isabievents.ng" 
+                      placeholder="admin@events.isabi.cloud" 
                       value={newAdmin.email}
                       onChange={(e) => setNewAdmin({...newAdmin, email: e.target.value})}
                       className="pl-10 h-12 bg-secondary/20 border-border focus-visible:ring-primary rounded-xl"
