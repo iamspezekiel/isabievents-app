@@ -52,7 +52,7 @@ export function Footer() {
               <li><Link href="/discover" className="text-foreground/70 hover:text-primary transition-colors no-underline">Find Events</Link></li>
               <li><Link href="/mobile" className="text-foreground/70 hover:text-primary transition-colors no-underline">Get the App</Link></li>
               <li><Link href="/help/tickets" className="text-foreground/70 hover:text-primary transition-colors no-underline">Ticket Support</Link></li>
-              <li><Link href="/testimonials" className="text-foreground/70 hover:text-primary transition-colors no-underline">User Testimonials</Link></li>
+              <li><Link href="/testimonials" className="text-foreground/70 hover:text-primary transition-colors no-underline">Trust &amp; Safety</Link></li>
             </ul>
           </div>
           <div className="text-left">
@@ -61,7 +61,7 @@ export function Footer() {
               <li><Link href="/pricing" className="text-foreground/70 hover:text-primary transition-colors no-underline">Pricing</Link></li>
               <li><Link href="/host-event" className="text-foreground/70 hover:text-primary transition-colors no-underline">Host Event</Link></li>
               <li><Link href="/docs" className="text-foreground/70 hover:text-primary transition-colors no-underline">Developer API</Link></li>
-              <li><Link href="/case-studies" className="text-foreground/70 hover:text-primary transition-colors no-underline">Success Stories</Link></li>
+              <li><Link href="/organizer" className="text-foreground/70 hover:text-primary transition-colors no-underline">Why Host with Us</Link></li>
             </ul>
           </div>
           <div className="text-left">
