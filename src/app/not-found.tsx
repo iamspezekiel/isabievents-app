@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button";
@@ -10,21 +10,10 @@ import { Logo } from '@/components/logo';
 /**
  * Custom 404 Page for IsabiEvents.
  * Replaces the default Next.js error page with a branded, helpful experience.
+ * Renders fully on the server (no mounted gate) so first paint is instant.
  */
 export default function NotFound() {
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
-
-  // Use useEffect to ensure the component is mounted on the client
-  // before rendering to prevent hydration mismatches caused by server/client discrepancies.
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  // During SSR and initial hydration, we render a placeholder to avoid mismatches.
-  if (!mounted) {
-    return <div className="min-h-screen bg-background" />;
-  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col items-center justify-start p-4 pt-24 sm:pt-40 pb-16 text-center overflow-x-hidden">
