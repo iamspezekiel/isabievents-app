@@ -69,6 +69,7 @@ export default function AdminUserManagement() {
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [userToDelete, setUserToDelete] = useState<UserRow | null>(null);
   const [busyUid, setBusyUid] = useState<string | null>(null);
+  const [roleFilter, setRoleFilter] = useState<'all' | 'admin' | 'organizer' | 'attendee'>('all');
 
   const [newAdmin, setNewAdmin] = useState({
     name: '',
@@ -86,10 +87,12 @@ export default function AdminUserManagement() {
       .finally(() => setLoadingUsers(false));
   }, [toast]);
 
-  const filteredUsers = users.filter(user => 
-    user.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-    user.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredUsers = users.filter(user => {
+    const q = searchQuery.toLowerCase();
+    const matchesSearch = user.name.toLowerCase().includes(q) || user.email.toLowerCase().includes(q);
+    const matchesRole = roleFilter === 'all' || user.role === roleFilter;
+    return matchesSearch && matchesRole;
+  });
 
   // Activate / deactivate an account in Firebase Auth.
   const handleToggleDisabled = async (user: UserRow) => {
@@ -265,9 +268,25 @@ export default function AdminUserManagement() {
               />
             </div>
             <div className="flex items-center gap-2">
-              <Button variant="outline" size="sm" className="rounded-xl h-11 px-3 md:px-4 gap-2 font-bold">
-                <Filter className="w-4 h-4" /> <span className="hidden sm:inline">Filter</span>
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="rounded-xl h-11 px-3 md:px-4 gap-2 font-bold">
+                    <Filter className="w-4 h-4" /> <span className="hidden sm:inline">{roleFilter === 'all' ? 'Filter' : roleFilter}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48 bg-card border-border">
+                  {(['all', 'admin', 'organizer', 'attendee'] as const).map((r) => (
+                    <DropdownMenuItem
+                      key={r}
+                      className="gap-2 font-bold cursor-pointer capitalize"
+                      onClick={() => setRoleFilter(r)}
+                    >
+                      {r === 'all' ? 'All Roles' : `${r}s`}
+                      {roleFilter === r && <BadgeCheck className="w-4 h-4 text-primary" />}
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
           

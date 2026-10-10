@@ -40,6 +40,7 @@ interface Vendor {
 export default function VendorsManagementPage() {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const { toast } = useToast();
   const { profile } = useAuth();
 
@@ -81,6 +82,26 @@ export default function VendorsManagementPage() {
 
     setIsLoading(true);
 
+    // Editing an existing member — update + persist instead of adding.
+    if (editingId) {
+      const updated = vendors.map(v =>
+        v.id === editingId
+          ? {...v, name: newVendor.name, email: newVendor.email, whatsapp: newVendor.whatsapp, role: newVendor.role}
+          : v
+      );
+      setVendors(updated);
+      await persist(updated);
+      setIsLoading(false);
+      setIsAddDialogOpen(false);
+      setEditingId(null);
+      setNewVendor({ name: '', email: '', whatsapp: '', role: 'Vendor' });
+      toast({
+        title: "Team Member Updated",
+        description: `${newVendor.name}'s details have been saved.`
+      });
+      return;
+    }
+
     const vendor: Vendor = {
       id: Math.random().toString(36).substr(2, 9),
       name: newVendor.name,
@@ -113,6 +134,12 @@ export default function VendorsManagementPage() {
     });
   };
 
+  const handleEditIntent = (v: Vendor) => {
+    setEditingId(v.id);
+    setNewVendor({ name: v.name, email: v.email, whatsapp: v.whatsapp, role: v.role });
+    setIsAddDialogOpen(true);
+  };
+
   return (
     <div className="p-4 pb-16 md:p-12 md:pb-16">
       <div className="max-w-6xl mx-auto space-y-8">
@@ -122,7 +149,16 @@ export default function VendorsManagementPage() {
             <p className="text-muted-foreground">Manage service providers and gate staff for your events.</p>
           </div>
           
-          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+          <Dialog
+            open={isAddDialogOpen}
+            onOpenChange={(open) => {
+              setIsAddDialogOpen(open);
+              if (!open) {
+                setEditingId(null);
+                setNewVendor({ name: '', email: '', whatsapp: '', role: 'Vendor' });
+              }
+            }}
+          >
             <DialogTrigger asChild>
               <Button className="rounded-full gap-2 px-6 shadow-lg shadow-primary/20 font-bold h-9 md:h-11">
                 <Plus className="w-4 h-4" /> Add Member
@@ -131,7 +167,8 @@ export default function VendorsManagementPage() {
             <DialogContent className="bg-card border-border sm:rounded-[2rem] max-w-lg w-[94vw] sm:w-full">
               <DialogHeader className="text-left">
                 <DialogTitle className="font-headline text-2xl flex items-center gap-2">
-                  <UserPlus className="w-6 h-6 text-primary" /> Invite Team Member
+                  {editingId ? <Edit className="w-6 h-6 text-primary" /> : <UserPlus className="w-6 h-6 text-primary" />}
+                  {editingId ? 'Edit Team Member' : 'Invite Team Member'}
                 </DialogTitle>
                 <DialogDescription>
                   Send an invitation to a vendor or staff member to help manage your event.
@@ -197,7 +234,7 @@ export default function VendorsManagementPage() {
               <DialogFooter className="gap-3 sm:gap-0">
                 <Button variant="ghost" onClick={() => setIsAddDialogOpen(false)} className="rounded-full font-bold h-11">Cancel</Button>
                 <Button onClick={handleAddVendor} disabled={isLoading} className="rounded-full px-10 font-bold shadow-xl shadow-primary/20 h-11 flex-1 sm:flex-none">
-                  {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Send Invitation"}
+                  {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : (editingId ? 'Save Changes' : 'Send Invitation')}
                 </Button>
               </DialogFooter>
             </DialogContent>
@@ -210,6 +247,7 @@ export default function VendorsManagementPage() {
                key={vendor.id}
                vendor={vendor}
                onDelete={handleDeleteVendor}
+               onEdit={handleEditIntent}
              />
            ))}
         </div>
@@ -241,7 +279,7 @@ export default function VendorsManagementPage() {
   );
 }
 
-function VendorCard({ vendor, onDelete }: any) {
+function VendorCard({ vendor, onDelete, onEdit }: any) {
   const { name, role, status, email, whatsapp } = vendor;
   return (
     <Card className="bg-card border-border hover:border-primary/30 transition-all text-left group">
@@ -290,7 +328,7 @@ function VendorCard({ vendor, onDelete }: any) {
               <Button variant="secondary" size="sm" className="w-full rounded-lg h-9 font-bold">Manage</Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48 bg-card border-border">
-              <DropdownMenuItem className="gap-2 font-bold cursor-pointer">
+              <DropdownMenuItem className="gap-2 font-bold cursor-pointer" onClick={() => onEdit(vendor)}>
                 <Edit className="w-4 h-4" /> Edit Details
               </DropdownMenuItem>
               <DropdownMenuItem className="gap-2 font-bold text-red-500 hover:text-red-600 cursor-pointer" onClick={() => onDelete(vendor.id)}>

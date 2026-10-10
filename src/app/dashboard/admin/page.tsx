@@ -21,6 +21,7 @@ import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tool
 import Link from 'next/link';
 import { useEvents } from '@/hooks/use-events';
 import { apiFetch } from '@/lib/api-fetch';
+import { useToast } from "@/hooks/use-toast";
 
 interface Stats {
   revenueNgn: number;
@@ -33,8 +34,10 @@ interface Stats {
 
 export default function AdminDashboard() {
   const [searchQuery, setSearchQuery] = useState('');
-  const {events} = useEvents();
+  const {events, refetch} = useEvents();
   const [stats, setStats] = useState<Stats | null>(null);
+  const [resolvedIds, setResolvedIds] = useState<string[]>([]);
+  const { toast } = useToast();
 
   useEffect(() => {
     apiFetch('/api/admin/stats')
@@ -45,12 +48,38 @@ export default function AdminDashboard() {
       .catch(() => undefined);
   }, []);
 
+  // Approve/Reject straight from the overview — same API as Event Moderation.
+  const handleModerate = async (id: string, title: string, action: 'approve' | 'reject') => {
+    try {
+      const res = await apiFetch('/api/admin/events', {
+        method: 'PATCH',
+        body: JSON.stringify({id, action}),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Action failed.');
+      setResolvedIds((prev) => [...prev, id]);
+      refetch();
+      toast({
+        title: action === 'approve' ? 'Event Approved' : 'Event Rejected',
+        description: action === 'approve'
+          ? `"${title}" is now live on the marketplace.`
+          : `"${title}" has been removed from the platform.`,
+      });
+    } catch (err) {
+      toast({
+        variant: 'destructive',
+        title: 'Action Failed',
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
+    }
+  };
+
   // Real moderation queue: hosts that are not verified yet.
   const moderationQueue = events.filter(event => {
     const matchesSearch = !searchQuery || 
                          event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          (event.organizer?.name || '').toLowerCase().includes(searchQuery.toLowerCase());
-    return !event.organizer?.verified && matchesSearch;
+    return !event.organizer?.verified && matchesSearch && !resolvedIds.includes(event.id);
   });
 
   return (
@@ -70,7 +99,9 @@ export default function AdminDashboard() {
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <Button className="rounded-full shadow-lg shadow-primary/20 h-11 font-bold">Generate Report</Button>
+          <Link href="/dashboard/admin/reports" className="no-underline">
+            <Button className="rounded-full shadow-lg shadow-primary/20 h-11 font-bold">Generate Report</Button>
+          </Link>
         </div>
       </header>
 
@@ -173,10 +204,20 @@ export default function AdminDashboard() {
                 </div>
               </div>
               <div className="flex items-center gap-3">
-                <Button variant="outline" size="sm" className="rounded-full gap-2 border-green-500/20 text-green-500 hover:bg-green-500/5">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full gap-2 border-green-500/20 text-green-500 hover:bg-green-500/5"
+                  onClick={() => handleModerate(event.id, event.title, 'approve')}
+                >
                   <CheckCircle2 className="w-3.5 h-3.5" /> Approve
                 </Button>
-                <Button variant="outline" size="sm" className="rounded-full gap-2 border-red-500/20 text-red-500 hover:bg-red-500/5">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="rounded-full gap-2 border-red-500/20 text-red-500 hover:bg-red-500/5"
+                  onClick={() => handleModerate(event.id, event.title, 'reject')}
+                >
                   <AlertTriangle className="w-3.5 h-3.5" /> Reject
                 </Button>
                 <Link href={`/dashboard/admin/events?id=${event.id}`} title="View Moderation Details">

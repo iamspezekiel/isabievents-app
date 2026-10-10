@@ -47,6 +47,14 @@ export async function POST(req: Request) {
 
   try {
     const body = (await req.json()) as Record<string, unknown>;
+
+    // Maintenance actions (used by the System Config utility buttons).
+    if (body.action === 'purge-cache') {
+      const {invalidateSmtpCache} = await import('@/lib/email');
+      invalidateSmtpCache();
+      return NextResponse.json({ok: true, purged: ['smtp-config-cache']});
+    }
+
     const patch: Record<string, unknown> = {
       updatedAt: new Date().toISOString(),
       updatedBy: uid,

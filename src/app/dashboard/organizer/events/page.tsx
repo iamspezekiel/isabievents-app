@@ -49,6 +49,8 @@ export default function MyEventsPage() {
   const { events: allEvents, refetch } = useEvents();
   const [eventStats, setEventStats] = useState<Record<string, {sold: number; revenueNgn: number}>>({});
   const [removedIds, setRemovedIds] = useState<string[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'live' | 'ended'>('all');
 
   // My events: admins see everything; organizers see what they created.
   const isMine = (e: EventDoc) => {
@@ -57,7 +59,24 @@ export default function MyEventsPage() {
     const meta = e as {organizerEmail?: string; organizerUid?: string};
     return meta.organizerEmail === profile.email || meta.organizerUid === profile.uid;
   };
-  const myEvents = allEvents.filter((e) => isMine(e) && !removedIds.includes(e.id));
+  const now = Date.now();
+  const myEvents = allEvents.filter((e) => {
+    if (!isMine(e) || removedIds.includes(e.id)) return false;
+    // Search box
+    const q = searchQuery.toLowerCase().trim();
+    const matchesSearch =
+      !q ||
+      e.title.toLowerCase().includes(q) ||
+      (e.venue || '').toLowerCase().includes(q) ||
+      (e.city || '').toLowerCase().includes(q);
+    // Status filter (live = upcoming, ended = past)
+    const isUpcoming = new Date(e.date).getTime() >= now;
+    const matchesStatus =
+      statusFilter === 'all' ||
+      (statusFilter === 'live' && isUpcoming) ||
+      (statusFilter === 'ended' && !isUpcoming);
+    return matchesSearch && matchesStatus;
+  });
 
   useEffect(() => {
     apiFetch('/api/events/stats')
@@ -118,11 +137,31 @@ export default function MyEventsPage() {
         <div className="flex flex-col sm:flex-row gap-4">
           <div className="relative flex-1">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground w-4 h-4" />
-            <Input placeholder="Search your events..." className="pl-10 h-11 bg-card" />
+            <Input
+              placeholder="Search your events..."
+              className="pl-10 h-11 bg-card"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
-          <Button variant="outline" className="rounded-xl gap-2 h-11">
-            <Filter className="w-4 h-4" /> Filters
-          </Button>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="rounded-xl gap-2 h-11">
+                <Filter className="w-4 h-4" /> {statusFilter === 'all' ? 'Filters' : statusFilter}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48 bg-card border-border">
+              {(['all', 'live', 'ended'] as const).map((s) => (
+                <DropdownMenuItem
+                  key={s}
+                  className="gap-2 font-bold cursor-pointer capitalize"
+                  onClick={() => setStatusFilter(s)}
+                >
+                  {s === 'all' ? 'All Events' : s === 'live' ? 'Upcoming (Live)' : 'Ended'}
+                </DropdownMenuItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
 
         <div className="grid gap-6">

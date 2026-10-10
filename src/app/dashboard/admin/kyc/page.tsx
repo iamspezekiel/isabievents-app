@@ -8,11 +8,15 @@ import {
   FileText, 
   Clock, 
   Eye, 
-  Loader2 
+  Loader2,
+  Copy
 } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription
+} from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { apiFetch } from '@/lib/api-fetch';
 
@@ -22,11 +26,17 @@ interface KycRow {
   type: string;
   date: string;
   document: string;
+  email?: string;
+  businessName?: string;
+  rcNumber?: string;
+  idType?: string;
+  idNumber?: string;
 }
 
 export default function AdminKYCManagement() {
   const [kycRequests, setKycRequests] = useState<KycRow[]>([]);
   const [processingId, setProcessingId] = useState<string | null>(null);
+  const [viewRow, setViewRow] = useState<KycRow | null>(null);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -115,7 +125,15 @@ export default function AdminKYCManagement() {
                       <p className="text-[10px] font-black uppercase text-muted-foreground tracking-widest">Main Doc</p>
                       <p className="text-xs font-bold truncate max-w-[150px]">{kyc.document}</p>
                     </div>
-                    <Button variant="ghost" size="icon" className="rounded-full" title="View Document"><Eye className="w-4 h-4" /></Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="rounded-full"
+                      title="View Document"
+                      onClick={() => setViewRow(kyc)}
+                    >
+                      <Eye className="w-4 h-4" />
+                    </Button>
                   </div>
                   
                   <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -148,6 +166,40 @@ export default function AdminKYCManagement() {
             <p className="text-muted-foreground font-medium">All KYC requests have been processed.</p>
           </div>
         )}
+
+        <Dialog open={!!viewRow} onOpenChange={(open) => !open && setViewRow(null)}>
+          <DialogContent className="bg-card border-border sm:rounded-[2rem] p-8 max-w-md w-[94vw] sm:w-full">
+            <DialogHeader className="text-left">
+              <DialogTitle className="font-headline text-2xl flex items-center gap-2">
+                <FileText className="w-5 h-5 text-primary" /> Submission Document
+              </DialogTitle>
+              <DialogDescription>Full details of this KYC submission.</DialogDescription>
+            </DialogHeader>
+            {viewRow && (
+              <div className="space-y-3 text-left text-sm">
+                <div className="flex justify-between gap-4"><span className="text-muted-foreground font-bold">Name</span><span className="font-bold text-right break-words">{viewRow.name}</span></div>
+                <div className="flex justify-between gap-4"><span className="text-muted-foreground font-bold">Type</span><span className="font-bold">{viewRow.type}</span></div>
+                {viewRow.email && (<div className="flex justify-between gap-4"><span className="text-muted-foreground font-bold">Email</span><span className="font-bold text-right break-all">{viewRow.email}</span></div>)}
+                {viewRow.businessName && (<div className="flex justify-between gap-4"><span className="text-muted-foreground font-bold">Business</span><span className="font-bold text-right break-words">{viewRow.businessName}</span></div>)}
+                {viewRow.rcNumber && (<div className="flex justify-between gap-4"><span className="text-muted-foreground font-bold">RC Number</span><span className="font-mono font-bold">{viewRow.rcNumber}</span></div>)}
+                <div className="flex justify-between gap-4"><span className="text-muted-foreground font-bold">ID Type</span><span className="font-bold">{viewRow.idType || "-"}</span></div>
+                <div className="flex justify-between gap-4"><span className="text-muted-foreground font-bold">ID Number</span><span className="font-mono font-bold">{viewRow.idNumber || "-"}</span></div>
+                <div className="flex justify-between gap-4"><span className="text-muted-foreground font-bold">Received</span><span className="font-bold text-right">{new Date(viewRow.date).toLocaleString("en-NG", { dateStyle: "medium", timeStyle: "short" })}</span></div>
+                <div className="flex justify-between gap-4"><span className="text-muted-foreground font-bold">Ref</span><span className="font-mono text-xs break-all">{viewRow.id}</span></div>
+                <Button
+                  variant="outline"
+                  className="w-full rounded-xl gap-2 font-bold mt-2"
+                  onClick={() => {
+                    navigator.clipboard.writeText(viewRow.idNumber || viewRow.id);
+                    toast({ title: "Copied", description: "Reference copied to clipboard." });
+                  }}
+                >
+                  <Copy className="w-4 h-4" /> Copy ID / Reference
+                </Button>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );

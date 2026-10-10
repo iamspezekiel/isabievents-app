@@ -45,6 +45,13 @@ function load(): Promise<EventDoc[]> {
   return inflight;
 }
 
+/** Drop the cached events feed (used by the admin "Re-index Search" action). */
+export function invalidateEventsCache() {
+  cache = null;
+  cachedAt = 0;
+  inflight = null;
+}
+
 export function useEvents() {
   const [events, setEvents] = useState<EventDoc[]>(() => cache ?? []);
   const [loading, setLoading] = useState(cache === null);

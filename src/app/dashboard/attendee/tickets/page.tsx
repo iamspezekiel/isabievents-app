@@ -2,13 +2,17 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Ticket, Search, QrCode, Download, Share2, Calendar, MapPin, ArrowLeft, ShieldCheck, CloudOff, Cloud, Loader2 } from 'lucide-react';
+import { Ticket, Search, QrCode, Download, Share2, Calendar, MapPin, ArrowLeft, ShieldCheck, CloudOff, Cloud, Loader2, Copy } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription
+} from "@/components/ui/dialog";
 import { useAuth } from '@/components/auth-provider';
 import { useEvents } from '@/hooks/use-events';
 import { getTicketsForEmail } from '@/lib/client-db';
+import { useToast } from "@/hooks/use-toast";
 import type { EventDoc, TicketDoc } from '@/lib/db-types';
 import Link from 'next/link';
 
@@ -20,6 +24,8 @@ export default function TicketGalleryPage() {
   const [tickets, setTickets] = useState<TicketDoc[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');
+  const [qrTicket, setQrTicket] = useState<{code: string; title: string} | null>(null);
+  const { toast } = useToast();
 
   useEffect(() => {
     setMounted(true);
@@ -57,6 +63,49 @@ export default function TicketGalleryPage() {
       const q = query.toLowerCase().trim();
       return !q || c.title.toLowerCase().includes(q) || c.code.toLowerCase().includes(q);
     });
+
+  // View QR — full-screen code the gate scanner can read.
+  const handleViewQr = (c: {code: string; title: string}) => setQrTicket(c);
+
+  // Download — saves a plain-text ticket stub with the QR payload.
+  const handleDownload = (c: {code: string; title: string; date: string; venue: string; status: string}) => {
+    const text = [
+      'ISABIEVENTS TICKET',
+      '===================',
+      `Event : ${c.title}`,
+      `Date  : ${new Date(c.date).toLocaleString('en-NG', {dateStyle: 'full', timeStyle: 'short'})}`,
+      `Venue : ${c.venue}`,
+      `Code  : ${c.code}`,
+      `Status: ${c.status}`,
+      '',
+      'Present this code (or its QR) at the gate for entry.',
+    ].join('\n');
+    const blob = new Blob([text], {type: 'text/plain'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `isabievents-ticket-${c.code}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+    toast({title: 'Ticket Downloaded', description: `Ticket ${c.code} saved to your device.`});
+  };
+
+  // Share — native share sheet, falls back to clipboard.
+  const handleShare = async (c: {code: string; title: string}) => {
+    const text = `My ticket for ${c.title} — code ${c.code}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({title: c.title, text});
+      } else {
+        await navigator.clipboard.writeText(text);
+        toast({title: 'Copied to Clipboard', description: 'Ticket details copied — paste anywhere to share.'});
+      }
+    } catch {
+      toast({variant: 'destructive', title: 'Share Failed', description: 'Could not share this ticket.'});
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background pt-20">
@@ -139,13 +188,25 @@ export default function TicketGalleryPage() {
               </div>
 
               <div className="p-6 bg-secondary/20 flex gap-2">
-                <Button className="flex-1 rounded-full gap-2">
+                <Button className="flex-1 rounded-full gap-2" onClick={() => handleViewQr(event)}>
                   <QrCode className="w-4 h-4" /> View QR
                 </Button>
-                <Button variant="outline" size="icon" className="rounded-full shrink-0">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full shrink-0"
+                  title="Download ticket"
+                  onClick={() => handleDownload(event)}
+                >
                   <Download className="w-4 h-4" />
                 </Button>
-                <Button variant="outline" size="icon" className="rounded-full shrink-0">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="rounded-full shrink-0"
+                  title="Share ticket"
+                  onClick={() => handleShare(event)}
+                >
                   <Share2 className="w-4 h-4" />
                 </Button>
               </div>
@@ -168,6 +229,50 @@ export default function TicketGalleryPage() {
           </div>
         )}
       </main>
+
+      {/* QR dialog — full-size code for gate scanning */}
+      <Dialog open={!!qrTicket} onOpenChange={(open) => !open && setQrTicket(null)}>
+        <DialogContent className="bg-card border-border sm:rounded-[2rem] p-8 max-w-sm w-[94vw] sm:w-full">
+          <DialogHeader className="text-left">
+            <DialogTitle className="font-headline text-2xl flex items-center gap-2">
+              <QrCode className="w-5 h-5 text-primary" /> Entry QR Code
+            </DialogTitle>
+            <DialogDescription>{qrTicket?.title}</DialogDescription>
+          </DialogHeader>
+          {qrTicket && (
+            <div className="space-y-4">
+              <div className="bg-white p-4 rounded-2xl flex items-center justify-center">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=8&data=${encodeURIComponent(qrTicket.code)}`}
+                  alt={`QR code for ticket ${qrTicket.code}`}
+                  width={260}
+                  height={260}
+                  className="rounded-lg"
+                />
+              </div>
+              <div className="flex items-center justify-between gap-3 bg-secondary/40 rounded-xl px-4 py-3">
+                <span className="font-mono font-bold text-sm break-all">{qrTicket.code}</span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full shrink-0"
+                  title="Copy code"
+                  onClick={() => {
+                    navigator.clipboard.writeText(qrTicket.code);
+                    toast({title: 'Copied', description: 'Ticket code copied to clipboard.'});
+                  }}
+                >
+                  <Copy className="w-4 h-4" />
+                </Button>
+              </div>
+              <p className="text-xs text-muted-foreground text-center">
+                Show this code at the gate. Works even without a signal — screenshot it to be safe.
+              </p>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

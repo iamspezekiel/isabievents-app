@@ -1,8 +1,12 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Users, Ticket, DollarSign, Calendar, Loader2 } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
+import { Users, Ticket, DollarSign, Calendar, Loader2, Focus } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import Link from 'next/link';
 import { ResponsiveContainer, XAxis, YAxis, CartesianGrid, Tooltip, AreaChart, Area } from 'recharts';
 import { useEvents } from '@/hooks/use-events';
 import { apiFetch } from '@/lib/api-fetch';
@@ -11,9 +15,11 @@ import type { EventDoc } from '@/lib/db';
 
 /**
  * Organizer analytics — all figures computed from live events + paid orders.
- * Visitors/conversion mock numbers were removed (no tracking data exists).
+ * Supports ?id=<eventId> (from "Detailed Analytics") to focus on one event.
  */
 export default function AnalyticsPage() {
+  const searchParams = useSearchParams();
+  const focusId = searchParams.get('id');
   const { profile } = useAuth();
   const { events: allEvents } = useEvents();
   const [stats, setStats] = useState<Record<string, {sold: number; revenueNgn: number}>>({});
@@ -33,7 +39,10 @@ export default function AnalyticsPage() {
     const meta = e as {organizerEmail?: string; organizerUid?: string};
     return meta.organizerEmail === profile.email || meta.organizerUid === profile.uid;
   };
-  const myEvents = allEvents.filter(isMine);
+  const focusEvent = focusId ? allEvents.find((e) => e.id === focusId) : undefined;
+  const myEvents = allEvents
+    .filter(isMine)
+    .filter((e) => !focusId || e.id === focusId);
   const totalSold = myEvents.reduce((s, e) => s + (stats[e.id]?.sold || 0), 0);
   const totalRevenue = myEvents.reduce((s, e) => s + (stats[e.id]?.revenueNgn || 0), 0);
 
@@ -52,6 +61,17 @@ export default function AnalyticsPage() {
             <h1 className="font-headline text-3xl md:text-5xl">Detailed Analytics</h1>
             <p className="text-muted-foreground">Real sales performance across your events.</p>
           </div>
+          {focusId && (
+            <div className="flex items-center gap-3">
+              <Badge className="bg-primary/10 text-primary border-none gap-1 font-bold py-2 px-4 max-w-[280px] truncate">
+                <Focus className="w-4 h-4 shrink-0" />
+                {focusEvent ? focusEvent.title : 'Selected event'}
+              </Badge>
+              <Link href="/dashboard/organizer/analytics" className="no-underline">
+                <Button variant="outline" size="sm" className="rounded-full font-bold">Show All Events</Button>
+              </Link>
+            </div>
+          )}
         </header>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">

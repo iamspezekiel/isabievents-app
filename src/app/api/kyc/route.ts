@@ -69,13 +69,21 @@ export async function GET(req: Request) {
     const snap = await db.collection('kyc_submissions').where('status', '==', 'pending').get();
     const submissions = snap.docs
       .map((d) => {
-        const x = d.data() as {name?: string; type?: string; date?: string; document?: string; email?: string};
+        const x = d.data() as {
+          name?: string; type?: string; date?: string; document?: string; email?: string;
+          businessName?: string; rcNumber?: string; idType?: string; idNumber?: string;
+        };
         return {
           id: d.id,
           name: x.name || x.email || 'Organizer',
           type: x.type || 'Individual',
           date: x.date || '',
           document: x.document || '',
+          email: x.email || '',
+          businessName: x.businessName || '',
+          rcNumber: x.rcNumber || '',
+          idType: x.idType || '',
+          idNumber: x.idNumber || '',
         };
       })
       .sort((a, b) => String(b.date).localeCompare(String(a.date)));

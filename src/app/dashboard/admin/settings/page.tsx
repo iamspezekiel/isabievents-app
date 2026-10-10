@@ -20,6 +20,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
+import { invalidateEventsCache } from '@/hooks/use-events';
 import { CITIES } from '@/lib/constants';
 import { apiFetch } from '@/lib/api-fetch';
 import { useAuth } from '@/components/auth-provider';
@@ -408,10 +409,32 @@ export default function AdminSystemSettings() {
               <Switch checked={app.maintenance} onCheckedChange={(v) => setAppField('maintenance', v)} />
             </div>
             <div className="flex gap-4">
-              <Button variant="outline" className="flex-1 rounded-xl h-11 border-red-500/20 text-red-600 hover:bg-red-500/5 font-bold">
+              <Button
+                variant="outline"
+                className="flex-1 rounded-xl h-11 border-red-500/20 text-red-600 hover:bg-red-500/5 font-bold"
+                onClick={async () => {
+                  try {
+                    const res = await apiFetch('/api/admin/settings', {
+                      method: 'POST',
+                      body: JSON.stringify({action: 'purge-cache'}),
+                    });
+                    if (!res.ok) throw new Error('Purge failed.');
+                    toast({title: 'Caches Cleared', description: 'SMTP configuration cache was purged on the server.'});
+                  } catch (err) {
+                    toast({variant: 'destructive', title: 'Purge Failed', description: err instanceof Error ? err.message : 'Please try again.'});
+                  }
+                }}
+              >
                 Purge System Cache
               </Button>
-              <Button variant="outline" className="flex-1 rounded-xl h-11 border-red-500/20 text-red-600 hover:bg-red-500/5 font-bold">
+              <Button
+                variant="outline"
+                className="flex-1 rounded-xl h-11 border-red-500/20 text-red-600 hover:bg-red-500/5 font-bold"
+                onClick={() => {
+                  invalidateEventsCache();
+                  toast({title: 'Search Index Refreshed', description: 'Event search data will reload fresh from Firestore.'});
+                }}
+              >
                 Re-index Search
               </Button>
             </div>

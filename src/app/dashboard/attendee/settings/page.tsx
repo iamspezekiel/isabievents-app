@@ -1,7 +1,7 @@
 
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { User, ShieldCheck, MapPin, Loader2, AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -51,6 +51,17 @@ export default function AttendeeSettingsPage() {
   const [location, setLocation] = useState("Lagos");
   const [emailNotifs, setEmailNotifs] = useState(true);
   const [marketingNotifs, setMarketingNotifs] = useState(false);
+
+  // Load saved notification preferences from the profile.
+  useEffect(() => {
+    if (profile) {
+      const n = (profile as {notifications?: {email?: boolean; marketing?: boolean}}).notifications;
+      if (n) {
+        setEmailNotifs(n.email ?? true);
+        setMarketingNotifs(n.marketing ?? false);
+      }
+    }
+  }, [profile]);
 
   const handleSave = async () => {
     if (!profile) {

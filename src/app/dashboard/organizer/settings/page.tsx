@@ -43,6 +43,8 @@ export default function OrganizerSettingsPage() {
   const { toast } = useToast();
   const { profile, signOut } = useAuth();
   const [whatsapp, setWhatsapp] = useState('');
+  const [twoFactor, setTwoFactor] = useState(false);
+  const [autoSettle, setAutoSettle] = useState(true);
   const [saving, setSaving] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -50,7 +52,10 @@ export default function OrganizerSettingsPage() {
   // Load the real profile into the form.
   useEffect(() => {
     if (profile) {
-      setWhatsapp((profile as {whatsapp?: string}).whatsapp || '');
+      const p = profile as {whatsapp?: string; twoFactor?: boolean; autoSettle?: boolean};
+      setWhatsapp(p.whatsapp || '');
+      setTwoFactor(!!p.twoFactor);
+      setAutoSettle(p.autoSettle !== false);
     }
   }, [profile]);
 
@@ -62,7 +67,7 @@ export default function OrganizerSettingsPage() {
     }
     setSaving(true);
     try {
-      await updateDoc(doc(db, 'users', profile.uid), {whatsapp});
+      await updateDoc(doc(db, 'users', profile.uid), {whatsapp, twoFactor, autoSettle});
       toast({title: 'Profile Saved', description: 'Your brand profile has been updated.'});
     } catch (err) {
       toast({
@@ -72,6 +77,21 @@ export default function OrganizerSettingsPage() {
       });
     } finally {
       setSaving(false);
+    }
+  };
+
+  // Persist small preferences instantly (used by the security switches).
+  const persistPrefs = async (patch: {[key: string]: boolean}) => {
+    if (!profile?.uid || !db) return;
+    try {
+      await updateDoc(doc(db, 'users', profile.uid), patch);
+      toast({title: 'Preference Saved'});
+    } catch (err) {
+      toast({
+        variant: 'destructive',
+        title: 'Save Failed',
+        description: err instanceof Error ? err.message : 'Could not save your preference.',
+      });
     }
   };
 
@@ -180,15 +200,28 @@ export default function OrganizerSettingsPage() {
                   <div className="font-bold">Two-Factor Authentication</div>
                   <p className="text-xs text-muted-foreground">Add an extra layer of security to your payouts.</p>
                 </div>
-                <Switch />
+                <Switch
+                  checked={twoFactor}
+                  onCheckedChange={(v) => {
+                    setTwoFactor(v);
+                    persistPrefs({twoFactor: v});
+                  }}
+                />
               </div>
               <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-xl">
                 <div className="space-y-0.5">
                   <div className="font-bold">Automated Weekly Settlements</div>
                   <p className="text-xs text-muted-foreground">Withdraw funds every Monday morning.</p>
                 </div>
-                <Switch checked />
+                <Switch
+                  checked={autoSettle}
+                  onCheckedChange={(v) => {
+                    setAutoSettle(v);
+                    persistPrefs({autoSettle: v});
+                  }}
+                />
               </div>
+              <p className="text-[10px] text-muted-foreground">Preferences save instantly.</p>
             </CardContent>
           </Card>
 
