@@ -50,6 +50,7 @@ export async function POST(req: Request) {
       name?: string;
       email?: string;
       role?: string;
+      verified?: boolean;
     };
 
     const slug = `${slugify(title)}-${randomBytes(2).toString('hex')}`;
@@ -65,7 +66,8 @@ export async function POST(req: Request) {
       date,
       organizer: {
         name: profile.name || 'Organizer',
-        verified: profile.role === 'admin',
+        // KYC-approved organizers are auto-approved; everyone else goes to moderation.
+        verified: profile.role === 'admin' || profile.verified === true,
         avatar: '',
       },
       organizerUid: uid,

@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { User, ShieldCheck, ChevronRight, Trash2, Loader2 } from 'lucide-react';
+import { User, ShieldCheck, ChevronRight, Trash2, Loader2, CheckCircle2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -42,6 +42,7 @@ export default function OrganizerSettingsPage() {
   const router = useRouter();
   const { toast } = useToast();
   const { profile, signOut } = useAuth();
+  const isVerified = !!(profile as {verified?: boolean})?.verified;
   const [whatsapp, setWhatsapp] = useState('');
   const [twoFactor, setTwoFactor] = useState(false);
   const [autoSettle, setAutoSettle] = useState(true);
@@ -144,18 +145,20 @@ export default function OrganizerSettingsPage() {
                   <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
                     <div className="flex items-center gap-2">
                       <h3 className="font-bold text-lg whitespace-nowrap">Verification Status</h3>
-                      <Badge variant="outline" className="text-[10px] font-black uppercase tracking-tighter border-yellow-500/50 text-yellow-600 bg-yellow-500/5">Not Verified</Badge>
+                      {isVerified ? (<Badge className="text-[10px] font-black uppercase tracking-tighter bg-green-500/10 text-green-500 border-none">Verified</Badge>) : (<Badge variant="outline" className="text-[10px] font-black uppercase tracking-tighter border-yellow-500/50 text-yellow-600 bg-yellow-500/5">Not Verified</Badge>)}
                     </div>
                     <p className="text-sm text-muted-foreground leading-relaxed">
                       Verify your identity to get the verified badge and unlock faster payouts for your events.
                     </p>
                   </div>
                 </div>
-                <Link href="/dashboard/organizer/kyc" className="no-underline shrink-0">
-                  <Button className="rounded-full px-8 gap-2 font-bold shadow-lg shadow-primary/20 h-9 md:h-11">
-                    Start KYC <ChevronRight className="w-4 h-4" />
-                  </Button>
-                </Link>
+                {!isVerified && (
+                  <Link href="/dashboard/organizer/kyc" className="no-underline shrink-0">
+                    <Button className="rounded-full px-8 gap-2 font-bold shadow-lg shadow-primary/20 h-9 md:h-11">
+                      Start KYC <ChevronRight className="w-4 h-4" />
+                    </Button>
+                  </Link>
+                )}
               </div>
             </CardContent>
           </Card>

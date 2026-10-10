@@ -421,3 +421,32 @@ export async function sendWithdrawalStatusEmail(w: WithdrawalEmailData): Promise
   });
 }
 
+/** Sent to the organizer when their KYC submission is approved or declined. */
+export async function sendKycDecisionEmail(opts: {
+  to: string;
+  name: string;
+  status: 'approved' | 'rejected';
+}): Promise<boolean> {
+  const approved = opts.status === 'approved';
+  const base = process.env.APP_BASE_URL || 'https://events.isabi.cloud';
+  return send({
+    to: opts.to,
+    subject: approved
+      ? '✅ Identity verified — your organizer account is confirmed'
+      : '⚠️ Identity verification needs another look',
+    html: layout(
+      approved ? 'Identity verified' : 'Verification declined',
+      p(
+        approved
+          ? `Great news, ${escapeHtml(opts.name)} — your identity has been verified! Your profile now shows the verified badge, your new events are auto-approved, and you're eligible for instant ticket settlements.`
+          : `Hi ${escapeHtml(opts.name)} — after reviewing your submission we need a little more information. Please check your ID details and document photo, then submit again from your verification page.`
+      ) +
+        `<a href="${base}/dashboard/organizer/kyc" style="display:inline-block;background:${PRIMARY};color:#fff;padding:12px 28px;border-radius:999px;font-weight:bold;text-decoration:none;">${approved ? 'Open Dashboard' : 'Resubmit Verification'}</a>` +
+        `<p style="margin:18px 0 0;font-size:12px;color:#8a8a99;">IsabiEvents Identity Verification</p>`
+    ),
+    text: approved
+      ? `Your identity has been verified. Open ${base}/dashboard/organizer`
+      : `Your verification was declined — please resubmit at ${base}/dashboard/organizer/kyc`,
+  });
+}
+

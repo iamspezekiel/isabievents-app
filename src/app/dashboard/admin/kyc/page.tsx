@@ -31,6 +31,7 @@ interface KycRow {
   rcNumber?: string;
   idType?: string;
   idNumber?: string;
+  documentPhoto?: string;
 }
 
 export default function AdminKYCManagement() {
@@ -175,6 +176,12 @@ export default function AdminKYCManagement() {
               </DialogTitle>
               <DialogDescription>Full details of this KYC submission.</DialogDescription>
             </DialogHeader>
+            {viewRow?.documentPhoto && (
+              <div className="border border-border rounded-xl overflow-hidden bg-secondary/30">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={viewRow.documentPhoto} alt="Submitted document" className="w-full max-h-72 object-contain" />
+              </div>
+            )}
             {viewRow && (
               <div className="space-y-3 text-left text-sm">
                 <div className="flex justify-between gap-4"><span className="text-muted-foreground font-bold">Name</span><span className="font-bold text-right break-words">{viewRow.name}</span></div>
