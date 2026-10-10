@@ -1,8 +1,9 @@
 
 "use client";
 
-import React from 'react';
-import { User, ShieldCheck, ChevronRight, MapPin } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { User, ShieldCheck, ChevronRight, MapPin, Trash2, Loader2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,21 @@ import { Badge } from "@/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import Link from 'next/link';
 import { CITIES } from '@/lib/constants';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { useAuth } from '@/components/auth-provider';
+import { apiFetch } from '@/lib/api-fetch';
+import { useToast } from "@/hooks/use-toast";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 const WhatsAppIcon = ({ className }: { className?: string }) => (
   <svg 
@@ -25,6 +41,74 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 );
 
 export default function OrganizerSettingsPage() {
+  const router = useRouter();
+  const { toast } = useToast();
+  const { profile, signOut } = useAuth();
+  const [whatsapp, setWhatsapp] = useState('');
+  const [city, setCity] = useState('Lagos');
+  const [saving, setSaving] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  // Load the real profile into the form.
+  useEffect(() => {
+    if (profile) {
+      setWhatsapp((profile as {whatsapp?: string}).whatsapp || '');
+      setCity((profile as {city?: string}).city || 'Lagos');
+    }
+  }, [profile]);
+
+  const handleSaveProfile = async () => {
+    if (!profile?.uid) return;
+    if (!db) {
+      toast({variant: 'destructive', title: 'Not Available', description: 'Firebase is not configured.'});
+      return;
+    }
+    setSaving(true);
+    try {
+      await updateDoc(doc(db, 'users', profile.uid), {whatsapp, city});
+      toast({title: 'Profile Saved', description: 'Your brand profile has been updated.'});
+    } catch (err) {
+      toast({
+        variant: 'destructive',
+        title: 'Save Failed',
+        description: err instanceof Error ? err.message : 'Could not save your profile.',
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Permanently delete this organizer account (Auth + profile).
+  const handleDeleteAccount = async () => {
+    setIsDeleting(true);
+    try {
+      const res = await apiFetch('/api/account', {method: 'DELETE'});
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Account deletion failed.');
+
+      toast({
+        variant: 'destructive',
+        title: 'Account Deleted',
+        description: 'Your organizer account has been deleted. Redirecting…',
+      });
+      await signOut();
+      setTimeout(() => {
+        setIsDeleting(false);
+        setIsDeleteDialogOpen(false);
+        router.push('/organizer/login');
+      }, 1000);
+    } catch (err) {
+      toast({
+        variant: 'destructive',
+        title: 'Deletion Failed',
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
+      setIsDeleting(false);
+      setIsDeleteDialogOpen(false);
+    }
+  };
+
   return (
     <div className="p-4 md:p-12">
       <div className="max-w-4xl mx-auto space-y-8">
@@ -69,37 +153,39 @@ export default function OrganizerSettingsPage() {
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="brand-name">Brand Name</Label>
-                  <Input id="brand-name" defaultValue="Smooth Events" className="h-11 bg-secondary/50 cursor-not-allowed" readOnly />
+                  <Input id="brand-name" value={profile?.name || ''} className="h-11 bg-secondary/50 cursor-not-allowed" readOnly />
                   <p className="text-[10px] text-muted-foreground">To change your brand name, please contact support.</p>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Support Email</Label>
-                  <Input id="email" defaultValue="hello@smoothevents.ng" className="h-11 bg-secondary/50 cursor-not-allowed" readOnly />
+                  <Input id="email" value={profile?.email || ''} className="h-11 bg-secondary/50 cursor-not-allowed" readOnly />
                   <p className="text-[10px] text-muted-foreground">Primary account email cannot be changed.</p>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="whatsapp" className="flex items-center gap-1.5">
                     <WhatsAppIcon className="w-3.5 h-3.5 text-green-500" /> WhatsApp Number
                   </Label>
-                  <Input id="whatsapp" defaultValue="+2349024244140" className="h-11" />
+                  <Input id="whatsapp" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="+234..." className="h-11" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="location" className="flex items-center gap-1.5">
                     <MapPin className="w-3.5 h-3.5 text-primary" /> Brand Headquarters
                   </Label>
-                  <Select defaultValue="Lagos">
+                  <Select value={city} onValueChange={setCity}>
                     <SelectTrigger className="h-11">
                       <SelectValue placeholder="Select your city" />
                     </SelectTrigger>
                     <SelectContent>
-                      {CITIES.map(city => (
-                        <SelectItem key={city} value={city}>{city}</SelectItem>
+                      {CITIES.map(c => (
+                        <SelectItem key={c} value={c}>{c}</SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
               </div>
-              <Button className="rounded-full px-8 font-bold">Save Changes</Button>
+              <Button className="rounded-full px-8 font-bold" onClick={handleSaveProfile} disabled={saving || !profile}>
+                {saving ? <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Saving…</> : 'Save Changes'}
+              </Button>
             </CardContent>
           </Card>
 
@@ -124,7 +210,53 @@ export default function OrganizerSettingsPage() {
               </div>
             </CardContent>
           </Card>
+
+          <Card className="border-red-500/30 bg-red-500/5">
+            <CardHeader className="text-left">
+              <CardTitle className="flex items-center gap-2 text-lg text-red-500">
+                <Trash2 className="w-5 h-5" /> Danger Zone
+              </CardTitle>
+              <CardDescription>
+                Permanently delete your organizer account. Your listed events will remain on the
+                platform under admin management. This action cannot be undone.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="text-left">
+              <Button
+                variant="outline"
+                className="rounded-full px-8 font-bold border-red-500/40 text-red-500 hover:bg-red-500/10 hover:text-red-600"
+                onClick={() => setIsDeleteDialogOpen(true)}
+                disabled={isDeleting}
+              >
+                <Trash2 className="w-4 h-4 mr-2" /> Delete Account
+              </Button>
+            </CardContent>
+          </Card>
         </div>
+
+        <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete your organizer account?</AlertDialogTitle>
+              <AlertDialogDescription>
+                This permanently deletes your login ({profile?.email}) and profile. You will lose
+                access to the organizer dashboard immediately. This action cannot be undone.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleDeleteAccount();
+                }}
+                className="bg-red-500 hover:bg-red-600 text-white border-none font-bold"
+              >
+                {isDeleting ? 'Deleting…' : 'Delete My Account'}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );

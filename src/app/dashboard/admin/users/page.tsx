@@ -37,12 +37,25 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/hooks/use-toast";
 import { apiFetch } from '@/lib/api-fetch';
+import { useAuth } from '@/components/auth-provider';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { Trash2, Power, PowerOff } from 'lucide-react';
 
 interface UserRow {
   uid: string;
   name: string;
   email: string;
   role: string;
+  disabled?: boolean;
 }
 
 export default function AdminUserManagement() {
@@ -50,9 +63,12 @@ export default function AdminUserManagement() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
+  const { profile } = useAuth();
 
   const [users, setUsers] = useState<UserRow[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
+  const [userToDelete, setUserToDelete] = useState<UserRow | null>(null);
+  const [busyUid, setBusyUid] = useState<string | null>(null);
 
   const [newAdmin, setNewAdmin] = useState({
     name: '',
@@ -64,15 +80,75 @@ export default function AdminUserManagement() {
       .then((r) => r.json())
       .then((d) => {
         if (Array.isArray(d?.users)) setUsers(d.users as UserRow[]);
+        if (d?.error) toast({variant: "destructive", title: "Could not load users", description: d.error});
       })
       .catch(() => undefined)
       .finally(() => setLoadingUsers(false));
-  }, []);
+  }, [toast]);
 
   const filteredUsers = users.filter(user => 
     user.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
     user.email.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  // Activate / deactivate an account in Firebase Auth.
+  const handleToggleDisabled = async (user: UserRow) => {
+    setBusyUid(user.uid);
+    try {
+      const next = !user.disabled;
+      const res = await apiFetch('/api/admin/users', {
+        method: 'PATCH',
+        body: JSON.stringify({uid: user.uid, disabled: next}),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Failed to update account.');
+      setUsers(prev => prev.map(u => u.uid === user.uid ? {...u, disabled: next} : u));
+      toast({
+        title: next ? 'Account Deactivated' : 'Account Reactivated',
+        description: next
+          ? `${user.email} can no longer sign in.`
+          : `${user.email} can sign in again.`,
+      });
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Update Failed",
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
+    } finally {
+      setBusyUid(null);
+    }
+  };
+
+  // Permanently delete an account (Firebase Auth + profile doc).
+  const confirmDeleteUser = async () => {
+    if (!userToDelete) return;
+    const target = userToDelete;
+    setBusyUid(target.uid);
+    try {
+      const res = await apiFetch('/api/admin/users', {
+        method: 'DELETE',
+        body: JSON.stringify({uid: target.uid}),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Failed to delete account.');
+      setUsers(prev => prev.filter(u => u.uid !== target.uid));
+      toast({
+        variant: "destructive",
+        title: "Account Deleted",
+        description: `${target.email} has been permanently removed.`,
+      });
+    } catch (err) {
+      toast({
+        variant: "destructive",
+        title: "Delete Failed",
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
+    } finally {
+      setBusyUid(null);
+      setUserToDelete(null);
+    }
+  };
 
   const handleAddAdmin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -226,8 +302,8 @@ export default function AdminUserManagement() {
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
-                      <div className="w-2 h-2 rounded-full bg-green-500" />
-                      <span className="text-xs font-bold">Active</span>
+                      <div className={`w-2 h-2 rounded-full ${user.disabled ? 'bg-red-500' : 'bg-green-500'}`} />
+                      <span className="text-xs font-bold">{user.disabled ? 'Disabled' : 'Active'}</span>
                     </div>
                   </TableCell>
                   <TableCell>
@@ -244,16 +320,32 @@ export default function AdminUserManagement() {
                           <MoreVertical className="w-4 h-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-48 bg-card border-border">
-                        <DropdownMenuItem className="gap-2 font-bold cursor-pointer">
+                      <DropdownMenuContent align="end" className="w-56 bg-card border-border">
+                        <DropdownMenuItem
+                          className="gap-2 font-bold cursor-pointer"
+                          onClick={() => { window.location.href = `mailto:${user.email}`; }}
+                        >
                           <Mail className="w-4 h-4" /> Message User
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="gap-2 font-bold cursor-pointer">
-                          <Settings className="w-4 h-4" /> Edit Permissions
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="gap-2 font-bold text-red-500 hover:text-red-600 cursor-pointer">
-                          <Ban className="w-4 h-4" /> Deactivate Account
-                        </DropdownMenuItem>
+                        {profile?.uid !== user.uid && (
+                          <>
+                            <DropdownMenuItem
+                              className="gap-2 font-bold cursor-pointer"
+                              disabled={busyUid === user.uid}
+                              onClick={() => handleToggleDisabled(user)}
+                            >
+                              {user.disabled
+                                ? <><Power className="w-4 h-4" /> Reactivate Account</>
+                                : <><PowerOff className="w-4 h-4" /> Deactivate Account</>}
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              className="gap-2 font-bold text-red-500 hover:text-red-600 cursor-pointer"
+                              onClick={() => setUserToDelete(user)}
+                            >
+                              <Trash2 className="w-4 h-4" /> Delete Account
+                            </DropdownMenuItem>
+                          </>
+                        )}
                       </DropdownMenuContent>
                     </DropdownMenu>
                   </TableCell>
@@ -263,6 +355,30 @@ export default function AdminUserManagement() {
           </Table>
         </CardContent>
       </Card>
+
+      <AlertDialog open={!!userToDelete} onOpenChange={(open) => !open && setUserToDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete this account?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete &quot;{userToDelete?.email}&quot; — the Firebase Auth login and
+              their profile. Tickets and orders are kept for financial records. This cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={(e) => {
+                e.preventDefault();
+                confirmDeleteUser();
+              }}
+              className="bg-red-500 hover:bg-red-600 text-white border-none font-bold"
+            >
+              {busyUid === userToDelete?.uid ? 'Deleting…' : 'Delete Account'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
