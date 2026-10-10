@@ -11,7 +11,8 @@ import {
   Loader2,
   CheckCircle2,
   ShieldCheck,
-  ArrowRight
+  ArrowRight,
+  Wallet
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -184,6 +185,11 @@ export default function OrganizerDashboard() {
             <p className="text-xs text-muted-foreground/80">
               Complete KYC verification to enable payouts.
             </p>
+            <Link href="/dashboard/organizer/payouts" className="no-underline">
+              <Button className="w-full text-primary-foreground font-bold h-11 rounded-full gap-2">
+                <Wallet className="w-4 h-4" /> Request a Withdrawal
+              </Button>
+            </Link>
             <Link href="/dashboard/organizer/kyc" className="no-underline">
               <Button variant="outline" className="w-full text-primary hover:text-primary/80 font-bold h-11 rounded-full">
                 Complete KYC

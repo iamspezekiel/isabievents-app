@@ -333,3 +333,91 @@ export async function sendAdminNewUserEmail(opts: {name: string; email: string; 
   });
 }
 
+/** Shared shape for withdrawal request emails. */
+export interface WithdrawalEmailData {
+  id: string;
+  organizerName: string;
+  organizerEmail: string;
+  amount: number;
+  currency: 'NGN' | 'USD';
+  method: 'bank' | 'crypto';
+  bankName?: string;
+  accountNumber?: string;
+  accountName?: string;
+  network?: string;
+  walletAddress?: string;
+  status?: string;
+  note?: string;
+}
+
+const withdrawalDestination = (w: WithdrawalEmailData) =>
+  w.currency === 'NGN'
+    ? `Bank transfer — <strong>${escapeHtml(w.bankName || '')}</strong>, A/C <strong>${escapeHtml(w.accountNumber || '')}</strong> (${escapeHtml(w.accountName || '')})`
+    : `Crypto — <strong>${escapeHtml(w.network || '')}</strong> wallet <code>${escapeHtml(w.walletAddress || '')}</code>`;
+
+/**
+ * Sent when an organizer submits a withdrawal request:
+ *  1. to the admin  — action needed (manual review)
+ *  2. to the organizer — request received confirmation
+ */
+export async function sendWithdrawalRequestEmails(w: WithdrawalEmailData): Promise<void> {
+  const base = process.env.APP_BASE_URL || 'https://events.isabi.cloud';
+
+  await send({
+    to: await adminEmail(),
+    subject: `💸 New ${w.currency} withdrawal request — ${money(w.amount, w.currency)} from ${w.organizerName}`,
+    html: layout(
+      'New withdrawal request',
+      p(`<strong>${escapeHtml(w.organizerName)}</strong> (${escapeHtml(w.organizerEmail)}) requested a withdrawal of <strong>${money(w.amount, w.currency)}</strong>.`) +
+        p(`Destination: ${withdrawalDestination(w)}`) +
+        p(`Reference: <code>${escapeHtml(w.id)}</code> — status <strong>pending</strong>. Transfers are manual: approve only after sending the funds.`) +
+        `<a href="${base}/dashboard/admin/payouts" style="display:inline-block;background:${PRIMARY};color:#fff;padding:12px 28px;border-radius:999px;font-weight:bold;text-decoration:none;">Review Request</a>`
+    ),
+    text: `Withdrawal request ${w.id}: ${w.organizerName} requested ${money(w.amount, w.currency)} (${w.currency === 'NGN' ? `bank ${w.bankName} ${w.accountNumber}` : `crypto ${w.network} ${w.walletAddress}`}). Review at ${base}/dashboard/admin/payouts`,
+  });
+
+  await send({
+    to: w.organizerEmail,
+    subject: `We received your ${w.currency} withdrawal request — under review`,
+    html: layout(
+      'Withdrawal request received',
+      p(`Your request to withdraw <strong>${money(w.amount, w.currency)}</strong> is now under review by the IsabiEvents team.`) +
+        p(`Destination: ${withdrawalDestination(w)}`) +
+        p(`Reference: <code>${escapeHtml(w.id)}</code>. NGN bank transfers and USD crypto payouts are processed manually — you'll get another email the moment it's approved or declined.`) +
+        `<a href="${base}/dashboard/organizer/payouts" style="display:inline-block;background:${PRIMARY};color:#fff;padding:12px 28px;border-radius:999px;font-weight:bold;text-decoration:none;">View Payout Status</a>`
+    ),
+    text: `Your ${money(w.amount, w.currency)} withdrawal request (${w.id}) is under review. You'll be notified when it's processed.`,
+  });
+}
+
+/** Sent to the organizer when the admin approves or rejects a request. */
+export async function sendWithdrawalStatusEmail(w: WithdrawalEmailData): Promise<boolean> {
+  const approved = w.status === 'approved';
+  const base = process.env.APP_BASE_URL || 'https://events.isabi.cloud';
+  return send({
+    to: w.organizerEmail,
+    subject: approved
+      ? `✅ Your ${w.currency} withdrawal was approved — ${money(w.amount, w.currency)} on the way`
+      : `⚠️ Your ${w.currency} withdrawal was declined — ${money(w.amount, w.currency)}`,
+    html: layout(
+      approved ? 'Withdrawal approved' : 'Withdrawal declined',
+      p(
+        approved
+          ? `Good news — your withdrawal of <strong>${money(w.amount, w.currency)}</strong> has been <strong>approved</strong>. ${
+              w.currency === 'NGN'
+                ? 'The bank transfer has been queued for manual dispatch to your account.'
+                : 'The crypto transfer has been queued for manual dispatch to your wallet.'
+            }`
+          : `Your withdrawal of <strong>${money(w.amount, w.currency)}</strong> was declined by our team.${
+              w.note ? ` Reason: <strong>${escapeHtml(w.note)}</strong>.` : ''
+            } You can submit a new request from your payouts page.`
+      ) +
+        p(`Destination: ${withdrawalDestination(w)} — reference <code>${escapeHtml(w.id)}</code>.`) +
+        `<a href="${base}/dashboard/organizer/payouts" style="display:inline-block;background:${PRIMARY};color:#fff;padding:12px 28px;border-radius:999px;font-weight:bold;text-decoration:none;">Open Payouts</a>`
+    ),
+    text: approved
+      ? `Your ${money(w.amount, w.currency)} withdrawal (${w.id}) was approved and queued for payment.`
+      : `Your ${money(w.amount, w.currency)} withdrawal (${w.id}) was declined.${w.note ? ` Reason: ${w.note}` : ''}`,
+  });
+}
+
