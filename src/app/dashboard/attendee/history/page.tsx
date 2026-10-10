@@ -88,7 +88,7 @@ export default function OrderHistoryPage() {
     <div className="p-4 pb-16 md:p-12 md:pb-16">
       <div className="max-w-4xl mx-auto space-y-8 text-left">
         <div className="text-left">
-          <h1 className="font-headline mb-2 text-3xl md:text-5xl tracking-tighter">Order History</h1>
+          <h1 className="font-headline mb-2 text-2xl md:text-4xl tracking-tighter">Order History</h1>
           <p className="text-muted-foreground font-medium">View and manage all your past ticket purchases and receipts.</p>
         </div>
 

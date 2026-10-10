@@ -244,7 +244,7 @@ function CreateEventForm() {
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <section className="space-y-6">
               <div className="space-y-2 text-left">
-                <h2 className="text-3xl md:text-4xl font-headline tracking-tighter">Basic Information</h2>
+                <h2 className="text-2xl md:text-3xl font-headline tracking-tighter">Basic Information</h2>
                 <p className="text-muted-foreground">Let&apos;s start with the core details of your event.</p>
               </div>
 
@@ -346,7 +346,7 @@ function CreateEventForm() {
             <section className="space-y-6">
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 text-left">
                 <div className="space-y-1">
-                  <h2 className="text-3xl md:text-4xl font-headline tracking-tighter">Event Story</h2>
+                  <h2 className="text-2xl md:text-3xl font-headline tracking-tighter">Event Story</h2>
                   <p className="text-muted-foreground">Describe your event to attract attendees.</p>
                 </div>
                 <Button 
@@ -431,7 +431,7 @@ function CreateEventForm() {
           <div className="space-y-8 animate-in fade-in slide-in-from-right-4 duration-500">
             <section className="space-y-6">
               <div className="space-y-2 text-left">
-                <h2 className="text-3xl md:text-4xl font-headline tracking-tighter">Inventory & Launch</h2>
+                <h2 className="text-2xl md:text-3xl font-headline tracking-tighter">Inventory & Launch</h2>
                 <p className="text-muted-foreground">Finalize your event logistics before going live.</p>
               </div>
 

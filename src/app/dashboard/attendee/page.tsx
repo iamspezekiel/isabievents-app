@@ -234,7 +234,7 @@ export default function AttendeeDashboard() {
 
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1 text-left">
-          <h1 className="font-headline text-3xl md:text-5xl tracking-tighter">Hi, {profile?.name || profile?.email?.split('@')[0] || 'there'} 👋</h1>
+          <h1 className="font-headline text-2xl md:text-4xl tracking-tighter">Hi, {profile?.name || profile?.email?.split('@')[0] || 'there'} 👋</h1>
           <p className="text-muted-foreground font-medium">You have {activeCount} upcoming {activeCount === 1 ? 'ticket' : 'tickets'}.</p>
         </div>
         <Link href="/discover" className="w-full sm:w-auto no-underline">

@@ -58,7 +58,7 @@ export default function AnalyticsPage() {
       <div className="max-w-6xl mx-auto space-y-8">
         <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div className="text-left">
-            <h1 className="font-headline text-3xl md:text-5xl">Detailed Analytics</h1>
+            <h1 className="font-headline text-2xl md:text-4xl">Detailed Analytics</h1>
             <p className="text-muted-foreground">Real sales performance across your events.</p>
           </div>
           {focusId && (

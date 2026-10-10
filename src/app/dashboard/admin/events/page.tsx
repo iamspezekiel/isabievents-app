@@ -121,7 +121,7 @@ export default function AdminEventsManagement() {
     <div className="p-4 pb-16 md:p-12 md:pb-16 space-y-8">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="text-left space-y-1">
-          <h1 className="font-headline text-3xl md:text-5xl">Event Moderation</h1>
+          <h1 className="font-headline text-2xl md:text-4xl">Event Moderation</h1>
           <p className="text-muted-foreground font-medium">Review and manage all event listings across the platform.</p>
         </div>
         <div className="flex items-center gap-3">

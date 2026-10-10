@@ -84,7 +84,7 @@ export default function AdminFinancialReports() {
     <div className="p-4 pb-16 md:p-12 md:pb-16 space-y-8">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="text-left space-y-1">
-          <h1 className="font-headline text-3xl md:text-5xl">Financial Intel</h1>
+          <h1 className="font-headline text-2xl md:text-4xl">Financial Intel</h1>
           <p className="text-muted-foreground font-medium">Global transaction volumes, revenue splits and platform performance.</p>
         </div>
         <Button 

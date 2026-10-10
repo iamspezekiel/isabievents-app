@@ -172,7 +172,7 @@ export default function OrganizerPayoutsPage() {
     <div className="p-4 pb-16 md:p-12 md:pb-16 space-y-8">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 text-left">
         <div className="space-y-1">
-          <h1 className="font-headline text-3xl md:text-5xl">Payouts</h1>
+          <h1 className="font-headline text-2xl md:text-4xl">Payouts</h1>
           <p className="text-muted-foreground">Withdraw your sales funds — NGN by bank transfer, USD by crypto. Every request is reviewed manually by our team.</p>
         </div>
       </header>

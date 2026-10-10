@@ -145,7 +145,7 @@ export default function VendorsManagementPage() {
       <div className="max-w-6xl mx-auto space-y-8">
         <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div className="text-left">
-            <h1 className="font-headline mb-2 text-3xl md:text-5xl">Vendors & Staff</h1>
+            <h1 className="font-headline mb-2 text-2xl md:text-4xl">Vendors & Staff</h1>
             <p className="text-muted-foreground">Manage service providers and gate staff for your events.</p>
           </div>
           

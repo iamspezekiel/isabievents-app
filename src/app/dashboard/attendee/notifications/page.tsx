@@ -63,7 +63,7 @@ export default function NotificationsPage() {
       <div className="max-w-4xl mx-auto space-y-8">
         <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-left">
           <div className="space-y-1">
-            <h1 className="font-headline text-3xl md:text-5xl tracking-tighter">Notifications</h1>
+            <h1 className="font-headline text-2xl md:text-4xl tracking-tighter">Notifications</h1>
             <p className="text-muted-foreground font-medium">Stay updated on your upcoming experiences.</p>
           </div>
           <div className="flex items-center gap-2">

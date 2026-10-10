@@ -117,7 +117,7 @@ export default function TicketGalleryPage() {
                 <ArrowLeft className="w-4 h-4" /> Back to Dashboard
               </Link>
               <div className="flex items-center gap-3">
-                <h1 className="font-headline text-3xl">My Digital Wallet</h1>
+                <h1 className="font-headline text-2xl">My Digital Wallet</h1>
                 {isOfflineReady ? (
                   <Badge className="bg-green-500/10 text-green-500 border-green-500/20 gap-1 hidden sm:flex">
                     <Cloud className="w-3 h-3" />

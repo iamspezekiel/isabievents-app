@@ -208,7 +208,7 @@ export default function AdminSystemSettings() {
     <div className="p-4 pb-16 md:p-12 md:pb-16 space-y-8">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="text-left space-y-1">
-          <h1 className="font-headline text-3xl md:text-5xl">System Config</h1>
+          <h1 className="font-headline text-2xl md:text-4xl">System Config</h1>
           <p className="text-muted-foreground font-medium">Control global fees, security protocols, and maintenance modes.</p>
         </div>
         <Button onClick={handleSaveAll} disabled={saving || testing} className="rounded-full shadow-lg shadow-primary/20 h-11 font-bold px-10">

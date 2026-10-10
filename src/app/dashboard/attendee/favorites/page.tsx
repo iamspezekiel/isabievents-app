@@ -48,7 +48,7 @@ export default function FavoritesPage() {
       <div className="max-w-5xl mx-auto space-y-8">
         <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 text-left">
           <div className="space-y-1">
-            <h1 className="font-headline text-3xl md:text-5xl tracking-tighter">Your Favorites</h1>
+            <h1 className="font-headline text-2xl md:text-4xl tracking-tighter">Your Favorites</h1>
             <p className="text-muted-foreground font-medium">Events you've saved to check out later.</p>
           </div>
           <Link href="/discover" className="no-underline">

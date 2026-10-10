@@ -124,7 +124,7 @@ export default function MyEventsPage() {
       <div className="max-w-6xl mx-auto space-y-8">
         <header className="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
           <div className="text-left">
-            <h1 className="font-headline mb-2 text-3xl md:text-5xl">My Events</h1>
+            <h1 className="font-headline mb-2 text-2xl md:text-4xl">My Events</h1>
             <p className="text-muted-foreground">Manage your upcoming and past experiences.</p>
           </div>
           <Link href="/dashboard/organizer/create" className="no-underline">

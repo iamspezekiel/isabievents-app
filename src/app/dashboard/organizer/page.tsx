@@ -106,7 +106,7 @@ export default function OrganizerDashboard() {
 
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="text-left space-y-2">
-          <h1 className="font-headline text-3xl md:text-5xl flex items-center gap-3 break-all">
+          <h1 className="font-headline text-2xl md:text-4xl flex items-center gap-3 break-all">
             {profile?.name || 'Organizer'}
             <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8 text-accent fill-accent text-white shrink-0" />
           </h1>
