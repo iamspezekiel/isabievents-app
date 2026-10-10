@@ -6,6 +6,38 @@ import {sendWithdrawalRequestEmails, sendWithdrawalStatusEmail} from '@/lib/emai
 
 export const runtime = 'nodejs';
 
+/**
+ * Available balance per currency: paid order volume minus prior approved
+ * withdrawals. Payout requests are capped at this figure so an organizer can
+ * never withdraw money they have not earned.
+ */
+async function computeBalances(
+  db: FirebaseFirestore.Firestore,
+  uid: string
+): Promise<{ngn: number; usd: number}> {
+  const [paidNgn, paidUsd, approved] = await Promise.all([
+    db.collection('orders').where('organizerUid', '==', uid).where('status', '==', 'paid').where('currency', '==', 'NGN').get(),
+    db.collection('orders').where('organizerUid', '==', uid).where('status', '==', 'paid').where('currency', '==', 'USD').get(),
+    db.collection('withdrawals').where('organizerUid', '==', uid).where('status', '==', 'approved').get(),
+  ]);
+  let grossNgn = 0;
+  let grossUsd = 0;
+  paidNgn.forEach((d) => {
+    grossNgn += Number((d.data() as {amount?: number}).amount) || 0;
+  });
+  paidUsd.forEach((d) => {
+    grossUsd += Number((d.data() as {amount?: number}).amount) || 0;
+  });
+  let usedNgn = 0;
+  let usedUsd = 0;
+  approved.forEach((d) => {
+    const w = d.data() as {currency?: string; amount?: number};
+    if (w.currency === 'USD') usedUsd += Number(w.amount) || 0;
+    else usedNgn += Number(w.amount) || 0;
+  });
+  return {ngn: Math.max(0, grossNgn - usedNgn), usd: Math.max(0, grossUsd - usedUsd)};
+}
+
 const NGN_PER_USD = 1550;
 
 interface WithdrawalBody {
@@ -136,6 +168,21 @@ export async function POST(req: Request) {
     if (!currency) return NextResponse.json({error: 'Currency must be NGN or USD.'}, {status: 400});
     if (!Number.isFinite(amount) || amount <= 0 || amount > 1_000_000_000) {
       return NextResponse.json({error: 'Enter a valid amount greater than zero.'}, {status: 400});
+    }
+
+    // Balance verification — a request can never exceed the organizer's earnings.
+    const balances = await computeBalances(db, uid);
+    const available = currency === 'USD' ? balances.usd : balances.ngn;
+    if (amount > available + 0.001) {
+      return NextResponse.json(
+        {
+          error:
+            available <= 0
+              ? `No available ${currency} balance to withdraw yet — payouts come from settled ticket sales.`
+              : `Amount exceeds your available ${currency} balance of ${available.toFixed(2)}.`,
+        },
+        {status: 400}
+      );
     }
 
     const bankName = (body.bankName || '').trim();

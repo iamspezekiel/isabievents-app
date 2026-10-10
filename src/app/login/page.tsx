@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardDescription, CardFooter } from "@/components/ui/card";
 import Link from 'next/link';
-import { Mail, Lock, Loader2, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, Loader2, Eye, EyeOff, ShieldCheck, ArrowLeft } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { DASHBOARD_PATHS, useAuth } from '@/components/auth-provider';
 import { useToast } from "@/hooks/use-toast";
@@ -15,11 +15,65 @@ import { useToast } from "@/hooks/use-toast";
 export default function LoginPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const { signIn, signInWithGoogle } = useAuth();
+  const { signIn, signInWithGoogle, signOut } = useAuth();
   const [loading, setLoading] = useState<string | null>(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+
+  // Two-factor (email code) — activated per-account from Security settings.
+  const [tfaStep, setTfaStep] = useState(false);
+  const [tfaCode, setTfaCode] = useState('');
+  const [tfaResendIn, setTfaResendIn] = useState(0);
+
+  React.useEffect(() => {
+    if (tfaResendIn <= 0) return;
+    const t = setTimeout(() => setTfaResendIn((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [tfaResendIn]);
+
+  const requestTfaCode = async (silent = false) => {
+    setLoading('tfa-send');
+    try {
+      const res = await fetch('/api/auth/tfa', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({action: 'send', email}),
+      });
+      await res.json().catch(() => ({}));
+      setTfaResendIn(60);
+      if (!silent) {
+        toast({title: 'Verification Code Sent', description: `Enter the 6-digit code we emailed to ${email}.`});
+      }
+    } catch {
+      toast({variant: 'destructive', title: 'Could Not Send Code', description: 'Please try again in a moment.'});
+    }
+    setLoading(null);
+  };
+
+  const handleVerifyTfa = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading('tfa-verify');
+    try {
+      const res = await fetch('/api/auth/tfa', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({action: 'verify', email, code: tfaCode}),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) throw new Error(data.error || 'Incorrect code.');
+      const profile = await signIn(email, password);
+      toast({title: 'Login Successful', description: `Welcome back, ${profile.name}!`});
+      router.push(DASHBOARD_PATHS[profile.role] || '/dashboard/attendee');
+    } catch (err) {
+      toast({
+        variant: 'destructive',
+        title: 'Verification Failed',
+        description: err instanceof Error ? err.message : 'Incorrect code.',
+      });
+    }
+    setLoading(null);
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,6 +81,14 @@ export default function LoginPage() {
 
     try {
       const profile = await signIn(email, password);
+      if ((profile as {twoFactor?: boolean}).twoFactor) {
+        // 2FA enabled: sign straight back out and require the emailed code.
+        await signOut();
+        setTfaStep(true);
+        toast({title: 'Two-Factor Verification', description: `Enter the 6-digit code we sent to ${email}.`});
+        await requestTfaCode(true);
+        return;
+      }
       toast({
         title: "Login Successful",
         description: `Welcome back, ${profile.name}!`,
@@ -85,6 +147,53 @@ export default function LoginPage() {
             <h4 className="text-xl font-headline font-black">Welcome Back</h4>
             <CardDescription>Enter your credentials to continue</CardDescription>
           </CardHeader>
+          {tfaStep ? (
+            <form onSubmit={handleVerifyTfa}>
+              <CardContent className="space-y-4 px-10 md:px-6 text-center">
+                <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <ShieldCheck className="w-6 h-6 text-primary" />
+                </div>
+                <div className="space-y-1">
+                  <h4 className="font-bold">Enter Verification Code</h4>
+                  <CardDescription>
+                    We emailed a 6-digit code to <span className="font-bold text-foreground">{email}</span>
+                  </CardDescription>
+                </div>
+                <Input
+                  id="tfa-code"
+                  inputMode="numeric"
+                  maxLength={6}
+                  autoComplete="one-time-code"
+                  placeholder="000000"
+                  className="h-12 text-center text-xl font-bold tracking-[0.5em] bg-secondary/50"
+                  value={tfaCode}
+                  onChange={(e) => setTfaCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  required
+                  autoFocus
+                />
+                <Button type="submit" className="w-full rounded-xl h-9 md:h-11" disabled={!!loading || tfaCode.length !== 6}>
+                  {loading === 'tfa-verify' ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Verify & Sign In'}
+                </Button>
+                <div className="flex items-center justify-between text-xs">
+                  <button
+                    type="button"
+                    onClick={() => { setTfaStep(false); setTfaCode(''); }}
+                    className="text-primary font-bold gap-1 inline-flex items-center hover:underline"
+                  >
+                    <ArrowLeft className="w-3 h-3" /> Different account
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => requestTfaCode()}
+                    disabled={tfaResendIn > 0 || !!loading}
+                    className="text-primary font-bold disabled:opacity-50 hover:underline"
+                  >
+                    {tfaResendIn > 0 ? `Resend in ${tfaResendIn}s` : 'Resend code'}
+                  </button>
+                </div>
+              </CardContent>
+            </form>
+          ) : (
           <form onSubmit={handleLogin}>
             <CardContent className="space-y-4 px-10 md:px-6">
               <div className="space-y-2">
@@ -105,7 +214,7 @@ export default function LoginPage() {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <Label htmlFor="password">Password</Label>
-                  <Link href="/forgot-password" summer-hint="forgot password" className="text-xs text-primary no-underline font-bold">Forgot password?</Link>
+                  <Link href="/forgot-password" className="text-xs text-primary no-underline font-bold">Forgot password?</Link>
                 </div>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
@@ -132,7 +241,9 @@ export default function LoginPage() {
               </Button>
             </CardContent>
           </form>
+          )}
           
+          {!tfaStep && (
           <CardFooter className="flex flex-col gap-6 px-10 md:px-6">
             <div className="relative w-full">
               <div className="absolute inset-0 flex items-center">
@@ -153,6 +264,7 @@ export default function LoginPage() {
               </Button>
             </div>
           </CardFooter>
+          )}
         </Card>
 
         <p className="text-center text-sm text-muted-foreground">

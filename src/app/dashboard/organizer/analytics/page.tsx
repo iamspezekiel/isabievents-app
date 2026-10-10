@@ -21,7 +21,7 @@ export default function AnalyticsPage() {
   const searchParams = useSearchParams();
   const focusId = searchParams.get('id');
   const { profile } = useAuth();
-  const { events: allEvents } = useEvents();
+  const { events: allEvents } = useEvents({includeHidden: true});
   const [stats, setStats] = useState<Record<string, {sold: number; revenueNgn: number}>>({});
   const [loading, setLoading] = useState(true);
 

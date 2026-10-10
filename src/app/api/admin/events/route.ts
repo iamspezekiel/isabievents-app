@@ -38,7 +38,12 @@ export async function PATCH(req: Request) {
       return NextResponse.json({ok: true, action, id});
     }
 
-    await ref.delete();
+    // Reject = hide from the marketplace (soft moderation — restorable via Approve).
+    const data = snap.data() as {organizer?: Record<string, unknown>};
+    await ref.update({
+      organizer: {...(data.organizer || {}), verified: false},
+      updatedAt: new Date().toISOString(),
+    });
     return NextResponse.json({ok: true, action, id});
   } catch (err) {
     return NextResponse.json(

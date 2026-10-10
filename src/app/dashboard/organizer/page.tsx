@@ -12,7 +12,8 @@ import {
   CheckCircle2,
   ShieldCheck,
   ArrowRight,
-  Wallet
+  Wallet,
+  ArrowDownToLine
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -34,9 +35,20 @@ export default function OrganizerDashboard() {
   const [showTrustTip, setShowTrustTip] = useState(true);
   const { toast } = useToast();
   const { profile } = useAuth();
-  const { events: allEvents, refetch } = useEvents();
+  const { events: allEvents, refetch } = useEvents({includeHidden: true});
   const [stats, setStats] = useState<Record<string, {sold: number; revenueNgn: number}>>({});
   const [statsLoaded, setStatsLoaded] = useState(false);
+  const [payoutBalance, setPayoutBalance] = useState<{ngn: number; usd: number} | null>(null);
+
+  // Live payout balances for the Payouts card (KYC is not required to withdraw).
+  useEffect(() => {
+    apiFetch('/api/withdrawals')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.balance) setPayoutBalance(d.balance);
+      })
+      .catch(() => undefined);
+  }, []);
 
   const loadStats = () =>
     apiFetch('/api/events/stats')
@@ -93,7 +105,7 @@ export default function OrganizerDashboard() {
         <div className="bg-primary/10 border border-primary/20 p-4 px-6 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 animate-in slide-in-from-top-4 duration-500">
           <div className="flex items-center gap-3">
             <ShieldCheck className="w-5 h-5 text-primary shrink-0" />
-            <p className="text-xs font-medium text-left">Get a verified badge and unlock faster payouts by completing your KYC profile.</p>
+            <p className="text-xs font-medium text-left">Complete KYC to earn a verified badge on your profile and events. It&apos;s optional — listing and payouts work without it.</p>
           </div>
           <div className="flex items-center gap-4 w-full sm:w-auto">
             <Link href="/dashboard/organizer/kyc" className="no-underline flex-1 sm:flex-none">
@@ -108,7 +120,9 @@ export default function OrganizerDashboard() {
         <div className="text-left space-y-2">
           <h1 className="font-headline text-2xl md:text-4xl flex items-center gap-3 break-all">
             {profile?.name || 'Organizer'}
-            <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8 text-accent fill-accent text-white shrink-0" />
+            {profile?.verified && (
+              <CheckCircle2 className="w-6 h-6 md:w-8 md:h-8 text-accent fill-accent text-white shrink-0" aria-label="Verified organizer" />
+            )}
           </h1>
         </div>
         <div className="flex items-center gap-3">
@@ -174,25 +188,28 @@ export default function OrganizerDashboard() {
         </Card>
 
         <Card className="border-border bg-card shadow-sm">
-          <CardHeader>
-            <CardTitle className="text-lg font-headline text-left">Payouts</CardTitle>
+          <CardHeader className="pb-3">
+            <CardTitle className="text-lg font-headline text-left flex items-center gap-2">
+              <Wallet className="w-5 h-5 text-primary" /> Payouts
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4 text-left">
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Settlements run automatically <span className="font-bold text-foreground">48 hours after each event</span>,
-              straight to your registered bank account.
-            </p>
+            <div className="grid grid-cols-2 gap-3">
+              <div className="bg-secondary/40 rounded-xl p-3">
+                <div className="text-lg font-black">{payoutBalance ? `₦${payoutBalance.ngn.toLocaleString()}` : '—'}</div>
+                <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Available NGN</div>
+              </div>
+              <div className="bg-secondary/40 rounded-xl p-3">
+                <div className="text-lg font-black">{payoutBalance ? `$${payoutBalance.usd.toLocaleString()}` : '—'}</div>
+                <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Available USD</div>
+              </div>
+            </div>
             <p className="text-xs text-muted-foreground/80">
-              Complete KYC verification to enable payouts.
+              Withdraw to your bank (NGN) or crypto wallet (USD). Requests up to your available balance are reviewed by our team — no KYC required.
             </p>
-            <Link href="/dashboard/organizer/payouts" className="no-underline">
+            <Link href="/dashboard/organizer/payouts" className="no-underline block">
               <Button className="w-full text-primary-foreground font-bold h-11 rounded-full gap-2">
-                <Wallet className="w-4 h-4" /> Request a Withdrawal
-              </Button>
-            </Link>
-            <Link href="/dashboard/organizer/kyc" className="no-underline">
-              <Button variant="outline" className="w-full text-primary hover:text-primary/80 font-bold h-11 rounded-full">
-                Complete KYC
+                <ArrowDownToLine className="w-4 h-4" /> Request a Withdrawal
               </Button>
             </Link>
           </CardContent>

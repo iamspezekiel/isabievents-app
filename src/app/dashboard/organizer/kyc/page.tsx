@@ -219,8 +219,8 @@ export default function KYCVerificationPage() {
                 <div className="space-y-1">
                   <h3 className="font-headline text-2xl">You&apos;re verified! 🎉</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">
-                    Your identity has been confirmed. You now get the verified badge, featured placement in discovery,
-                    and eligibility for instant ticket settlements. Your new events are auto-approved.
+                    Your identity has been confirmed. Your profile and events now display the verified badge - thank you
+                    for verifying.
                   </p>
                 </div>
                 <Button className="rounded-full font-bold h-11 px-8" onClick={() => router.push('/dashboard/organizer')}>
@@ -250,7 +250,7 @@ export default function KYCVerificationPage() {
               <div className="text-left space-y-1">
                 <h4 className="font-bold text-primary">Why verify your account?</h4>
                 <p className="text-xs text-muted-foreground leading-relaxed">
-                  Verified organizers enjoy higher trust scores, featured placement in discovery, and eligibility for instant ticket settlements.
+                  Verified organizers display a badge on their profile and events — it builds attendee trust with real buyers. Listing events and requesting payouts never require KYC.
                 </p>
               </div>
             </div>
@@ -401,7 +401,7 @@ export default function KYCVerificationPage() {
                     <div className="p-4 bg-yellow-500/5 border border-yellow-500/20 rounded-xl flex gap-3">
                       <AlertCircle className="w-4 h-4 text-yellow-600 shrink-0 mt-0.5" />
                       <p className="text-[10px] text-yellow-800 leading-relaxed">
-                        Please ensure your bank settlement details match the host name provided above to avoid payout delays.
+                        Please ensure your details match the government-issued ID provided above.
                       </p>
                     </div>
                   </CardContent>

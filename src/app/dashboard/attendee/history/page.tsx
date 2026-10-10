@@ -36,7 +36,7 @@ export default function OrderHistoryPage() {
   const { toast } = useToast();
   const [mounted, setMounted] = useState(false);
   const { profile } = useAuth();
-  const { events } = useEvents();
+  const { events } = useEvents({includeHidden: true});
   const [orders, setOrders] = useState<OrderDoc[]>([]);
   const [loading, setLoading] = useState(true);
 

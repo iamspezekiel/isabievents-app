@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { Html5Qrcode } from 'html5-qrcode';
 import { cn } from '@/lib/utils';
 import { apiFetch } from '@/lib/api-fetch';
+import { ProfileCard } from '@/components/profile-card';
 
 export default function StaffCheckIn() {
   const [scanState, setScanState] = useState<'idle' | 'validating' | 'success' | 'error' | 'duplicate'>('idle');
@@ -542,6 +543,11 @@ export default function StaffCheckIn() {
           </Card>
         </div>
       )}
+
+      {/* Profile — every staff member can update their own details (email stays fixed). */}
+      <div className="mt-8">
+        <ProfileCard />
+      </div>
 
       {/* Custom Keyframe for Scan Animation */}
       <style jsx global>{`

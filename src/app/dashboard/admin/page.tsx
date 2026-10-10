@@ -34,7 +34,7 @@ interface Stats {
 
 export default function AdminDashboard() {
   const [searchQuery, setSearchQuery] = useState('');
-  const {events, refetch} = useEvents();
+  const {events, refetch} = useEvents({includeHidden: true});
   const [stats, setStats] = useState<Stats | null>(null);
   const [resolvedIds, setResolvedIds] = useState<string[]>([]);
   const { toast } = useToast();
@@ -179,7 +179,7 @@ export default function AdminDashboard() {
             <h2 className="font-headline text-xl">Event Moderation Queue</h2>
             <div className="flex items-center gap-2 text-xs text-muted-foreground bg-secondary/50 px-3 py-1.5 rounded-lg border border-border">
               <Info className="w-3.5 h-3.5 text-primary" />
-              <span>Verified KYC Organizers bypass moderation and are auto-approved.</span>
+              <span>All new events go live immediately. Use Approve/Reject here to moderate - rejected events are hidden from the marketplace until approved again.</span>
             </div>
           </div>
           <Link href="/dashboard/admin/events" className="text-sm font-bold text-primary hover:underline">Manage All</Link>

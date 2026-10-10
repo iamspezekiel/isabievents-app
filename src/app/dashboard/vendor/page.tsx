@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { Html5Qrcode } from 'html5-qrcode';
 import { cn } from '@/lib/utils';
 import { apiFetch } from '@/lib/api-fetch';
+import { ProfileCard } from '@/components/profile-card';
 
 export default function VendorPortal() {
   const [scanState, setScanState] = useState<'idle' | 'validating' | 'success' | 'error' | 'duplicate'>('idle');
@@ -532,6 +533,11 @@ export default function VendorPortal() {
           </Card>
         </div>
       )}
+
+      {/* Profile — every vendor can update their own details (email stays fixed). */}
+      <div className="mt-8">
+        <ProfileCard />
+      </div>
 
       <style jsx global>{`
         @keyframes scan {

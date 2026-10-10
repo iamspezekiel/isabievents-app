@@ -21,6 +21,22 @@ interface EventBody {
   price?: number | string;
   inventory?: number | string;
   tags?: string[];
+  tiers?: {name?: string; price?: number}[];
+}
+
+/** Sanitizes organizer-defined ticket types (name + price) from the client. */
+function sanitizeTiers(input: unknown): {name: string; price: number}[] {
+  if (!Array.isArray(input)) return [];
+  return input
+    .slice(0, 12)
+    .map((raw) => {
+      const row = (raw || {}) as {name?: unknown; price?: unknown};
+      const name = String(row.name ?? '').trim().slice(0, 60);
+      const price = Number(row.price);
+      if (!name || !Number.isFinite(price) || price < 0) return null;
+      return {name, price: Math.round(price)};
+    })
+    .filter((r): r is {name: string; price: number} => r !== null);
 }
 
 /**
@@ -54,7 +70,12 @@ export async function POST(req: Request) {
     };
 
     const slug = `${slugify(title)}-${randomBytes(2).toString('hex')}`;
-    const price = Number(body.price) || 0;
+    const tiers = sanitizeTiers(body.tiers);
+    const tierPrices = tiers.map((t) => t.price);
+    const price = tierPrices.length
+      ? Math.min(...tierPrices)
+      : Number(body.price) || 0;
+    const priceMax = tierPrices.length ? Math.max(...tierPrices) : price;
     const ref = db.collection('events').doc();
     const nowIso = new Date().toISOString();
     const doc = {
@@ -66,8 +87,9 @@ export async function POST(req: Request) {
       date,
       organizer: {
         name: profile.name || 'Organizer',
-        // KYC-approved organizers are auto-approved; everyone else goes to moderation.
-        verified: profile.role === 'admin' || profile.verified === true,
+        // New events go LIVE immediately. Moderation remains available on the
+        // admin side (Approve/Reject) — reject hides, approve restores.
+        verified: true,
         avatar: '',
       },
       organizerUid: uid,
@@ -78,7 +100,8 @@ export async function POST(req: Request) {
       description: (body.description || '').trim() || (body.summary || '').trim(),
       summary: (body.summary || '').trim(),
       policies: (body.policies || '').trim(),
-      price: {min: price, max: price},
+      price: {min: price, max: priceMax},
+      ...(tiers.length ? {tiers} : {}),
       inventory: Number(body.inventory) || 0,
       tags: Array.isArray(body.tags) ? body.tags : [],
       createdAt: nowIso,
@@ -131,6 +154,14 @@ export async function PATCH(req: Request) {
     if (body.price !== undefined) {
       const price = Number(body.price) || 0;
       patch.price = {min: price, max: price};
+    }
+    if (body.tiers !== undefined) {
+      const tiers = sanitizeTiers(body.tiers);
+      patch.tiers = tiers;
+      if (tiers.length) {
+        const prices = tiers.map((t) => t.price);
+        patch.price = {min: Math.min(...prices), max: Math.max(...prices)};
+      }
     }
     if (body.inventory !== undefined) patch.inventory = Number(body.inventory) || 0;
     if (Array.isArray(body.tags)) patch.tags = body.tags;

@@ -36,7 +36,7 @@ import {
 
 export default function AdminEventsManagement() {
   const [searchQuery, setSearchQuery] = useState('');
-  const {events: allEvents, refetch} = useEvents();
+  const {events: allEvents, refetch} = useEvents({includeHidden: true});
   const [events, setEvents] = useState<EventDoc[]>([]);
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [eventToDelete, setEventToDelete] = useState<EventDoc | null>(null);
@@ -104,7 +104,7 @@ export default function AdminEventsManagement() {
       toast({
         variant: "destructive",
         title: "Event Rejected",
-        description: `"${title}" has been removed from the platform.`,
+        description: `"${title}" is now hidden from the marketplace. Approve it to bring it back.`,
       });
     }
   };
@@ -143,13 +143,13 @@ export default function AdminEventsManagement() {
             value="pending" 
             className="rounded-xl px-2 sm:px-8 font-bold flex-1 sm:flex-none py-2.5 sm:py-1.5 text-[10px] sm:text-sm whitespace-nowrap"
           >
-            Pending Review ({pendingModeration.length})
+            Pending / Hidden ({pendingModeration.length})
           </TabsTrigger>
           <TabsTrigger 
             value="approved" 
             className="rounded-xl px-2 sm:px-8 font-bold flex-1 sm:flex-none py-2.5 sm:py-1.5 text-[10px] sm:text-sm whitespace-nowrap"
           >
-            Auto-Approved ({autoApproved.length})
+            Live Now ({autoApproved.length})
           </TabsTrigger>
           <TabsTrigger 
             value="all" 
@@ -256,7 +256,7 @@ function ModerationRow({ event, type, onAction, onDelete, processingId }: {
               </Badge>
             ) : (
               <Badge className="bg-yellow-500/10 text-yellow-600 border-none text-[9px] font-black uppercase tracking-tighter">
-                Unverified Host
+                Hidden by Moderation
               </Badge>
             )}
           </div>

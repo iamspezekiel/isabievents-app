@@ -24,6 +24,8 @@ import { invalidateEventsCache } from '@/hooks/use-events';
 import { CITIES } from '@/lib/constants';
 import { apiFetch } from '@/lib/api-fetch';
 import { useAuth } from '@/components/auth-provider';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 interface AppSettings {
   fullName: string;
@@ -49,7 +51,7 @@ const DEFAULT_APP: AppSettings = {
 
 export default function AdminSystemSettings() {
   const { toast } = useToast();
-  const { loading: authLoading } = useAuth();
+  const { loading: authLoading, profile } = useAuth();
 
   // Platform settings — persisted to Firestore settings/app.
   const [app, setApp] = useState<AppSettings>(DEFAULT_APP);
@@ -147,6 +149,11 @@ export default function AdminSystemSettings() {
       if (smtp.pass) setHasPassword(true);
       setSmtp((prev) => ({...prev, pass: ''}));
       refreshSmtpFromServer();
+      // Keep the admin's own profile name in sync with the "Full Name" field
+      // (this is the only personal info the settings page holds).
+      if (profile?.uid && db && app.fullName.trim()) {
+        updateDoc(doc(db, 'users', profile.uid), {name: app.fullName.trim()}).catch(() => undefined);
+      }
       setSmtpStatus({ok: true, msg: 'All settings saved.'});
       toast({title: 'Settings Saved', description: 'Platform configuration and SMTP settings were saved.'});
     } catch (err) {
@@ -278,14 +285,16 @@ export default function AdminSystemSettings() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-2xl border border-border">
+            <div className="flex items-start gap-3 p-4 bg-secondary/30 rounded-2xl border border-border text-left">
+              <ShieldAlert className="w-5 h-5 text-primary shrink-0 mt-0.5" />
               <div className="space-y-1">
-                <p className="font-bold text-sm">Require KYC for Listing</p>
-                <p className="text-xs text-muted-foreground">Prevent unverified hosts from creating any events.</p>
+                <p className="font-bold text-sm">KYC &amp; Listing Policy</p>
+                <p className="text-xs text-muted-foreground">
+                  All new events go live immediately. KYC is optional — it only grants the verified badge. Moderate listings any time from the Events page (Approve/Reject).
+                </p>
               </div>
-              <Switch checked={app.requireKyc} onCheckedChange={(v) => setAppField('requireKyc', v)} />
             </div>
-            
+
             <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-2xl border border-border">
               <div className="space-y-1">
                 <p className="font-bold text-sm">Automated Settlements</p>

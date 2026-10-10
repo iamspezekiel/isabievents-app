@@ -46,7 +46,7 @@ export default function MyEventsPage() {
   const [eventToCancel, setEventToCancel] = useState<EventDoc | null>(null);
   const { toast } = useToast();
   const { profile } = useAuth();
-  const { events: allEvents, refetch } = useEvents();
+  const { events: allEvents, refetch } = useEvents({includeHidden: true});
   const [eventStats, setEventStats] = useState<Record<string, {sold: number; revenueNgn: number}>>({});
   const [removedIds, setRemovedIds] = useState<string[]>([]);
   const [searchQuery, setSearchQuery] = useState('');

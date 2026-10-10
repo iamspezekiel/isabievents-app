@@ -18,6 +18,11 @@ export interface EventDoc {
   organizer: {name: string; verified?: boolean; avatar?: string};
   image: string;
   description: string;
+  summary?: string;
+  policies?: string;
+  tiers?: {name: string; price: number}[];
+  organizerUid?: string;
+  organizerEmail?: string;
   price: {min: number; max: number};
   inventory?: number;
   tags: string[];

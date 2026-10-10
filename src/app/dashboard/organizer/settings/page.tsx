@@ -44,6 +44,7 @@ export default function OrganizerSettingsPage() {
   const { profile, signOut } = useAuth();
   const isVerified = !!(profile as {verified?: boolean})?.verified;
   const [whatsapp, setWhatsapp] = useState('');
+  const [brandName, setBrandName] = useState('');
   const [twoFactor, setTwoFactor] = useState(false);
   const [autoSettle, setAutoSettle] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -55,6 +56,7 @@ export default function OrganizerSettingsPage() {
     if (profile) {
       const p = profile as {whatsapp?: string; twoFactor?: boolean; autoSettle?: boolean};
       setWhatsapp(p.whatsapp || '');
+      setBrandName(profile.name || '');
       setTwoFactor(!!p.twoFactor);
       setAutoSettle(p.autoSettle !== false);
     }
@@ -68,7 +70,7 @@ export default function OrganizerSettingsPage() {
     }
     setSaving(true);
     try {
-      await updateDoc(doc(db, 'users', profile.uid), {whatsapp, twoFactor, autoSettle});
+      await updateDoc(doc(db, 'users', profile.uid), {name: brandName.trim() || profile.name, whatsapp, twoFactor, autoSettle});
       toast({title: 'Profile Saved', description: 'Your brand profile has been updated.'});
     } catch (err) {
       toast({
@@ -148,7 +150,7 @@ export default function OrganizerSettingsPage() {
                       {isVerified ? (<Badge className="text-[10px] font-black uppercase tracking-tighter bg-green-500/10 text-green-500 border-none">Verified</Badge>) : (<Badge variant="outline" className="text-[10px] font-black uppercase tracking-tighter border-yellow-500/50 text-yellow-600 bg-yellow-500/5">Not Verified</Badge>)}
                     </div>
                     <p className="text-sm text-muted-foreground leading-relaxed">
-                      Verify your identity to get the verified badge and unlock faster payouts for your events.
+                      Verify your identity to display the verified badge on your profile and events. KYC is optional - it never blocks listings or payouts.
                     </p>
                   </div>
                 </div>
@@ -172,8 +174,8 @@ export default function OrganizerSettingsPage() {
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="brand-name">Brand Name</Label>
-                  <Input id="brand-name" value={profile?.name || ''} className="h-11 bg-secondary/50 cursor-not-allowed" readOnly />
-                  <p className="text-[10px] text-muted-foreground">To change your brand name, please contact support.</p>
+                  <Input id="brand-name" value={brandName} onChange={(e) => setBrandName(e.target.value)} className="h-11" placeholder="Your brand or organiser name" />
+                  
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Support Email</Label>

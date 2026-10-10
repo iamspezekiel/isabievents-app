@@ -61,7 +61,7 @@ export default function AttendeeDashboard() {
 
   const { toast } = useToast();
   const { profile } = useAuth();
-  const { events } = useEvents();
+  const { events } = useEvents({includeHidden: true});
   const [tickets, setTickets] = useState<TicketDoc[]>([]);
   const [pastOrders, setPastOrders] = useState<OrderDoc[]>([]);
   const [savedCount, setSavedCount] = useState(0);

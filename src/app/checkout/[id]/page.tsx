@@ -35,7 +35,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from 'next/link';
 
-const NGN_TO_USD_RATE = 1550; // Mock exchange rate
+const NGN_TO_USD_RATE = 1550; // Fixed display/checkout conversion rate
 
 export default function CheckoutPage(props: { params: Promise<{ id: string }> }) {
   const { id } = use(props.params);
@@ -73,7 +73,22 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
   const [signupPassword, setSignupPassword] = useState('');
   const [showSignupPassword, setShowSignupPassword] = useState(false);
 
-  const totalNaira = (event?.price.min ?? 0) * quantity;
+  // Ticket tier selected on the event page (?tier=Name&qty=N).
+  const [tierName, setTierName] = useState<string | null>(null);
+  const [tierUnitPrice, setTierUnitPrice] = useState<number | null>(null);
+  useEffect(() => {
+    if (typeof window === 'undefined' || !event) return;
+    const qs = new URLSearchParams(window.location.search);
+    const t = qs.get('tier');
+    if (!t) return;
+    setTierName(t);
+    const evTiers = (event as unknown as {tiers?: {name: string; price: number}[]}).tiers;
+    const found = Array.isArray(evTiers) ? evTiers.find((x) => x.name === t) : undefined;
+    setTierUnitPrice(found ? found.price : null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [event?.id]);
+  const unitPrice = tierUnitPrice ?? event?.price.min ?? 0;
+  const totalNaira = unitPrice * quantity;
   const totalUsd = (totalNaira / NGN_TO_USD_RATE).toFixed(2);
   const totalToCharge = currency === 'USD' ? Number(totalUsd) : totalNaira;
 
@@ -240,7 +255,7 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
           eventSlug: event.slug || event.id,
           eventTitle: event.title,
           quantity,
-          unitPrice: currency === 'USD' ? Number(totalUsd) : event.price.min,
+          unitPrice: currency === 'USD' ? Number((unitPrice / NGN_TO_USD_RATE).toFixed(2)) : unitPrice,
           currency,
           paymentMethod,
           buyer: {
@@ -675,11 +690,11 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
                 <div className="space-y-4">
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-muted-foreground font-medium">Ticket Type</span>
-                    <span className="font-bold">Standard Access</span>
+                    <span className="font-bold">{tierName || 'General Admission'}</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-muted-foreground font-medium">Price</span>
-                    <span className="font-bold">₦{event.price.min.toLocaleString()}</span>
+                    <span className="font-bold">₦{unitPrice.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-muted-foreground font-medium">Quantity</span>

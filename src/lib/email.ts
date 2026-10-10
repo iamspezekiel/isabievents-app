@@ -111,8 +111,12 @@ function layout(title: string, bodyHtml: string): string {
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f7;padding:24px 0;">
     <tr><td align="center">
       <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6e6ef;">
-        <tr><td style="background:${PRIMARY};padding:24px 32px;">
-          <span style="color:#ffffff;font-size:22px;font-weight:bold;letter-spacing:-0.5px;">Isabi<span style="opacity:.75;">Events</span></span>
+        <tr><td style="background:${PRIMARY};padding:18px 32px;" align="left">
+          <a href="https://events.isabi.cloud" style="text-decoration:none;display:inline-block;">
+            <img src="https://placehold.co/196x46/7E7CFF/ffffff.png?text=IsabiEvents&font=roboto&font-size=34"
+                 width="196" height="46" alt="IsabiEvents"
+                 style="display:block;border:0;border-radius:8px;" />
+          </a>
         </td></tr>
         <tr><td style="padding:32px;">
           <h1 style="margin:0 0 16px;font-size:20px;color:#16161d;">${title}</h1>
@@ -438,7 +442,7 @@ export async function sendKycDecisionEmail(opts: {
       approved ? 'Identity verified' : 'Verification declined',
       p(
         approved
-          ? `Great news, ${escapeHtml(opts.name)} — your identity has been verified! Your profile now shows the verified badge, your new events are auto-approved, and you're eligible for instant ticket settlements.`
+          ? `Great news, ${escapeHtml(opts.name)} — your identity has been verified! Your profile now displays the verified badge everywhere on IsabiEvents.`
           : `Hi ${escapeHtml(opts.name)} — after reviewing your submission we need a little more information. Please check your ID details and document photo, then submit again from your verification page.`
       ) +
         `<a href="${base}/dashboard/organizer/kyc" style="display:inline-block;background:${PRIMARY};color:#fff;padding:12px 28px;border-radius:999px;font-weight:bold;text-decoration:none;">${approved ? 'Open Dashboard' : 'Resubmit Verification'}</a>` +
@@ -447,6 +451,31 @@ export async function sendKycDecisionEmail(opts: {
     text: approved
       ? `Your identity has been verified. Open ${base}/dashboard/organizer`
       : `Your verification was declined — please resubmit at ${base}/dashboard/organizer/kyc`,
+  });
+}
+
+/** 2FA: one-time login verification code (10-minute expiry). */
+export async function sendTfaCodeEmail(opts: {
+  to: string;
+  name?: string;
+  code: string;
+  expiresInMinutes?: number;
+}): Promise<boolean> {
+  const minutes = opts.expiresInMinutes || 10;
+  return send({
+    to: opts.to,
+    subject: `Your IsabiEvents login code: ${opts.code}`,
+    html: layout(
+      'Two-factor verification',
+      `
+      ${p(`Hi ${escapeHtml(opts.name || 'there')},`)}
+      ${p(`Someone (hopefully you) is signing in to your IsabiEvents account. Enter this code to continue:`)}
+      <p style="margin:0 0 18px;font-size:30px;font-weight:bold;letter-spacing:8px;color:#16161d;text-align:center;background:#f4f4f7;border-radius:12px;padding:16px;">${escapeHtml(opts.code)}</p>
+      ${p(`This code expires in <strong>${minutes} minutes</strong>. It can be used once.`)}
+      ${p("If you didn't try to sign in, you can safely ignore this email — nobody can access your account without the code.")}
+      `,
+    ),
+    text: `Your IsabiEvents login code is ${opts.code}. It expires in ${minutes} minutes.`,
   });
 }
 

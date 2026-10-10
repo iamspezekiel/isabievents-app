@@ -47,15 +47,20 @@ export default function AttendeeSettingsPage() {
   const [isDeleting, setIsDeleting] = useState(false);
 
   // Form State
-  const [whatsapp, setWhatsapp] = useState("+2349024244140");
+  const [fullName, setFullName] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
   const [location, setLocation] = useState("Lagos");
   const [emailNotifs, setEmailNotifs] = useState(true);
   const [marketingNotifs, setMarketingNotifs] = useState(false);
 
-  // Load saved notification preferences from the profile.
+  // Load saved profile fields + notification preferences.
   useEffect(() => {
     if (profile) {
-      const n = (profile as {notifications?: {email?: boolean; marketing?: boolean}}).notifications;
+      const p = profile as {whatsapp?: string; city?: string; notifications?: {email?: boolean; marketing?: boolean}};
+      setFullName(profile.name || "");
+      setWhatsapp(p.whatsapp || "");
+      if (p.city) setLocation(p.city);
+      const n = p.notifications;
       if (n) {
         setEmailNotifs(n.email ?? true);
         setMarketingNotifs(n.marketing ?? false);
@@ -77,6 +82,7 @@ export default function AttendeeSettingsPage() {
       await setDoc(
         doc(db, 'users', profile.uid),
         {
+          name: fullName.trim() || profile.name,
           whatsapp,
           city: location,
           notifications: {email: emailNotifs, marketing: marketingNotifs},
@@ -145,7 +151,7 @@ export default function AttendeeSettingsPage() {
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="fullname">Full Name</Label>
-                  <Input id="fullname" value={profile?.name || ''} className="h-11 bg-secondary/50 cursor-not-allowed" readOnly />
+                  <Input id="fullname" value={fullName} onChange={(e) => setFullName(e.target.value)} className="h-11 bg-secondary/50" placeholder="Your full name" />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="email">Email Address</Label>

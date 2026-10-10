@@ -7,10 +7,15 @@
  * session can never hide newly added events. Events are returned soonest-
  * upcoming first (past events last) so real, live events always surface.
  */
-import {useCallback, useEffect, useState} from 'react';
+import {useCallback, useEffect, useMemo, useState} from 'react';
 import {getEvents, type EventDoc} from '@/lib/client-db';
 
 const CACHE_TTL_MS = 30_000;
+
+type UseEventsOpts = {
+  /** Include events hidden by moderation (admin/organizer/staff/attendee-ticket surfaces). */
+  includeHidden?: boolean;
+};
 
 let cache: EventDoc[] | null = null;
 let cachedAt = 0;
@@ -52,8 +57,8 @@ export function invalidateEventsCache() {
   inflight = null;
 }
 
-export function useEvents() {
-  const [events, setEvents] = useState<EventDoc[]>(() => cache ?? []);
+export function useEvents(opts?: UseEventsOpts) {
+  const [all, setAll] = useState<EventDoc[]>(() => cache ?? []);
   const [loading, setLoading] = useState(cache === null);
 
   const refresh = useCallback(() => {
@@ -62,7 +67,7 @@ export function useEvents() {
     cachedAt = 0;
     inflight = null;
     return load()
-      .then((rows) => setEvents(rows))
+      .then((rows) => setAll(rows))
       .catch(() => undefined);
   }, []);
 
@@ -71,7 +76,7 @@ export function useEvents() {
     load()
       .then((rows) => {
         if (alive) {
-          setEvents(rows);
+          setAll(rows);
           setLoading(false);
         }
       })
@@ -99,7 +104,7 @@ export function useEvents() {
     setLoading(true);
     return load()
       .then((rows) => {
-        setEvents(rows);
+        setAll(rows);
         setLoading(false);
         return rows;
       })
@@ -108,6 +113,13 @@ export function useEvents() {
         throw err;
       });
   }, []);
+
+  // Moderation: events rejected by the admin are hidden from public surfaces.
+  const includeHidden = !!opts?.includeHidden;
+  const events = useMemo(
+    () => (includeHidden ? all : all.filter((e) => e?.organizer?.verified !== false)),
+    [all, includeHidden]
+  );
 
   return {events, loading, refetch};
 }

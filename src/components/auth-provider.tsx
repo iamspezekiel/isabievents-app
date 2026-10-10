@@ -35,6 +35,10 @@ export interface AuthProfile {
   email: string;
   role: Role;
   whatsapp?: string;
+  /** True once the organizer's KYC has been approved (verified badge). */
+  verified?: boolean;
+  /** True when email-code two-factor login is enabled for this account. */
+  twoFactor?: boolean;
 }
 
 interface AuthContextValue {

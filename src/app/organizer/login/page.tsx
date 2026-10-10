@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
 import Link from 'next/link';
-import { Mail, Lock, Loader2, Eye, EyeOff, CalendarCheck } from 'lucide-react';
+import { Mail, Lock, Loader2, Eye, EyeOff, CalendarCheck, ShieldCheck, ArrowLeft } from 'lucide-react';
 import { Logo } from '@/components/logo';
 import { DASHBOARD_PATHS, useAuth } from '@/components/auth-provider';
 import { useToast } from "@/hooks/use-toast";
@@ -25,6 +25,65 @@ export default function OrganizerLoginPage() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
+  // Two-factor (email code) — activated per-account from Security settings.
+  const [tfaStep, setTfaStep] = useState(false);
+  const [tfaCode, setTfaCode] = useState('');
+  const [tfaResendIn, setTfaResendIn] = useState(0);
+
+  React.useEffect(() => {
+    if (tfaResendIn <= 0) return;
+    const t = setTimeout(() => setTfaResendIn((s) => s - 1), 1000);
+    return () => clearTimeout(t);
+  }, [tfaResendIn]);
+
+  const requestTfaCode = async () => {
+    setLoading(true);
+    try {
+      await fetch('/api/auth/tfa', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({action: 'send', email}),
+      });
+      setTfaResendIn(60);
+      toast({title: 'Verification Code Sent', description: `Enter the 6-digit code we emailed to ${email}.`});
+    } catch {
+      toast({variant: 'destructive', title: 'Could Not Send Code', description: 'Please try again in a moment.'});
+    }
+    setLoading(false);
+  };
+
+  const handleVerifyTfa = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const res = await fetch('/api/auth/tfa', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({action: 'verify', email, code: tfaCode}),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.ok) throw new Error(data.error || 'Incorrect code.');
+      const profile = await signIn(email, password);
+      if (profile.role !== 'organizer' && profile.role !== 'admin') {
+        await signOut();
+        toast({variant: 'destructive', title: 'Not an Organizer', description: 'Attendees should sign in from the regular login page.'});
+        setTfaStep(false);
+        setLoading(false);
+        return;
+      }
+      toast({title: 'Welcome back, Organizer!', description: `Signed in as ${profile.name}.`});
+      router.push(profile.role === 'admin' ? DASHBOARD_PATHS.admin : DASHBOARD_PATHS.organizer);
+      return;
+    } catch (err) {
+      toast({
+        variant: 'destructive',
+        title: 'Verification Failed',
+        description: err instanceof Error ? err.message : 'Incorrect code.',
+      });
+    }
+    setLoading(false);
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -38,6 +97,13 @@ export default function OrganizerLoginPage() {
           description: "This is the Organizer Portal. Attendees should sign in from the regular login page.",
         });
         setLoading(false);
+        return;
+      }
+      if ((profile as {twoFactor?: boolean}).twoFactor) {
+        // 2FA enabled: sign back out and require the emailed code.
+        await signOut();
+        setTfaStep(true);
+        requestTfaCode();
         return;
       }
       toast({
@@ -73,6 +139,53 @@ export default function OrganizerLoginPage() {
             <CardTitle className="font-headline text-2xl">Organizer Sign In</CardTitle>
             <CardDescription>Access your organizer dashboard</CardDescription>
           </CardHeader>
+          {tfaStep ? (
+            <form onSubmit={handleVerifyTfa}>
+              <CardContent className="space-y-4 px-10 md:px-6 text-center">
+                <div className="mx-auto w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                  <ShieldCheck className="w-6 h-6 text-primary" />
+                </div>
+                <div className="space-y-1">
+                  <h4 className="font-bold">Enter Verification Code</h4>
+                  <CardDescription>
+                    We emailed a 6-digit code to <span className="font-bold text-foreground">{email}</span>
+                  </CardDescription>
+                </div>
+                <Input
+                  id="tfa-code"
+                  inputMode="numeric"
+                  maxLength={6}
+                  autoComplete="one-time-code"
+                  placeholder="000000"
+                  className="h-12 text-center text-xl font-bold tracking-[0.5em] bg-secondary/50"
+                  value={tfaCode}
+                  onChange={(e) => setTfaCode(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  required
+                  autoFocus
+                />
+                <Button type="submit" className="w-full rounded-xl h-9 md:h-11" disabled={loading || tfaCode.length !== 6}>
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Verify & Sign In'}
+                </Button>
+                <div className="flex items-center justify-between text-xs">
+                  <button
+                    type="button"
+                    onClick={() => { setTfaStep(false); setTfaCode(''); }}
+                    className="text-primary font-bold gap-1 inline-flex items-center hover:underline"
+                  >
+                    <ArrowLeft className="w-3 h-3" /> Different account
+                  </button>
+                  <button
+                    type="button"
+                    onClick={requestTfaCode}
+                    disabled={tfaResendIn > 0 || loading}
+                    className="text-primary font-bold disabled:opacity-50 hover:underline"
+                  >
+                    {tfaResendIn > 0 ? `Resend in ${tfaResendIn}s` : 'Resend code'}
+                  </button>
+                </div>
+              </CardContent>
+            </form>
+          ) : (
           <form onSubmit={handleLogin}>
             <CardContent className="space-y-4 px-10 md:px-6">
               <div className="space-y-2">
@@ -120,6 +233,8 @@ export default function OrganizerLoginPage() {
               </Button>
             </CardContent>
           </form>
+          )}
+          {!tfaStep && (
           <CardFooter className="flex flex-col gap-3 px-10 md:px-6">
             <p className="text-center text-sm text-muted-foreground">
               New organizer? <Link href="/organizer/signup" className="text-primary font-bold no-underline">Create Organizer Account</Link>
@@ -128,6 +243,7 @@ export default function OrganizerLoginPage() {
               Buying tickets? <Link href="/login" className="text-primary font-bold no-underline">Attendee Login</Link>
             </p>
           </CardFooter>
+          )}
         </Card>
       </div>
     </div>

@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/rich-text-editor";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
@@ -57,6 +58,11 @@ function CreateEventForm() {
 
   const [features, setFeatures] = useState<string[]>([]);
   const [currentFeature, setCurrentFeature] = useState('');
+
+  // Ticket types & prices (at least one required).
+  const [tiers, setTiers] = useState<{name: string; price: string}[]>([
+    {name: 'General Admission', price: ''},
+  ]);
 
   // Cover image (uploaded to Cloudflare R2 via /api/upload)
   const [coverImage, setCoverImage] = useState('');
@@ -111,6 +117,17 @@ function CreateEventForm() {
         });
         setCoverImage(event.image || '');
         setFeatures(Array.isArray(event.tags) ? event.tags : []);
+        const evTiers = (event as {tiers?: {name?: string; price?: number}[]}).tiers;
+        if (Array.isArray(evTiers) && evTiers.length) {
+          setTiers(evTiers.map((t) => ({name: String(t.name || 'General Admission'), price: String(t.price ?? 0)})));
+        } else if ((event.price?.max ?? 0) > (event.price?.min ?? 0)) {
+          setTiers([
+            {name: 'Standard Access', price: String(event.price?.min ?? 0)},
+            {name: 'VIP Experience', price: String(event.price?.max ?? 0)},
+          ]);
+        } else {
+          setTiers([{name: 'General Admission', price: String(event.price?.min ?? 0)}]);
+        }
       })
       .catch(() => undefined);
     return () => {
@@ -178,6 +195,12 @@ function CreateEventForm() {
     }
     setSubmitting(true);
     try {
+      const validTiers = tiers
+        .map((t) => ({name: t.name.trim(), price: Number(t.price) || 0}))
+        .filter((t) => t.name);
+      if (!validTiers.length) {
+        throw new Error('Add at least one ticket type with a name.');
+      }
       const payload = {
         title: formData.name.trim(),
         category: formData.category || 'community',
@@ -188,7 +211,8 @@ function CreateEventForm() {
         description: formData.description.trim() || formData.summary.trim(),
         summary: formData.summary.trim(),
         policies: formData.policies.trim(),
-        price: Number(formData.price) || 0,
+        price: Math.min(...validTiers.map((t) => t.price)),
+        tiers: validTiers,
         inventory: Number(formData.capacity) || 0,
         tags: features,
       };
@@ -396,13 +420,14 @@ function CreateEventForm() {
 
                 <div className="space-y-2">
                   <Label htmlFor="description">Detailed Description</Label>
-                  <Textarea 
-                    id="description" 
-                    placeholder="What can attendees expect?" 
-                    className="min-h-[200px]"
+                  <RichTextEditor
                     value={formData.description}
-                    onChange={(e) => setFormData({...formData, description: e.target.value})}
+                    onChange={(v) => setFormData({...formData, description: v})}
+                    placeholder="What can attendees expect? Use **bold**, lists, add images (https://…) and YouTube links — they render as video."
                   />
+                  <p className="text-xs text-muted-foreground">
+                    Formatting supported: **bold**, *italic*, ## headings, - lists, &gt; quotes, [links](https://…), images and YouTube videos.
+                  </p>
                 </div>
 
                 <div className="space-y-2">
@@ -441,10 +466,56 @@ function CreateEventForm() {
                     <CardTitle className="text-lg font-bold">Ticketing</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="price">Base Ticket Price (₦)</Label>
-                      <Input id="price" type="number" placeholder="5000" value={formData.price} onChange={(e) => setFormData({...formData, price: e.target.value})} className="h-11" />
-                      <p className="text-xs text-muted-foreground">Set to 0 for Free events.</p>
+                    <div className="space-y-3">
+                      <Label>Ticket Types &amp; Prices (₦)</Label>
+                      {tiers.map((tier, i) => (
+                        <div key={i} className="flex items-center gap-2">
+                          <Input
+                            placeholder="e.g. Regular, VIP, Table for 5"
+                            value={tier.name}
+                            onChange={(e) =>
+                              setTiers(tiers.map((t, idx) => (idx === i ? {...t, name: e.target.value} : t)))
+                            }
+                            className="h-11 flex-1"
+                            aria-label={`Ticket type ${i + 1} name`}
+                          />
+                          <Input
+                            type="number"
+                            min={0}
+                            placeholder="Price"
+                            value={tier.price}
+                            onChange={(e) =>
+                              setTiers(tiers.map((t, idx) => (idx === i ? {...t, price: e.target.value} : t)))
+                            }
+                            className="h-11 w-28"
+                            aria-label={`Ticket type ${i + 1} price`}
+                          />
+                          {tiers.length > 1 && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="icon"
+                              className="h-11 w-11 text-muted-foreground hover:text-red-500"
+                              onClick={() => setTiers(tiers.filter((_, idx) => idx !== i))}
+                              aria-label="Remove ticket type"
+                            >
+                              ×
+                            </Button>
+                          )}
+                        </div>
+                      ))}
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        className="rounded-full font-bold gap-2"
+                        onClick={() => setTiers([...tiers, {name: '', price: ''}])}
+                      >
+                        + Add Ticket Type
+                      </Button>
+                      <p className="text-xs text-muted-foreground">
+                        Each type becomes a selectable ticket on your event page. Use 0 for free entry.
+                      </p>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="capacity">Total Capacity</Label>

@@ -20,7 +20,7 @@ export default function TicketGalleryPage() {
   const [mounted, setMounted] = useState(false);
   const [isOfflineReady, setIsOfflineReady] = useState(false);
   const { profile } = useAuth();
-  const { events } = useEvents();
+  const { events } = useEvents({includeHidden: true});
   const [tickets, setTickets] = useState<TicketDoc[]>([]);
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState('');

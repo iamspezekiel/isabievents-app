@@ -20,17 +20,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { apiFetch } from '@/lib/api-fetch';
 
-/** Every Nigerian bank is supported — full list for the picker. */
+/** Every Nigerian bank is supported — full picker plus a free-text fallback. */
 const BANKS = [
-  'Access Bank', 'Citibank Nigeria', 'Ecobank Nigeria', 'Fidelity Bank',
-  'First Bank of Nigeria', 'FCMB (First City Monument Bank)', 'Globus Bank',
-  'Guaranty Trust Bank (GTB)', 'Heritage Bank', 'Jaiz Bank', 'Keystone Bank',
-  'Kuda Bank', 'Moniepoint MFB', 'Opay (Paycom)', 'PalmPay', 'Polaris Bank',
-  'Providus Bank', 'Premium Trust Bank', 'Stanbic IBTC Bank',
-  'Standard Chartered Bank', 'Sterling Bank', 'Suntrust Bank',
-  'Titan Trust Bank', 'Union Bank', 'Unity Bank', 'VFD Microfinance Bank',
-  'Wema Bank', 'Zenith Bank', 'Other / Rural Microfinance Bank',
+  'Access Bank', '9 Payment Service Bank (9PSB)', 'Abbey Mortgage Bank',
+  'Citibank Nigeria', 'Ecobank Nigeria', 'Fidelity Bank',
+  'First Bank of Nigeria', 'FCMB (First City Monument Bank)', 'FSDH Bank',
+  'Globus Bank', 'Guaranty Trust Bank (GTB)', 'Heritage Bank', 'Jaiz Bank',
+  'Keystone Bank', 'Kuda Bank', 'Lotus Bank', 'Moniepoint MFB',
+  'Mutual Trust Microfinance Bank', 'Opay (Paycom)', 'PalmPay',
+  'Polaris Bank', 'Premium Trust Bank', 'Providus Bank', 'Rand Merchant Bank',
+  'Spark Microfinance Bank', 'Stanbic IBTC Bank', 'Standard Chartered Bank',
+  'Sterling Bank', 'Suntrust Bank', 'Titan Trust Bank', 'Union Bank',
+  'Unity Bank', 'VFD Microfinance Bank', 'Wema Bank', 'Zenith Bank',
+  'Other Bank (not listed)',
 ];
+const OTHER_BANK = 'Other Bank (not listed)';
 
 const CRYPTO_NETWORKS = [
   'USDT — TRC20 (Tron)',
@@ -96,6 +100,7 @@ export default function OrganizerPayoutsPage() {
   const [currency, setCurrency] = useState<'NGN' | 'USD'>('NGN');
   const [amount, setAmount] = useState('');
   const [bankName, setBankName] = useState('');
+  const [otherBank, setOtherBank] = useState('');
   const [accountNumber, setAccountNumber] = useState('');
   const [accountName, setAccountName] = useState('');
   const [network, setNetwork] = useState('');
@@ -126,11 +131,28 @@ export default function OrganizerPayoutsPage() {
       toast({variant: 'destructive', title: 'Invalid amount', description: 'Enter an amount greater than zero.'});
       return;
     }
+    // Client-side balance check (the server enforces this too).
+    const available = currency === 'USD' ? balance.usd : balance.ngn;
+    if (amt > available + 0.001) {
+      toast({
+        variant: 'destructive',
+        title: 'Amount exceeds balance',
+        description:
+          available <= 0
+            ? `Your available ${currency} balance is 0 — withdrawals open once ticket sales are settled.`
+            : `You can withdraw up to ${currency === 'USD' ? `$${available.toFixed(2)}` : `₦${available.toLocaleString()}`}.`,
+      });
+      return;
+    }
+    if (currency === 'NGN' && bankName === OTHER_BANK && !otherBank.trim()) {
+      toast({variant: 'destructive', title: 'Bank name required', description: 'Type the name of your bank.'});
+      return;
+    }
     setSubmitting(true);
     try {
       const payload: Record<string, unknown> = {amount: amt, currency};
       if (currency === 'NGN') {
-        payload.bankName = bankName;
+        payload.bankName = bankName === OTHER_BANK ? otherBank.trim() : bankName;
         payload.accountNumber = accountNumber;
         payload.accountName = accountName;
       } else {
@@ -150,6 +172,7 @@ export default function OrganizerPayoutsPage() {
       });
       setAmount('');
       setBankName('');
+      setOtherBank('');
       setAccountNumber('');
       setAccountName('');
       setNetwork('');
@@ -167,6 +190,8 @@ export default function OrganizerPayoutsPage() {
   };
 
   const pendingCount = requests.filter((r) => r.status === 'pending').length;
+  const availableAmt = currency === 'USD' ? balance.usd : balance.ngn;
+  const amountOverBalance = Number(amount) > availableAmt + 0.001;
 
   return (
     <div className="p-4 pb-16 md:p-12 md:pb-16 space-y-8">
@@ -255,6 +280,9 @@ export default function OrganizerPayoutsPage() {
                   className="h-11 bg-secondary/50"
                   required
                 />
+                <p className={`text-xs ${amountOverBalance ? 'text-red-500 font-bold' : 'text-muted-foreground'}`}>
+                  Available: {currency === 'USD' ? `$${availableAmt.toLocaleString()}` : `₦${availableAmt.toLocaleString()}`} — requests are capped at your balance.
+                </p>
               </div>
 
               {currency === 'NGN' ? (
@@ -272,6 +300,19 @@ export default function OrganizerPayoutsPage() {
                       </SelectContent>
                     </Select>
                   </div>
+                  {bankName === OTHER_BANK && (
+                    <div className="space-y-2">
+                      <Label htmlFor="otherbank">Bank Name</Label>
+                      <Input
+                        id="otherbank"
+                        placeholder="Type your bank's full name"
+                        value={otherBank}
+                        onChange={(e) => setOtherBank(e.target.value)}
+                        className="h-11 bg-secondary/50"
+                        required
+                      />
+                    </div>
+                  )}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <Label htmlFor="acct">Account Number</Label>
@@ -336,9 +377,9 @@ export default function OrganizerPayoutsPage() {
                 </span>
               </div>
 
-              <Button type="submit" className="w-full rounded-xl h-11 font-bold gap-2" disabled={submitting}>
+              <Button type="submit" className="w-full rounded-xl h-11 font-bold gap-2" disabled={submitting || amountOverBalance}>
                 {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowDownToLine className="w-4 h-4" />}
-                Submit Request
+                {amountOverBalance ? 'Amount Exceeds Available Balance' : 'Submit Request'}
               </Button>
             </form>
           </CardContent>
