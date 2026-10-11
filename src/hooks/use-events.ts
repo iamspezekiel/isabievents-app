@@ -32,10 +32,21 @@ function bySoonestFirst(a: EventDoc, b: EventDoc): number {
   return aPast ? tb - ta : ta - tb;
 }
 
+function fetchWithRetry(attempts = 3): Promise<EventDoc[]> {
+  // Surface read errors (don't swallow → empty) so a transient Firestore blip
+  // retries instead of silently rendering a blank page. Backoff between tries.
+  const run = (n: number): Promise<EventDoc[]> =>
+    getEvents({throwOnError: true}).catch((err) => {
+      if (n <= 1) throw err;
+      return new Promise((res) => setTimeout(res, 400 * (4 - n))).then(() => run(n - 1));
+    });
+  return run(attempts);
+}
+
 function load(): Promise<EventDoc[]> {
   if (cache && Date.now() - cachedAt < CACHE_TTL_MS) return Promise.resolve(cache);
   if (!inflight) {
-    inflight = getEvents()
+    inflight = fetchWithRetry()
       .then((rows) => {
         const sorted = [...rows].sort(bySoonestFirst);
         cache = sorted;
@@ -43,6 +54,7 @@ function load(): Promise<EventDoc[]> {
         return sorted;
       })
       .catch((err) => {
+        // Never cache a failure — clear inflight so the next mount/focus retries.
         inflight = null;
         throw err;
       });
@@ -60,6 +72,7 @@ export function invalidateEventsCache() {
 export function useEvents(opts?: UseEventsOpts) {
   const [all, setAll] = useState<EventDoc[]>(() => cache ?? []);
   const [loading, setLoading] = useState(cache === null);
+  const [error, setError] = useState(false);
 
   const refresh = useCallback(() => {
     // Re-fetch (bypassing the TTL) and update every mounted consumer.
@@ -67,8 +80,11 @@ export function useEvents(opts?: UseEventsOpts) {
     cachedAt = 0;
     inflight = null;
     return load()
-      .then((rows) => setAll(rows))
-      .catch(() => undefined);
+      .then((rows) => {
+        setAll(rows);
+        setError(false);
+      })
+      .catch(() => setError(true));
   }, []);
 
   useEffect(() => {
@@ -77,11 +93,15 @@ export function useEvents(opts?: UseEventsOpts) {
       .then((rows) => {
         if (alive) {
           setAll(rows);
+          setError(false);
           setLoading(false);
         }
       })
       .catch(() => {
-        if (alive) setLoading(false);
+        if (alive) {
+          setError(true);
+          setLoading(false);
+        }
       });
 
     // Re-check when the tab regains focus so a previously failed/empty load
@@ -105,11 +125,13 @@ export function useEvents(opts?: UseEventsOpts) {
     return load()
       .then((rows) => {
         setAll(rows);
+        setError(false);
         setLoading(false);
         return rows;
       })
       .catch((err) => {
         setLoading(false);
+        setError(true);
         throw err;
       });
   }, []);
@@ -121,5 +143,5 @@ export function useEvents(opts?: UseEventsOpts) {
     [all, includeHidden]
   );
 
-  return {events, loading, refetch};
+  return {events, loading, error, refetch};
 }

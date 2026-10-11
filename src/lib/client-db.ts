@@ -42,7 +42,7 @@ function client(): ClientFirestore | null {
 }
 
 /** Reads all events (browser). */
-export async function getEvents(): Promise<EventDoc[]> {
+export async function getEvents(opts: {throwOnError?: boolean} = {}): Promise<EventDoc[]> {
   try {
     const cdb = client();
     if (!cdb) return [];
@@ -51,6 +51,11 @@ export async function getEvents(): Promise<EventDoc[]> {
     return snap.docs.map((d) => ({id: d.id, ...d.data()})) as EventDoc[];
   } catch (err) {
     console.warn('[client-db] getEvents failed:', err);
+    // By default a read failure is treated as "no events" so a single blip never
+    // crashes a page. Callers that need to distinguish failure from empty (the
+    // shared useEvents feed) pass throwOnError to trigger a retry instead of
+    // silently rendering an empty state.
+    if (opts.throwOnError) throw err;
     return [];
   }
 }

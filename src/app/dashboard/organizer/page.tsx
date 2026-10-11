@@ -35,7 +35,7 @@ export default function OrganizerDashboard() {
   const [showTrustTip, setShowTrustTip] = useState(true);
   const { toast } = useToast();
   const { profile } = useAuth();
-  const { events: allEvents, refetch } = useEvents({includeHidden: true});
+  const { events: allEvents, refetch, error: eventsError } = useEvents({includeHidden: true});
   const [stats, setStats] = useState<Record<string, {sold: number; revenueNgn: number}>>({});
   const [statsLoaded, setStatsLoaded] = useState(false);
   const [payoutBalance, setPayoutBalance] = useState<{ngn: number; usd: number} | null>(null);
@@ -241,15 +241,27 @@ export default function OrganizerDashboard() {
              ))}
            </div>
          ) : (
-           <div className="bg-card border border-dashed border-border py-16 rounded-[2rem] text-center">
-             <Calendar className="w-10 h-10 text-muted-foreground/30 mx-auto mb-4" />
-             <p className="text-muted-foreground font-medium">No upcoming events yet.</p>
-             <Link href="/dashboard/organizer/create" className="no-underline">
-               <Button className="mt-4 rounded-full font-bold gap-2">
-                 <Plus className="w-4 h-4" /> Create Your First Event
-               </Button>
-             </Link>
-           </div>
+            <div className="bg-card border border-dashed border-border py-16 rounded-[2rem] text-center">
+              {eventsError ? (
+                <>
+                  <RefreshCcw className="w-10 h-10 text-muted-foreground/30 mx-auto mb-4" />
+                  <p className="text-muted-foreground font-medium mb-4">Couldn&apos;t load your events.</p>
+                  <Button variant="outline" className="rounded-full font-bold gap-2" onClick={() => refetch()}>
+                    <RefreshCcw className="w-4 h-4" /> Try Again
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Calendar className="w-10 h-10 text-muted-foreground/30 mx-auto mb-4" />
+                  <p className="text-muted-foreground font-medium">No upcoming events yet.</p>
+                  <Link href="/dashboard/organizer/create" className="no-underline">
+                    <Button className="mt-4 rounded-full font-bold gap-2">
+                      <Plus className="w-4 h-4" /> Create Your First Event
+                    </Button>
+                  </Link>
+                </>
+              )}
+            </div>
          )}
       </div>
     </div>

@@ -27,7 +27,9 @@ import {
   Heart,
   Share2,
   ShieldCheck,
-  Smartphone
+  Smartphone,
+  RefreshCw,
+  CalendarX
 } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -51,7 +53,7 @@ export default function HomePage() {
   const [displayLimit, setDisplayLimit] = useState(9);
   const [mounted, setMounted] = useState(false);
   const { toast } = useToast();
-  const { events } = useEvents();
+  const { events, loading: eventsLoading, error: eventsError, refetch } = useEvents();
 
   useEffect(() => {
     setMounted(true);
@@ -180,7 +182,30 @@ export default function HomePage() {
           </div>
           
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8 mb-12">
-            {events.slice(0, displayLimit).map((event) => (
+            {eventsLoading && !events.length ? (
+              Array.from({ length: 6 }).map((_, i) => (
+                <div key={`sk-${i}`} className="bg-card border border-border rounded-[1.25rem] md:rounded-[2.5rem] overflow-hidden animate-pulse">
+                  <div className="relative aspect-[16/10] bg-secondary" />
+                  <div className="p-3 md:p-8 space-y-3">
+                    <div className="h-3 w-24 bg-secondary rounded" />
+                    <div className="h-5 w-3/4 bg-secondary rounded" />
+                    <div className="h-3 w-1/2 bg-secondary rounded" />
+                  </div>
+                </div>
+              ))
+            ) : eventsError && !events.length ? (
+              <div className="col-span-full py-16 text-center">
+                <p className="text-muted-foreground font-medium mb-4">Couldn&apos;t load events right now.</p>
+                <Button onClick={() => refetch()} variant="outline" className="rounded-full gap-2 font-bold">
+                  <RefreshCw className="w-4 h-4" /> Try Again
+                </Button>
+              </div>
+            ) : !eventsLoading && !events.length ? (
+              <div className="col-span-full py-16 text-center">
+                <CalendarX className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
+                <p className="text-muted-foreground font-medium">No live events right now — check back soon.</p>
+              </div>
+            ) : events.slice(0, displayLimit).map((event) => (
               <Link key={event.id} href={`/events/${event.slug || event.id}`}>
                 <div className="group bg-card border border-border rounded-[1.25rem] md:rounded-[2.5rem] overflow-hidden hover:border-primary/50 transition-all flex flex-col h-full hover:shadow-2xl hover:shadow-primary/5">
                   <div className="relative aspect-[16/10] overflow-hidden">

@@ -22,7 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 function DiscoverContent() {
   const searchParams = useSearchParams();
   const { toast } = useToast();
-  const { events, loading } = useEvents();
+  const { events, loading, error: eventsError, refetch } = useEvents();
   
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -374,7 +374,18 @@ function DiscoverContent() {
         </div>
       )}
 
-      {!loading && filteredEvents.length === 0 && (
+      {!loading && eventsError && matchingEvents.length === 0 && (
+        <div className="text-center py-32 bg-card/20 rounded-[3rem] border border-dashed border-border/50">
+          <Search className="w-16 h-16 text-muted-foreground mx-auto mb-6 opacity-20" />
+          <h3 className="text-2xl font-headline mb-3">Couldn&apos;t load events</h3>
+          <p className="text-muted-foreground max-w-sm mx-auto mb-8">Something went wrong fetching the marketplace. Please try again.</p>
+          <Button variant="secondary" className="rounded-full px-8 h-11 font-bold" onClick={() => refetch()}>
+            Try Again
+          </Button>
+        </div>
+      )}
+
+      {!loading && !eventsError && filteredEvents.length === 0 && (
         <div className="text-center py-32 bg-card/20 rounded-[3rem] border border-dashed border-border/50">
           <Search className="w-16 h-16 text-muted-foreground mx-auto mb-6 opacity-20" />
           <h3 className="text-2xl font-headline mb-3">No results found</h3>

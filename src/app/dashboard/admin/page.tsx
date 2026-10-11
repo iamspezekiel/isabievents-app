@@ -34,7 +34,7 @@ interface Stats {
 
 export default function AdminDashboard() {
   const [searchQuery, setSearchQuery] = useState('');
-  const {events, refetch} = useEvents({includeHidden: true});
+  const {events, refetch, error: eventsError} = useEvents({includeHidden: true});
   const [stats, setStats] = useState<Stats | null>(null);
   const [resolvedIds, setResolvedIds] = useState<string[]>([]);
   const { toast } = useToast();
@@ -227,8 +227,18 @@ export default function AdminDashboard() {
             </div>
           )) : (
             <div className="bg-card border border-dashed border-border py-12 rounded-[2rem] text-center">
-              <CheckCircle2 className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
-              <p className="text-muted-foreground font-medium">Moderation queue is empty.</p>
+              {eventsError ? (
+                <>
+                  <AlertTriangle className="w-12 h-12 text-yellow-500/40 mx-auto mb-4" />
+                  <p className="text-muted-foreground font-medium mb-4">Couldn&apos;t load events.</p>
+                  <Button variant="outline" className="rounded-full gap-2 font-bold" onClick={() => refetch()}>Try Again</Button>
+                </>
+              ) : (
+                <>
+                  <CheckCircle2 className="w-12 h-12 text-muted-foreground/30 mx-auto mb-4" />
+                  <p className="text-muted-foreground font-medium">Moderation queue is empty.</p>
+                </>
+              )}
             </div>
           )}
         </div>
