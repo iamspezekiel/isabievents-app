@@ -103,37 +103,66 @@ async function getTransporter(): Promise<Transporter | null> {
 
 const PRIMARY = '#7E7CFF';
 
-/** Shared branded HTML wrapper. */
+/**
+ * Shared branded HTML wrapper (email-safe tables). The header logo is a white
+ * IsabiEvents wordmark rendered on the primary background so it blends with the
+ * header (same color as the bg). No app URL / links — clean and focused.
+ */
 function layout(title: string, bodyHtml: string): string {
   return `<!DOCTYPE html>
-<html>
-<body style="margin:0;padding:0;background:#f4f4f7;font-family:Arial,Helvetica,sans-serif;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f7;padding:24px 0;">
-    <tr><td align="center">
-      <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:16px;overflow:hidden;border:1px solid #e6e6ef;">
-        <tr><td style="background:${PRIMARY};padding:18px 32px;" align="left">
-          <a href="https://events.isabi.cloud" style="text-decoration:none;display:inline-block;">
-            <img src="https://placehold.co/196x46/7E7CFF/ffffff.png?text=IsabiEvents&font=roboto&font-size=34"
-                 width="196" height="46" alt="IsabiEvents"
-                 style="display:block;border:0;border-radius:8px;" />
-          </a>
-        </td></tr>
-        <tr><td style="padding:32px;">
-          <h1 style="margin:0 0 16px;font-size:20px;color:#16161d;">${title}</h1>
-          ${bodyHtml}
-        </td></tr>
-        <tr><td style="padding:20px 32px;border-top:1px solid #e6e6ef;">
-          <p style="margin:0;font-size:12px;color:#8a8a99;">IsabiEvents — Nigeria's premier ticket marketplace · <a href="https://events.isabi.cloud" style="color:${PRIMARY};">events.isabi.cloud</a></p>
-        </td></tr>
-      </table>
-    </td></tr>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light" />
+  <meta name="supported-color-schemes" content="light" />
+  <title>${title}</title>
+</head>
+<body style="margin:0;padding:0;background:#f1f2f6;font-family:-apple-system,'Segoe UI',Arial,Helvetica,sans-serif;-webkit-text-size-adjust:100%;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f1f2f6;padding:32px 16px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:20px;overflow:hidden;border:1px solid #e8e8f0;box-shadow:0 6px 28px rgba(22,22,29,0.06);">
+
+          <!-- Header: primary background + white logo (blends into the bg) -->
+          <tr>
+            <td align="left" style="background:${PRIMARY};padding:26px 36px;">
+              <img src="https://placehold.co/230x44/${PRIMARY.replace('#', '')}/ffffff.png?text=IsabiEvents&font=roboto&font-size=32&font-weight=bold"
+                   width="230" height="44" alt="IsabiEvents"
+                   style="display:block;border:0;outline:none;text-decoration:none;" />
+            </td>
+          </tr>
+
+          <!-- Body -->
+          <tr>
+            <td style="padding:40px 36px 12px;">
+              <h1 style="margin:0 0 8px;font-size:23px;line-height:1.3;color:#16161d;font-weight:800;letter-spacing:-0.02em;">${title}</h1>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:0 36px 8px;">
+              ${bodyHtml}
+            </td>
+          </tr>
+
+          <!-- Footer: no URL, just a quiet brand line -->
+          <tr>
+            <td style="padding:22px 36px 30px;border-top:1px solid #eeeef3;margin-top:16px;">
+              <p style="margin:0;font-size:12px;color:#9a9ab0;line-height:1.7;">&copy; 2026 IsabiEvents &middot; Nigeria's premier ticket marketplace</p>
+              <p style="margin:4px 0 0;font-size:12px;color:#b3b3c4;line-height:1.7;">You're receiving this because you have an IsabiEvents account.</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
   </table>
 </body>
 </html>`;
 }
 
 const p = (text: string) =>
-  `<p style="margin:0 0 14px;font-size:14px;line-height:1.6;color:#3d3d4d;">${text}</p>`;
+  `<p style="margin:0 0 16px;font-size:15px;line-height:1.65;color:#3a3a46;">${text}</p>`;
 
 async function send(opts: {to: string | string[]; subject: string; html: string; text?: string}): Promise<boolean> {
   try {

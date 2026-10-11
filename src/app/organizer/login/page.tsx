@@ -137,8 +137,17 @@ export default function OrganizerLoginPage() {
 
         <Card className="bg-card border-border shadow-2xl">
           <CardHeader className="space-y-1 text-center">
-            <CardTitle className="font-headline text-2xl">Organizer Sign In</CardTitle>
-            <CardDescription>Access your organizer dashboard</CardDescription>
+            {tfaStep ? (
+              <>
+                <CardTitle className="font-headline text-2xl">Verify It&apos;s You</CardTitle>
+                <CardDescription>Two-factor verification for the Organizer Portal</CardDescription>
+              </>
+            ) : (
+              <>
+                <CardTitle className="font-headline text-2xl">Organizer Sign In</CardTitle>
+                <CardDescription>Access your organizer dashboard</CardDescription>
+              </>
+            )}
           </CardHeader>
           {tfaStep ? (
             <form onSubmit={handleVerifyTfa}>
@@ -236,13 +245,15 @@ export default function OrganizerLoginPage() {
           </form>
           )}
           {!tfaStep && (
-          <CardFooter className="flex flex-col gap-3 px-10 md:px-6">
-            <p className="text-center text-sm text-muted-foreground">
-              New organizer? <Link href="/organizer/signup" className="text-primary font-bold no-underline">Create Organizer Account</Link>
-            </p>
-            <p className="text-center text-sm text-muted-foreground">
-              Buying tickets? <Link href="/login" className="text-primary font-bold no-underline">Attendee Login</Link>
-            </p>
+          <CardFooter className="flex flex-col gap-3 px-10 md:px-6 pt-2 pb-6">
+            <div className="w-full border-t border-border pt-4">
+              <p className="text-center text-sm text-muted-foreground">
+                New organizer? <Link href="/organizer/signup" className="text-primary font-bold no-underline hover:underline">Create Organizer Account</Link>
+              </p>
+              <p className="text-center text-sm text-muted-foreground mt-2">
+                Buying tickets? <Link href="/login" className="text-primary font-bold no-underline hover:underline">Attendee Login</Link>
+              </p>
+            </div>
           </CardFooter>
           )}
         </Card>
