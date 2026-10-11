@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
 import { NewsletterForm } from '@/components/newsletter-form';
+import { CookieSettingsButton } from '@/components/cookie-consent';
 import { Facebook, Twitter, Instagram, Youtube } from 'lucide-react';
 
 export function Footer() {
@@ -71,6 +72,7 @@ export function Footer() {
               <li><Link href="/help/refunds" className="text-foreground/70 hover:text-primary transition-colors no-underline">Refund Policy</Link></li>
               <li><Link href="/privacy" className="text-foreground/70 hover:text-primary transition-colors no-underline">Privacy Policy</Link></li>
               <li><Link href="/terms" className="text-foreground/70 hover:text-primary transition-colors no-underline">Terms of Service</Link></li>
+              <li><CookieSettingsButton /></li>
             </ul>
           </div>
         </div>

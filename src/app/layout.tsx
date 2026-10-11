@@ -8,6 +8,7 @@ import { WatchupProvider } from "@/components/watchup-provider";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { PWAInstallPrompt } from "@/components/pwa-install-prompt";
+import { CookieConsent } from "@/components/cookie-consent";
 
 export const metadata: Metadata = {
   title: 'IsabiEvents | Nigeria\'s Premier Ticket Marketplace',
@@ -47,6 +48,7 @@ export default function RootLayout({
                 <Footer />
               </div>
               <PWAInstallPrompt />
+              <CookieConsent />
               <Toaster />
             </AuthProvider>
           </WatchupProvider>
