@@ -102,11 +102,12 @@ async function getTransporter(): Promise<Transporter | null> {
 }
 
 const PRIMARY = '#7E7CFF';
+const EMAIL_BASE = (process.env.APP_BASE_URL || 'https://events.isabi.cloud').replace(/\/+$/, '');
 
 /**
- * Shared branded HTML wrapper (email-safe tables). The header logo is a white
- * IsabiEvents wordmark rendered on the primary background so it blends with the
- * header (same color as the bg). No app URL / links — clean and focused.
+ * Shared branded HTML email wrapper (email-safe tables). Full-width layout on a
+ * light background; the header shows the app logo (the hosted favicon mark + the
+ * IsabiEvents wordmark). No primary-color header band.
  */
 function layout(title: string, bodyHtml: string): string {
   return `<!DOCTYPE html>
@@ -119,35 +120,34 @@ function layout(title: string, bodyHtml: string): string {
   <title>${title}</title>
 </head>
 <body style="margin:0;padding:0;background:#f1f2f6;font-family:-apple-system,'Segoe UI',Arial,Helvetica,sans-serif;-webkit-text-size-adjust:100%;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f1f2f6;padding:32px 16px;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f1f2f6;padding:0;">
     <tr>
       <td align="center">
-        <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;width:100%;background:#ffffff;border-radius:20px;overflow:hidden;border:1px solid #e8e8f0;box-shadow:0 6px 28px rgba(22,22,29,0.06);">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:100%;background:#ffffff;border-collapse:collapse;">
 
-          <!-- Header: primary background + white logo (blends into the bg) -->
+                    <!-- Header: light background + app logo (favicon mark + IsabiEvents wordmark) -->
           <tr>
-            <td align="left" style="background:${PRIMARY};padding:26px 36px;">
-              <img src="https://placehold.co/230x44/${PRIMARY.replace('#', '')}/ffffff.png?text=IsabiEvents&font=roboto&font-size=32&font-weight=bold"
-                   width="230" height="44" alt="IsabiEvents"
-                   style="display:block;border:0;outline:none;text-decoration:none;" />
+            <td align="left" valign="middle" style="background:#ffffff;padding:20px 32px;border-bottom:1px solid #ececf3;">
+              <img src="${EMAIL_BASE}/favicon.ico" width="34" height="34" alt="" style="display:inline-block;vertical-align:middle;border:0;outline:none;text-decoration:none;" />
+              <span style="display:inline-block;vertical-align:middle;margin-left:10px;font-size:23px;line-height:1;font-weight:800;color:#16161d;letter-spacing:-0.02em;font-family:-apple-system,'Segoe UI',Arial,sans-serif;">IsabiEvents</span>
             </td>
           </tr>
 
           <!-- Body -->
           <tr>
-            <td style="padding:40px 36px 12px;">
+            <td style="padding:36px 32px 12px;">
               <h1 style="margin:0 0 8px;font-size:23px;line-height:1.3;color:#16161d;font-weight:800;letter-spacing:-0.02em;">${title}</h1>
             </td>
           </tr>
           <tr>
-            <td style="padding:0 36px 8px;">
+            <td style="padding:0 32px 8px;">
               ${bodyHtml}
             </td>
           </tr>
 
           <!-- Footer: no URL, just a quiet brand line -->
           <tr>
-            <td style="padding:22px 36px 30px;border-top:1px solid #eeeef3;margin-top:16px;">
+            <td style="padding:22px 32px 30px;border-top:1px solid #eeeef3;margin-top:16px;">
               <p style="margin:0;font-size:12px;color:#9a9ab0;line-height:1.7;">&copy; 2026 IsabiEvents &middot; Nigeria's premier ticket marketplace</p>
               <p style="margin:4px 0 0;font-size:12px;color:#b3b3c4;line-height:1.7;">You're receiving this because you have an IsabiEvents account.</p>
             </td>
