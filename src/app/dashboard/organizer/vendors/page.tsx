@@ -138,13 +138,30 @@ export default function VendorsManagementPage() {
     });
   };
 
-  const handleDeleteVendor = (id: string) => {
+  const handleDeleteVendor = async (id: string) => {
+    const removed = vendors.find(v => v.id === id);
     const next = vendors.filter(v => v.id !== id);
     setVendors(next);
     persist(next);
+
+    // Demote the removed member's account to `attendee` so they lose
+    // staff/vendor dashboard access (account + tickets are preserved).
+    if (removed?.email) {
+      try {
+        await apiFetch('/api/team/remove', {
+          method: 'POST',
+          body: JSON.stringify({email: removed.email}),
+        });
+      } catch (err) {
+        console.warn('[vendors] demote failed:', err);
+      }
+    }
+
     toast({
       title: "Member Removed",
-      description: "The team member has been removed successfully."
+      description: removed?.email
+        ? `${removed.name} was removed and their account is now a regular attendee account.`
+        : "The team member has been removed successfully."
     });
   };
 

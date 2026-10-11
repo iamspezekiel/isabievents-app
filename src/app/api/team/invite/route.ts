@@ -1,6 +1,7 @@
 import {NextResponse} from 'next/server';
 import {requireOrganizer, isResponse} from '@/lib/admin-auth';
 import {sendTeamInviteEmail} from '@/lib/email';
+import {createNotification} from '@/lib/notifications';
 
 export const runtime = 'nodejs';
 
@@ -31,6 +32,15 @@ export async function POST(req: Request) {
       role,
       inviteUrl,
     });
+
+    // In-app notification for the organizer.
+    createNotification({
+      userId: uid,
+      title: 'Team invite sent',
+      body: `An invitation was sent to ${email} to join your team as ${role === 'staff' ? 'a staff member' : 'a vendor'}.`,
+      type: 'info',
+      href: '/dashboard/organizer/vendors',
+    }).catch(() => undefined);
 
     return NextResponse.json({ok, inviteUrl, delivered: ok});
   } catch (err) {

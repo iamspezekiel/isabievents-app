@@ -11,6 +11,7 @@ import { Mail, Lock, Loader2, Eye, EyeOff, ShieldCheck, ArrowLeft } from 'lucide
 import { Logo } from '@/components/logo';
 import { DASHBOARD_PATHS, useAuth } from '@/components/auth-provider';
 import { useToast } from "@/hooks/use-toast";
+import { friendlyAuthError } from '@/lib/auth-errors';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -98,7 +99,7 @@ export default function LoginPage() {
       toast({
         variant: "destructive",
         title: "Login Failed",
-        description: err instanceof Error ? err.message : "Invalid email or password.",
+        description: friendlyAuthError(err),
       });
     }
     setLoading(null);
@@ -114,19 +115,10 @@ export default function LoginPage() {
       });
       router.push(DASHBOARD_PATHS[profile.role] || '/dashboard/attendee');
     } catch (err) {
-      const code = (err as {code?: string})?.code || '';
-      const messages: Record<string, string> = {
-        'auth/popup-closed-by-user': 'The Google popup was closed before sign-in finished.',
-        'auth/popup-blocked': 'Popup blocked — allow popups for this site and try again.',
-        'auth/cancelled-popup-request': 'Sign-in was cancelled.',
-        'auth/unauthorized-domain': 'Add this domain to Firebase → Authentication → Settings → Authorized domains.',
-        'auth/operation-not-allowed': 'Google sign-in is not enabled yet — enable it in Firebase → Authentication → Sign-in method.',
-        'auth/account-exists-with-different-credential': 'An account with this email already exists — try email/password sign-in.',
-      };
       toast({
         variant: "destructive",
         title: "Google Sign-In Failed",
-        description: messages[code] || (err instanceof Error ? err.message : 'Could not sign in with Google.'),
+        description: friendlyAuthError(err),
       });
     }
     setLoading(null);

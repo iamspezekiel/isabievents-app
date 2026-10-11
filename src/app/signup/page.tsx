@@ -11,6 +11,7 @@ import { Mail, Lock, User, ShieldCheck, Loader2, Eye, EyeOff } from 'lucide-reac
 import { Logo } from '@/components/logo';
 import { DASHBOARD_PATHS, useAuth, type Role } from '@/components/auth-provider';
 import { useToast } from "@/hooks/use-toast";
+import { friendlyAuthError } from '@/lib/auth-errors';
 
 function SignupForm() {
   const router = useRouter();
@@ -52,11 +53,10 @@ function SignupForm() {
       });
       router.push(DASHBOARD_PATHS[profile.role] || '/dashboard/attendee');
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Could not create your account.';
       toast({
         variant: "destructive",
         title: "Signup Failed",
-        description: message.replace('Firebase: ', ''),
+        description: friendlyAuthError(err),
       });
     }
     setLoading(false);

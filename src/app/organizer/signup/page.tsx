@@ -11,6 +11,7 @@ import { Mail, Lock, User, ShieldCheck, Loader2, Eye, EyeOff, CalendarCheck } fr
 import { Logo } from '@/components/logo';
 import { DASHBOARD_PATHS, useAuth, type Role } from '@/components/auth-provider';
 import { useToast } from "@/hooks/use-toast";
+import { friendlyAuthError } from '@/lib/auth-errors';
 
 /**
  * Organizer Portal sign-up — creates accounts with the organizer role only.
@@ -47,11 +48,10 @@ export default function OrganizerSignupPage() {
       });
       router.push(DASHBOARD_PATHS[profile.role] || DASHBOARD_PATHS.organizer);
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Could not create your account.';
       toast({
         variant: "destructive",
         title: "Signup Failed",
-        description: message.replace('Firebase: ', ''),
+        description: friendlyAuthError(err),
       });
     }
     setLoading(false);

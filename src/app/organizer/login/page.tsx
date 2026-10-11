@@ -11,6 +11,7 @@ import { Mail, Lock, Loader2, Eye, EyeOff, CalendarCheck, ShieldCheck, ArrowLeft
 import { Logo } from '@/components/logo';
 import { DASHBOARD_PATHS, useAuth } from '@/components/auth-provider';
 import { useToast } from "@/hooks/use-toast";
+import { friendlyAuthError } from '@/lib/auth-errors';
 
 /**
  * Organizer Portal sign-in — dedicated entrance for event organizers.
@@ -115,7 +116,7 @@ export default function OrganizerLoginPage() {
       toast({
         variant: "destructive",
         title: "Login Failed",
-        description: err instanceof Error ? err.message : "Invalid email or password.",
+        description: friendlyAuthError(err),
       });
     }
     setLoading(false);

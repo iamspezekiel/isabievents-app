@@ -3,6 +3,7 @@ import {randomBytes} from 'crypto';
 import {requireAuth, requireOrganizer, requireAdmin, isResponse} from '@/lib/admin-auth';
 import {admin} from '@/lib/server-admin';
 import {sendWithdrawalRequestEmails, sendWithdrawalStatusEmail} from '@/lib/email';
+import {createNotification} from '@/lib/notifications';
 
 export const runtime = 'nodejs';
 
@@ -303,6 +304,21 @@ export async function PATCH(req: Request) {
 
     // Notify the organizer of the outcome (send() never throws).
     await sendWithdrawalStatusEmail({...existing, status, note});
+
+    // In-app notification for the organizer's dashboard.
+    if (existing.uid) {
+      const amountStr = `${existing.currency === 'USD' ? '$' : '₦'}${Number(existing.amount || 0).toLocaleString()}`;
+      createNotification({
+        userId: existing.uid,
+        title: status === 'approved' ? 'Payout approved' : 'Payout declined',
+        body:
+          status === 'approved'
+            ? `Your ${amountStr} withdrawal request has been approved and is being processed.`
+            : `Your ${amountStr} withdrawal request was declined.${note ? ` Reason: ${note}` : ''}`,
+        type: status === 'approved' ? 'success' : 'warning',
+        href: '/dashboard/organizer/payouts',
+      }).catch(() => undefined);
+    }
 
     return NextResponse.json({ok: true, id, status});
   } catch (err) {

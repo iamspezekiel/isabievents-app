@@ -1,6 +1,7 @@
 import {NextResponse} from 'next/server';
 import {requireAdmin, isResponse} from '@/lib/admin-auth';
 import {admin} from '@/lib/server-admin';
+import {createNotification} from '@/lib/notifications';
 
 export const runtime = 'nodejs';
 
@@ -29,21 +30,38 @@ export async function PATCH(req: Request) {
     const snap = await ref.get();
     if (!snap.exists) return NextResponse.json({error: 'Event not found.'}, {status: 404});
 
+    const data = snap.data() as {organizer?: Record<string, unknown>; organizerUid?: string; title?: string};
     if (action === 'approve') {
-      const data = snap.data() as {organizer?: Record<string, unknown>};
       await ref.update({
         organizer: {...(data.organizer || {}), verified: true},
         updatedAt: new Date().toISOString(),
       });
+      if (data.organizerUid) {
+        createNotification({
+          userId: data.organizerUid,
+          title: 'Event approved',
+          body: `"${data.title || 'Your event'}" is now live on the marketplace.`,
+          type: 'success',
+          href: '/dashboard/organizer/events',
+        }).catch(() => undefined);
+      }
       return NextResponse.json({ok: true, action, id});
     }
 
     // Reject = hide from the marketplace (soft moderation — restorable via Approve).
-    const data = snap.data() as {organizer?: Record<string, unknown>};
     await ref.update({
       organizer: {...(data.organizer || {}), verified: false},
       updatedAt: new Date().toISOString(),
     });
+    if (data.organizerUid) {
+      createNotification({
+        userId: data.organizerUid,
+        title: 'Event hidden by moderation',
+        body: `"${data.title || 'Your event'}" was hidden from the marketplace. Contact support or edit it, then request approval again.`,
+        type: 'warning',
+        href: '/dashboard/organizer/events',
+      }).catch(() => undefined);
+    }
     return NextResponse.json({ok: true, action, id});
   } catch (err) {
     return NextResponse.json(

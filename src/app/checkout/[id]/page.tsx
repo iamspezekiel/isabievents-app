@@ -32,6 +32,7 @@ import { Separator } from "@/components/ui/separator";
 import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
+import { friendlyAuthError } from '@/lib/auth-errors';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from 'next/link';
 
@@ -178,7 +179,7 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
       toast({
         variant: "destructive",
         title: "Login failed",
-        description: err instanceof Error ? err.message : "Invalid email or password.",
+        description: friendlyAuthError(err),
       });
     }
     setLoading(false);
@@ -208,7 +209,7 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
       toast({
         variant: "destructive",
         title: "Signup Failed",
-        description: err instanceof Error ? err.message.replace('Firebase: ', '') : 'Could not create your account.',
+        description: friendlyAuthError(err),
       });
     }
     setLoading(null);
@@ -226,18 +227,10 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
         description: `Welcome${prof.name ? `, ${prof.name}` : ''} — continue to payment below.`,
       });
     } catch (err) {
-      const code = (err as {code?: string})?.code || '';
-      const messages: Record<string, string> = {
-        'auth/popup-closed-by-user': 'The Google popup was closed before sign-in finished.',
-        'auth/popup-blocked': 'Popup blocked — allow popups for this site and try again.',
-        'auth/cancelled-popup-request': 'Sign-in was cancelled.',
-        'auth/unauthorized-domain': 'Add this domain to Firebase → Authentication → Settings → Authorized domains.',
-        'auth/operation-not-allowed': 'Google sign-in is not enabled yet — enable it in Firebase → Authentication → Sign-in method.',
-      };
       toast({
         variant: "destructive",
         title: "Google Sign-In Failed",
-        description: messages[code] || (err instanceof Error ? err.message : 'Could not sign in with Google.'),
+        description: friendlyAuthError(err),
       });
     }
     setLoading(null);

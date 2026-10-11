@@ -2,6 +2,7 @@ import {NextResponse} from 'next/server';
 import {requireAdmin, requireAuth, requireOrganizer, isResponse} from '@/lib/admin-auth';
 import {admin} from '@/lib/server-admin';
 import {sendKycDecisionEmail} from '@/lib/email';
+import {createNotification} from '@/lib/notifications';
 
 export const runtime = 'nodejs';
 
@@ -185,6 +186,18 @@ export async function PATCH(req: Request) {
           status: action === 'approve' ? 'approved' : 'rejected',
         });
       }
+
+      // In-app notification for the organizer's dashboard.
+      createNotification({
+        userId: sub.uid,
+        title: action === 'approve' ? 'Identity verified' : 'Verification needs attention',
+        body:
+          action === 'approve'
+            ? 'Your identity has been verified. You now have full access to all organizer features.'
+            : 'Your identity verification was declined. Please review and resubmit your documents.',
+        type: action === 'approve' ? 'success' : 'warning',
+        href: '/dashboard/organizer/kyc',
+      }).catch(() => undefined);
     }
 
     return NextResponse.json({ok: true, action, id});

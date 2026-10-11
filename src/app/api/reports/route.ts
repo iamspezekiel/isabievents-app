@@ -2,6 +2,7 @@ import {NextResponse} from 'next/server';
 import {requireAuth, requireAdmin, isResponse} from '@/lib/admin-auth';
 import {admin} from '@/lib/server-admin';
 import {sendReportNotificationEmail} from '@/lib/email';
+import {notifyUsers, userIdsByRole} from '@/lib/notifications';
 
 export const runtime = 'nodejs';
 
@@ -45,6 +46,18 @@ export async function POST(req: Request) {
 
     // Fire-and-forget admin notification (no-op without SMTP).
     sendReportNotificationEmail({...report}).catch(() => undefined);
+
+    // In-app notification for every admin's dashboard.
+    userIdsByRole(db, ['admin'])
+      .then((adminIds) =>
+        notifyUsers(adminIds, {
+          title: 'Event reported',
+          body: `"${report.eventTitle || report.eventId}" was reported: ${report.reason}`,
+          type: 'warning',
+          href: '/dashboard/admin/events',
+        })
+      )
+      .catch(() => undefined);
 
     return NextResponse.json({ok: true, id: ref.id});
   } catch (err) {

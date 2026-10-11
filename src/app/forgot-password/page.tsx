@@ -13,6 +13,7 @@ import { useAuth } from '@/components/auth-provider';
 import { useToast } from "@/hooks/use-toast";
 import { sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
+import { friendlyAuthError } from '@/lib/auth-errors';
 
 export default function ForgotPasswordPage() {
   const router = useRouter();
@@ -40,18 +41,11 @@ export default function ForgotPasswordPage() {
         description: `If an account exists for ${email}, you will receive a password reset link shortly.`,
       });
     } catch (err) {
-      const code = (err as {code?: string})?.code || '';
-      const messages: Record<string, string> = {
-        'auth/user-not-found': 'No account exists for that email address.',
-        'auth/invalid-email': 'That email address is not valid.',
-        'auth/too-many-requests': 'Too many attempts — please wait a minute and try again.',
-        'auth/unauthorized-domain': 'Add this domain to Firebase → Authentication → Settings → Authorized domains.',
-      };
       setLoading(false);
       toast({
         variant: "destructive",
         title: "Could not send reset link",
-        description: messages[code] || (err instanceof Error ? err.message : 'Please try again later.'),
+        description: friendlyAuthError(err),
       });
     }
   };
