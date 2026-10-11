@@ -217,6 +217,13 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
           role,
           createdAt: serverTimestamp(),
         });
+        // First Google sign-in == new account: send the welcome email
+        // (fire-and-forget; a no-op without SMTP configured).
+        fetch('/api/email/welcome', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({name, email: cred.user.email || '', role}),
+        }).catch(() => {});
       }
     } catch (err) {
       console.warn('[auth] google profile write failed:', err);

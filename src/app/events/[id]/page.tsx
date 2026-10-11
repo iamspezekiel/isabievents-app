@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { renderRichText } from '@/lib/rich-text';
+import { DefaultAvatar } from '@/components/default-avatar';
 import { apiFetch } from '@/lib/api-fetch';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -346,7 +347,11 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
                 <Card className="border-border bg-card/50 p-6 rounded-2xl hover:border-primary/30 transition-all group">
                   <div className="flex items-center gap-4">
                     <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-primary/20">
-                      <Image src={event.organizer.avatar || 'https://placehold.co/100x100?text=Org'} alt={event.organizer.name} fill className="object-cover" />
+                      {event.organizer.avatar ? (
+                        <Image src={event.organizer.avatar} alt={event.organizer.name} fill className="object-cover" />
+                      ) : (
+                        <DefaultAvatar className="w-full h-full" />
+                      )}
                     </div>
                     <div className="flex-1">
                       <div className="flex items-center justify-between">

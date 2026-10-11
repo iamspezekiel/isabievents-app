@@ -63,6 +63,26 @@ function parseAttrs(attrStr: string): Attr[] {
 const esc = (v: string) => v.replace(/"/g, '&quot;');
 
 function filterAttrs(tag: string, attrs: Attr[]): string {
+  // Images: pick the best source (a real src, else a lazy-load attr) so images
+  // copied from other sites/platforms still embed.
+  if (tag === 'img') {
+    const alt = attrs.find((a) => a.name === 'alt')?.value || '';
+    const w = attrs.find((a) => a.name === 'width')?.value || '';
+    const h = attrs.find((a) => a.name === 'height')?.value || '';
+    let src = '';
+    for (const key of ['src', 'data-src', 'data-lazy-src', 'data-original', 'data-actualsrc']) {
+      const a = attrs.find((x) => x.name === key);
+      if (a && isSafeUrl(a.value)) { src = a.value.trim(); break; }
+    }
+    if (!src) return '';
+    if (src.startsWith('//')) src = `https:${src}`;
+    const parts = [`src="${esc(src)}"`];
+    if (alt) parts.push(`alt="${esc(alt)}"`);
+    if (/^\d{1,4}$/.test(w)) parts.push(`width="${w}"`);
+    if (/^\d{1,4}$/.test(h)) parts.push(`height="${h}"`);
+    return ' ' + parts.join(' ');
+  }
+
   const kept: string[] = [];
   for (const {name, value} of attrs) {
     if (name.startsWith('on')) continue; // onclick etc.
@@ -178,7 +198,36 @@ export function toRichHtml(src: string): string {
  * Render a stored description for display. HTML is sanitized; legacy markdown
  * still renders exactly as before.
  */
+/**
+ * Turn bare http(s) URLs in text nodes into clickable anchors. Runs on the
+ * already-sanitized HTML and skips anything already inside an <a> so existing
+ * links are not double-wrapped. Only https/http URLs are linked (safe).
+ */
+export function autoLinkUrls(html: string): string {
+  if (!html) return "";
+  const parts = html.split(/(<[^>]*>)/g);
+  let inAnchor = false;
+  const urlRe = /https?:\/\/[^\s<>"\x27]+/g;
+  return parts
+    .map((seg) => {
+      if (seg.startsWith("<")) {
+        if (/^<a\b/i.test(seg)) inAnchor = true;
+        else if (/^<\/a\s*>/i.test(seg)) inAnchor = false;
+        return seg;
+      }
+      if (inAnchor) return seg;
+      return seg.replace(urlRe, (m) => {
+        const trail = m.match(/[.,;:!?)\]]+$/)?.[0] || "";
+        const url = trail ? m.slice(0, -trail.length) : m;
+        if (!url) return m;
+        return `<a href="${url}" target="_blank" rel="noopener noreferrer">${url}</a>${trail}`;
+      });
+    })
+    .join("");
+}
+
 export function renderRichText(src: string): string {
-  if (!src) return '';
-  return looksLikeHtml(src) ? sanitizeRichHtml(src) : renderMarkdown(src);
+  if (!src) return "";
+  const html = looksLikeHtml(src) ? sanitizeRichHtml(src) : renderMarkdown(src);
+  return autoLinkUrls(html);
 }

@@ -12,6 +12,9 @@ interface EventBody {
   title?: string;
   category?: string;
   city?: string;
+  state?: string;
+  mode?: string;
+  virtualLink?: string;
   venue?: string;
   date?: string;
   image?: string;
@@ -57,8 +60,9 @@ export async function POST(req: Request) {
     const title = (body.title || '').trim();
     const venue = (body.venue || '').trim();
     const date = (body.date || '').trim();
-    if (!title || !venue || !date) {
-      return NextResponse.json({error: 'Title, venue and date are required.'}, {status: 400});
+    const isVirtual = (body.mode || 'physical') === 'virtual';
+    if (!title || !date || (!isVirtual && !venue)) {
+      return NextResponse.json({error: isVirtual ? 'Title and date are required.' : 'Title, venue and date are required.'}, {status: 400});
     }
 
     const profileSnap = await db.collection('users').doc(uid).get();
@@ -83,6 +87,9 @@ export async function POST(req: Request) {
       title,
       category: body.category || 'community',
       city: (body.city || '').trim() || 'Nigeria',
+      state: (body.state || '').trim(),
+      mode: (body.mode || 'physical').trim(),
+      virtualLink: (body.virtualLink || '').trim(),
       venue,
       date,
       organizer: {
@@ -145,6 +152,9 @@ export async function PATCH(req: Request) {
     if (body.title) patch.title = String(body.title).trim();
     if (body.category) patch.category = body.category;
     if (body.city !== undefined) patch.city = String(body.city).trim() || 'Nigeria';
+    if (body.state !== undefined) patch.state = String(body.state).trim();
+    if (body.mode !== undefined) patch.mode = String(body.mode).trim();
+    if (body.virtualLink !== undefined) patch.virtualLink = String(body.virtualLink).trim();
     if (body.venue) patch.venue = String(body.venue).trim();
     if (body.date) patch.date = body.date;
     if (body.image !== undefined) patch.image = body.image;

@@ -23,9 +23,28 @@ export const CATEGORIES = [
 ];
 
 export const CITIES = [
-  'Abakaliki', 'Abeokuta', 'Abuja', 'Ado Ekiti', 'Akure', 'Asaba', 'Awka', 'Bauchi',
-  'Benin City', 'Birnin Kebbi', 'Calabar', 'Damaturu', 'Dutse', 'Enugu', 'Gombe',
-  'Gusau', 'Ibadan', 'Ilorin', 'Ikeja', 'Jalingo', 'Jos', 'Kaduna', 'Kano', 'Katsina',
-  'Lafia', 'Lagos', 'Lokoja', 'Maiduguri', 'Makurdi', 'Minna', 'Onitsha', 'Oshogbo',
-  'Owerri', 'Port Harcourt', 'Sokoto', 'Umuahia', 'Uyo', 'Warri', 'Yenagoa', 'Yola', 'Zaria'
+  'Aba', 'Abakaliki', 'Abeokuta', 'Abraka', 'Ado Ekiti', 'Afikpo', 'Ajah', 'Akure',
+  'Asaba', 'Awka', 'Bauchi', 'Benin City', 'Birnin Kebbi', 'Biu', 'Bukuru', 'Calabar',
+  'Damaturu', 'Dutse', 'Effurun', 'Ekpoma', 'Enugu', 'Gombe', 'Gusau', 'Ibadan',
+  'Ife', 'Ijebu Ode', 'Ikare', 'Ikeja', 'Ikorodu', 'Ikot Ekpene', 'Ila', 'Ilorin',
+  'Jalingo', 'Jos', 'Kaduna', 'Kano', 'Katsina', 'Keffi', 'Kogi', 'Lafia', 'Lagos',
+  'Lokoja', 'Maiduguri', 'Makurdi', 'Minna', 'Mubi', 'Nnewi', 'Nsukka', 'Oghara',
+  'Oka Akoko', 'Okitipupa', 'Onitsha', 'Oshogbo', 'Otukpo', 'Owerri', 'Owo', 'Oyo',
+  'Port Harcourt', 'Sapele', 'Sokoto', 'Umuahia', 'Uyo', 'Warri', 'Yenagoa', 'Yola', 'Zaria'
 ].sort();
+
+/** The 36 Nigerian states + FCT — used for the event location "State" field. */
+export const STATES = [
+  'Abia', 'Adamawa', 'Akwa Ibom', 'Anambra', 'Bauchi', 'Bayelsa', 'Benue', 'Borno',
+  'Cross River', 'Delta', 'Ebonyi', 'Edo', 'Ekiti', 'Enugu', 'FCT (Abuja)', 'Gombe',
+  'Imo', 'Jigawa', 'Kaduna', 'Kano', 'Katsina', 'Kebbi', 'Kogi', 'Kwara', 'Lagos',
+  'Nasarawa', 'Niger', 'Ogun', 'Ondo', 'Osun', 'Oyo', 'Plateau', 'Rivers', 'Sokoto',
+  'Taraba', 'Yobe', 'Zamfara'
+].sort();
+
+/** How an event is hosted — physical (in-person), virtual (online), or hybrid. */
+export const EVENT_MODES = [
+  { id: 'physical', name: 'Physical', description: 'In-person at a venue' },
+  { id: 'virtual', name: 'Virtual', description: 'Online via a stream link' },
+  { id: 'hybrid', name: 'Hybrid', description: 'In-person and online' },
+] as const;

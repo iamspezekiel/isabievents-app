@@ -14,7 +14,8 @@ import {
   ChevronRight,
   Loader2,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Video,
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,7 +26,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { CATEGORIES, CITIES } from '@/lib/constants';
+import { CATEGORIES, CITIES, STATES, EVENT_MODES } from '@/lib/constants';
 import { getEvent } from '@/lib/client-db';
 import { invalidateEventsCache } from '@/hooks/use-events';
 import { toRichHtml } from '@/lib/rich-text';
@@ -51,6 +52,9 @@ function CreateEventForm() {
     policies: '',
     venue: '',
     city: '',
+    state: '',
+    mode: 'physical' as string,
+    virtualLink: '',
     date: '',
     time: '',
     price: '',
@@ -101,7 +105,7 @@ function CreateEventForm() {
     getEvent(eventId)
       .then((event) => {
         if (!event || !alive) return;
-        const extra = event as {summary?: string; policies?: string};
+        const extra = event as {summary?: string; policies?: string; state?: string; mode?: string; virtualLink?: string};
         const [datePart, timePart] = String(event.date || '').split('T');
         setFormData({
           name: event.title,
@@ -111,6 +115,9 @@ function CreateEventForm() {
           policies: extra.policies || '',
           venue: event.venue || '',
           city: event.city || '',
+          state: extra.state || '',
+          mode: extra.mode || 'physical',
+          virtualLink: extra.virtualLink || '',
           date: datePart || '',
           time: (timePart || '').substring(0, 5),
           price: String(event.price?.min ?? 0),
@@ -193,11 +200,15 @@ function CreateEventForm() {
   };
 
   const handleSubmit = async () => {
-    if (!formData.name.trim() || !formData.venue.trim() || !formData.date) {
+    const needsVenue = formData.mode !== 'virtual';
+    const needsLink = formData.mode !== 'physical';
+    if (!formData.name.trim() || !formData.date || (needsVenue && !formData.venue.trim()) || (needsLink && !formData.virtualLink.trim())) {
       toast({
         variant: "destructive",
         title: "Missing Information",
-        description: "Event name, venue and date are required.",
+        description: needsLink && !formData.virtualLink.trim()
+          ? "Add a join link for virtual & hybrid events."
+          : "Event name, venue and date are required.",
       });
       return;
     }
@@ -213,6 +224,9 @@ function CreateEventForm() {
         title: formData.name.trim(),
         category: formData.category || 'community',
         city: formData.city,
+        state: formData.state,
+        mode: formData.mode,
+        virtualLink: formData.virtualLink.trim(),
         venue: formData.venue.trim(),
         date: `${formData.date}T${formData.time || '00:00'}:00`,
         image: coverImage,
@@ -325,17 +339,68 @@ function CreateEventForm() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="city">City</Label>
-                    <Select value={formData.city} onValueChange={(v) => setFormData({...formData, city: v})}>
+                    <Input
+                      id="city"
+                      list="nigeria-cities"
+                      placeholder="Search or type a city"
+                      className="h-11"
+                      value={formData.city}
+                      onChange={(e) => setFormData({...formData, city: e.target.value})}
+                    />
+                    <datalist id="nigeria-cities">
+                      {CITIES.map(city => <option key={city} value={city} />)}
+                    </datalist>
+                    <p className="text-xs text-muted-foreground">Start typing to search, or enter any city.</p>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="state">State</Label>
+                    <Select value={formData.state} onValueChange={(v) => setFormData({...formData, state: v})}>
                       <SelectTrigger className="h-11">
-                        <SelectValue placeholder="Select city" />
+                        <SelectValue placeholder="Select state" />
                       </SelectTrigger>
                       <SelectContent>
-                        {CITIES.map(city => (
-                          <SelectItem key={city} value={city}>{city}</SelectItem>
+                        {STATES.map(st => (
+                          <SelectItem key={st} value={st}>{st}</SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
                   </div>
+                </div>
+
+                <div className="space-y-3 text-left">
+                  <Label>Event Type</Label>
+                  <div className="grid sm:grid-cols-3 gap-3">
+                    {EVENT_MODES.map((m) => {
+                      const active = formData.mode === m.id;
+                      return (
+                        <button
+                          key={m.id}
+                          type="button"
+                          onClick={() => setFormData({...formData, mode: m.id as string})}
+                          className={`p-4 rounded-xl border-2 text-left transition-all ${active ? 'border-primary bg-primary/5' : 'border-border hover:bg-secondary'}`}
+                        >
+                          <div className="flex items-center gap-2 font-bold">
+                            {m.id === 'virtual' ? <Video className="w-4 h-4 text-primary" /> : <MapPin className="w-4 h-4 text-primary" />}
+                            {m.name}
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-1">{m.description}</p>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {formData.mode !== 'physical' && (
+                    <div className="space-y-2">
+                      <Label htmlFor="virtualLink">Virtual Join Link</Label>
+                      <Input
+                        id="virtualLink"
+                        placeholder="https://zoom.us/j/… or livestream URL"
+                        className="h-11"
+                        value={formData.virtualLink}
+                        onChange={(e) => setFormData({...formData, virtualLink: e.target.value})}
+                      />
+                      <p className="text-xs text-muted-foreground">Shared with ticket holders after purchase.</p>
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-6 text-left">

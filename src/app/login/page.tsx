@@ -44,7 +44,7 @@ export default function LoginPage() {
       await res.json().catch(() => ({}));
       setTfaResendIn(60);
       if (!silent) {
-        toast({title: 'Verification Code Sent', description: `Enter the 6-digit code we emailed to ${email}.`});
+        toast({title: 'Verification Code Sent', description: `Enter the 6-digit code from your authenticator app.`});
       }
     } catch {
       toast({variant: 'destructive', title: 'Could Not Send Code', description: 'Please try again in a moment.'});
@@ -86,7 +86,7 @@ export default function LoginPage() {
         // 2FA enabled: sign straight back out and require the emailed code.
         await signOut();
         setTfaStep(true);
-        toast({title: 'Two-Factor Verification', description: `Enter the 6-digit code we sent to ${email}.`});
+        toast({title: 'Two-Factor Verification', description: `Enter the 6-digit code from your authenticator app.`});
         await requestTfaCode(true);
         return;
       }
@@ -148,7 +148,7 @@ export default function LoginPage() {
                 <div className="space-y-1">
                   <h4 className="font-bold">Enter Verification Code</h4>
                   <CardDescription>
-                    We emailed a 6-digit code to <span className="font-bold text-foreground">{email}</span>
+                    Open your authenticator app and enter the 6-digit code.
                   </CardDescription>
                 </div>
                 <Input
@@ -180,7 +180,7 @@ export default function LoginPage() {
                     disabled={tfaResendIn > 0 || !!loading}
                     className="text-primary font-bold disabled:opacity-50 hover:underline"
                   >
-                    {tfaResendIn > 0 ? `Resend in ${tfaResendIn}s` : 'Resend code'}
+                    {tfaResendIn > 0 ? `Wait ${tfaResendIn}s` : 'Refresh'}
                   </button>
                 </div>
               </CardContent>

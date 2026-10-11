@@ -68,6 +68,17 @@ export default function AttendeeSettingsPage() {
     }
   }, [profile]);
 
+  // Persist the Privacy & Security notification toggles instantly.
+  const persistNotifs = async (patch: {email?: boolean; marketing?: boolean}) => {
+    if (!profile || !isFirebaseConfigured || !db) return;
+    const current = {email: emailNotifs, marketing: marketingNotifs, ...patch};
+    try {
+      await setDoc(doc(db, 'users', profile.uid), {notifications: current, updatedAt: new Date().toISOString()}, {merge: true});
+      toast({title: 'Preference Saved', description: 'Your notification settings were updated.'});
+    } catch {
+      toast({variant: 'destructive', title: 'Could Not Save', description: 'Please try again.'});
+    }
+  };
   const handleSave = async () => {
     if (!profile) {
       toast({ variant: "destructive", title: "Not Signed In", description: "Sign in to save your settings." });
@@ -201,14 +212,14 @@ export default function AttendeeSettingsPage() {
                   <div className="font-bold">Email Notifications</div>
                   <p className="text-xs text-muted-foreground">Receive reminders for your upcoming events.</p>
                 </div>
-                <Switch checked={emailNotifs} onCheckedChange={setEmailNotifs} />
+                <Switch checked={emailNotifs} onCheckedChange={(v) => { setEmailNotifs(v); persistNotifs({email: v}); }} />
               </div>
               <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-xl">
                 <div className="space-y-0.5">
                   <div className="font-bold">Marketing Updates</div>
                   <p className="text-xs text-muted-foreground">Get notified about flash sales and trending events.</p>
                 </div>
-                <Switch checked={marketingNotifs} onCheckedChange={setMarketingNotifs} />
+                <Switch checked={marketingNotifs} onCheckedChange={(v) => { setMarketingNotifs(v); persistNotifs({marketing: v}); }} />
               </div>
               
               <div className="pt-4">

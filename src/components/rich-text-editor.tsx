@@ -9,7 +9,7 @@
  */
 import React, {useRef, useState, useEffect} from 'react';
 import {
-  Bold, Italic, Underline, Strikethrough, Heading2, Quote, List, ListOrdered,
+  Bold, Italic, Underline, Strikethrough, Heading1, Heading2, Heading3, Quote, List, ListOrdered,
   Link2, Image as ImageIcon, Play, Undo2, Redo2, RemoveFormatting, Loader2,
 } from 'lucide-react';
 import {Button} from '@/components/ui/button';
@@ -60,6 +60,13 @@ export function RichTextEditor({value, onChange, placeholder}: Props) {
 
   // WordPress-style paste: keep rich formatting, strip anything unsafe.
   const handlePaste = (e: React.ClipboardEvent) => {
+    // A pasted screenshot / copied image file → upload to R2 and embed it.
+    const files = Array.from(e.clipboardData.files || []).filter((f) => f.type.startsWith('image/'));
+    if (files.length) {
+      e.preventDefault();
+      files.slice(0, 5).forEach((f) => addImage(f));
+      return;
+    }
     e.preventDefault();
     const html = e.clipboardData.getData('text/html');
     const text = e.clipboardData.getData('text/plain');
@@ -112,7 +119,9 @@ export function RichTextEditor({value, onChange, placeholder}: Props) {
     {icon: Italic, label: 'Italic', action: () => exec('italic')},
     {icon: Underline, label: 'Underline', action: () => exec('underline')},
     {icon: Strikethrough, label: 'Strikethrough', action: () => exec('strikeThrough')},
-    {icon: Heading2, label: 'Heading', action: () => exec('formatBlock', 'h2')},
+    {icon: Heading1, label: 'Heading 1', action: () => exec('formatBlock', 'h1')},
+    {icon: Heading2, label: 'Heading 2', action: () => exec('formatBlock', 'h2')},
+    {icon: Heading3, label: 'Heading 3', action: () => exec('formatBlock', 'h3')},
     {icon: Quote, label: 'Quote', action: () => exec('formatBlock', 'blockquote')},
     {icon: List, label: 'Bullet list', action: () => exec('insertUnorderedList')},
     {icon: ListOrdered, label: 'Numbered list', action: () => exec('insertOrderedList')},
@@ -150,7 +159,7 @@ export function RichTextEditor({value, onChange, placeholder}: Props) {
         onBlur={emit}
         onPaste={handlePaste}
         data-placeholder={placeholder || 'What can attendees expect?'}
-        className="rd-editor min-h-[220px] p-4 text-sm focus:outline-none empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground empty:before:pointer-events-none [&_a]:text-primary [&_a]:underline [&_blockquote]:border-l-4 [&_blockquote]:border-primary [&_blockquote]:pl-3 [&_blockquote]:italic [&_h2]:text-lg [&_h2]:font-bold [&_h2]:my-2 [&_img]:rounded-xl [&_img]:my-3 [&_.rd-embed]:my-4 [&_.rd-embed_iframe]:aspect-video [&_.rd-embed_iframe]:w-full [&_.rd-embed_iframe]:rounded-xl [&_iframe]:aspect-video [&_iframe]:w-full [&_iframe]:rounded-xl [&_li]:my-1 [&_p]:my-2 [&_ul]:list-disc [&_ul]:ml-6 [&_ol]:list-decimal [&_ol]:ml-6"
+        className="rd-editor min-h-[220px] p-4 text-sm focus:outline-none empty:before:content-[attr(data-placeholder)] empty:before:text-muted-foreground empty:before:pointer-events-none [&_a]:text-primary [&_a]:underline [&_blockquote]:border-l-4 [&_blockquote]:border-primary [&_blockquote]:pl-3 [&_blockquote]:italic [&_h1]:text-xl [&_h1]:font-bold [&_h1]:my-2 [&_h2]:text-lg [&_h2]:font-bold [&_h2]:my-2 [&_h3]:text-base [&_h3]:font-semibold [&_h3]:my-2 [&_img]:rounded-xl [&_img]:my-3 [&_.rd-embed]:my-4 [&_.rd-embed_iframe]:aspect-video [&_.rd-embed_iframe]:w-full [&_.rd-embed_iframe]:rounded-xl [&_iframe]:aspect-video [&_iframe]:w-full [&_iframe]:rounded-xl [&_li]:my-1 [&_p]:my-2 [&_ul]:list-disc [&_ul]:ml-6 [&_ol]:list-decimal [&_ol]:ml-6"
       />
       <input
         ref={fileInputRef}
