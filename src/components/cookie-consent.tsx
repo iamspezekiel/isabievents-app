@@ -52,42 +52,59 @@ export function CookieConsent() {
       role="dialog"
       aria-live="polite"
       aria-label="Cookie consent"
-      className={`fixed inset-x-0 bottom-0 z-[100] p-4 pb-[max(1rem,env(safe-area-inset-bottom))] transition-all duration-250 ${
-        hiding ? 'translate-y-4 opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'
+      className={`fixed inset-x-0 bottom-0 z-[100] p-4 pb-[max(1rem,env(safe-area-inset-bottom))] transition-all duration-300 ${
+        hiding ? 'translate-y-6 opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'
       }`}
     >
-      <div className="mx-auto max-w-3xl bg-card border border-border rounded-2xl shadow-2xl shadow-black/10 p-5 md:p-6 space-y-4">
-        <div className="flex items-start gap-3 text-left">
-          <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center shrink-0">
-            <Cookie className="w-5 h-5 text-primary" />
+      <div className="mx-auto max-w-2xl overflow-hidden rounded-3xl border border-border/60 bg-card/95 shadow-2xl shadow-primary/10 backdrop-blur-xl">
+        {/* Accent bar */}
+        <div className="h-1 w-full bg-gradient-to-r from-primary via-accent to-primary" />
+        <div className="p-5 md:p-7 space-y-5">
+          <div className="flex items-start gap-4 text-left">
+            <div className="relative w-12 h-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center shrink-0 ring-1 ring-primary/20">
+              <Cookie className="w-6 h-6 text-primary" />
+            </div>
+            <div className="space-y-1.5">
+              <h3 className="font-headline text-lg md:text-xl font-black tracking-tight">We value your privacy</h3>
+              <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
+                IsabiEvents uses essential cookies to keep you signed in, secure checkout and remember your
+                preferences. With your permission we also use cookies to improve recommendations and measure
+                campaign performance. Read our{' '}
+                <Link href="/privacy" className="text-primary font-bold underline underline-offset-2 hover:no-underline">
+                  Privacy Policy
+                </Link>
+                .
+              </p>
+            </div>
           </div>
-          <div className="space-y-1">
-            <h3 className="font-bold text-sm md:text-base">We value your privacy</h3>
-            <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
-              IsabiEvents uses essential cookies to keep you signed in, secure checkout and remember your
-              preferences. With your permission we may also use cookies to improve recommendations and
-              measure campaign performance. Read our{' '}
-              <Link href="/privacy" className="text-primary font-bold underline">
-                Privacy Policy
-              </Link>
-              .
-            </p>
+
+          <ul className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
+            <li className="flex items-center gap-2 rounded-xl bg-secondary/40 px-3 py-2 font-medium">
+              <Check className="w-3.5 h-3.5 text-primary" /> Essential
+            </li>
+            <li className="flex items-center gap-2 rounded-xl bg-secondary/40 px-3 py-2 font-medium text-muted-foreground">
+              <Check className="w-3.5 h-3.5 text-muted-foreground/50" /> Analytics
+            </li>
+            <li className="flex items-center gap-2 rounded-xl bg-secondary/40 px-3 py-2 font-medium text-muted-foreground">
+              <Check className="w-3.5 h-3.5 text-muted-foreground/50" /> Marketing
+            </li>
+          </ul>
+
+          <div className="flex flex-col-reverse sm:flex-row gap-2 sm:justify-end">
+            <Button
+              variant="ghost"
+              className="rounded-full font-bold h-11 text-muted-foreground hover:text-foreground"
+              onClick={() => decide('essential')}
+            >
+              Essential Only
+            </Button>
+            <Button
+              className="rounded-full font-bold h-11 gap-2 bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/25"
+              onClick={() => decide('all')}
+            >
+              <Check className="w-4 h-4" /> Accept All Cookies
+            </Button>
           </div>
-        </div>
-        <div className="flex flex-col sm:flex-row gap-2 sm:justify-end">
-          <Button
-            variant="outline"
-            className="rounded-full font-bold h-10"
-            onClick={() => decide('essential')}
-          >
-            Essential Only
-          </Button>
-          <Button
-            className="rounded-full font-bold h-10 gap-2"
-            onClick={() => decide('all')}
-          >
-            <Check className="w-4 h-4" /> Accept All Cookies
-          </Button>
         </div>
       </div>
     </div>

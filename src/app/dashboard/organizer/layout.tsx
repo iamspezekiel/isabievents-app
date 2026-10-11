@@ -17,6 +17,7 @@ import {
   Wallet 
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
+import { NotificationBell } from '@/components/notification-bell';
 import { Logo } from '@/components/logo';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { AuthGuard } from '@/components/auth-guard';
@@ -79,12 +80,7 @@ export default function OrganizerLayout({ children }: { children: React.ReactNod
           <Logo size="sm" />
         </Link>
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="rounded-full relative" asChild title="Notifications">
-            <Link href="/dashboard/attendee/notifications">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-primary rounded-full border-2 border-background" />
-            </Link>
-          </Button>
+          <NotificationBell />
           <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" title="Open Menu">

@@ -13,6 +13,7 @@ import { ThemeToggle } from '@/components/theme-toggle';
 import { DASHBOARD_PATHS, useAuth, type Role } from '@/components/auth-provider';
 
 const NAV_LINKS = [
+  { name: 'Home', href: '/' },
   { name: 'Discover', href: '/discover' },
   { name: 'Categories', href: '/categories' },
   { name: 'About', href: '/about' },

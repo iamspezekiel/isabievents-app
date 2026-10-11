@@ -240,6 +240,24 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
     if (!event) return;
     setLoading(true);
     try {
+      // Free event: skip the payment gateway and issue tickets immediately.
+      if (totalToCharge <= 0) {
+        const fres = await fetch('/api/checkout/free', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            eventId: event.id,
+            quantity,
+            buyer: {name: attendeeInfo.fullname, email: attendeeInfo.email, phone: attendeeInfo.phone},
+          }),
+        });
+        const fdata = await fres.json().catch(() => ({}));
+        if (!fres.ok || !fdata.ok) throw new Error(fdata.error || 'Could not complete free checkout.');
+        setStep(3);
+        toast({title: 'All Set!', description: 'Your free tickets have been generated and sent to your email.'});
+        setLoading(false);
+        return;
+      }
       const res = await fetch('/api/bachs/checkout', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
@@ -625,10 +643,12 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
                     {loading ? (
                       <div className="flex items-center gap-3">
                         <Loader2 className="w-5 h-5 animate-spin" />
-                        <span>Redirecting to Bachs…</span>
+                        <span>Processing…</span>
                       </div>
                     ) : (
-                      paymentMethod === 'crypto'
+                      totalToCharge <= 0
+                        ? 'Get Free Ticket'
+                        : paymentMethod === 'crypto'
                         ? `Pay $${Number(totalUsd).toFixed(2)} in Crypto`
                         : currency === 'USD'
                           ? `Pay $${Number(totalUsd).toFixed(2)}`

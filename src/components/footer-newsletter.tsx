@@ -2,14 +2,15 @@
 
 /**
  * The marketing "Stay in the Loop" newsletter card. Rendered inside the shared
- * footer, but hidden on dashboard routes (organizers/admins don't need it there).
+ * footer, but only on the homepage so it stays a hero moment, not site-wide.
  */
 import {usePathname} from 'next/navigation';
 import {NewsletterForm} from '@/components/newsletter-form';
 
 export function FooterNewsletter() {
   const pathname = usePathname() || '';
-  if (pathname.startsWith('/dashboard')) return null;
+  // Only show on the homepage (/), never on other routes.
+  if (pathname !== '/') return null;
 
   return (
     <section className="relative mx-auto mb-14 max-w-6xl overflow-hidden rounded-[2rem] border border-primary/15 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-6 md:p-10">

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Scan, Store, CheckCircle, AlertCircle, RefreshCcw, History, ShoppingBag, X, ArrowLeft, User, Ticket, Activity, Camera, CameraOff, Bell, FileText, CheckCircle2, AlertTriangle, Sparkles, Search, UserMinus } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { NotificationBell } from '@/components/notification-bell';
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
@@ -175,12 +176,7 @@ export default function VendorPortal() {
           </div>
         </div>
         <div className="flex items-center gap-2">
-           <Button variant="ghost" size="icon" className="rounded-full relative" asChild title="Notifications">
-            <Link href="/dashboard/attendee/notifications">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-2.5 right-2.5 w-2 h-2 bg-primary rounded-full border-2 border-background" />
-            </Link>
-          </Button>
+           <NotificationBell />
            <Badge className="bg-primary/20 text-primary border-none hidden sm:inline-flex">Cold Sips Drinks</Badge>
            <Badge variant="outline" className="font-mono">VEN-08</Badge>
         </div>
