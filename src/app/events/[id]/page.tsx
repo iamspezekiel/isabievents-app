@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useEffect, useState, use } from 'react';
-import { Calendar, MapPin, Share2, Heart, ShieldCheck, ChevronRight, Info, Music, Users, Ticket, CheckCircle2, AlertCircle, RefreshCcw, Loader2 } from 'lucide-react';
+import { Calendar, MapPin, Share2, Heart, ShieldCheck, ChevronRight, Info, Music, Users, Ticket, CheckCircle2, AlertCircle, RefreshCcw, Loader2, Flag, AlertTriangle } from 'lucide-react';
 import { useEvents } from '@/hooks/use-events';
 import { toggleFavorite } from '@/lib/favorites';
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,9 @@ import { apiFetch } from '@/lib/api-fetch';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 
 export default function EventDetailsPage(props: { params: Promise<{ id: string }> }) {
   const { id } = use(props.params);
@@ -33,6 +36,48 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
   const [selectedTier, setSelectedTier] = useState<string | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [tierPrice, setTierPrice] = useState(0);
+
+  // Report dialog state.
+  const REPORT_REASONS = [
+    'Scam or fraud',
+    'Misleading information',
+    'Inappropriate content',
+    'Wrong date or venue',
+    'Something else',
+  ];
+  const [reportOpen, setReportOpen] = useState(false);
+  const [reportReason, setReportReason] = useState(REPORT_REASONS[0]);
+  const [reportDetails, setReportDetails] = useState('');
+  const [reportSubmitting, setReportSubmitting] = useState(false);
+
+  const openReport = () => {
+    setReportReason(REPORT_REASONS[0]);
+    setReportDetails('');
+    setReportOpen(true);
+  };
+
+  const submitReport = async () => {
+    if (!event) return;
+    const reason = reportDetails.trim() ? `${reportReason}: ${reportDetails.trim()}` : reportReason;
+    setReportSubmitting(true);
+    try {
+      const res = await apiFetch('/api/reports', {
+        method: 'POST',
+        body: JSON.stringify({ eventId: event.id, eventTitle: event.title, reason }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Could not submit report.');
+      setReportOpen(false);
+      toast({ title: 'Report Submitted', description: 'Thanks — our moderation team will review this event.' });
+    } catch (err) {
+      toast({
+        variant: 'destructive',
+        title: 'Report Failed',
+        description: err instanceof Error ? err.message : 'Please sign in and try again.',
+      });
+    }
+    setReportSubmitting(false);
+  };
 
   async function fetchFaqs(description: string) {
     setLoadingFaqs(true);
@@ -88,27 +133,6 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
       title: "Link Copied!",
       description: "Event link has been copied to your clipboard."
     });
-  };
-
-  const handleReport = async () => {
-    if (!event) return;
-    const reason = window.prompt('Why are you reporting this event? (e.g. scam, misleading information, inappropriate content)');
-    if (!reason || !reason.trim()) return;
-    try {
-      const res = await apiFetch('/api/reports', {
-        method: 'POST',
-        body: JSON.stringify({eventId: event.id, eventTitle: event.title, reason: reason.trim()}),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || 'Could not submit report.');
-      toast({title: 'Report Submitted', description: 'Thanks — our moderation team will review this event.'});
-    } catch (err) {
-      toast({
-        variant: 'destructive',
-        title: 'Report Failed',
-        description: err instanceof Error ? err.message : 'Please sign in and try again.',
-      });
-    }
   };
 
   if (!event) {
@@ -189,10 +213,10 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
               </div>
               <button
                 type="button"
-                onClick={handleReport}
-                className="mt-6 text-xs font-semibold text-muted-foreground hover:text-destructive transition-colors underline underline-offset-2"
+                onClick={openReport}
+                className="mt-6 inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-destructive transition-colors underline underline-offset-2"
               >
-                Report this event
+                <Flag className="w-3.5 h-3.5" /> Report this event
               </button>
             </section>
 
@@ -340,6 +364,60 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
             </div>
           </div>
         </div>
+
+        {/* Report dialog */}
+        <Dialog open={reportOpen} onOpenChange={setReportOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="font-headline flex items-center gap-2">
+                <Flag className="w-5 h-5 text-destructive" /> Report this event
+              </DialogTitle>
+              <DialogDescription>
+                Tell us what&apos;s wrong with &quot;{event.title}&quot;. Our moderation team reviews every report.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label>Reason</Label>
+                <div className="grid gap-2">
+                  {REPORT_REASONS.map((r) => (
+                    <button
+                      key={r}
+                      type="button"
+                      onClick={() => setReportReason(r)}
+                      className={`flex items-center gap-3 rounded-xl border p-3 text-left text-sm font-medium transition-colors ${
+                        reportReason === r
+                          ? 'border-destructive bg-destructive/5 text-foreground'
+                          : 'border-border text-muted-foreground hover:border-primary/40'
+                      }`}
+                    >
+                      <span className={`w-4 h-4 rounded-full border-2 shrink-0 ${reportReason === r ? 'border-destructive bg-destructive' : 'border-border'}`} />
+                      {r}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="report-details">Additional details (optional)</Label>
+                <Textarea
+                  id="report-details"
+                  placeholder="Add any extra context that will help us review faster."
+                  className="min-h-[90px]"
+                  value={reportDetails}
+                  onChange={(e) => setReportDetails(e.target.value)}
+                  maxLength={600}
+                />
+              </div>
+            </div>
+            <DialogFooter className="gap-2 sm:gap-0">
+              <Button variant="outline" onClick={() => setReportOpen(false)}>Cancel</Button>
+              <Button variant="destructive" onClick={submitReport} disabled={reportSubmitting} className="gap-2">
+                {reportSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <AlertTriangle className="w-4 h-4" />}
+                Submit Report
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
       </main>
     </div>
   );

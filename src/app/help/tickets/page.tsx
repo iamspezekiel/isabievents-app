@@ -1,14 +1,46 @@
 "use client";
 
-import React from 'react';
-import { ArrowLeft, Ticket, QrCode, Mail, MessageSquare, Search, Smartphone, ShieldCheck } from 'lucide-react';
+import React, { useState } from 'react';
+import { ArrowLeft, Ticket, QrCode, Mail, MessageSquare, Search, Smartphone, ShieldCheck, Loader2, CheckCircle2 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import Link from 'next/link';
 import Script from 'next/script';
+import { useToast } from '@/hooks/use-toast';
 
 export default function TicketSupportPage() {
+  const { toast } = useToast();
+  const [resendEmail, setResendEmail] = useState('');
+  const [resendState, setResendState] = useState<'idle' | 'loading' | 'done'>('idle');
+
+  const handleResend = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(resendEmail.trim())) {
+      toast({ variant: 'destructive', title: 'Invalid email', description: 'Enter the email you used at checkout.' });
+      return;
+    }
+    setResendState('loading');
+    try {
+      const res = await fetch('/api/tickets/resend', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: resendEmail.trim().toLowerCase() }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Could not resend tickets.');
+      setResendState('done');
+      toast({ title: 'Tickets resent', description: 'Check your inbox — your ticket email is on the way.' });
+    } catch (err) {
+      setResendState('idle');
+      toast({
+        variant: 'destructive',
+        title: 'Could not resend',
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Script id="getbutton-tickets" strategy="lazyOnload">
@@ -78,12 +110,30 @@ export default function TicketSupportPage() {
           <section className="bg-card border border-border rounded-3xl p-8 space-y-6 text-left">
             <h2 className="font-headline text-xl">Need to resend your ticket?</h2>
             <p className="text-muted-foreground leading-relaxed">
-              If you can't find your ticket, enter the email address used during purchase and we'll send it back to you instantly.
+              If you can&apos;t find your ticket, enter the email address used during purchase and we&apos;ll send it back to you instantly.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Input placeholder="yourname@example.com" className="h-12 bg-secondary border-none" />
-              <Button className="h-12 rounded-xl px-8">Resend Ticket</Button>
-            </div>
+            {resendState === 'done' ? (
+              <div className="flex items-center gap-3 rounded-xl border border-green-500/30 bg-green-500/10 p-4">
+                <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0" />
+                <p className="text-sm font-medium text-green-600">
+                  Ticket email resent to <span className="font-bold">{resendEmail}</span>. Check your inbox (and spam folder).
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleResend} className="flex flex-col sm:flex-row gap-4">
+                <Input
+                  type="email"
+                  placeholder="yourname@example.com"
+                  className="h-12 bg-secondary border-none"
+                  value={resendEmail}
+                  onChange={(e) => setResendEmail(e.target.value)}
+                  required
+                />
+                <Button type="submit" className="h-12 rounded-xl px-8 gap-2" disabled={resendState === 'loading'}>
+                  {resendState === 'loading' ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Resend Ticket'}
+                </Button>
+              </form>
+            )}
           </section>
 
           <section className="space-y-6 text-left">

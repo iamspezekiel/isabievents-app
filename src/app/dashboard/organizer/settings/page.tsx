@@ -47,6 +47,9 @@ export default function OrganizerSettingsPage() {
   const [brandName, setBrandName] = useState('');
   const [twoFactor, setTwoFactor] = useState(false);
   const [location, setLocation] = useState('');
+  const [avatar, setAvatar] = useState('');
+  const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const avatarInputRef = React.useRef<HTMLInputElement>(null);
   const [saving, setSaving] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -54,13 +57,39 @@ export default function OrganizerSettingsPage() {
   // Load the real profile into the form.
   useEffect(() => {
     if (profile) {
-      const p = profile as {whatsapp?: string; twoFactor?: boolean; location?: string};
+      const p = profile as {whatsapp?: string; twoFactor?: boolean; location?: string; avatar?: string;};
       setWhatsapp(p.whatsapp || '');
       setBrandName(profile.name || '');
+      setAvatar(p.avatar || '');
       setTwoFactor(!!p.twoFactor);
       setLocation(p.location || '');
     }
   }, [profile]);
+
+  // Upload the profile photo to R2, then persist it to the profile + all events.
+  const handleAvatarSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file || !profile?.uid) return;
+    setUploadingAvatar(true);
+    try {
+      const form = new FormData();
+      form.append('file', file);
+      form.append('folder', 'avatars');
+      const upRes = await fetch('/api/upload', {method: 'POST', body: form});
+      const upData = await upRes.json().catch(() => ({}));
+      if (!upRes.ok) throw new Error(upData.error || 'Upload failed.');
+      const url = upData.url as string;
+      const res = await apiFetch('/api/organizer/avatar', {method: 'POST', body: JSON.stringify({avatar: url})});
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Could not save photo.');
+      setAvatar(url);
+      toast({title: 'Photo Updated', description: 'Your profile photo now appears on your events.'});
+    } catch (err) {
+      toast({variant: 'destructive', title: 'Upload Failed', description: err instanceof Error ? err.message : 'Please try again.'});
+    }
+    setUploadingAvatar(false);
+  };
 
   const handleSaveProfile = async () => {
     if (!profile?.uid) return;
@@ -171,6 +200,30 @@ export default function OrganizerSettingsPage() {
               <CardDescription>Your public organizer name and contact â€” plus a private location that is never shown to attendees.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6 text-left">
+              {/* Profile photo */}
+              <div className="flex items-center gap-4">
+                <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-primary/20 bg-secondary flex items-center justify-center shrink-0">
+                  {avatar ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={avatar} alt={brandName || 'Organizer'} className="w-full h-full object-cover" />
+                  ) : (
+                    <User className="w-7 h-7 text-muted-foreground" />
+                  )}
+                  {uploadingAvatar && (
+                    <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                      <Loader2 className="w-5 h-5 text-white animate-spin" />
+                    </div>
+                  )}
+                </div>
+                <div className="space-y-1">
+                  <p className="font-bold text-sm">Profile Photo</p>
+                  <p className="text-xs text-muted-foreground">Appears on your event pages. JPG or PNG, up to 8MB.</p>
+                  <Button type="button" variant="outline" size="sm" className="rounded-full font-bold" disabled={uploadingAvatar} onClick={() => avatarInputRef.current?.click()}>
+                    {uploadingAvatar ? 'Uploading...' : avatar ? 'Change Photo' : 'Upload Photo'}
+                  </Button>
+                </div>
+                <input ref={avatarInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif" className="hidden" onChange={handleAvatarSelect} />
+              </div>
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="brand-name">Brand Name</Label>
@@ -188,10 +241,14 @@ export default function OrganizerSettingsPage() {
                   </Label>
                   <Input id="whatsapp" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="+234..." className="h-11" />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="location">Location (private)</Label>
-                  <Input id="location" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. Lagos, Nigeria" className="h-11" />
-                  <p className="text-[10px] text-muted-foreground">Kept internal â€” never shown publicly.</p>
+                <div className="space-y-2">
+
+                  <Label htmlFor="location">Location (private)</Label>
+
+                  <Input id="location" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. Lagos, Nigeria" className="h-11" />
+
+                  <p className="text-[10px] text-muted-foreground">Kept internal â€” never shown publicly.</p>
+
                 </div>
               </div>
               <Button className="rounded-full px-8 font-bold" onClick={handleSaveProfile} disabled={saving || !profile}>
