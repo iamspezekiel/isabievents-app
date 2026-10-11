@@ -34,6 +34,14 @@ const nextConfig: NextConfig = {
         port: '',
         pathname: '/**',
       },
+      {
+        // Cloudflare R2 public buckets (event cover uploads) — any
+        // pub-<hash>.r2.dev host, or a custom R2 domain.
+        protocol: 'https',
+        hostname: '**.r2.dev',
+        port: '',
+        pathname: '/**',
+      },
     ],
   },
 };
