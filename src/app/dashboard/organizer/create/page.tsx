@@ -25,9 +25,10 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { generateEventCopy } from '@/ai/flows/organizer-ai-copy-generator';
 import { CATEGORIES, CITIES } from '@/lib/constants';
 import { getEvent } from '@/lib/client-db';
+import { invalidateEventsCache } from '@/hooks/use-events';
+import { toRichHtml } from '@/lib/rich-text';
 import { apiFetch } from '@/lib/api-fetch';
 
 function CreateEventForm() {
@@ -106,14 +107,14 @@ function CreateEventForm() {
           name: event.title,
           category: event.category,
           summary: extra.summary || (event.description || '').substring(0, 100),
-          description: event.description || '',
+          description: toRichHtml(event.description || ''),
           policies: extra.policies || '',
           venue: event.venue || '',
           city: event.city || '',
           date: datePart || '',
           time: (timePart || '').substring(0, 5),
           price: String(event.price?.min ?? 0),
-          capacity: String(event.inventory ?? ''),
+          capacity: event.inventory ? String(event.inventory) : '',
         });
         setCoverImage(event.image || '');
         setFeatures(Array.isArray(event.tags) ? event.tags : []);
@@ -143,41 +144,48 @@ function CreateEventForm() {
   };
 
   const handleUseAI = async () => {
-    if (!formData.name || !formData.category || !formData.summary) {
+    if (!formData.name.trim()) {
       toast({
         variant: "destructive",
         title: "Missing Information",
-        description: "Please fill in Event Name, Category, and Summary first.",
+        description: "Please fill in the Event Name first so there's something to work with.",
       });
       return;
     }
 
     setLoadingAI(true);
     try {
-      const result = await generateEventCopy({
-        eventName: formData.name,
-        eventType: formData.category as any,
-        eventSummary: formData.summary,
-        keyFeatures: features,
-        eventDate: `${formData.date} ${formData.time}`,
-        eventVenue: formData.venue,
+      const res = await apiFetch('/api/ai/generate-copy', {
+        method: 'POST',
+        body: JSON.stringify({
+          eventName: formData.name,
+          eventType: formData.category,
+          eventSummary: formData.summary,
+          keyFeatures: features,
+          eventDate: `${formData.date} ${formData.time}`.trim(),
+          eventVenue: formData.venue,
+        }),
       });
+      const result = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(result.error || 'Generation failed.');
 
       setFormData(prev => ({
         ...prev,
-        description: result.eventDescription,
-        policies: result.eventPolicies
+        description: toRichHtml(result.eventDescription || ''),
+        policies: result.eventPolicies || prev.policies,
       }));
 
       toast({
         title: "Content Generated!",
-        description: "AI has drafted your description and policies.",
+        description: result.source === 'ai'
+          ? "AI has drafted your description and policies."
+          : "A draft description and policies have been generated.",
       });
     } catch (err) {
       toast({
         variant: "destructive",
-        title: "AI Generation Failed",
-        description: "Something went wrong while generating content.",
+        title: "Generation Failed",
+        description: err instanceof Error ? err.message : 'Please try again.',
       });
     } finally {
       setLoadingAI(false);
@@ -222,6 +230,10 @@ function CreateEventForm() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Could not save the event.');
+
+      // Refresh the shared events feed so the new/updated event shows up on
+      // the dashboard and the public site immediately (not after the cache TTL).
+      invalidateEventsCache();
 
       toast({
         title: isEdit ? "Event Updated!" : "Event Created!",
@@ -385,6 +397,18 @@ function CreateEventForm() {
 
               <div className="grid gap-6 text-left">
                 <div className="space-y-2">
+                  <Label htmlFor="description">Detailed Description</Label>
+                  <RichTextEditor
+                    value={formData.description}
+                    onChange={(v) => setFormData({...formData, description: v})}
+                    placeholder="Tell attendees everything — what to expect, the schedule, highlights. Use the toolbar for headings, lists, links, photos and videos. You can also paste formatted content straight from another site."
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Full editor: headings, <strong>bold</strong>, lists, quotes, links, real images and YouTube/Vimeo videos. Copy &amp; paste keeps the formatting.
+                  </p>
+                </div>
+
+                <div className="space-y-2">
                   <Label htmlFor="summary">Brief Summary</Label>
                   <Textarea 
                     id="summary" 
@@ -393,7 +417,7 @@ function CreateEventForm() {
                     value={formData.summary}
                     onChange={(e) => setFormData({...formData, summary: e.target.value})}
                   />
-                  <p className="text-xs text-muted-foreground">This helps the AI generate a better description.</p>
+                  <p className="text-xs text-muted-foreground">A short hook used for cards and search results.</p>
                 </div>
 
                 <div className="space-y-2">
@@ -416,18 +440,6 @@ function CreateEventForm() {
                       </Badge>
                     ))}
                   </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="description">Detailed Description</Label>
-                  <RichTextEditor
-                    value={formData.description}
-                    onChange={(v) => setFormData({...formData, description: v})}
-                    placeholder="What can attendees expect? Use **bold**, lists, add images (https://…) and YouTube links — they render as video."
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    Formatting supported: **bold**, *italic*, ## headings, - lists, &gt; quotes, [links](https://…), images and YouTube videos.
-                  </p>
                 </div>
 
                 <div className="space-y-2">
@@ -519,7 +531,8 @@ function CreateEventForm() {
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="capacity">Total Capacity</Label>
-                      <Input id="capacity" type="number" placeholder="100" value={formData.capacity} onChange={(e) => setFormData({...formData, capacity: e.target.value})} className="h-11" />
+                      <Input id="capacity" type="number" min={0} placeholder="Unlimited" value={formData.capacity} onChange={(e) => setFormData({...formData, capacity: e.target.value})} className="h-11" />
+                      <p className="text-xs text-muted-foreground">Leave empty for unlimited capacity.</p>
                     </div>
                   </CardContent>
                 </Card>

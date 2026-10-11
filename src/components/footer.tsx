@@ -1,9 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { Logo } from '@/components/logo';
-import { NewsletterForm } from '@/components/newsletter-form';
-import { CookieSettingsButton } from '@/components/cookie-consent';
-import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, ArrowUpRight } from 'lucide-react';
+import { FooterNewsletter } from '@/components/footer-newsletter';
+import { Facebook, Twitter, Instagram, Youtube, ArrowUpRight } from 'lucide-react';
 
 const SOCIALS = [
   { href: 'https://facebook.com/isabievents', label: 'Facebook', Icon: Facebook },
@@ -45,26 +44,14 @@ export function Footer() {
       <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent" />
       <div aria-hidden className="pointer-events-none absolute -top-24 left-1/2 h-64 w-[42rem] -translate-x-1/2 rounded-full bg-primary/10 blur-3xl" />
       <div className="container relative z-10 mx-auto px-4">
-        {/* Newsletter Section */}
-        <section className="relative mx-auto mb-14 max-w-6xl overflow-hidden rounded-[2rem] border border-primary/15 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent p-6 md:p-10">
-          <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-primary/20 blur-3xl" />
-          <div className="relative flex flex-col items-center justify-between gap-8 lg:flex-row">
-            <div className="space-y-2 text-center lg:text-left">
-              <h3 className="font-headline text-3xl md:text-4xl lg:text-5xl font-black tracking-tighter">
-                Stay in the <span className="text-primary">Loop</span>
-              </h3>
-              <p className="text-muted-foreground font-medium">Get first access to Nigerian concerts, festivals, and tech summits.</p>
-            </div>
-            <div className="w-full lg:max-w-md">
-              <NewsletterForm />
-            </div>
-          </div>
-        </section>
+        {/* Newsletter Section (hidden on dashboard routes) */}
+        <FooterNewsletter />
+
 
         {/* Links Grid */}
-        <div className="mb-12 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-12 text-left">
+        <div className="mb-12 grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4 text-left">
           {/* Brand */}
-          <div className="space-y-5 sm:col-span-2 lg:col-span-4">
+          <div className="space-y-5">
             <Link href="/" className="inline-block no-underline">
               <Logo size="sm" />
             </Link>
@@ -80,27 +67,17 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={label}
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border bg-secondary/60 text-muted-foreground transition-all hover:-translate-y-0.5 hover:border-primary hover:bg-primary/10 hover:text-primary hover:shadow-lg hover:shadow-primary/20 no-underline"
+                  className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-border bg-secondary/60 text-muted-foreground transition-all hover:-translate-y-0.5 hover:border-primary hover:bg-primary/10 hover:text-primary hover:shadow-lg hover:shadow-primary/20 no-underline"
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className="h-3.5 w-3.5" />
                 </Link>
               ))}
             </div>
-            {/* Contact */}
-            <div className="space-y-2.5 border-t border-border pt-5">
-              <a href="mailto:support@events.isabi.cloud" className="flex items-start gap-2.5 text-[14px] font-semibold text-muted-foreground transition-colors hover:text-primary no-underline">
-                <Mail className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden />
-                <span className="break-all">support@events.isabi.cloud</span>
-              </a>
-              <a href="tel:+2349024244140" className="flex items-start gap-2.5 text-[14px] font-semibold text-muted-foreground transition-colors hover:text-primary no-underline">
-                <Phone className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden />
-                <span>+234 902 424 4140</span>
-              </a>
-            </div>
+
           </div>
 
           {/* For Attendees */}
-          <div className="lg:col-span-2">
+          <div>
             <ColumnHeading>For Attendees</ColumnHeading>
             <ul className="space-y-3">
               <FooterLink href="/discover">Find Events</FooterLink>
@@ -111,7 +88,7 @@ export function Footer() {
           </div>
 
           {/* For Organizers */}
-          <div className="lg:col-span-2">
+          <div>
             <ColumnHeading>For Organizers</ColumnHeading>
             <ul className="space-y-3">
               <FooterLink href="/pricing">Pricing</FooterLink>
@@ -122,26 +99,17 @@ export function Footer() {
           </div>
 
           {/* Legal & Support */}
-          <div className="lg:col-span-2">
+          <div>
             <ColumnHeading>Legal &amp; Support</ColumnHeading>
             <ul className="space-y-3">
               <FooterLink href="/help">Help Center</FooterLink>
               <FooterLink href="/help/refunds">Refund Policy</FooterLink>
               <FooterLink href="/privacy">Privacy Policy</FooterLink>
               <FooterLink href="/terms">Terms of Service</FooterLink>
-              <li><CookieSettingsButton /></li>
             </ul>
           </div>
 
-          {/* Get Started */}
-          <div className="lg:col-span-2">
-            <ColumnHeading>Get Started</ColumnHeading>
-            <ul className="space-y-3">
-              <FooterLink href="/login">Login</FooterLink>
-              <FooterLink href="/signup">Sign Up</FooterLink>
-              <FooterLink href="/host-event">Host Event</FooterLink>
-            </ul>
-          </div>
+
         </div>
         {/* Bottom Bar: Logos & Copyright on same line for desktop */}
         <div className="border-t border-border pt-8 pb-2 flex flex-col lg:flex-row items-center justify-between gap-8">

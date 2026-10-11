@@ -190,7 +190,7 @@ export default function MyEventsPage() {
                     <div className="flex flex-wrap items-center gap-8 flex-1">
                       <div className="space-y-0.5">
                         <span className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Tickets Sold</span>
-                        <div className="font-bold">{eventStats[event.id]?.sold ?? 0}/{event.inventory ?? '—'}</div>
+                        <div className="font-bold">{eventStats[event.id]?.sold ?? 0}/{event.inventory ? event.inventory : 'Unlimited'}</div>
                       </div>
                       <div className="space-y-0.5">
                         <span className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Revenue</span>

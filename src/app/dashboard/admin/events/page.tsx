@@ -12,13 +12,14 @@ import {
   UserCheck,
   Ban,
   Pencil,
-  Trash2
+  Trash2,
+  Flag
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import Link from 'next/link';
-import { useEvents } from '@/hooks/use-events';
+import { useEvents, invalidateEventsCache } from '@/hooks/use-events';
 import { apiFetch } from '@/lib/api-fetch';
 import type { EventDoc } from '@/lib/db';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -41,6 +42,14 @@ export default function AdminEventsManagement() {
   const [processingId, setProcessingId] = useState<string | null>(null);
   const [eventToDelete, setEventToDelete] = useState<EventDoc | null>(null);
   const { toast } = useToast();
+  const [reports, setReports] = useState<{id: string; eventId: string; eventTitle?: string; reason: string; reporterName?: string; status?: string}[]>([]);
+
+  useEffect(() => {
+    apiFetch('/api/reports')
+      .then((res) => res.json())
+      .then((d) => { if (d && Array.isArray(d.reports)) setReports(d.reports); })
+      .catch(() => undefined);
+  }, []);
 
   useEffect(() => {
     setEvents(allEvents);
@@ -90,10 +99,13 @@ export default function AdminEventsManagement() {
       return;
     }
     
-    setEvents(prev => action === 'approve'
-      ? prev.map(e => e.id === id ? {...e, organizer: {...(e.organizer || {}), verified: true}} : e)
-      : prev.filter(e => e.id !== id));
+    // Approve restores (verified true); reject suspends (verified false) — the
+    // event moves to the Suspended tab rather than disappearing. Refresh the
+    // public feed so the change is live immediately.
+    setEvents(prev => prev.map(e => e.id === id ? {...e, organizer: {...(e.organizer || {}), verified: action === 'approve'}} : e));
     setProcessingId(null);
+    invalidateEventsCache();
+    refetch();
 
     if (action === 'approve') {
       toast({
@@ -114,8 +126,12 @@ export default function AdminEventsManagement() {
     (event.organizer?.name || '').toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const pendingModeration = filteredEvents.filter(event => !event.organizer?.verified);
-  const autoApproved = filteredEvents.filter(event => event.organizer?.verified);
+  const now = Date.now();
+  const suspended = filteredEvents.filter(event => !event.organizer?.verified);
+  const liveList = filteredEvents.filter(event => event.organizer?.verified);
+  const upcoming = liveList.filter(event => new Date(event.date).getTime() >= now);
+  const past = liveList.filter(event => new Date(event.date).getTime() < now);
+  const reportedIds = new Set(reports.map(r => r.eventId));
 
   return (
     <div className="p-4 pb-16 md:p-12 md:pb-16 space-y-8">
@@ -137,70 +153,50 @@ export default function AdminEventsManagement() {
         </div>
       </header>
 
-      <Tabs defaultValue="pending" className="w-full">
+            <Tabs defaultValue="upcoming" className="w-full">
         <TabsList className="bg-secondary/50 p-1 rounded-2xl mb-8 w-full sm:w-auto h-auto sm:h-11 flex overflow-x-auto">
-          <TabsTrigger 
-            value="pending" 
-            className="rounded-xl px-2 sm:px-8 font-bold flex-1 sm:flex-none py-2.5 sm:py-1.5 text-[10px] sm:text-sm whitespace-nowrap"
-          >
-            Pending / Hidden ({pendingModeration.length})
+          <TabsTrigger value="upcoming" className="rounded-xl px-2 sm:px-8 font-bold flex-1 sm:flex-none py-2.5 sm:py-1.5 text-[10px] sm:text-sm whitespace-nowrap">
+            Upcoming ({upcoming.length})
           </TabsTrigger>
-          <TabsTrigger 
-            value="approved" 
-            className="rounded-xl px-2 sm:px-8 font-bold flex-1 sm:flex-none py-2.5 sm:py-1.5 text-[10px] sm:text-sm whitespace-nowrap"
-          >
-            Live Now ({autoApproved.length})
+          <TabsTrigger value="past" className="rounded-xl px-2 sm:px-8 font-bold flex-1 sm:flex-none py-2.5 sm:py-1.5 text-[10px] sm:text-sm whitespace-nowrap">
+            Past ({past.length})
           </TabsTrigger>
-          <TabsTrigger 
-            value="all" 
-            className="rounded-xl px-2 sm:px-8 font-bold flex-1 sm:flex-none py-2.5 sm:py-1.5 text-[10px] sm:text-sm whitespace-nowrap"
-          >
-            All Events
+          <TabsTrigger value="suspended" className="rounded-xl px-2 sm:px-8 font-bold flex-1 sm:flex-none py-2.5 sm:py-1.5 text-[10px] sm:text-sm whitespace-nowrap">
+            Suspended ({suspended.length})
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="pending" className="space-y-4">
-          {pendingModeration.length > 0 ? pendingModeration.map((event) => (
-            <ModerationRow 
-              key={event.id} 
-              event={event} 
-              type="pending" 
-              onAction={handleAction}
-              onDelete={setEventToDelete}
-              processingId={processingId}
-            />
+        <TabsContent value="upcoming" className="space-y-4">
+          {upcoming.length > 0 ? upcoming.map((event) => (
+            <ModerationRow key={event.id} event={event} type="upcoming" reported={reportedIds.has(event.id)} onAction={handleAction} onDelete={setEventToDelete} processingId={processingId} />
           )) : (
             <div className="bg-card border border-dashed border-border py-24 rounded-[3rem] text-center">
               <CheckCircle2 className="w-16 h-16 text-muted-foreground/20 mx-auto mb-4" />
-              <p className="text-muted-foreground font-medium">No events currently pending manual review.</p>
+              <p className="text-muted-foreground font-medium">No upcoming events.</p>
             </div>
           )}
         </TabsContent>
 
-        <TabsContent value="approved" className="space-y-4">
-          {autoApproved.map((event) => (
-            <ModerationRow 
-              key={event.id} 
-              event={event} 
-              type="approved" 
-              onAction={handleAction}
-              onDelete={setEventToDelete}
-              processingId={processingId}
-            />
-          ))}
+        <TabsContent value="past" className="space-y-4">
+          {past.length > 0 ? past.map((event) => (
+            <ModerationRow key={event.id} event={event} type="past" reported={reportedIds.has(event.id)} onAction={handleAction} onDelete={setEventToDelete} processingId={processingId} />
+          )) : (
+            <div className="bg-card border border-dashed border-border py-24 rounded-[3rem] text-center">
+              <Calendar className="w-16 h-16 text-muted-foreground/20 mx-auto mb-4" />
+              <p className="text-muted-foreground font-medium">No past events yet.</p>
+            </div>
+          )}
         </TabsContent>
 
-        <TabsContent value="all" className="space-y-4">
-          {filteredEvents.map((event) => (
-            <ModerationRow 
-              key={event.id} 
-              event={event} 
-              type="all" 
-              onAction={handleAction}
-              onDelete={setEventToDelete}
-              processingId={processingId}
-            />
-          ))}
+        <TabsContent value="suspended" className="space-y-4">
+          {suspended.length > 0 ? suspended.map((event) => (
+            <ModerationRow key={event.id} event={event} type="suspended" reported={reportedIds.has(event.id)} onAction={handleAction} onDelete={setEventToDelete} processingId={processingId} />
+          )) : (
+            <div className="bg-card border border-dashed border-border py-24 rounded-[3rem] text-center">
+              <CheckCircle2 className="w-16 h-16 text-muted-foreground/20 mx-auto mb-4" />
+              <p className="text-muted-foreground font-medium">No suspended events — all listings are live.</p>
+            </div>
+          )}
         </TabsContent>
       </Tabs>
 
@@ -230,9 +226,10 @@ export default function AdminEventsManagement() {
   );
 }
 
-function ModerationRow({ event, type, onAction, onDelete, processingId }: { 
+function ModerationRow({ event, type, reported, onAction, onDelete, processingId }: { 
   event: any, 
   type: string, 
+  reported?: boolean,
   onAction: (id: string, title: string, action: 'approve' | 'reject') => void,
   onDelete: (event: any) => void,
   processingId: string | null
@@ -256,7 +253,12 @@ function ModerationRow({ event, type, onAction, onDelete, processingId }: {
               </Badge>
             ) : (
               <Badge className="bg-yellow-500/10 text-yellow-600 border-none text-[9px] font-black uppercase tracking-tighter">
-                Hidden by Moderation
+                Suspended
+              </Badge>
+            )}
+            {reported && (
+              <Badge className="bg-red-500/10 text-red-500 border-none text-[9px] font-black uppercase tracking-tighter flex items-center gap-1">
+                <Flag className="w-3 h-3" /> Reported
               </Badge>
             )}
           </div>
@@ -269,30 +271,27 @@ function ModerationRow({ event, type, onAction, onDelete, processingId }: {
       </div>
       
       <div className="flex items-center gap-3 w-full lg:w-auto pt-4 lg:pt-0 border-t lg:border-none border-border">
-        {(type === 'pending' || !isVerified) ? (
-          <>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              disabled={isProcessing}
-              onClick={() => onAction(event.id, event.title, 'approve')}
-              className="flex-1 lg:flex-none rounded-full gap-2 border-green-500/20 text-green-500 hover:bg-green-500/5 h-10 px-6 font-bold"
-            >
-              {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserCheck className="w-4 h-4" />} 
-              Approve
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              disabled={isProcessing}
-              onClick={() => onAction(event.id, event.title, 'reject')}
-              className="flex-1 lg:flex-none rounded-full gap-2 border-red-500/20 text-red-500 hover:bg-red-500/5 h-10 px-6 font-bold"
-            >
-              <Ban className="w-4 h-4" /> Reject
-            </Button>
-          </>
+                {!isVerified ? (
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={isProcessing}
+            onClick={() => onAction(event.id, event.title, 'approve')}
+            className="flex-1 lg:flex-none rounded-full gap-2 border-green-500/20 text-green-500 hover:bg-green-500/5 h-10 px-6 font-bold"
+          >
+            {isProcessing ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserCheck className="w-4 h-4" />}
+            Restore
+          </Button>
         ) : (
-          <Badge className="bg-green-500/10 text-green-500 border-none py-2 px-4 rounded-full font-bold">Live & Verified</Badge>
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={isProcessing}
+            onClick={() => onAction(event.id, event.title, 'reject')}
+            className="flex-1 lg:flex-none rounded-full gap-2 border-red-500/20 text-red-500 hover:bg-red-500/5 h-10 px-6 font-bold"
+          >
+            <Ban className="w-4 h-4" /> Suspend
+          </Button>
         )}
         <div className="flex items-center gap-2">
           <Link href={`/dashboard/organizer/create?id=${event.id}`} className="no-underline">

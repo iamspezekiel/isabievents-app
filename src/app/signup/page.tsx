@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, Suspense } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,6 +18,14 @@ function SignupForm() {
   const { signUp } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const searchParams = useSearchParams();
+
+  // Team invite (?inviteEmail=...&role=vendor|staff&org=...) - join-a-team flow.
+  const inviteEmail = searchParams.get('inviteEmail') || '';
+  const rawRole = searchParams.get('role');
+  const inviteRole = rawRole === 'staff' ? 'staff' : rawRole === 'vendor' ? 'vendor' : 'attendee';
+  const inviteOrg = searchParams.get('org') || '';
+  const isInvite = !!inviteEmail && inviteRole !== 'attendee';
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +37,7 @@ function SignupForm() {
     const email = String(data.get('email') || '').trim();
     const password = String(data.get('password') || '');
 
-    const role = 'attendee';
+    const role = isInvite ? inviteRole : 'attendee';
     try {
       const profile = await signUp({name, email, password, role: role as Role});
       // Fire-and-forget welcome + admin notification emails (no-op without SMTP).
@@ -66,8 +74,8 @@ function SignupForm() {
 
         <Card className="bg-card border-border shadow-2xl overflow-hidden">
           <CardHeader className="text-center">
-            <CardTitle>Create Account</CardTitle>
-            <CardDescription>Join as an attendee and get tickets to the best events</CardDescription>
+            <CardTitle>{isInvite ? 'Join Your Team' : 'Create Account'}</CardTitle>
+            <CardDescription>{isInvite ? `You have been invited to join ${inviteOrg || 'a team'} as ${inviteRole === 'staff' ? 'a staff member' : 'a vendor'}.` : 'Join as an attendee and get tickets to the best events'}</CardDescription>
           </CardHeader>
           <form onSubmit={handleSignup}>
             <CardContent className="space-y-6 px-10 md:px-6">
@@ -83,7 +91,7 @@ function SignupForm() {
                   <Label htmlFor="email">Email Address</Label>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                    <Input id="email" name="email" type="email" placeholder="john@example.com" className="pl-10 h-9 md:h-11 bg-secondary/50" required />
+                    <Input id="email" name="email" type="email" placeholder="john@example.com" defaultValue={inviteEmail} className="pl-10 h-9 md:h-11 bg-secondary/50" required />
                   </div>
                 </div>
                 <div className="space-y-2">

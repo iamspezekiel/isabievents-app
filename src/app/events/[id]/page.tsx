@@ -10,8 +10,8 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
-import { generateFaqs } from '@/ai/flows/organizer-ai-faq-generator';
-import { renderMarkdown } from '@/lib/markdown';
+import { renderRichText } from '@/lib/rich-text';
+import { apiFetch } from '@/lib/api-fetch';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
@@ -38,8 +38,14 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
     setLoadingFaqs(true);
     setFaqError(false);
     try {
-      const generated = await generateFaqs({ description });
-      setFaqs(generated);
+      const res = await fetch('/api/ai/faqs', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ description }),
+      });
+      if (!res.ok) throw new Error('FAQ generation failed');
+      const generated = await res.json();
+      setFaqs(Array.isArray(generated) ? generated : []);
     } catch (err: any) {
       setFaqError(true);
     } finally {
@@ -82,6 +88,27 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
       title: "Link Copied!",
       description: "Event link has been copied to your clipboard."
     });
+  };
+
+  const handleReport = async () => {
+    if (!event) return;
+    const reason = window.prompt('Why are you reporting this event? (e.g. scam, misleading information, inappropriate content)');
+    if (!reason || !reason.trim()) return;
+    try {
+      const res = await apiFetch('/api/reports', {
+        method: 'POST',
+        body: JSON.stringify({eventId: event.id, eventTitle: event.title, reason: reason.trim()}),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Could not submit report.');
+      toast({title: 'Report Submitted', description: 'Thanks — our moderation team will review this event.'});
+    } catch (err) {
+      toast({
+        variant: 'destructive',
+        title: 'Report Failed',
+        description: err instanceof Error ? err.message : 'Please sign in and try again.',
+      });
+    }
   };
 
   if (!event) {
@@ -153,13 +180,20 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
               <h2 className="font-headline text-2xl mb-6">About Event</h2>
               <div
                 className="text-muted-foreground [&_a]:text-primary [&_a]:underline [&_blockquote]:border-l-4 [&_blockquote]:border-primary [&_blockquote]:pl-4 [&_blockquote]:italic [&_h1]:text-2xl [&_h1]:font-bold [&_h1]:my-4 [&_h2]:text-xl [&_h2]:font-bold [&_h2]:my-3 [&_h3]:text-lg [&_h3]:font-bold [&_h3]:my-2 [&_hr]:border-border [&_img]:rounded-2xl [&_img]:my-4 [&_iframe]:aspect-video [&_iframe]:w-full [&_iframe]:rounded-2xl [&_li]:my-1 [&_p]:my-3 [&_ul]:list-disc [&_ul]:ml-6 [&_ul]:my-4 [&_ol]:list-decimal [&_ol]:ml-6 [&_ol]:my-4 [&_.md-embed]:my-6"
-                dangerouslySetInnerHTML={{__html: renderMarkdown(event.description)}}
+                dangerouslySetInnerHTML={{__html: renderRichText(event.description)}}
               />
               <div className="flex flex-wrap gap-2 mt-8">
                 {event.tags.map(tag => (
                   <Badge key={tag} variant="secondary" className="rounded-full px-4 py-1">#{tag}</Badge>
                 ))}
               </div>
+              <button
+                type="button"
+                onClick={handleReport}
+                className="mt-6 text-xs font-semibold text-muted-foreground hover:text-destructive transition-colors underline underline-offset-2"
+              >
+                Report this event
+              </button>
             </section>
 
             <Tabs defaultValue="tickets" className="w-full">
@@ -194,7 +228,7 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
                     {policies ? (
                       <div
                         className="text-sm text-muted-foreground space-y-2 [&_a]:text-primary [&_a]:underline [&_li]:my-1 [&_ul]:list-disc [&_ul]:ml-5"
-                        dangerouslySetInnerHTML={{__html: renderMarkdown(policies)}}
+                        dangerouslySetInnerHTML={{__html: renderRichText(policies)}}
                       />
                     ) : (
                       <ul className="space-y-3 text-sm text-muted-foreground">

@@ -46,7 +46,7 @@ export default function OrganizerSettingsPage() {
   const [whatsapp, setWhatsapp] = useState('');
   const [brandName, setBrandName] = useState('');
   const [twoFactor, setTwoFactor] = useState(false);
-  const [autoSettle, setAutoSettle] = useState(true);
+  const [location, setLocation] = useState('');
   const [saving, setSaving] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -54,11 +54,11 @@ export default function OrganizerSettingsPage() {
   // Load the real profile into the form.
   useEffect(() => {
     if (profile) {
-      const p = profile as {whatsapp?: string; twoFactor?: boolean; autoSettle?: boolean};
+      const p = profile as {whatsapp?: string; twoFactor?: boolean; location?: string};
       setWhatsapp(p.whatsapp || '');
       setBrandName(profile.name || '');
       setTwoFactor(!!p.twoFactor);
-      setAutoSettle(p.autoSettle !== false);
+      setLocation(p.location || '');
     }
   }, [profile]);
 
@@ -70,7 +70,7 @@ export default function OrganizerSettingsPage() {
     }
     setSaving(true);
     try {
-      await updateDoc(doc(db, 'users', profile.uid), {name: brandName.trim() || profile.name, whatsapp, twoFactor, autoSettle});
+      await updateDoc(doc(db, 'users'), {name: brandName.trim() || profile.name, whatsapp, location: location.trim(), twoFactor});
       toast({title: 'Profile Saved', description: 'Your brand profile has been updated.'});
     } catch (err) {
       toast({
@@ -168,7 +168,7 @@ export default function OrganizerSettingsPage() {
           <Card className="border-border bg-card">
             <CardHeader className="text-left">
               <CardTitle className="flex items-center gap-2 text-lg"><User className="w-5 h-5 text-primary" /> Brand Profile</CardTitle>
-              <CardDescription>Public information that attendees will see.</CardDescription>
+              <CardDescription>Your public organizer name and contact â€” plus a private location that is never shown to attendees.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6 text-left">
               <div className="grid sm:grid-cols-2 gap-4">
@@ -187,6 +187,11 @@ export default function OrganizerSettingsPage() {
                     <WhatsAppIcon className="w-3.5 h-3.5 text-green-500" /> WhatsApp Number
                   </Label>
                   <Input id="whatsapp" value={whatsapp} onChange={(e) => setWhatsapp(e.target.value)} placeholder="+234..." className="h-11" />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="location">Location (private)</Label>
+                  <Input id="location" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="e.g. Lagos, Nigeria" className="h-11" />
+                  <p className="text-[10px] text-muted-foreground">Kept internal â€” never shown publicly.</p>
                 </div>
               </div>
               <Button className="rounded-full px-8 font-bold" onClick={handleSaveProfile} disabled={saving || !profile}>
@@ -210,19 +215,6 @@ export default function OrganizerSettingsPage() {
                   onCheckedChange={(v) => {
                     setTwoFactor(v);
                     persistPrefs({twoFactor: v});
-                  }}
-                />
-              </div>
-              <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-xl">
-                <div className="space-y-0.5">
-                  <div className="font-bold">Automated Weekly Settlements</div>
-                  <p className="text-xs text-muted-foreground">Withdraw funds every Monday morning.</p>
-                </div>
-                <Switch
-                  checked={autoSettle}
-                  onCheckedChange={(v) => {
-                    setAutoSettle(v);
-                    persistPrefs({autoSettle: v});
                   }}
                 />
               </div>

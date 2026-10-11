@@ -16,6 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { doc, updateDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { useAuth } from '@/components/auth-provider';
+import { apiFetch } from '@/lib/api-fetch';
 
 const WhatsAppIcon = ({ className }: { className?: string }) => (
   <svg 
@@ -70,19 +71,19 @@ export default function VendorsManagementPage() {
     role: 'Vendor'
   });
 
-  const handleAddVendor = async () => {
-    if (!newVendor.name || !newVendor.email || !newVendor.whatsapp) {
+    const handleAddVendor = async () => {
+    if (!newVendor.name || !newVendor.email) {
       toast({
         variant: "destructive",
         title: "Missing fields",
-        description: "Please fill in all vendor details including WhatsApp number."
+        description: "Please provide at least a name and email."
       });
       return;
     }
 
     setIsLoading(true);
 
-    // Editing an existing member — update + persist instead of adding.
+    // Editing an existing member - update + persist instead of adding.
     if (editingId) {
       const updated = vendors.map(v =>
         v.id === editingId
@@ -108,7 +109,7 @@ export default function VendorsManagementPage() {
       email: newVendor.email,
       whatsapp: newVendor.whatsapp,
       role: newVendor.role,
-      status: 'Active'
+      status: 'Pending'
     };
 
     const next = [vendor, ...vendors];
@@ -117,10 +118,23 @@ export default function VendorsManagementPage() {
     setIsLoading(false);
     setIsAddDialogOpen(false);
     setNewVendor({ name: '', email: '', whatsapp: '', role: 'Vendor' });
-    
+
+    // Email the invitee a link to create their account and join the team.
+    const inviteRes = await apiFetch('/api/team/invite', {
+      method: 'POST',
+      body: JSON.stringify({
+        email: vendor.email,
+        name: vendor.name,
+        role: vendor.role === 'Staff' ? 'staff' : 'vendor',
+        organizerName: profile?.name || 'Your team',
+      }),
+    });
+    const inviteData = await inviteRes.json().catch(() => ({}));
     toast({
-      title: "Vendor Added",
-      description: `${vendor.name} has been invited to manage events.`
+      title: inviteRes.ok ? "Invitation Sent" : "Vendor Added",
+      description: inviteRes.ok
+        ? (inviteData.delivered ? `${vendor.name} has been emailed a link to join your team.` : `${vendor.name} was added. Email delivery is off, so they were not notified automatically.`)
+        : `${vendor.name} was added, but the invite email could not be sent.`
     });
   };
 
@@ -203,7 +217,7 @@ export default function VendorsManagementPage() {
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="vendor-whatsapp" className="text-xs font-black uppercase tracking-widest text-muted-foreground">WhatsApp Number</Label>
+                  <Label htmlFor="vendor-whatsapp" className="text-xs font-black uppercase tracking-widest text-muted-foreground">WhatsApp Number (optional)</Label>
                   <div className="relative">
                     <WhatsAppIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                     <Input 
@@ -305,21 +319,25 @@ function VendorCard({ vendor, onDelete, onEdit }: any) {
           >
             <Mail className="w-4 h-4" />
           </Link>
-          <Link 
-            href={`tel:${whatsapp}`} 
-            title={whatsapp}
-            className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all shadow-sm"
-          >
-            <Phone className="w-4 h-4" />
-          </Link>
-          <Link 
-            href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}`} 
-            target="_blank"
-            title="WhatsApp"
-            className="w-9 h-9 rounded-full bg-green-500/10 flex items-center justify-center text-green-600 hover:bg-green-500 hover:text-white transition-all shadow-sm"
-          >
-            <WhatsAppIcon className="w-4 h-4" />
-          </Link>
+          {whatsapp && (
+            <Link
+              href={`tel:${whatsapp}`}
+              title={whatsapp}
+              className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center text-muted-foreground hover:bg-primary/10 hover:text-primary transition-all shadow-sm"
+            >
+              <Phone className="w-4 h-4" />
+            </Link>
+          )}
+          {whatsapp && (
+            <Link
+              href={`https://wa.me/${whatsapp.replace(/[^0-9]/g, '')}`}
+              target="_blank"
+              title="WhatsApp"
+              className="w-9 h-9 rounded-full bg-green-500/10 flex items-center justify-center text-green-600 hover:bg-green-500 hover:text-white transition-all shadow-sm"
+            >
+              <WhatsAppIcon className="w-4 h-4" />
+            </Link>
+          )}
         </div>
 
         <div className="flex gap-2 pt-2">

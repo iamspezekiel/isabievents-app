@@ -479,3 +479,57 @@ export async function sendTfaCodeEmail(opts: {
   });
 }
 
+
+
+/** Team invite - emailed to an invited vendor/staff member to create their account. */
+export async function sendTeamInviteEmail(opts: {
+  to: string;
+  inviteeName?: string;
+  organizerName: string;
+  role: string;
+  inviteUrl: string;
+}): Promise<boolean> {
+  const roleLabel = opts.role === 'staff' ? 'Staff member' : 'Vendor';
+  return send({
+    to: opts.to,
+    subject: `${opts.organizerName} invited you to their team on IsabiEvents`,
+    html: layout(
+      'You are invited to join a team',
+      `
+      ${p(`Hi ${escapeHtml(opts.inviteeName || 'there')},`)}
+      ${p(`<strong>${escapeHtml(opts.organizerName)}</strong> invited you to join their event team on IsabiEvents as a <strong>${escapeHtml(roleLabel)}</strong>.`)}
+      ${p('Create your account to accept the invite and start collaborating on events, tickets and on-site check-ins.')}
+      <p style="margin:0 0 22px;text-align:center;"><a href="${escapeHtml(opts.inviteUrl)}" style="background:#7E7CFF;color:#fff;padding:12px 26px;border-radius:999px;font-weight:bold;text-decoration:none;display:inline-block;">Create your account</a></p>
+      ${p('If you were not expecting this invite you can safely ignore this email.')}
+      `,
+    ),
+    text: `${opts.organizerName} invited you to join their IsabiEvents team as a ${roleLabel}. Accept: ${opts.inviteUrl}`,
+  });
+}
+
+/** Admin alert when an attendee reports an event. */
+export async function sendReportNotificationEmail(opts: {
+  eventId: string;
+  eventTitle?: string;
+  reason: string;
+  details?: string;
+  reporterName?: string;
+  reporterEmail?: string;
+}): Promise<boolean> {
+  return send({
+    to: await adminEmail(),
+    subject: `Event report: ${opts.eventTitle || opts.eventId}`,
+    html: layout(
+      'New event report',
+      `
+      ${p('An event has been reported on IsabiEvents.')}
+      ${p(`<strong>Event:</strong> ${escapeHtml(opts.eventTitle || opts.eventId)}`)}
+      ${p(`<strong>Reason:</strong> ${escapeHtml(opts.reason)}`)}
+      ${opts.details ? p(`<strong>Details:</strong> ${escapeHtml(opts.details)}`) : ''}
+      ${p(`<strong>Reported by:</strong> ${escapeHtml(opts.reporterName || 'Unknown')} (${escapeHtml(opts.reporterEmail || 'no email')})`)}
+      ${p('Review it in the admin Event Moderation area.')}
+      `,
+    ),
+    text: `Event report - ${opts.eventTitle || opts.eventId} - ${opts.reason}`,
+  });
+}
