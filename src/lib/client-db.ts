@@ -2,43 +2,32 @@
  * Client-side data layer — browser-safe (NO firebase-admin import, so it can
  * be bundled into 'use client' pages). Server code should use `@/lib/db`.
  *
+ * IMPORTANT: `src/lib/firebase.ts` initializes the MODULAR client SDK
+ * (`getFirestore`), whose Firestore object has no instance methods — reads use
+ * the standalone modular functions (`collection`, `doc`, `getDocs`, `getDoc`,
+ * `query`, …). The instance-method API (`.collection().get()`) only exists on
+ * the compat/admin SDKs and throws "cdb.collection is not a function" here.
+ *
  * Reads resolve through the Firebase client SDK and fall back to empty
  * results when Firebase is not configured.
  */
 import {db, isFirebaseConfigured} from '@/lib/firebase';
+import {
+  collection,
+  doc,
+  getDocs,
+  getDoc,
+  query,
+  where,
+  orderBy,
+  limit,
+} from 'firebase/firestore';
 import type {EventDoc, OrderDoc, TicketDoc} from './db-types';
 export type {EventDoc, OrderDoc, TicketDoc} from './db-types';
 
-interface Snap {
-  empty: boolean;
-  docs: {id: string; data: () => Record<string, unknown>}[];
-}
-
-interface ClientDocSnap {
-  exists: boolean;
-  id: string;
-  data(): Record<string, unknown>;
-}
-
-interface ClientDocRef {
-  get(): Promise<ClientDocSnap>;
-}
-
-interface ClientCollection {
-  doc(id: string): ClientDocRef;
-  where(field: string, op: string, value: unknown): ClientCollection;
-  orderBy(field: string, dir?: 'asc' | 'desc'): ClientCollection;
-  limit(n: number): ClientCollection;
-  get(): Promise<Snap>;
-}
-
-/** Structural view of the client SDK's instance-method API (see @/lib/db). */
-interface ClientFirestore {
-  collection(path: string): ClientCollection;
-}
-
-function client(): ClientFirestore | null {
-  return isFirebaseConfigured && db ? (db as unknown as ClientFirestore) : null;
+/** Guard: only run against the live client Firestore when configured. */
+function client() {
+  return isFirebaseConfigured && db ? db : null;
 }
 
 /** Reads all events (browser). */
@@ -46,9 +35,9 @@ export async function getEvents(opts: {throwOnError?: boolean} = {}): Promise<Ev
   try {
     const cdb = client();
     if (!cdb) return [];
-    const snap = (await cdb.collection('events').get()) as unknown as Snap;
+    const snap = await getDocs(collection(cdb, 'events'));
     if (snap.empty) return [];
-    return snap.docs.map((d) => ({id: d.id, ...d.data()})) as EventDoc[];
+    return snap.docs.map((d) => ({id: d.id, ...(d.data() as Omit<EventDoc, 'id'>)})) as EventDoc[];
   } catch (err) {
     console.warn('[client-db] getEvents failed:', err);
     // By default a read failure is treated as "no events" so a single blip never
@@ -65,8 +54,10 @@ export async function getEvent(idOrSlug: string): Promise<EventDoc | null> {
   try {
     const cdb = client();
     if (!cdb) return null;
-    const snap = await cdb.collection('events').doc(idOrSlug).get();
-    if (snap.exists) return {id: snap.id, ...snap.data()} as EventDoc;
+    // 1) Try it as a document id.
+    const snap = await getDoc(doc(cdb, 'events', idOrSlug));
+    if (snap.exists()) return {id: snap.id, ...(snap.data() as Omit<EventDoc, 'id'>)} as EventDoc;
+    // 2) Fall back to a slug lookup.
     const all = await getEvents();
     return all.find((e) => e.slug === idOrSlug) ?? null;
   } catch (err) {
@@ -80,7 +71,7 @@ export async function getTicketsForEmail(email: string): Promise<TicketDoc[]> {
   try {
     const cdb = client();
     if (!cdb) return [];
-    const snap = await cdb.collection('tickets').where('buyerEmail', '==', email).get();
+    const snap = await getDocs(query(collection(cdb, 'tickets'), where('buyerEmail', '==', email)));
     if (snap.empty) return [];
     return snap.docs.map((d) => ({id: d.id, ...(d.data() as Omit<TicketDoc, 'id'>)}));
   } catch (err) {
@@ -94,11 +85,14 @@ export async function getOrdersForEmail(email: string): Promise<OrderDoc[]> {
   try {
     const cdb = client();
     if (!cdb) return [];
-    const snap = await cdb
-      .collection('orders')
-      .where('buyer.email', '==', email)
-      .orderBy('createdAt', 'desc')
-      .get();
+    const snap = await getDocs(
+      query(
+        collection(cdb, 'orders'),
+        where('buyer.email', '==', email),
+        orderBy('createdAt', 'desc'),
+        limit(100)
+      )
+    );
     if (snap.empty) return [];
     return snap.docs.map((d) => ({id: d.id, ...(d.data() as Omit<OrderDoc, 'id'>)}));
   } catch (err) {
