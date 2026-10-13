@@ -611,7 +611,12 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
                 </div>
 
                 <RadioGroup value={paymentMethod} onValueChange={handleSelectMethod} className="grid gap-4">
-                  <PaymentOption id="card" label="Card Payment" icon={CreditCard} description="Visa, Mastercard, Verve — NGN or USD" />
+                  <PaymentOption
+                    id="card"
+                    label="Card Payment"
+                    icon={CreditCard}
+                    description={currency === 'USD' ? 'Visa, Mastercard, Verve on USD' : 'Visa, Mastercard, Verve on NGN'}
+                  />
                   <PaymentOption id="bank" label="Bank Transfer" icon={Landmark} description="Nigerian bank transfer (NGN)" />
                   <PaymentOption 
                     id="crypto" 

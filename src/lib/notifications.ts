@@ -53,3 +53,24 @@ export async function userIdsByRole(db: FirebaseFirestore.Firestore, roles: stri
   const snap = await db.collection('users').where('role', 'in', roles).limit(500).get();
   return snap.docs.map((d) => d.id);
 }
+
+/**
+ * Create a notification for whoever owns the given email (checkout flows know
+ * the buyer's email, not necessarily their uid). No-op when no account matches.
+ */
+export async function notifyByEmail(email: string, input: Omit<NotificationInput, 'userId'>): Promise<boolean> {
+  try {
+    const {getAdminDb} = await admin();
+    const db = getAdminDb();
+    const addr = String(email || '').trim();
+    if (!db || !addr) return false;
+    for (const candidate of [...new Set([addr, addr.toLowerCase()])]) {
+      const snap = await db.collection('users').where('email', '==', candidate).limit(1).get();
+      if (!snap.empty) return createNotification({...input, userId: snap.docs[0].id});
+    }
+    return false;
+  } catch (err) {
+    console.warn('[notifications] notifyByEmail failed:', err);
+    return false;
+  }
+}

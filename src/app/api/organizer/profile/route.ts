@@ -30,7 +30,6 @@ export async function POST(req: Request) {
 
     const ref = db.collection('users').doc(uid);
     const snap = await ref.get();
-    if (!snap.exists) return NextResponse.json({error: 'Account not found.'}, {status: 404});
 
     const patch: Record<string, unknown> = {
       whatsapp,
@@ -39,7 +38,25 @@ export async function POST(req: Request) {
     };
     if (name) patch.name = name;
 
-    await ref.set(patch, {merge: true});
+    if (!snap.exists) {
+      // Seed the profile from the verified ID token so the first Save always
+      // lands (e.g. Google sign-ins that never wrote a users doc).
+      const {getAdminAuth} = await admin();
+      const auth = getAdminAuth();
+      const decoded = auth ? await auth.verifyIdToken(uid).catch(() => null) : null;
+      await ref.set(
+        {
+          email: decoded?.email || '',
+          name: name || decoded?.name || '',
+          role: 'organizer',
+          createdAt: new Date().toISOString(),
+          ...patch,
+        },
+        {merge: true}
+      );
+    } else {
+      await ref.set(patch, {merge: true});
+    }
 
     // Propagate the brand name to this organizer's events (skip when unchanged).
     if (name) {

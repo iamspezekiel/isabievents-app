@@ -12,6 +12,7 @@
 import {NextResponse} from 'next/server';
 import {verifyBachsSignature} from '@/lib/bachs';
 import {sendPaymentConfirmationEmail} from '@/lib/email';
+import {notifyByEmail} from '@/lib/notifications';
 
 export const runtime = 'nodejs';
 
@@ -132,6 +133,14 @@ export async function POST(req: Request) {
           } catch (err) {
             console.warn('[webhook] payment email failed:', err);
           }
+
+          // Dashboard notification for the buyer (fire-and-forget).
+          notifyByEmail(order.buyer.email, {
+            title: 'Payment confirmed',
+            body: `Your payment for "${order.eventTitle}" is confirmed — ${order.quantity} ticket${order.quantity === 1 ? '' : 's'} are now in your wallet.`,
+            type: 'success',
+            href: '/dashboard/attendee',
+          }).catch(() => undefined);
         }
       }
     } else if (type === 'collection.failed' || type === 'checkout.expired') {

@@ -32,7 +32,7 @@ import { Label } from "@/components/ui/label";
 import { CATEGORIES } from '@/lib/constants';
 import { useEvents } from '@/hooks/use-events';
 import { useAuth } from '@/components/auth-provider';
-import { getTicketsForEmail, getOrdersForEmail } from '@/lib/client-db';
+import { getTicketsForEmail } from '@/lib/client-db';
 import type { EventDoc, OrderDoc, TicketDoc } from '@/lib/db-types';
 import { getFavorites } from '@/lib/favorites';
 import { apiFetch } from '@/lib/api-fetch';
@@ -40,6 +40,47 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { attendeePersonalizedEventRecommendations } from '@/ai/flows/attendee-personalized-event-recommendations';
 import { useToast } from "@/hooks/use-toast";
+
+/**
+ * Local, dependency-free ranking for "Recommended for You": scores upcoming
+ * events against what the attendee already bought/saved, their home city and
+ * the event's timing — so the section always has relevant picks even when the
+ * AI flow is unavailable (the AI result refines it when it succeeds).
+ */
+function rankEvents(
+  eventsList: EventDoc[],
+  opts: {pastTitles?: string[]; savedIds?: string[]; city?: string} = {}
+): EventDoc[] {
+  const now = Date.now();
+  const saved = new Set(opts.savedIds || []);
+  const past = new Set((opts.pastTitles || []).map((t) => t.toLowerCase()));
+  // Categories the attendee has already bought tickets for.
+  const pastCats = new Set(
+    eventsList
+      .filter((e) => past.has(String(e.title).toLowerCase()))
+      .map((e) => String(e.category || '').toLowerCase())
+  );
+  return [...eventsList]
+    .filter((e) => e?.title && (new Date(e.date).getTime() || 0) >= now)
+    .map((e) => {
+      let score = 0;
+      if (saved.has(e.id) || (e.slug && saved.has(String(e.slug)))) score += 6;
+      if (past.has(String(e.title).toLowerCase())) score -= 5; // already bought
+      if (pastCats.has(String(e.category || '').toLowerCase())) score += 4;
+      if (opts.city && String(e.city || '').toLowerCase() === opts.city.toLowerCase()) score += 3;
+      if (e.organizer?.verified) score += 1;
+      const days = ((new Date(e.date).getTime() || 0) - now) / 86_400_000;
+      if (days <= 14) score += 2;
+      else if (days <= 60) score += 1;
+      return {e, score};
+    })
+    .sort(
+      (a, b) =>
+        b.score - a.score ||
+        (new Date(a.e.date).getTime() || 0) - (new Date(b.e.date).getTime() || 0)
+    )
+    .map((x) => x.e);
+}
 
 export default function AttendeeDashboard() {
   const [mounted, setMounted] = useState(false);
@@ -76,18 +117,35 @@ export default function AttendeeDashboard() {
     }
     if (profile?.email) {
       getTicketsForEmail(profile.email).then(setTickets).catch(() => undefined);
-      getOrdersForEmail(profile.email).then(setPastOrders).catch(() => undefined);
+      // Orders come from the API (Admin SDK) — the client query needed a
+      // composite index that was never deployed and always returned empty.
+      apiFetch('/api/orders')
+        .then((r) => r.json())
+        .then((d) => {
+          if (d && Array.isArray(d.orders)) setPastOrders(d.orders as OrderDoc[]);
+        })
+        .catch(() => undefined);
     }
   }, [profile?.email]);
 
-  // Run AI recommendations once the real event list has loaded.
+  // "Recommended for You": rank locally the moment the event list (or the
+  // order history) changes — instant and always available — then refine once
+  // with the AI flow when the model is reachable.
   useEffect(() => {
-    if (events.length > 0 && !recsRunRef.current) {
+    if (events.length === 0) return;
+    setRecommendations(
+      rankEvents(events, {
+        pastTitles: pastOrders.filter((o) => o.status === 'paid').map((o) => o.eventTitle),
+        savedIds: typeof window !== 'undefined' ? getFavorites() : [],
+        city: profile?.city,
+      }).slice(0, 6)
+    );
+    if (!recsRunRef.current) {
       recsRunRef.current = true;
       fetchRecommendations(events);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [events]);
+  }, [events, pastOrders, profile?.city]);
 
   const handleSyncOffline = async () => {
     setIsSyncing(true);
@@ -108,19 +166,31 @@ export default function AttendeeDashboard() {
         setRecommendations([]);
         return;
       }
+      // Signals from the real account: paid orders + saved (favorited) events.
       let past: string[] = [];
       if (profile?.email) {
         try {
-          const orders = await getOrdersForEmail(profile.email);
-          past = orders.filter((o) => o.status === 'paid').map((o) => o.eventTitle);
+          const res = await apiFetch('/api/orders');
+          const data = await res.json();
+          if (Array.isArray(data.orders)) {
+            const orders = data.orders as OrderDoc[];
+            past = orders.filter((o) => o.status === 'paid').map((o) => o.eventTitle);
+            setPastOrders(orders);
+          }
         } catch {
           /* no order history */
         }
       }
+      const saved = typeof window !== 'undefined' ? getFavorites() : [];
+      const savedTitles = eventsList.filter((e) => saved.includes(e.id)).map((e) => e.title);
+      const pastCategories = eventsList
+        .filter((e) => past.includes(e.title))
+        .map((e) => e.category);
+
       const result = await attendeePersonalizedEventRecommendations({
         pastPurchases: past.slice(0, 10),
-        savedEvents: [],
-        browsingHistory: [],
+        savedEvents: savedTitles.slice(0, 10),
+        browsingHistory: pastCategories.slice(0, 10),
         eventCategories: CATEGORIES.map(c => c.name),
         availableEvents: eventsList.map(e => ({
           id: e.id,
@@ -131,9 +201,11 @@ export default function AttendeeDashboard() {
       });
       
       const recommendedEvents = eventsList.filter(e => result.recommendedEventIds.includes(e.id));
-      setRecommendations(recommendedEvents.length > 0 ? recommendedEvents : eventsList.slice(0, 3));
+      // Only overwrite when the model actually picked something — the local
+      // ranking set by the effect above already fills the section.
+      if (recommendedEvents.length > 0) setRecommendations(recommendedEvents);
     } catch (error) {
-      setRecommendations(eventsList.slice(0, 3));
+      /* keep the local ranking already rendered */
     } finally {
       setLoadingRecs(false);
     }

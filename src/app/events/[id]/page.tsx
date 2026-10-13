@@ -2,10 +2,12 @@
 "use client";
 
 import React, { useEffect, useState, use } from 'react';
-import { Calendar, MapPin, Share2, Heart, ShieldCheck, ChevronRight, Info, Music, Users, Ticket, CheckCircle2, AlertCircle, RefreshCcw, Loader2, Flag, AlertTriangle } from 'lucide-react';
+import { Calendar, MapPin, Share2, Heart, ShieldCheck, ChevronRight, Info, Music, Users, Ticket, CheckCircle2, AlertCircle, RefreshCcw, Loader2, Flag, AlertTriangle, UserPlus, UserCheck, Mail, ExternalLink } from 'lucide-react';
 import { useEvents } from '@/hooks/use-events';
+import { useAuth } from '@/components/auth-provider';
 import { toggleFavorite } from '@/lib/favorites';
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
@@ -78,6 +80,132 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
       });
     }
     setReportSubmitting(false);
+  };
+
+  // Host-following: attendees follow an organizer to get a dashboard
+  // notification + email whenever that host publishes a new event.
+  const { profile } = useAuth();
+  const [following, setFollowing] = useState(false);
+  const [followerCount, setFollowerCount] = useState(0);
+  const [followBusy, setFollowBusy] = useState(false);
+
+  // "Contact the Host" / "Invite a Friend" dialogs.
+  const [contactOpen, setContactOpen] = useState(false);
+  const [contactMessage, setContactMessage] = useState('');
+  const [contactBusy, setContactBusy] = useState(false);
+  const [inviteOpen, setInviteOpen] = useState(false);
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteName, setInviteName] = useState('');
+  const [inviteMessage, setInviteMessage] = useState('');
+  const [inviteBusy, setInviteBusy] = useState(false);
+
+  // Load the follow state for this event's host once we know who they are.
+  useEffect(() => {
+    if (!event?.organizerUid || !profile) return;
+    let alive = true;
+    apiFetch(`/api/follows?organizer=${encodeURIComponent(event.organizerUid)}`)
+      .then((r) => r.json())
+      .then((d) => {
+        if (!alive || d?.error) return;
+        setFollowing(!!d.following);
+        if (typeof d.count === 'number') setFollowerCount(d.count);
+      })
+      .catch(() => undefined);
+    return () => { alive = false; };
+  }, [event?.organizerUid, profile?.uid]);
+
+  const handleFollow = async () => {
+    if (!event?.organizerUid) return;
+    if (!profile) {
+      toast({
+        variant: 'destructive',
+        title: 'Sign in to follow',
+        description: 'Create an account so we can tell you when this host adds a new event.',
+      });
+      return;
+    }
+    setFollowBusy(true);
+    const wasFollowing = following;
+    try {
+      const res = await apiFetch('/api/follows', {
+        method: 'POST',
+        body: JSON.stringify({organizerUid: event.organizerUid}),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data?.error) throw new Error(data?.error || 'Could not update follow.');
+      setFollowing(!!data.following);
+      if (typeof data.count === 'number') setFollowerCount(data.count);
+      toast(
+        wasFollowing
+          ? {title: 'Unfollowed', description: `You will no longer hear about new events from ${event.organizer.name}.`}
+          : {title: 'Following!', description: `We will notify you when ${event.organizer.name} hosts a new event.`}
+      );
+    } catch (err) {
+      toast({
+        variant: 'destructive',
+        title: 'Could not follow',
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
+    }
+    setFollowBusy(false);
+  };
+
+  const submitContact = async () => {
+    if (!event) return;
+    if (!profile) {
+      toast({variant: 'destructive', title: 'Sign in first', description: 'Sign in so the host knows who is messaging them.'});
+      return;
+    }
+    if (!contactMessage.trim()) {
+      toast({variant: 'destructive', title: 'Message required', description: 'Write a short message for the host.'});
+      return;
+    }
+    setContactBusy(true);
+    try {
+      const res = await apiFetch('/api/events/contact-host', {
+        method: 'POST',
+        body: JSON.stringify({eventId: event.id, message: contactMessage}),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data?.error) throw new Error(data?.error || 'Could not send your message.');
+      setContactOpen(false);
+      setContactMessage('');
+      toast({title: 'Message Sent', description: `${event.organizer.name} will receive it by email.`});
+    } catch (err) {
+      toast({variant: 'destructive', title: 'Could Not Send', description: err instanceof Error ? err.message : 'Please try again.'});
+    }
+    setContactBusy(false);
+  };
+
+  const submitInvite = async () => {
+    if (!event) return;
+    const email = inviteEmail.trim();
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast({variant: 'destructive', title: 'Valid email required', description: "Enter your friend's email address."});
+      return;
+    }
+    setInviteBusy(true);
+    try {
+      const res = await apiFetch('/api/events/invite', {
+        method: 'POST',
+        body: JSON.stringify({
+          eventId: event.id,
+          friendEmail: email,
+          friendName: inviteName.trim(),
+          message: inviteMessage.trim(),
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data?.error) throw new Error(data?.error || 'Could not send the invite.');
+      setInviteOpen(false);
+      setInviteEmail('');
+      setInviteName('');
+      setInviteMessage('');
+      toast({title: 'Invite Sent!', description: `We emailed ${email} a link to ${event.title}.`});
+    } catch (err) {
+      toast({variant: 'destructive', title: 'Could Not Send', description: err instanceof Error ? err.message : 'Please try again.'});
+    }
+    setInviteBusy(false);
   };
 
   async function fetchFaqs(description: string) {
@@ -245,35 +373,48 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
               </TabsContent>
 
               <TabsContent value="info" className="pt-8">
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div className="bg-card border border-border p-6 rounded-2xl">
-                    <h3 className="font-headline text-lg mb-4 flex items-center gap-2">
-                      <ShieldCheck className="w-5 h-5 text-accent" /> Event Policies
-                    </h3>
-                    {policies ? (
+                {/* Policies render ONLY when the host wrote them — no invented
+                    defaults. Without them the Venue Map drops to full width. */}
+                <div className={`grid gap-8 ${policies ? 'md:grid-cols-2' : ''}`}>
+                  {policies ? (
+                    <div className="bg-card border border-border p-6 rounded-2xl text-left">
+                      <h3 className="font-headline text-lg mb-4 flex items-center gap-2">
+                        <ShieldCheck className="w-5 h-5 text-accent" /> Event Policies
+                      </h3>
                       <div
                         className="text-sm text-muted-foreground space-y-2 [&_a]:text-primary [&_a]:underline [&_li]:my-1 [&_ul]:list-disc [&_ul]:ml-5"
                         dangerouslySetInnerHTML={{__html: renderRichText(policies)}}
                       />
-                    ) : (
-                      <ul className="space-y-3 text-sm text-muted-foreground">
-                        <li>&bull; No refunds after ticket purchase.</li>
-                        <li>&bull; Age restriction: 18+ only.</li>
-                        <li>&bull; Gates close at 8:00 PM.</li>
-                      </ul>
-                    )}
-                  </div>
-                  <div className="bg-card border border-border p-6 rounded-2xl">
-                    <h3 className="font-headline text-lg mb-4 flex items-center gap-2">
-                      <MapPin className="w-5 h-5 text-accent" /> Venue Map
-                    </h3>
-                    <iframe
+                    </div>
+                  ) : null}
+                  <div className="bg-card border border-border p-6 rounded-2xl text-left">
+                    <div className="flex items-center justify-between gap-3 mb-4">
+                      <h3 className="font-headline text-lg flex items-center gap-2">
+                        <MapPin className="w-5 h-5 text-accent" /> Venue Map
+                      </h3>
+                      <a
+                        href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${event.venue}, ${event.city}, Nigeria`)}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1 text-xs font-bold text-primary hover:underline shrink-0 no-underline"
+                      >
+                        Open in Maps <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
+                    {/* Fixed sizing: the old iframe used h-full inside an
+                        auto-height parent, which collapsed the map. */}
+                    <div className="relative w-full aspect-video overflow-hidden rounded-xl border border-border bg-secondary">
+                      <iframe
                         title="Venue map"
                         src={`https://www.google.com/maps?q=${encodeURIComponent(`${event.venue}, ${event.city}, Nigeria`)}&output=embed`}
-                        className="w-full h-full rounded-xl border-0"
+                        className="absolute inset-0 h-full w-full border-0"
                         loading="lazy"
                         referrerPolicy="no-referrer-when-downgrade"
                       />
+                    </div>
+                    <p className="mt-3 text-xs text-muted-foreground">
+                      {[event.venue, event.city].filter(Boolean).join(', ')}
+                    </p>
                   </div>
                 </div>
               </TabsContent>
@@ -335,6 +476,13 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
                     <Button variant="outline" className="rounded-full font-bold h-11" onClick={handleShare}>
                       <Share2 className="w-4 h-4 mr-2" /> Share
                     </Button>
+                    <Button
+                      variant="outline"
+                      className="rounded-full font-bold h-11 col-span-2"
+                      onClick={() => setInviteOpen(true)}
+                    >
+                      <UserPlus className="w-4 h-4 mr-2" /> Invite a Friend
+                    </Button>
                   </div>
 
                   <p className="text-center text-[10px] text-muted-foreground mt-6 uppercase font-bold tracking-widest">
@@ -343,32 +491,153 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
                 </CardContent>
               </Card>
 
-              <Link href={`/discover?q=${encodeURIComponent(event.organizer.name)}`} className="block no-underline">
-                <Card className="border-border bg-card/50 p-6 rounded-2xl hover:border-primary/30 transition-all group">
-                  <div className="flex items-center gap-4">
-                    <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-primary/20">
-                      {event.organizer.avatar ? (
-                        <Image src={event.organizer.avatar} alt={event.organizer.name} fill className="object-cover" />
-                      ) : (
-                        <DefaultAvatar className="w-full h-full" />
-                      )}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-1">
-                          <span className="font-bold group-hover:text-primary transition-colors">{event.organizer.name}</span>
-                          {event.organizer.verified && <CheckCircle2 className="w-4 h-4 text-accent fill-accent text-white" />}
-                        </div>
-                        <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-all group-hover:translate-x-1" />
-                      </div>
-                      <span className="text-xs text-muted-foreground">Organizer</span>
-                    </div>
+              <Card className="border-border bg-card/50 p-6 rounded-2xl hover:border-primary/30 transition-all group">
+                <Link href={`/discover?q=${encodeURIComponent(event.organizer.name)}`} className="flex items-center gap-4 no-underline">
+                  <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-primary/20 shrink-0">
+                    {event.organizer.avatar ? (
+                      <Image src={event.organizer.avatar} alt={event.organizer.name} fill className="object-cover" />
+                    ) : (
+                      <DefaultAvatar className="w-full h-full" />
+                    )}
                   </div>
-                </Card>
-              </Link>
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1">
+                        <span className="font-bold group-hover:text-primary transition-colors">{event.organizer.name}</span>
+                        {event.organizer.verified && <CheckCircle2 className="w-4 h-4 text-accent fill-accent text-white" />}
+                      </div>
+                      <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-all group-hover:translate-x-1" />
+                    </div>
+                    <span className="text-xs text-muted-foreground">Organizer</span>
+                  </div>
+                </Link>
+                {/* Host actions: follow (new-event alerts) + contact the host. */}
+                <div className="mt-4 pt-4 border-t border-border space-y-2">
+                  {event.organizerUid ? (
+                    <Button
+                      className={`w-full rounded-full font-bold gap-2 ${following ? '' : 'border-2'}`}
+                      variant={following ? 'default' : 'outline'}
+                      onClick={handleFollow}
+                      disabled={followBusy}
+                    >
+                      {followBusy ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : following ? (
+                        <UserCheck className="w-4 h-4" />
+                      ) : (
+                        <UserPlus className="w-4 h-4" />
+                      )}
+                      {following ? 'Following' : 'Follow'}
+                    </Button>
+                  ) : null}
+                  {(followerCount > 0 || following) && (
+                    <p className="text-center text-[10px] text-muted-foreground uppercase font-bold tracking-widest">
+                      {followerCount.toLocaleString()} follower{followerCount === 1 ? '' : 's'}
+                    </p>
+                  )}
+                  <Button
+                    variant="outline"
+                    className="w-full rounded-full font-bold gap-2"
+                    onClick={() => setContactOpen(true)}
+                  >
+                    <Mail className="w-4 h-4" /> Contact the Host
+                  </Button>
+                </div>
+              </Card>
             </div>
           </div>
         </div>
+
+        {/* Contact the Host dialog */}
+        <Dialog open={contactOpen} onOpenChange={setContactOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="font-headline flex items-center gap-2">
+                <Mail className="w-5 h-5 text-primary" /> Contact the Host
+              </DialogTitle>
+              <DialogDescription>
+                Send a message to {event.organizer.name} about &quot;{event.title}&quot; — they&apos;ll get it by email.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 text-left">
+              <div className="space-y-2">
+                <Label htmlFor="host-message">Your message</Label>
+                <Textarea
+                  id="host-message"
+                  placeholder={`Hi ${event.organizer.name}, I'd like to ask about...`}
+                  className="min-h-[120px]"
+                  value={contactMessage}
+                  onChange={(e) => setContactMessage(e.target.value)}
+                  maxLength={2000}
+                />
+              </div>
+              {profile && (
+                <p className="text-xs text-muted-foreground">
+                  Replying to: <span className="font-medium text-foreground">{profile.email}</span>
+                </p>
+              )}
+            </div>
+            <DialogFooter className="gap-2 sm:gap-0">
+              <Button variant="outline" onClick={() => setContactOpen(false)}>Cancel</Button>
+              <Button onClick={submitContact} disabled={contactBusy || !contactMessage.trim()} className="gap-2">
+                {contactBusy ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />} Send Message
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Invite a Friend dialog */}
+        <Dialog open={inviteOpen} onOpenChange={setInviteOpen}>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="font-headline flex items-center gap-2">
+                <UserPlus className="w-5 h-5 text-primary" /> Invite a Friend
+              </DialogTitle>
+              <DialogDescription>
+                We&apos;ll email your friend a personal link to &quot;{event.title}&quot;.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 text-left">
+              <div className="space-y-2">
+                <Label htmlFor="invite-friend-name">Friend&apos;s name (optional)</Label>
+                <Input
+                  id="invite-friend-name"
+                  placeholder="Ada"
+                  value={inviteName}
+                  onChange={(e) => setInviteName(e.target.value)}
+                  maxLength={80}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="invite-friend-email">Friend&apos;s email</Label>
+                <Input
+                  id="invite-friend-email"
+                  type="email"
+                  placeholder="friend@example.com"
+                  value={inviteEmail}
+                  onChange={(e) => setInviteEmail(e.target.value)}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="invite-message">Personal note (optional)</Label>
+                <Textarea
+                  id="invite-message"
+                  placeholder="Let's go to this one!"
+                  className="min-h-[80px]"
+                  value={inviteMessage}
+                  onChange={(e) => setInviteMessage(e.target.value)}
+                  maxLength={400}
+                />
+              </div>
+            </div>
+            <DialogFooter className="gap-2 sm:gap-0">
+              <Button variant="outline" onClick={() => setInviteOpen(false)}>Cancel</Button>
+              <Button onClick={submitInvite} disabled={inviteBusy} className="gap-2">
+                {inviteBusy ? <Loader2 className="w-4 h-4 animate-spin" /> : <UserPlus className="w-4 h-4" />} Send Invite
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         {/* Report dialog */}
         <Dialog open={reportOpen} onOpenChange={setReportOpen}>

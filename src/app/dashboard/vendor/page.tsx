@@ -14,6 +14,7 @@ import { Html5Qrcode } from 'html5-qrcode';
 import { cn } from '@/lib/utils';
 import { apiFetch } from '@/lib/api-fetch';
 import { ProfileCard } from '@/components/profile-card';
+import { SecurityCard } from '@/components/security-card';
 
 export default function VendorPortal() {
   const [scanState, setScanState] = useState<'idle' | 'validating' | 'success' | 'error' | 'duplicate'>('idle');
@@ -176,6 +177,9 @@ export default function VendorPortal() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+           <Link href="/dashboard/vendor/notifications" className="hidden sm:inline-flex items-center gap-1.5 text-xs font-bold text-muted-foreground hover:text-primary transition-colors no-underline">
+             <Bell className="w-4 h-4" /> Notifications
+           </Link>
            <NotificationBell />
            <Badge className="bg-primary/20 text-primary border-none hidden sm:inline-flex">Cold Sips Drinks</Badge>
            <Badge variant="outline" className="font-mono">VEN-08</Badge>
@@ -530,9 +534,10 @@ export default function VendorPortal() {
         </div>
       )}
 
-      {/* Profile — every vendor can update their own details (email stays fixed). */}
-      <div className="mt-8">
+      {/* Profile + 2FA — every vendor can update their own details (email stays fixed). */}
+      <div className="mt-8 grid gap-6">
         <ProfileCard />
+        <SecurityCard />
       </div>
 
       <style jsx global>{`

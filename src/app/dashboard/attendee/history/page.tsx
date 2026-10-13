@@ -28,7 +28,7 @@ import { useToast } from "@/hooks/use-toast";
 import { cn } from "@/lib/utils";
 import { useAuth } from '@/components/auth-provider';
 import { useEvents } from '@/hooks/use-events';
-import { getOrdersForEmail } from '@/lib/client-db';
+import { apiFetch } from '@/lib/api-fetch';
 import type { EventDoc, OrderDoc } from '@/lib/db-types';
 
 export default function OrderHistoryPage() {
@@ -53,9 +53,15 @@ export default function OrderHistoryPage() {
       setLoading(false);
       return;
     }
-    getOrdersForEmail(profile.email)
-      .then(setOrders)
-      .catch(() => undefined)
+    // Server-side read (Admin SDK) — the old client query needed a composite
+    // index that was never deployed, so Order History always came back empty.
+    apiFetch('/api/orders')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d && Array.isArray(d.orders)) setOrders(d.orders as OrderDoc[]);
+        else if (d?.error) throw new Error(d.error);
+      })
+      .catch(() => setOrders([]))
       .finally(() => setLoading(false));
   }, [profile?.email]);
 

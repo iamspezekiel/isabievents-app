@@ -2,6 +2,8 @@ import {NextResponse} from 'next/server';
 import {randomBytes} from 'crypto';
 import {requireOrganizer, isResponse} from '@/lib/admin-auth';
 import {admin} from '@/lib/server-admin';
+import {notifyUsers} from '@/lib/notifications';
+import {sendFollowedOrganizerEventEmail} from '@/lib/email';
 
 export const runtime = 'nodejs';
 
@@ -116,6 +118,55 @@ export async function POST(req: Request) {
     };
 
     await ref.set(doc);
+
+    // Host-following fan-out: everyone following this organizer gets a
+    // dashboard notification and (unless they turned Email Notifications off)
+    // an email about the new event. Fire-and-forget — a failure here never
+    // breaks event creation.
+    try {
+      const followsSnap = await db
+        .collection('follows')
+        .where('organizerUid', '==', uid)
+        .limit(500)
+        .get();
+      if (!followsSnap.empty) {
+        const followerIds = followsSnap.docs
+          .map((d) => (d.data() as {userId?: string}).userId || '')
+          .filter(Boolean);
+        const base = (process.env.APP_BASE_URL || 'https://events.isabi.cloud').replace(/\/+$/, '');
+        const eventUrl = `${base}/events/${slug}`;
+        const when = new Date(date).toLocaleDateString('en-NG', {dateStyle: 'medium'});
+        const where = [venue, (body.city || '').trim()].filter(Boolean).join(', ');
+        const organizerName = profile.name || 'The organizer';
+
+        await notifyUsers(followerIds, {
+          title: 'New event from an organizer you follow',
+          body: `${organizerName} just published "${title}".`,
+          type: 'primary',
+          href: `/events/${slug}`,
+        });
+
+        const followerRefs = followerIds.map((id) => db.collection('users').doc(id));
+        const followerDocs = followerRefs.length ? await db.getAll(...followerRefs) : [];
+        for (const snap of followerDocs) {
+          if (!snap.exists) continue;
+          const u = snap.data() as {email?: string; name?: string; notifications?: {email?: boolean}};
+          if (!u.email || u.notifications?.email === false) continue;
+          sendFollowedOrganizerEventEmail({
+            to: u.email,
+            name: u.name || '',
+            organizerName,
+            eventTitle: title,
+            eventUrl,
+            when,
+            where,
+          }).catch(() => undefined);
+        }
+      }
+    } catch (err) {
+      console.warn('[events] follower fan-out failed:', err);
+    }
+
     return NextResponse.json({ok: true, id: ref.id, slug});
   } catch (err) {
     return NextResponse.json(

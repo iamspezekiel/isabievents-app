@@ -562,3 +562,91 @@ export async function sendReportNotificationEmail(opts: {
     text: `Event report - ${opts.eventTitle || opts.eventId} - ${opts.reason}`,
   });
 }
+
+/**
+ * Sent to every follower when a followed organizer ("host") publishes a new
+ * event. Paired with the dashboard notification created in /api/events.
+ */
+export async function sendFollowedOrganizerEventEmail(opts: {
+  to: string;
+  name?: string;
+  organizerName: string;
+  eventTitle: string;
+  eventUrl: string;
+  when?: string;
+  where?: string;
+}): Promise<boolean> {
+  const details = [opts.when, opts.where]
+    .filter((s): s is string => Boolean(s))
+    .map(escapeHtml)
+    .join(' &middot; ');
+  const who = escapeHtml(opts.organizerName);
+  return send({
+    to: opts.to,
+    subject: `${opts.organizerName} just announced: ${opts.eventTitle}`,
+    html: layout(
+      `${who} has a new event`,
+      `
+      ${p(`Hi${opts.name ? ` ${escapeHtml(opts.name)}` : ''},`)}
+      ${p(`You follow <strong>${who}</strong> on IsabiEvents, so you hear it first — they just published <strong>${escapeHtml(opts.eventTitle)}</strong>.`)}
+      ${details ? p(details) : ''}
+      <p style="margin:0 0 22px;text-align:center;"><a href="${escapeHtml(opts.eventUrl)}" style="background:#7E7CFF;color:#fff;padding:12px 26px;border-radius:999px;font-weight:bold;text-decoration:none;display:inline-block;">View Event</a></p>
+      ${p(`You're receiving this because you follow ${who}. You can unfollow anytime from the event page.`)}
+      `,
+    ),
+    text: `${opts.organizerName} just announced "${opts.eventTitle}". View it: ${opts.eventUrl}`,
+  });
+}
+
+/** "Invite a Friend" — one friend gets a personal link to an event. */
+export async function sendEventInviteEmail(opts: {
+  to: string;
+  friendName?: string;
+  inviterName?: string;
+  eventTitle: string;
+  eventUrl: string;
+  message?: string;
+}): Promise<boolean> {
+  const from = escapeHtml(opts.inviterName || 'A friend');
+  const note = opts.message?.trim();
+  return send({
+    to: opts.to,
+    subject: `${from} invited you to ${opts.eventTitle}`,
+    html: layout(
+      `You're invited: ${escapeHtml(opts.eventTitle)}`,
+      `
+      ${p(`Hi${opts.friendName ? ` ${escapeHtml(opts.friendName)}` : ''},`)}
+      ${p(`<strong>${from}</strong> thought you'd like this event on IsabiEvents: <strong>${escapeHtml(opts.eventTitle)}</strong>.`)}
+      ${note ? p(`"${escapeHtml(note)}"`) : ''}
+      <p style="margin:0 0 22px;text-align:center;"><a href="${escapeHtml(opts.eventUrl)}" style="background:#7E7CFF;color:#fff;padding:12px 26px;border-radius:999px;font-weight:bold;text-decoration:none;display:inline-block;">See the Event</a></p>
+      ${p('Grab your tickets before they sell out. If you were not expecting this invite you can safely ignore this email.')}
+      `,
+    ),
+    text: `${from} invited you to ${opts.eventTitle}: ${opts.eventUrl}`,
+  });
+}
+
+/** "Contact the Host" — attendee message forwarded to the organizer's inbox. */
+export async function sendHostMessageEmail(opts: {
+  to: string;
+  organizerName: string;
+  senderName: string;
+  senderEmail: string;
+  eventTitle: string;
+  message: string;
+}): Promise<boolean> {
+  return send({
+    to: opts.to,
+    subject: `New message about "${opts.eventTitle}"`,
+    html: layout(
+      'Message from an attendee',
+      `
+      ${p(`Hi ${escapeHtml(opts.organizerName)},`)}
+      ${p(`<strong>${escapeHtml(opts.senderName)}</strong> (${escapeHtml(opts.senderEmail)}) sent you a message about your event <strong>${escapeHtml(opts.eventTitle)}</strong>.`)}
+      ${p(`<em>${escapeHtml(opts.message).replace(/\n/g, '<br/>')}</em>`)}
+      ${p('Reply directly to this email to get back to them.')}
+      `,
+    ),
+    text: `${opts.senderName} (${opts.senderEmail}) about "${opts.eventTitle}": ${opts.message}`,
+  });
+}

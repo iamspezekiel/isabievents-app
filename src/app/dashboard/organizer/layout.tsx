@@ -53,6 +53,7 @@ export default function OrganizerLayout({ children }: { children: React.ReactNod
       <SidebarLink icon={Users} label="Vendors" href="/dashboard/organizer/vendors" active={pathname === '/dashboard/organizer/vendors'} onClick={() => setIsMobileMenuOpen(false)} />
       <SidebarLink icon={BarChart3} label="Analytics" href="/dashboard/organizer/analytics" active={pathname === '/dashboard/organizer/analytics'} onClick={() => setIsMobileMenuOpen(false)} />
       <SidebarLink icon={Wallet} label="Payouts" href="/dashboard/organizer/payouts" active={pathname === '/dashboard/organizer/payouts'} onClick={() => setIsMobileMenuOpen(false)} />
+      <SidebarLink icon={Bell} label="Notifications" href="/dashboard/organizer/notifications" active={pathname === '/dashboard/organizer/notifications'} onClick={() => setIsMobileMenuOpen(false)} />
       <SidebarLink icon={Settings} label="Settings" href="/dashboard/organizer/settings" active={pathname === '/dashboard/organizer/settings'} onClick={() => setIsMobileMenuOpen(false)} />
     </nav>
   );

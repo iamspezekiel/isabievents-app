@@ -5,16 +5,26 @@ import Link from 'next/link';
 import {Bell} from 'lucide-react';
 import {Button} from '@/components/ui/button';
 import {apiFetch} from '@/lib/api-fetch';
+import {DASHBOARD_PATHS, useAuth} from '@/components/auth-provider';
 
 type Notif = {id: string; read?: boolean};
 
+/** Role-aware destination: /dashboard/<role>/notifications (falls back to attendee). */
+function useNotificationsHref(): string {
+  const {profile} = useAuth();
+  const base = (profile && DASHBOARD_PATHS[profile.role]) || '/dashboard/attendee';
+  return `${base}/notifications`;
+}
+
 /**
  * Header notification bell with a live unread count. Links to the shared
- * notifications page. Reused across every dashboard (attendee, admin,
- * organizer, staff, vendor) so the entry point is consistent everywhere.
+ * notifications page for the caller's OWN role (the attendee feed is guarded
+ * by AuthGuard, so organizers/staff/vendors/admins need their own path).
+ * Reused across every dashboard so the entry point is consistent everywhere.
  */
 export function NotificationBell() {
   const [unread, setUnread] = useState(0);
+  const href = useNotificationsHref();
 
   useEffect(() => {
     let alive = true;
@@ -38,7 +48,7 @@ export function NotificationBell() {
 
   return (
     <Button variant="ghost" size="icon" className="rounded-full relative" asChild title="Notifications">
-      <Link href="/dashboard/attendee/notifications" aria-label="Notifications">
+      <Link href={href} aria-label="Notifications">
         <Bell className="w-5 h-5" />
         {unread > 0 ? (
           <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center border-2 border-background">

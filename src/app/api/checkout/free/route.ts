@@ -1,5 +1,6 @@
 import {NextResponse} from 'next/server';
 import {sendPaymentConfirmationEmail} from '@/lib/email';
+import {notifyByEmail} from '@/lib/notifications';
 
 export const runtime = 'nodejs';
 
@@ -81,6 +82,14 @@ export async function POST(req: Request) {
     } catch (err) {
       console.warn('[free-checkout] confirmation email failed:', err);
     }
+
+    // Dashboard notification for the buyer (fire-and-forget).
+    notifyByEmail(buyer.email, {
+      title: 'Tickets confirmed',
+      body: `Your ${qty} ticket${qty === 1 ? '' : 's'} for "${order.eventTitle}" are ready — check your email for the QR codes.`,
+      type: 'success',
+      href: '/dashboard/attendee/history',
+    }).catch(() => undefined);
 
     return NextResponse.json({ok: true, orderId, tickets});
   } catch (err) {

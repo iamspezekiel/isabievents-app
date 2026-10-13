@@ -20,10 +20,12 @@ service cloud.firestore {
     // A user may read and update their OWN profile document (uid == doc id).
     // Role escalation is blocked: role can only be set at creation by the
     // trusted signup flow, and cannot be changed afterwards by the client.
+    // (`admin` is intentionally NOT creatable from the client — it is assigned
+    // server-side by the seed script / primary-admin email override.)
     match /users/{userId} {
       allow read, delete: if request.auth != null && request.auth.uid == userId;
       allow create: if request.auth != null && request.auth.uid == userId
-                    && request.resource.data.role in ['attendee', 'organizer'];
+                    && request.resource.data.role in ['attendee', 'organizer', 'staff', 'vendor'];
       allow update: if request.auth != null && request.auth.uid == userId
                     && request.resource.data.role == resource.data.role;
     }

@@ -35,9 +35,16 @@ export interface AuthProfile {
   email: string;
   role: Role;
   whatsapp?: string;
+  /** Home city chosen in Account Settings (used for recommendations). */
+  city?: string;
+  /** Privacy & Security toggles persisted on the profile doc. */
+  notifications?: {email?: boolean; marketing?: boolean};
+  /** Organizer public location (never shown to attendees). */
+  location?: string;
+  avatar?: string;
   /** True once the organizer's KYC has been approved (verified badge). */
   verified?: boolean;
-  /** True when email-code two-factor login is enabled for this account. */
+  /** True when authenticator-app (TOTP) two-factor login is enabled. */
   twoFactor?: boolean;
 }
 
@@ -102,19 +109,32 @@ function storeProfile(profile: AuthProfile | null) {
 async function loadProfileFromFirestore(firebaseUser: User): Promise<AuthProfile> {
   let role: Role = isAdminEmail(firebaseUser.email) ? 'admin' : 'attendee';
   let name = firebaseUser.displayName || '';
+  // Saved settings are carried onto the in-memory profile so every dashboard
+  // (settings forms, 2FA checks, recommendation hints) sees the stored values
+  // instead of falling back to defaults on each reload.
+  let extra: Partial<AuthProfile> = {};
   try {
     const snap = await getDoc(doc(db!, 'users', firebaseUser.uid));
     if (snap.exists()) {
       const data = snap.data();
       role = (data.role as Role) || 'attendee';
       name = name || data.name || '';
+      extra = {
+        whatsapp: typeof data.whatsapp === 'string' ? data.whatsapp : '',
+        city: typeof data.city === 'string' ? data.city : '',
+        notifications: (data.notifications as AuthProfile['notifications']) || undefined,
+        location: typeof data.location === 'string' ? data.location : '',
+        avatar: typeof data.avatar === 'string' ? data.avatar : '',
+        verified: data.verified === true,
+        twoFactor: data.twoFactor === true,
+      };
     }
   } catch (err) {
     console.warn('[auth] failed to load user profile:', err);
   }
   // The primary admin address always wins over a stale/missing profile doc.
   if (isAdminEmail(firebaseUser.email)) role = 'admin';
-  return {uid: firebaseUser.uid, name, email: firebaseUser.email || '', role};
+  return {uid: firebaseUser.uid, name, email: firebaseUser.email || '', role, ...extra};
 }
 
 export function AuthProvider({children}: {children: React.ReactNode}) {
@@ -180,7 +200,20 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
             createdAt: serverTimestamp(),
           });
         } catch (err) {
+          // Client security rules reject staff/vendor profile creation — seed
+          // the doc server-side instead so the account keeps its role after a
+          // reload (never accepts `admin`).
           console.warn('[auth] user profile write failed:', err);
+          try {
+            const token = await cred.user.getIdToken();
+            await fetch('/api/account/profile', {
+              method: 'POST',
+              headers: {'Content-Type': 'application/json', Authorization: `Bearer ${token}`},
+              body: JSON.stringify({name, role}),
+            });
+          } catch (fallbackErr) {
+            console.warn('[auth] server profile seed failed:', fallbackErr);
+          }
         }
         const next: AuthProfile = {uid: cred.user.uid, name, email, role};
         setProfile(next);

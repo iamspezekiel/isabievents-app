@@ -25,8 +25,7 @@ import { CITIES } from '@/lib/constants';
 import { useAuth } from '@/components/auth-provider';
 import { useToast } from "@/hooks/use-toast";
 import { apiFetch } from '@/lib/api-fetch';
-import { doc, setDoc } from 'firebase/firestore';
-import { db, isFirebaseConfigured } from '@/lib/firebase';
+import { SecurityCard } from '@/components/security-card';
 
 const WhatsAppIcon = ({ className }: { className?: string }) => (
   <svg 
@@ -68,12 +67,20 @@ export default function AttendeeSettingsPage() {
     }
   }, [profile]);
 
-  // Persist the Privacy & Security notification toggles instantly.
+  // Persist the Privacy & Security notification toggles instantly (server-side
+  // so the save works for every role regardless of Firestore rules).
   const persistNotifs = async (patch: {email?: boolean; marketing?: boolean}) => {
-    if (!profile || !isFirebaseConfigured || !db) return;
+    if (!profile) return;
     const current = {email: emailNotifs, marketing: marketingNotifs, ...patch};
+    setEmailNotifs(current.email);
+    setMarketingNotifs(current.marketing);
     try {
-      await setDoc(doc(db, 'users', profile.uid), {notifications: current, updatedAt: new Date().toISOString()}, {merge: true});
+      const res = await apiFetch('/api/account/profile', {
+        method: 'POST',
+        body: JSON.stringify({notifications: current}),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data?.error) throw new Error(data?.error || 'Could not save.');
       toast({title: 'Preference Saved', description: 'Your notification settings were updated.'});
     } catch {
       toast({variant: 'destructive', title: 'Could Not Save', description: 'Please try again.'});
@@ -84,23 +91,19 @@ export default function AttendeeSettingsPage() {
       toast({ variant: "destructive", title: "Not Signed In", description: "Sign in to save your settings." });
       return;
     }
-    if (!isFirebaseConfigured || !db) {
-      toast({ variant: "destructive", title: "Not Configured", description: "Firestore is not configured." });
-      return;
-    }
     setIsSaving(true);
     try {
-      await setDoc(
-        doc(db, 'users', profile.uid),
-        {
+      const res = await apiFetch('/api/account/profile', {
+        method: 'POST',
+        body: JSON.stringify({
           name: fullName.trim() || profile.name,
           whatsapp,
           city: location,
           notifications: {email: emailNotifs, marketing: marketingNotifs},
-          updatedAt: new Date().toISOString(),
-        },
-        {merge: true}
-      );
+        }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data?.error) throw new Error(data?.error || 'Could not save your changes.');
       toast({
         title: "Settings Saved",
         description: "Your profile information has been updated successfully.",
@@ -258,6 +261,9 @@ export default function AttendeeSettingsPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* 2FA — same authenticator-app flow as the organizer portal. */}
+          <SecurityCard />
         </div>
       </div>
     </div>

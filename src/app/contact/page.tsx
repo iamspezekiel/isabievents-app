@@ -106,9 +106,9 @@ export default function ContactPage() {
               <ContactInfo 
                 icon={Mail} 
                 title="Email Us" 
-                value="support@events.isabi.cloud" 
+                value="support@isabi.cloud" 
                 desc="For general inquiries and support."
-                href="mailto:support@events.isabi.cloud"
+                href="mailto:support@isabi.cloud"
               />
               <ContactInfo 
                 icon={MessageSquare} 
