@@ -14,18 +14,30 @@ export interface EventDoc {
   category: string;
   city: string;
   venue: string;
+  /** Start — naive Lagos wall-clock, e.g. "2026-03-14T18:00:00". */
   date: string;
+  /** Optional end for multi-day events (defaults to `date`). Lagos wall-clock. */
+  endDate?: string;
   organizer: {name: string; verified?: boolean; avatar?: string};
   image: string;
   description: string;
   summary?: string;
   policies?: string;
-  tiers?: {name: string; price: number}[];
+  tiers?: {name: string; price: number; refundable?: boolean}[];
+  /**
+   * Refund policy the organizer chose BEFORE sales open:
+   *  - 'refundable'     → tickets may be cancelled until the deadline below
+   *  - 'non_refundable' → tickets can never be cancelled (default / legacy)
+   * Each ticket also snapshots its own eligibility at purchase time, so a
+   * later policy edit can never take away eligibility that was already sold.
+   */
+  refundPolicy?: 'refundable' | 'non_refundable';
+  /** Hours before the event starts when cancellation closes (0 = until start). */
+  refundCutoffHours?: number;
   /**
    * Where "Get Tickets" sends visitors:
    *  - 'internal' (default): sell directly on IsabiEvents via Bachs checkout.
-   *  - 'external': the event is listed here, but registration/payment happens
-   *    on the organizer's own platform (Luma, Eventbrite, Meetup, their site…).
+   *  - 'external': listed here, but payment happens on the organizer's platform.
    */
   ticketMode?: 'internal' | 'external';
   /** Original event/registration URL used when ticketMode === 'external'. */
@@ -53,9 +65,20 @@ export interface OrderDoc {
   buyer: {name: string; email: string; phone?: string};
   buyerUid?: string;
   paymentMethod?: string;
+  /** Ticket type purchased (drives the per-tier refund policy snapshot). */
+  tierName?: string;
+  /** Refund snapshot captured when the order was placed (immutable). */
+  refundable?: boolean;
+  refundCutoffHours?: number;
+  refundDeadline?: string;
+  /** Tickets refunded against this order — the payment record is never deleted. */
+  refundedTickets?: string[];
+  refundedAmount?: number;
   paidAt?: string;
   createdAt?: unknown;
 }
+
+export type TicketStatus = 'active' | 'used' | 'transferred' | 'cancelled' | 'refunded';
 
 export interface TicketDoc {
   id: string;
@@ -64,7 +87,48 @@ export interface TicketDoc {
   eventTitle: string;
   holderName: string;
   buyerEmail: string;
+  buyerUid?: string;
   code: string; // QR payload, e.g. TKT-<orderId short>
-  status: 'active' | 'used' | 'transferred';
+  /** 'cancelled' and 'refunded' tickets are refused at the gate. */
+  status: TicketStatus;
+  tierName?: string;
+  /** Refund snapshot captured when the ticket was issued (immutable). */
+  refundable?: boolean;
+  refundCutoffHours?: number;
+  refundDeadline?: string;
+  cancelledAt?: string;
+  refundedAt?: string;
   createdAt?: unknown;
+}
+
+export type RefundStatus = 'requested' | 'approved' | 'declined' | 'completed';
+
+/**
+ * Attendee refund/cancellation workflow — created by the attendee, reviewed by
+ * an admin. Document id === ticketId, so duplicate requests are impossible.
+ * Orders/payment records are only annotated, never deleted.
+ */
+export interface RefundDoc {
+  id: string;
+  ticketId: string;
+  orderId: string;
+  eventId: string;
+  eventTitle: string;
+  tierName?: string;
+  holderName?: string;
+  buyerEmail: string;
+  buyerUid?: string;
+  amount: number;
+  currency: 'NGN' | 'USD';
+  status: RefundStatus;
+  /** Snapshot of the policy the ticket was sold under. */
+  refundable: boolean;
+  /** Absolute ISO deadline for this refund (event start − cutoff). */
+  deadline: string;
+  requestedAt: string;
+  requestedNote?: string;
+  decidedAt?: string;
+  decidedBy?: string;
+  note?: string;
+  completedAt?: string;
 }

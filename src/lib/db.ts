@@ -200,6 +200,13 @@ export async function issueTicketsForOrder(order: OrderDoc): Promise<void> {
         eventTitle: order.eventTitle,
         holderName: order.buyer.name,
         buyerEmail: order.buyer.email,
+        buyerUid: order.buyerUid || '',
+        tierName: order.tierName || '',
+        // Immutable refund snapshot — eligibility is decided at purchase time,
+        // so later organizer policy edits can never remove it.
+        refundable: order.refundable === true,
+        refundCutoffHours: typeof order.refundCutoffHours === 'number' ? order.refundCutoffHours : 0,
+        refundDeadline: order.refundDeadline || '',
         code: `TKT-${order.id.toUpperCase().slice(0, 8)}-${i + 1}`,
         status: 'active' as const,
         createdAt: now(),

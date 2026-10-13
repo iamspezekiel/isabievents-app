@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { lagosTs, formatEventDate } from '@/lib/timezone';
 import { 
   Ticket, 
   Plus, 
@@ -69,8 +70,8 @@ export default function MyEventsPage() {
       e.title.toLowerCase().includes(q) ||
       (e.venue || '').toLowerCase().includes(q) ||
       (e.city || '').toLowerCase().includes(q);
-    // Status filter (live = upcoming, ended = past)
-    const isUpcoming = new Date(e.date).getTime() >= now;
+    // Status filter (live = upcoming, ended = past) — Africa/Lagos end time.
+    const isUpcoming = lagosTs(e.endDate || e.date) >= now;
     const matchesStatus =
       statusFilter === 'all' ||
       (statusFilter === 'live' && isUpcoming) ||
@@ -182,7 +183,7 @@ export default function MyEventsPage() {
                     <div className="space-y-1">
                       <Badge className="bg-primary/10 text-primary border-none uppercase text-[10px] font-black">{event.category}</Badge>
                       <h3 className="font-headline text-xl font-bold">{event.title}</h3>
-                      <p className="text-muted-foreground flex items-center gap-1">{event.venue} · {new Date(event.date).toLocaleDateString()}</p>
+                      <p className="text-muted-foreground flex items-center gap-1">{event.venue} · {formatEventDate(event.date)}</p>
                     </div>
                   </div>
                   
@@ -198,9 +199,9 @@ export default function MyEventsPage() {
                       </div>
                       <div className="space-y-0.5">
                         <span className="text-[10px] uppercase font-black text-muted-foreground tracking-widest">Status</span>
-                        <div className={`flex items-center gap-1 font-bold text-sm ${new Date(event.date).getTime() >= Date.now() ? 'text-green-500' : 'text-muted-foreground'}`}>
-                          <div className={`w-1.5 h-1.5 rounded-full ${new Date(event.date).getTime() >= Date.now() ? 'bg-green-500' : 'bg-muted-foreground'}`} />{' '}
-                          {new Date(event.date).getTime() >= Date.now() ? 'Live' : 'Ended'}
+                        <div className={`flex items-center gap-1 font-bold text-sm ${lagosTs(event.endDate || event.date) >= Date.now() ? 'text-green-500' : 'text-muted-foreground'}`}>
+                          <div className={`w-1.5 h-1.5 rounded-full ${lagosTs(event.endDate || event.date) >= Date.now() ? 'bg-green-500' : 'bg-muted-foreground'}`} />{' '}
+                          {lagosTs(event.endDate || event.date) >= Date.now() ? 'Live' : 'Ended'}
                         </div>
                       </div>
                     </div>

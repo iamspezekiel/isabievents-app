@@ -35,6 +35,24 @@ export async function POST(req: Request) {
       orderId?: string;
     };
 
+    // Cancelled / refunded / transferred tickets are never valid for entry —
+    // reported as `invalid` (not just "not found") so the scanner can explain
+    // exactly why admission is refused.
+    if (d.status === 'cancelled' || d.status === 'refunded' || d.status === 'transferred') {
+      const reasons: Record<string, string> = {
+        cancelled: 'This ticket has been cancelled and is not valid for entry.',
+        refunded: 'This ticket was refunded and is not valid for entry.',
+        transferred: 'This ticket was transferred to another holder.',
+      };
+      return NextResponse.json({
+        found: false,
+        invalid: true,
+        code,
+        reason: reasons[d.status] || 'This ticket is not valid for entry.',
+        ticket: {code: d.code, eventTitle: d.eventTitle, status: d.status},
+      });
+    }
+
     const wasUsed = d.status === 'used';
     let checkedIn = false;
     if (body.checkIn && !wasUsed && d.status === 'active') {

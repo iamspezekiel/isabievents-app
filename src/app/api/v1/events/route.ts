@@ -1,6 +1,7 @@
 import {NextResponse} from 'next/server';
 import {admin} from '@/lib/server-admin';
 import {resolveApiKey} from '@/lib/api-key';
+import {lagosTs} from '@/lib/timezone';
 
 export const runtime = 'nodejs';
 
@@ -44,8 +45,10 @@ export async function GET(req: Request) {
           if (evCity !== city) return false;
         }
         if (status) {
-          const ts = Date.parse(String((ev as {date?: string}).date || '')) || 0;
-          const isPast = ts && ts < now;
+          // Ended-ness is evaluated at the event END in Africa/Lagos.
+          const evEnd = ev as {date?: string; endDate?: string};
+          const ts = lagosTs(evEnd.endDate || evEnd.date);
+          const isPast = ts > 0 && ts < now;
           if (status === 'past' && !isPast) return false;
           if ((status === 'upcoming' || status === 'live') && isPast) return false;
         }

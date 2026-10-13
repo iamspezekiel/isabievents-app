@@ -34,6 +34,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import { friendlyAuthError } from '@/lib/auth-errors';
+import { refundDeadlineFor, formatEventDateTime } from '@/lib/timezone';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import Link from 'next/link';
 
@@ -249,6 +250,7 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
           body: JSON.stringify({
             eventId: event.id,
             quantity,
+            tierName: tierName || '',
             buyer: {name: attendeeInfo.fullname, email: attendeeInfo.email, phone: attendeeInfo.phone},
           }),
         });
@@ -270,6 +272,7 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
           unitPrice: currency === 'USD' ? Number((unitPrice / NGN_TO_USD_RATE).toFixed(2)) : unitPrice,
           currency,
           paymentMethod,
+          tierName: tierName || '',
           buyer: {
             name: attendeeInfo.fullname,
             email: attendeeInfo.email,
@@ -367,6 +370,16 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
       </div>
     );
   }
+
+  // Refund policy shown BEFORE payment — mirrors the snapshot the API will
+  // store on the order/tickets (tier override wins, then the event policy).
+  const selectedTierInfo = tierName ? (event.tiers || []).find((t) => t.name === tierName) : undefined;
+  const policyRefundable =
+    selectedTierInfo && typeof selectedTierInfo.refundable === 'boolean'
+      ? selectedTierInfo.refundable
+      : event.refundPolicy === 'refundable';
+  const policyCutoff = Math.max(0, Number(event.refundCutoffHours) || 0);
+  const policyDeadline = policyRefundable ? refundDeadlineFor(event.date, policyCutoff) : '';
 
   return (
     <div className="min-h-screen bg-background text-foreground pt-48 pb-12">
@@ -744,6 +757,17 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
                     <span className="text-muted-foreground font-medium">Ticket Type</span>
                     <span className="font-bold">{tierName || 'General Admission'}</span>
                   </div>
+                  <div className="flex justify-between items-start text-sm gap-4">
+                    <span className="text-muted-foreground font-medium">Refund Policy</span>
+                    <span className={`font-bold text-right ${policyRefundable ? 'text-green-500' : 'text-muted-foreground'}`}>
+                      {policyRefundable ? 'Refundable' : 'Non-refundable'}
+                    </span>
+                  </div>
+                  {policyRefundable && (
+                    <p className="text-[11px] text-muted-foreground -mt-2 leading-relaxed">
+                      Cancellation accepted until {formatEventDateTime(policyDeadline, {dateStyle: 'medium', timeStyle: 'short'})} (Africa/Lagos).
+                    </p>
+                  )}
                   <div className="flex justify-between items-center text-sm">
                     <span className="text-muted-foreground font-medium">Price</span>
                     <span className="font-bold">₦{unitPrice.toLocaleString()}</span>

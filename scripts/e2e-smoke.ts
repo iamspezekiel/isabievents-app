@@ -143,6 +143,33 @@ async function main() {
   check('POST /api/email/subscribe (persist + email)', subRes.ok && sub.ok === true,
     `sent=${sub.sent} stored=${sub.stored}`);
 
+  // ---- refunds (read-only — no refund documents are created) --------------
+  const rfList = await authed('/api/refunds?scope=admin');
+  const rfData = await rfList.json().catch(() => ({}));
+  check('GET /api/refunds?scope=admin', rfList.ok && Array.isArray(rfData.refunds),
+    `${rfData.refunds?.length ?? 0} refund record(s)`);
+
+  const rfNoAuth = await fetch(`${BASE}/api/refunds`);
+  check('GET /api/refunds unauthenticated rejected', rfNoAuth.status === 401, `status=${rfNoAuth.status}`);
+
+  const rfMissing = await authed('/api/refunds', {
+    method: 'POST',
+    body: JSON.stringify({action: 'eligibility', ticketId: 'e2e-no-such-ticket'}),
+  });
+  const rfMissingBody = await rfMissing.json().catch(() => ({}));
+  check('POST /api/refunds eligibility (missing ticket → not_found)',
+    rfMissing.ok && rfMissingBody.eligible === false && rfMissingBody.code === 'not_found',
+    `code=${rfMissingBody.code}`);
+
+  const valInvalid = await authed('/api/tickets/validate', {
+    method: 'POST',
+    body: JSON.stringify({code: 'TKT-CANCELLED-TEST'}),
+  });
+  const valInvalidBody = await valInvalid.json().catch(() => ({}));
+  check('POST /api/tickets/validate returns invalid shape for unknown code',
+    valInvalidBody.found === false && valInvalidBody.invalid === undefined,
+    `found=${valInvalidBody.found}`);
+
   console.log(failures === 0 ? '\n✓ ALL E2E CHECKS PASSED' : `\n✗ ${failures} check(s) failed`);
   process.exit(failures === 0 ? 0 : 1);
 }

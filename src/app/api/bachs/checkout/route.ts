@@ -8,6 +8,7 @@
  */
 import {NextResponse} from 'next/server';
 import {createCheckoutSession, isBachsConfigured, type BachsCurrency} from '@/lib/bachs';
+import {refundDeadlineFor} from '@/lib/timezone';
 import type {OrderDoc} from '@/lib/db';
 
 export const runtime = 'nodejs';
@@ -21,6 +22,8 @@ interface CheckoutRequestBody {
   currency?: BachsCurrency;
   /** Bachs payment corridor: card, bank transfer (NGN), or crypto (USD). */
   paymentMethod?: 'card' | 'bank' | 'crypto';
+  /** Ticket type purchased — drives the per-tier refund policy snapshot. */
+  tierName?: string;
   buyer: {name: string; email: string; phone?: string};
   buyerUid?: string;
 }
@@ -60,17 +63,36 @@ export async function POST(req: Request) {
     return NextResponse.json({error: 'Missing required checkout fields.'}, {status: 400});
   }
 
-  // External-ticketed events are sold on the organizer's own platform — never
-  // create an IsabiEvents checkout session for them.
+  // Load the event once: it gates the external-ticketing mode AND provides the
+  // refund policy snapshot captured on the order/tickets for this purchase.
+  type EventShape = {
+    ticketMode?: string;
+    date?: string;
+    endDate?: string;
+    refundPolicy?: string;
+    refundCutoffHours?: number;
+    tiers?: {name: string; price: number; refundable?: boolean}[];
+  };
+  let eventDoc: EventShape | null = null;
   try {
     const db = await import('@/lib/db');
-    const event = await db.getEvent(eventId);
-    if (event && (event as {ticketMode?: string}).ticketMode === 'external') {
+    eventDoc = (await db.getEvent(eventId)) as EventShape | null;
+    if (eventDoc && eventDoc.ticketMode === 'external') {
       return NextResponse.json({error: 'This event is sold on the organizer’s external ticketing page.'}, {status: 400});
     }
   } catch {
     /* a lookup failure must never block a legitimate checkout */
   }
+
+  // Refund eligibility snapshot: tier override wins, then the event policy.
+  // Legacy events without a policy are treated as non-refundable.
+  const tier = eventDoc?.tiers?.find((t) => t.name === (body.tierName || ''));
+  const refundable =
+    tier && typeof tier.refundable === 'boolean'
+      ? tier.refundable
+      : eventDoc?.refundPolicy === 'refundable';
+  const refundCutoffHours = refundable ? Math.max(0, Number(eventDoc?.refundCutoffHours) || 0) : 0;
+  const refundDeadline = refundable ? refundDeadlineFor(eventDoc?.date, refundCutoffHours) : '';
   const qty = Math.max(1, Math.min(20, Math.floor(Number(quantity) || 1)));
   const price = Math.max(0, Number(unitPrice) || 0);
   const amount = price * qty;
@@ -124,6 +146,11 @@ export async function POST(req: Request) {
       checkoutUrl: session.checkout_url,
       buyer: {name: buyer.name, email: buyer.email, phone: buyer.phone},
       buyerUid: body.buyerUid,
+      // Refund-policy snapshot (immutable on the order and every ticket).
+      tierName: body.tierName || '',
+      refundable,
+      refundCutoffHours,
+      refundDeadline,
     };
 
     // Lazy-load the Firestore layer so a module-load problem can never take

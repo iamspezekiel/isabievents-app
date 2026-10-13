@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useEvents } from '@/hooks/use-events';
 import { getFavorites, removeFavorite } from '@/lib/favorites';
+import { formatEventDate } from '@/lib/timezone';
 import type { EventDoc } from '@/lib/db';
 import Link from 'next/link';
 import { useToast } from "@/hooks/use-toast";
@@ -102,7 +103,7 @@ export default function FavoritesPage() {
                   <div className="p-8 text-left space-y-4 flex-1 flex flex-col">
                     <div className="flex items-center gap-2 text-primary font-black uppercase text-[10px] tracking-widest">
                        <Calendar className="w-3.5 h-3.5" /> 
-                       {new Date(event.date).toLocaleDateString('en-NG', { dateStyle: 'medium' })}
+                       {formatEventDate(event.date)}
                     </div>
                     
                     <h3 className="font-headline text-xl font-bold line-clamp-1 group-hover:text-primary transition-colors">

@@ -59,20 +59,27 @@ function CreateEventForm() {
     virtualLink: '',
     date: '',
     time: '',
+    // Multi-day events: the last day (empty = single-day, ends at start time).
+    endDate: '',
     price: '',
     capacity: '',
     // Where buyers complete their purchase: on IsabiEvents, or on the
     // organizer's own/existing listing (Luma, Eventbrite, Meetup, website).
     ticketMode: 'internal' as string,
     ticketUrl: '',
+    // Refund policy chosen BEFORE sales open (default preserves old behaviour).
+    refundPolicy: 'non_refundable' as string,
+    // Cutoff in hours before the start when cancellation closes.
+    refundCutoffHours: '0' as string,
   });
 
   const [features, setFeatures] = useState<string[]>([]);
   const [currentFeature, setCurrentFeature] = useState('');
 
-  // Ticket types & prices (at least one required).
-  const [tiers, setTiers] = useState<{name: string; price: string}[]>([
-    {name: 'General Admission', price: ''},
+  // Ticket types & prices (at least one required). `refundable` is a tri-state:
+  // 'default' follows the event policy; the other two override it per tier.
+  const [tiers, setTiers] = useState<{name: string; price: string; refundable: string}[]>([
+    {name: 'General Admission', price: '', refundable: 'default'},
   ]);
 
   // Cover image (uploaded to Cloudflare R2 via /api/upload)
@@ -111,7 +118,18 @@ function CreateEventForm() {
     getEvent(eventId)
       .then((event) => {
         if (!event || !alive) return;
-        const extra = event as {summary?: string; policies?: string; state?: string; mode?: string; virtualLink?: string; ticketMode?: string; ticketUrl?: string};
+        const extra = event as {
+          summary?: string;
+          policies?: string;
+          state?: string;
+          mode?: string;
+          virtualLink?: string;
+          ticketMode?: string;
+          ticketUrl?: string;
+          endDate?: string;
+          refundPolicy?: string;
+          refundCutoffHours?: number;
+        };
         const [datePart, timePart] = String(event.date || '').split('T');
         setFormData({
           name: event.title,
@@ -126,23 +144,33 @@ function CreateEventForm() {
           virtualLink: extra.virtualLink || '',
           date: datePart || '',
           time: (timePart || '').substring(0, 5),
+          // Multi-day: only surface the end date when it differs from the start day.
+          endDate: extra.endDate && extra.endDate.slice(0, 10) !== datePart ? extra.endDate.slice(0, 10) : '',
           price: String(event.price?.min ?? 0),
           capacity: event.inventory ? String(event.inventory) : '',
           ticketMode: extra.ticketMode === 'external' ? 'external' : 'internal',
           ticketUrl: extra.ticketUrl || '',
+          refundPolicy: extra.refundPolicy === 'refundable' ? 'refundable' : 'non_refundable',
+          refundCutoffHours: String(Math.max(0, Number(extra.refundCutoffHours) || 0)),
         });
         setCoverImage(event.image || '');
         setFeatures(Array.isArray(event.tags) ? event.tags : []);
-        const evTiers = (event as {tiers?: {name?: string; price?: number}[]}).tiers;
+        const evTiers = (event as {tiers?: {name?: string; price?: number; refundable?: boolean}[]}).tiers;
         if (Array.isArray(evTiers) && evTiers.length) {
-          setTiers(evTiers.map((t) => ({name: String(t.name || 'General Admission'), price: String(t.price ?? 0)})));
+          setTiers(
+            evTiers.map((t) => ({
+              name: String(t.name || 'General Admission'),
+              price: String(t.price ?? 0),
+              refundable: t.refundable === true ? 'refundable' : t.refundable === false ? 'non_refundable' : 'default',
+            }))
+          );
         } else if ((event.price?.max ?? 0) > (event.price?.min ?? 0)) {
           setTiers([
-            {name: 'Standard Access', price: String(event.price?.min ?? 0)},
-            {name: 'VIP Experience', price: String(event.price?.max ?? 0)},
+            {name: 'Standard Access', price: String(event.price?.min ?? 0), refundable: 'default'},
+            {name: 'VIP Experience', price: String(event.price?.max ?? 0), refundable: 'default'},
           ]);
         } else {
-          setTiers([{name: 'General Admission', price: String(event.price?.min ?? 0)}]);
+          setTiers([{name: 'General Admission', price: String(event.price?.min ?? 0), refundable: 'default'}]);
         }
       })
       .catch(() => undefined);
@@ -228,10 +256,23 @@ function CreateEventForm() {
       });
       return;
     }
+    if (formData.endDate && formData.date && formData.endDate < formData.date) {
+      toast({
+        variant: "destructive",
+        title: "Invalid end date",
+        description: "The end date cannot be before the start date.",
+      });
+      return;
+    }
     setSubmitting(true);
     try {
       const validTiers = tiers
-        .map((t) => ({name: t.name.trim(), price: Number(t.price) || 0}))
+        .map((t) => ({
+          name: t.name.trim(),
+          price: Number(t.price) || 0,
+          // Tri-state per tier: undefined = follow the event-level policy.
+          ...(t.refundable === 'refundable' ? {refundable: true} : t.refundable === 'non_refundable' ? {refundable: false} : {}),
+        }))
         .filter((t) => t.name);
       if (!validTiers.length) {
         throw new Error('Add at least one ticket type with a name.');
@@ -245,6 +286,11 @@ function CreateEventForm() {
         virtualLink: formData.virtualLink.trim(),
         venue: formData.venue.trim(),
         date: `${formData.date}T${formData.time || '00:00'}:00`,
+        // Last day of a multi-day event (empty → the API keeps single-day behaviour).
+        endDate: formData.endDate || '',
+        // Refund policy (chosen before sales open; snapshotted per ticket).
+        refundPolicy: formData.refundPolicy === 'refundable' ? 'refundable' : 'non_refundable',
+        refundCutoffHours: Number(formData.refundCutoffHours) || 0,
         image: coverImage,
         description: formData.description.trim() || formData.summary.trim(),
         summary: formData.summary.trim(),
@@ -448,6 +494,23 @@ function CreateEventForm() {
                       />
                     </div>
                   </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="endDate">End Date (multi-day events)</Label>
+                    <div className="relative">
+                      <CalendarIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                      <Input 
+                        id="endDate" 
+                        type="date" 
+                        min={formData.date || undefined}
+                        className="pl-10 h-11"
+                        value={formData.endDate}
+                        onChange={(e) => setFormData({...formData, endDate: e.target.value})}
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      Optional — for festivals &amp; multi-day events. Leave empty for a single-day event (Africa/Lagos time).
+                    </p>
+                  </div>
                 </div>
               </div>
             </section>
@@ -607,6 +670,56 @@ function CreateEventForm() {
                       )}
                     </div>
 
+                    <div className="space-y-3 rounded-xl border border-border p-4">
+                      <Label>Refund Policy (set before tickets go on sale)</Label>
+                      <div className="grid sm:grid-cols-2 gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setFormData({...formData, refundPolicy: 'refundable'})}
+                          className={`p-3 rounded-xl border-2 text-left transition-all ${formData.refundPolicy === 'refundable' ? 'border-green-500 bg-green-500/5' : 'border-border hover:bg-secondary'}`}
+                        >
+                          <div className="font-bold text-sm">Refundable</div>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            Buyers can cancel before the cutoff below and get their money back.
+                          </p>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setFormData({...formData, refundPolicy: 'non_refundable'})}
+                          className={`p-3 rounded-xl border-2 text-left transition-all ${formData.refundPolicy !== 'refundable' ? 'border-primary bg-primary/5' : 'border-border hover:bg-secondary'}`}
+                        >
+                          <div className="font-bold text-sm">Non-refundable</div>
+                          <p className="text-xs text-muted-foreground mt-0.5">
+                            No cancellations or refunds once a ticket is purchased.
+                          </p>
+                        </button>
+                      </div>
+                      {formData.refundPolicy === 'refundable' && (
+                        <div className="space-y-2">
+                          <Label htmlFor="refundCutoff">Cancellation closes</Label>
+                          <Select
+                            value={formData.refundCutoffHours}
+                            onValueChange={(v) => setFormData({...formData, refundCutoffHours: v})}
+                          >
+                            <SelectTrigger id="refundCutoff" className="h-11">
+                              <SelectValue placeholder="Choose a cutoff" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="0">When the event starts (Africa/Lagos)</SelectItem>
+                              <SelectItem value="24">24 hours before the event</SelectItem>
+                              <SelectItem value="48">48 hours before the event</SelectItem>
+                              <SelectItem value="72">72 hours before the event</SelectItem>
+                              <SelectItem value="168">1 week before the event</SelectItem>
+                            </SelectContent>
+                          </Select>
+                          <p className="text-xs text-muted-foreground">
+                            Shown to attendees before checkout. Eligibility is locked per ticket at purchase —
+                            you can&apos;t remove refunds for tickets already sold.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
                     <div className="space-y-3">
                       <Label>Ticket Types &amp; Prices (₦)</Label>
                       {tiers.map((tier, i) => (
@@ -628,9 +741,24 @@ function CreateEventForm() {
                             onChange={(e) =>
                               setTiers(tiers.map((t, idx) => (idx === i ? {...t, price: e.target.value} : t)))
                             }
-                            className="h-11 w-28"
+                            className="h-11 w-24"
                             aria-label={`Ticket type ${i + 1} price`}
                           />
+                          <Select
+                            value={tier.refundable}
+                            onValueChange={(v) =>
+                              setTiers(tiers.map((t, idx) => (idx === i ? {...t, refundable: v} : t)))
+                            }
+                          >
+                            <SelectTrigger className="h-11 w-40 text-xs" aria-label={`Ticket type ${i + 1} refunds`}>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="default">Refunds: event policy</SelectItem>
+                              <SelectItem value="refundable">Refundable</SelectItem>
+                              <SelectItem value="non_refundable">Non-refundable</SelectItem>
+                            </SelectContent>
+                          </Select>
                           {tiers.length > 1 && (
                             <Button
                               type="button"
@@ -650,7 +778,7 @@ function CreateEventForm() {
                         variant="outline"
                         size="sm"
                         className="rounded-full font-bold gap-2"
-                        onClick={() => setTiers([...tiers, {name: '', price: ''}])}
+                        onClick={() => setTiers([...tiers, {name: '', price: '', refundable: 'default'}])}
                       >
                         + Add Ticket Type
                       </Button>

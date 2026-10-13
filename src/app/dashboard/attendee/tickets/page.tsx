@@ -14,6 +14,7 @@ import { useEvents } from '@/hooks/use-events';
 import { getTicketsForEmail } from '@/lib/client-db';
 import { useToast } from "@/hooks/use-toast";
 import type { EventDoc, TicketDoc } from '@/lib/db-types';
+import { formatEventDate, formatEventDateTime } from '@/lib/timezone';
 import Link from 'next/link';
 
 export default function TicketGalleryPage() {
@@ -68,7 +69,7 @@ export default function TicketGalleryPage() {
       'ISABIEVENTS TICKET',
       '===================',
       `Event : ${c.title}`,
-      `Date  : ${new Date(c.date).toLocaleString('en-NG', {dateStyle: 'full', timeStyle: 'short'})}`,
+      `Date  : ${formatEventDateTime(c.date, {dateStyle: 'full', timeStyle: 'short'})} (Africa/Lagos)`,
       `Venue : ${c.venue}`,
       `Code  : ${c.code}`,
       `Status: ${c.status}`,
@@ -136,7 +137,19 @@ export default function TicketGalleryPage() {
               <div className="relative aspect-[4/2] bg-secondary/50 p-6 flex items-center justify-between border-b border-dashed border-border/50">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <div className="text-[10px] uppercase font-black tracking-widest text-primary">{event.status === 'used' ? 'Used Entry' : 'Confirmed Access'}</div>
+                    <div
+                      className={`text-[10px] uppercase font-black tracking-widest ${
+                        event.status === 'cancelled' || event.status === 'refunded' ? 'text-red-500' : 'text-primary'
+                      }`}
+                    >
+                      {event.status === 'used'
+                        ? 'Used Entry'
+                        : event.status === 'refunded'
+                          ? 'Refunded — Not Valid'
+                          : event.status === 'cancelled'
+                            ? 'Cancelled — Under Review'
+                            : 'Confirmed Access'}
+                    </div>
                   </div>
                   <h3 className="font-headline text-lg line-clamp-1">{event.title}</h3>
                 </div>
@@ -153,7 +166,7 @@ export default function TicketGalleryPage() {
                   <div className="space-y-1">
                     <span className="text-[10px] text-muted-foreground uppercase font-bold">Date</span>
                     <div className="text-sm font-medium flex items-center gap-1">
-                      <Calendar className="w-3.5 h-3.5 text-primary" /> {mounted ? new Date(event.date).toLocaleDateString('en-NG', { year: 'numeric', month: 'short', day: 'numeric' }) : 'Loading...'}
+                      <Calendar className="w-3.5 h-3.5 text-primary" /> {mounted ? formatEventDate(event.date) : 'Loading...'}
                     </div>
                   </div>
                   <div className="space-y-1">
@@ -166,12 +179,29 @@ export default function TicketGalleryPage() {
 
                 <div className="pt-4 flex items-center justify-between">
                   <Badge variant="outline" className="rounded-full border-primary/20 text-primary font-mono">#{event.code}</Badge>
-                  <span className="text-xs text-muted-foreground">{event.status === 'used' ? 'Used' : 'Standard Pass'}</span>
+                  <span className="text-xs text-muted-foreground">
+                    {event.status === 'used'
+                      ? 'Used'
+                      : event.status === 'refunded'
+                        ? 'Refunded'
+                        : event.status === 'cancelled'
+                          ? 'Cancelled'
+                          : 'Standard Pass'}
+                  </span>
                 </div>
               </div>
 
               <div className="p-6 bg-secondary/20 flex gap-2">
-                <Button className="flex-1 rounded-full gap-2" onClick={() => handleViewQr(event)}>
+                <Button
+                  className="flex-1 rounded-full gap-2"
+                  onClick={() => handleViewQr(event)}
+                  disabled={event.status === 'cancelled' || event.status === 'refunded'}
+                  title={
+                    event.status === 'cancelled' || event.status === 'refunded'
+                      ? 'This ticket is not valid for entry'
+                      : undefined
+                  }
+                >
                   <QrCode className="w-4 h-4" /> View QR
                 </Button>
                 <Button

@@ -13,6 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent } from "@/components/ui/card";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { renderRichText } from '@/lib/rich-text';
+import { formatEventDate, formatEventDateTime, refundDeadlineFor, describeDeadline } from '@/lib/timezone';
 import { DefaultAvatar } from '@/components/default-avatar';
 import { apiFetch } from '@/lib/api-fetch';
 import Image from 'next/image';
@@ -36,6 +37,12 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
   // or their own website) — "Get Tickets" sends visitors straight there.
   const isExternal = event?.ticketMode === 'external' && !!event?.ticketUrl;
   const externalUrl = event?.ticketUrl || '';
+
+  // Refund policy shown BEFORE purchase (event policy + per-tier overrides).
+  const eventRefundable = event?.refundPolicy === 'refundable';
+  const eventCutoff = Math.max(0, Number(event?.refundCutoffHours) || 0);
+  const eventRefundDeadline = eventRefundable && event ? refundDeadlineFor(event.date, eventCutoff) : '';
+  const isMultiDay = !!(event?.endDate && event.endDate.slice(0, 10) !== (event?.date || '').slice(0, 10));
   
   const [faqs, setFaqs] = useState<any[]>([]);
   const [loadingFaqs, setLoadingFaqs] = useState(true);
@@ -299,8 +306,8 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
 
   // Ticket types: organizer-defined tiers, with a sensible fallback for older
   // events that only have a single min/max price.
-  const rawTiers = (event as unknown as {tiers?: {name: string; price: number}[]}).tiers;
-  const tiers: {name: string; price: number}[] =
+  const rawTiers = (event as unknown as {tiers?: {name: string; price: number; refundable?: boolean}[]}).tiers;
+  const tiers: {name: string; price: number; refundable?: boolean}[] =
     Array.isArray(rawTiers) && rawTiers.length
       ? rawTiers
       : event.price.min === event.price.max
@@ -329,7 +336,11 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
             <div className="flex flex-wrap items-center gap-6 text-sm md:text-base font-medium">
               <div className="flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-primary" />
-                {mounted ? new Date(event.date).toLocaleString('en-NG', { dateStyle: 'full', timeStyle: 'short' }) : 'Loading schedule...'}
+                {mounted
+                  ? `${formatEventDateTime(event.date, { dateStyle: 'full', timeStyle: 'short' })}${
+                      isMultiDay ? ` — ${formatEventDateTime(event.endDate, { dateStyle: 'full', timeStyle: 'short' })}` : ''
+                    } (Africa/Lagos)`
+                  : 'Loading schedule...'}
               </div>
               <div className="flex items-center gap-2">
                 <MapPin className="w-5 h-5 text-primary" />
@@ -371,6 +382,30 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
               </TabsList>
               
               <TabsContent value="tickets" className="pt-8 space-y-4">
+                {/* Refund policy — shown before any ticket can be selected. */}
+                {!isExternal && (
+                  <div
+                    className={`rounded-xl border p-4 flex items-start gap-3 text-left ${
+                      eventRefundable ? 'border-green-500/30 bg-green-500/5' : 'border-border bg-card/50'
+                    }`}
+                  >
+                    <ShieldCheck className={`w-4 h-4 mt-0.5 shrink-0 ${eventRefundable ? 'text-green-500' : 'text-muted-foreground'}`} />
+                    <div className="text-xs leading-relaxed">
+                      <span className="font-bold">
+                        Refund policy: {eventRefundable ? 'Refundable' : 'Non-refundable'}
+                      </span>
+                      {eventRefundable ? (
+                        <span className="text-muted-foreground">
+                          {' '}— cancel any time until {describeDeadline(eventRefundDeadline, eventCutoff)}.
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground">
+                          {' '}— tickets for this event cannot be cancelled or refunded.
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
                 {tiers.map((tier) => (
                   <TicketTier
                     key={tier.name}
@@ -379,6 +414,7 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
                     perks={tier.price === 0 ? ['Free Entry', 'Gate Entry'] : ['Gate Entry', 'Standard Admission']}
                     available={true}
                     external={isExternal}
+                    refundable={typeof tier.refundable === 'boolean' ? tier.refundable : eventRefundable}
                     isSelected={selectedTier === tier.name}
                     quantity={quantity}
                     onSelect={() => handleTierSelect(tier.name, tier.price)}
@@ -487,6 +523,14 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
                       </span>
                     )}
                   </div>
+
+                  {!isExternal && (
+                    <p className="text-[11px] text-muted-foreground text-center -mt-3 mb-1 leading-relaxed">
+                      {eventRefundable
+                        ? `Refundable — cancel until ${describeDeadline(eventRefundDeadline, eventCutoff)}`
+                        : 'Non-refundable — cancellations are not available for this event'}
+                    </p>
+                  )}
 
                   {isExternal ? (
                     <>
@@ -737,7 +781,7 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
   );
 }
 
-function TicketTier({ name, price, perks, available, isSelected, quantity, onSelect, onQuantityChange, external }: any) {
+function TicketTier({ name, price, perks, available, isSelected, quantity, onSelect, onQuantityChange, external, refundable }: any) {
   return (
     <div className={`p-6 border rounded-2xl transition-all duration-300 ${
       available 
@@ -752,6 +796,15 @@ function TicketTier({ name, price, perks, available, isSelected, quantity, onSel
           <div>
             <h3 className="font-headline text-lg">{name}</h3>
             {!available && <Badge variant="destructive">Sold Out</Badge>}
+            {typeof refundable === 'boolean' && (
+              <span
+                className={`block text-[10px] font-black uppercase tracking-widest ${
+                  refundable ? 'text-green-500' : 'text-muted-foreground'
+                }`}
+              >
+                {refundable ? 'Refundable' : 'Non-refundable'}
+              </span>
+            )}
           </div>
         </div>
         <div className="text-right">

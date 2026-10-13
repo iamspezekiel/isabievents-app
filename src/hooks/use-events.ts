@@ -12,19 +12,24 @@
  */
 import {useCallback, useEffect, useMemo, useState} from 'react';
 import {getEvents, type EventDoc} from '@/lib/client-db';
+import {lagosTs, eventEndValue} from '@/lib/timezone';
 
 type UseEventsOpts = {
   /** Include events hidden by moderation (admin/organizer/staff/attendee-ticket surfaces). */
   includeHidden?: boolean;
 };
 
-/** Upcoming events ascending, then past events most-recent-first. */
+/**
+ * Upcoming events ascending, then past events most-recent-first.
+ * Comparison uses the event's END (endDate when set) interpreted in
+ * Africa/Lagos, so classification is identical for every viewer.
+ */
 function bySoonestFirst(a: EventDoc, b: EventDoc): number {
-  const ta = new Date(a.date).getTime() || 0;
-  const tb = new Date(b.date).getTime() || 0;
+  const ta = lagosTs(eventEndValue(a));
+  const tb = lagosTs(eventEndValue(b));
   const now = Date.now();
-  const aPast = ta < now;
-  const bPast = tb < now;
+  const aPast = ta > 0 && ta < now;
+  const bPast = tb > 0 && tb < now;
   if (aPast !== bPast) return aPast ? 1 : -1;
   return aPast ? tb - ta : ta - tb;
 }

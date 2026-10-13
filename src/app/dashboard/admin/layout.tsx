@@ -15,7 +15,8 @@ import {
   Menu, 
   Bell,
   Mail,
-  Wallet
+  Wallet,
+  RotateCcw
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { NotificationBell } from '@/components/notification-bell';
@@ -55,6 +56,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <SidebarLink icon={Mail} label="Newsletter" href="/dashboard/admin/newsletter" active={pathname === '/dashboard/admin/newsletter'} onClick={() => setIsMobileMenuOpen(false)} />
       <SidebarLink icon={BarChart3} label="Financial Reports" href="/dashboard/admin/reports" active={pathname === '/dashboard/admin/reports'} onClick={() => setIsMobileMenuOpen(false)} />
       <SidebarLink icon={Wallet} label="Payout Requests" href="/dashboard/admin/payouts" active={pathname === '/dashboard/admin/payouts'} onClick={() => setIsMobileMenuOpen(false)} />
+      <SidebarLink icon={RotateCcw} label="Refund Requests" href="/dashboard/admin/refunds" active={pathname === '/dashboard/admin/refunds'} onClick={() => setIsMobileMenuOpen(false)} />
       <SidebarLink icon={Bell} label="Notifications" href="/dashboard/admin/notifications" active={pathname === '/dashboard/admin/notifications'} onClick={() => setIsMobileMenuOpen(false)} />
       <SidebarLink icon={Settings} label="System Settings" href="/dashboard/admin/settings" active={pathname === '/dashboard/admin/settings'} onClick={() => setIsMobileMenuOpen(false)} />
     </nav>

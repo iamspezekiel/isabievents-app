@@ -90,6 +90,11 @@ export default function VendorPortal() {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Lookup failed.');
 
+      if (data.invalid) {
+        setScanState('error');
+        toast({ variant: "destructive", title: "Voucher Not Valid", description: data.reason || 'This voucher cannot be redeemed.' });
+        return;
+      }
       if (!data.found) {
         setScanState('error');
         toast({ variant: "destructive", title: "Invalid Voucher", description: "This code is invalid or not in records." });
@@ -130,6 +135,12 @@ export default function VendorPortal() {
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || 'Lookup failed.');
 
+      if (data.invalid) {
+        setScanState('error');
+        toast({ variant: "destructive", title: "Ticket Not Valid", description: data.reason || 'This ticket cannot be used for entry.' });
+        setLookupQuery('');
+        return;
+      }
       if (!data.found) {
         setScanState('error');
         toast({ variant: "destructive", title: "Not Found", description: "No ticket found matching that code." });

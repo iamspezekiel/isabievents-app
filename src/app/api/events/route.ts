@@ -4,6 +4,7 @@ import {requireOrganizer, isResponse} from '@/lib/admin-auth';
 import {admin} from '@/lib/server-admin';
 import {notifyUsers} from '@/lib/notifications';
 import {sendFollowedOrganizerEventEmail} from '@/lib/email';
+import {formatEventDate} from '@/lib/timezone';
 
 export const runtime = 'nodejs';
 
@@ -26,7 +27,13 @@ interface EventBody {
   price?: number | string;
   inventory?: number | string;
   tags?: string[];
-  tiers?: {name?: string; price?: number}[];
+  tiers?: {name?: string; price?: number; refundable?: boolean}[];
+  /** Last day of a multi-day event (Lagos wall-clock). Empty = single day. */
+  endDate?: string;
+  /** 'refundable' | 'non_refundable' — chosen before sales open. */
+  refundPolicy?: string;
+  /** Hours before the start when cancellation closes (refundable only). */
+  refundCutoffHours?: number | string;
   /** 'internal' = sell on IsabiEvents, 'external' = link out to ticketUrl. */
   ticketMode?: string;
   /** Original registration URL for external-ticketed events. */
@@ -52,19 +59,52 @@ function sanitizeTicketing(body: EventBody): {error?: string; ticketMode: 'inter
   return {ticketMode: 'external', ticketUrl: url};
 }
 
-/** Sanitizes organizer-defined ticket types (name + price) from the client. */
-function sanitizeTiers(input: unknown): {name: string; price: number}[] {
+/** Sanitizes organizer-defined ticket types (name + price + refund override). */
+function sanitizeTiers(input: unknown): {name: string; price: number; refundable?: boolean}[] {
   if (!Array.isArray(input)) return [];
   return input
     .slice(0, 12)
     .map((raw) => {
-      const row = (raw || {}) as {name?: unknown; price?: unknown};
+      const row = (raw || {}) as {name?: unknown; price?: unknown; refundable?: unknown};
       const name = String(row.name ?? '').trim().slice(0, 60);
       const price = Number(row.price);
       if (!name || !Number.isFinite(price) || price < 0) return null;
-      return {name, price: Math.round(price)};
+      return {
+        name,
+        price: Math.round(price),
+        // Tri-state: undefined = follow the event-level policy.
+        ...(typeof row.refundable === 'boolean' ? {refundable: row.refundable} : {}),
+      };
     })
-    .filter((r): r is {name: string; price: number} => r !== null);
+    .filter((r): r is {name: string; price: number; refundable?: boolean} => r !== null);
+}
+
+/**
+ * Validates the optional multi-day end date (Lagos wall-clock). The last day
+ * is stored as ending at 23:59; an empty value keeps the historical
+ * single-day behaviour where the event "ends" at its start time.
+ */
+function sanitizeEndDate(raw: unknown, startDate: string): {error?: string; endDate: string} {
+  const value = String(raw || '').trim();
+  if (!value) return {endDate: ''};
+  const day = value.slice(0, 10);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) return {error: 'End date must be a valid date.', endDate: ''};
+  const startDay = (startDate || '').slice(0, 10);
+  if (startDay && day < startDay) {
+    return {error: 'The end date cannot be before the start date.', endDate: ''};
+  }
+  if (day === startDay) return {endDate: startDate}; // same day → identical to before
+  return {endDate: `${day}T23:59:00`};
+}
+
+/** Validates the organizer's refund policy (cutoff only applies when refundable). */
+function sanitizeRefundPolicy(
+  raw: unknown,
+  cutoffRaw: unknown
+): {refundPolicy: 'refundable' | 'non_refundable'; refundCutoffHours: number} {
+  const refundPolicy = raw === 'refundable' ? 'refundable' : 'non_refundable';
+  const hours = Math.max(0, Math.min(8760, Math.round(Number(cutoffRaw) || 0)));
+  return {refundPolicy, refundCutoffHours: refundPolicy === 'refundable' ? hours : 0};
 }
 
 /**
@@ -93,6 +133,10 @@ export async function POST(req: Request) {
     // organizer's existing listing (Luma / Eventbrite / Meetup / own site).
     const ticketing = sanitizeTicketing(body);
     if (ticketing.error) return NextResponse.json({error: ticketing.error}, {status: 400});
+    // Multi-day end date + refund policy are both chosen BEFORE sales open.
+    const endDateResult = sanitizeEndDate(body.endDate, date);
+    if (endDateResult.error) return NextResponse.json({error: endDateResult.error}, {status: 400});
+    const refund = sanitizeRefundPolicy(body.refundPolicy, body.refundCutoffHours);
 
     const profileSnap = await db.collection('users').doc(uid).get();
     const profile = (profileSnap.exists ? profileSnap.data() : {}) as {
@@ -121,6 +165,9 @@ export async function POST(req: Request) {
       virtualLink: (body.virtualLink || '').trim(),
       venue,
       date,
+      endDate: endDateResult.endDate,
+      refundPolicy: refund.refundPolicy,
+      refundCutoffHours: refund.refundCutoffHours,
       organizer: {
         name: profile.name || 'Organizer',
         // New events go LIVE immediately. Moderation remains available on the
@@ -164,7 +211,7 @@ export async function POST(req: Request) {
           .filter(Boolean);
         const base = (process.env.APP_BASE_URL || 'https://events.isabi.cloud').replace(/\/+$/, '');
         const eventUrl = `${base}/events/${slug}`;
-        const when = new Date(date).toLocaleDateString('en-NG', {dateStyle: 'medium'});
+        const when = formatEventDate(date);
         const where = [venue, (body.city || '').trim()].filter(Boolean).join(', ');
         const organizerName = profile.name || 'The organizer';
 
@@ -221,7 +268,13 @@ export async function PATCH(req: Request) {
     const snap = await ref.get();
     if (!snap.exists) return NextResponse.json({error: 'Event not found.'}, {status: 404});
 
-    const existing = snap.data() as {organizerUid?: string; organizerEmail?: string};
+    const existing = snap.data() as {
+      organizerUid?: string;
+      organizerEmail?: string;
+      date?: string;
+      refundPolicy?: 'refundable' | 'non_refundable';
+      refundCutoffHours?: number;
+    };
     const caller = await db.collection('users').doc(uid).get();
     const callerRole = caller.exists ? (caller.data() as {role?: string}).role : '';
     if (callerRole !== 'admin' && existing.organizerUid !== uid) {
@@ -260,6 +313,53 @@ export async function PATCH(req: Request) {
       if (ticketing.error) return NextResponse.json({error: ticketing.error}, {status: 400});
       patch.ticketMode = ticketing.ticketMode;
       patch.ticketUrl = ticketing.ticketUrl;
+    }
+    if (body.endDate !== undefined) {
+      const endDateResult = sanitizeEndDate(body.endDate, String(body.date || existing.date || ''));
+      if (endDateResult.error) return NextResponse.json({error: endDateResult.error}, {status: 400});
+      patch.endDate = endDateResult.endDate;
+    }
+
+    // Refund policy edits: NEVER allowed to remove eligibility that was
+    // already sold. Every ticket carries an immutable snapshot taken at
+    // purchase; this guard enforces the same rule on the event settings so an
+    // organizer cannot retroactively make sold refundable tickets worthless.
+    if (body.refundPolicy !== undefined || body.refundCutoffHours !== undefined || body.tiers !== undefined) {
+      const refund = sanitizeRefundPolicy(
+        body.refundPolicy !== undefined ? body.refundPolicy : existing.refundPolicy,
+        body.refundCutoffHours !== undefined ? body.refundCutoffHours : existing.refundCutoffHours
+      );
+
+      const soldSnap = await db.collection('tickets').where('eventId', '==', id).limit(500).get();
+      if (!soldSnap.empty) {
+        const sold = soldSnap.docs.map((d) => d.data() as {refundable?: boolean; tierName?: string});
+        const soldRefundableTiers = new Set(
+          sold.filter((t) => t.refundable && t.tierName).map((t) => String(t.tierName))
+        );
+        const anySoldRefundable = sold.some((t) => t.refundable === true);
+
+        if (anySoldRefundable && refund.refundPolicy !== 'refundable') {
+          return NextResponse.json(
+            {
+              error:
+                'Refundable tickets have already been sold for this event — their refund eligibility cannot be removed. You can keep the event refundable, or stop offering refunds only for ticket types that have not sold yet.',
+            },
+            {status: 400}
+          );
+        }
+        if (body.tiers !== undefined) {
+          for (const t of sanitizeTiers(body.tiers)) {
+            if (soldRefundableTiers.has(t.name) && t.refundable === false) {
+              return NextResponse.json(
+                {error: `"${t.name}" tickets have already been sold as refundable — that eligibility cannot be removed.`},
+                {status: 400}
+              );
+            }
+          }
+        }
+      }
+      patch.refundPolicy = refund.refundPolicy;
+      patch.refundCutoffHours = refund.refundCutoffHours;
     }
 
     await ref.update(patch);

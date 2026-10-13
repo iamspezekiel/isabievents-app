@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { lagosTs, formatEventDate } from '@/lib/timezone';
 import { 
   Search, 
   CheckCircle2, 
@@ -129,8 +130,9 @@ export default function AdminEventsManagement() {
   const now = Date.now();
   const suspended = filteredEvents.filter(event => !event.organizer?.verified);
   const liveList = filteredEvents.filter(event => event.organizer?.verified);
-  const upcoming = liveList.filter(event => new Date(event.date).getTime() >= now);
-  const past = liveList.filter(event => new Date(event.date).getTime() < now);
+  // Classification uses the END (endDate when set) in Africa/Lagos.
+  const upcoming = liveList.filter(event => lagosTs(event.endDate || event.date) >= now);
+  const past = liveList.filter(event => lagosTs(event.endDate || event.date) < now);
   const reportedIds = new Set(reports.map(r => r.eventId));
 
   return (
@@ -263,7 +265,7 @@ function ModerationRow({ event, type, reported, onAction, onDelete, processingId
             )}
           </div>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-1 text-xs text-muted-foreground font-medium">
-            <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-primary" /> {new Date(event.date).toLocaleDateString('en-NG', { dateStyle: 'medium' })}</span>
+            <span className="flex items-center gap-1.5"><Calendar className="w-3.5 h-3.5 text-primary" /> {formatEventDate(event.date)}</span>
             <span className="flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-accent" /> {event.venue}, {event.city}</span>
             <span className="flex items-center gap-1.5 font-bold text-foreground">Host: {event.organizer.name}</span>
           </div>

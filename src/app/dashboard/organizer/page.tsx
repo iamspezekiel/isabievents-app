@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import { lagosTs } from '@/lib/timezone';
 import { 
   Plus, 
   Ticket, 
@@ -73,9 +74,10 @@ export default function OrganizerDashboard() {
 
   const myEvents = allEvents.filter(isMine);
   const now = Date.now();
+  // Upcoming = the event hasn't ENDED yet (endDate when set), classified in Africa/Lagos.
   const upcoming = myEvents
-    .filter((e) => new Date(e.date).getTime() >= now)
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    .filter((e) => lagosTs(e.endDate || e.date) >= now)
+    .sort((a, b) => lagosTs(a.endDate || a.date) - lagosTs(b.endDate || b.date));
 
   const totalRevenue = myEvents.reduce((sum, e) => sum + (stats[e.id]?.revenueNgn || 0), 0);
   const totalSold = myEvents.reduce((sum, e) => sum + (stats[e.id]?.sold || 0), 0);

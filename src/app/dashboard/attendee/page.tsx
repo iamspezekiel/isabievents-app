@@ -20,7 +20,10 @@ import {
   ShieldCheck,
   X,
   Send,
-  Mail
+  Mail,
+  Ban,
+  AlertTriangle,
+  CheckCircle2
 } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,6 +31,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { CATEGORIES } from '@/lib/constants';
 import { useEvents } from '@/hooks/use-events';
@@ -36,6 +40,7 @@ import { getTicketsForEmail } from '@/lib/client-db';
 import type { EventDoc, OrderDoc, TicketDoc } from '@/lib/db-types';
 import { getFavorites } from '@/lib/favorites';
 import { apiFetch } from '@/lib/api-fetch';
+import { lagosTs, formatEventDate, formatEventDateTime, describeDeadline } from '@/lib/timezone';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { attendeePersonalizedEventRecommendations } from '@/ai/flows/attendee-personalized-event-recommendations';
@@ -60,8 +65,10 @@ function rankEvents(
       .filter((e) => past.has(String(e.title).toLowerCase()))
       .map((e) => String(e.category || '').toLowerCase())
   );
+  // Ends (Africa/Lagos): endDate when set, else the start.
+  const endOf = (e: EventDoc) => lagosTs(e.endDate || e.date);
   return [...eventsList]
-    .filter((e) => e?.title && (new Date(e.date).getTime() || 0) >= now)
+    .filter((e) => e?.title && endOf(e) >= now)
     .map((e) => {
       let score = 0;
       if (saved.has(e.id) || (e.slug && saved.has(String(e.slug)))) score += 6;
@@ -69,7 +76,7 @@ function rankEvents(
       if (pastCats.has(String(e.category || '').toLowerCase())) score += 4;
       if (opts.city && String(e.city || '').toLowerCase() === opts.city.toLowerCase()) score += 3;
       if (e.organizer?.verified) score += 1;
-      const days = ((new Date(e.date).getTime() || 0) - now) / 86_400_000;
+      const days = (endOf(e) - now) / 86_400_000;
       if (days <= 14) score += 2;
       else if (days <= 60) score += 1;
       return {e, score};
@@ -105,6 +112,8 @@ export default function AttendeeDashboard() {
   const [savedCount, setSavedCount] = useState(0);
   // Favorites are stored in the database (favorites/{uid}) — never locally.
   const [favIds, setFavIds] = useState<string[]>([]);
+  // The attendee's refund/cancellation requests (drives status + progress).
+  const [refunds, setRefunds] = useState<any[]>([]);
   const recsRunRef = React.useRef(false);
 
   useEffect(() => {
@@ -127,7 +136,14 @@ export default function AttendeeDashboard() {
         })
         .catch(() => undefined);
     }
-  }, [profile?.email]);
+    // Refund/cancellation status (reloaded after a request changes tickets).
+    apiFetch('/api/refunds')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d && Array.isArray(d.refunds)) setRefunds(d.refunds);
+      })
+      .catch(() => undefined);
+  }, [profile?.email, tickets]);
 
   // "Recommended for You": rank locally the moment the event list (or the
   // order history) changes — instant and always available — then refine once
@@ -235,25 +251,111 @@ export default function AttendeeDashboard() {
     }
   };
 
-  // Real ticket cards: join purchased tickets with their event documents.
-  const upcomingTickets = tickets
-    .filter(t => t.status !== 'used' && t.status !== 'transferred')
+  // ---- Registered events: every ticket joined to its event document --------
+  const registeredTickets = tickets
+    .filter(t => t.status !== 'transferred')
     .map(t => {
       const ev = events.find(e => e.id === t.eventId) as EventDoc | undefined;
+      const refund = refunds.find(r => r.ticketId === t.id) || null;
       return {
         id: t.id,
         ticketId: t.id,
+        orderId: t.orderId,
+        eventId: t.eventId,
         code: t.code,
+        status: String(t.status || 'active'),
+        refundable: (t as {refundable?: boolean}).refundable === true,
+        refundDeadline: String((t as {refundDeadline?: string}).refundDeadline || ''),
+        refundCutoffHours: Number((t as {refundCutoffHours?: number}).refundCutoffHours) || 0,
+        refund,
         title: t.eventTitle || ev?.title || 'Event',
         image: ev?.image || 'https://placehold.co/600x600?text=Event',
         date: ev?.date || String(t.createdAt || new Date().toISOString()),
+        endDate: ev?.endDate || '',
         venue: ev?.venue || '—',
         city: ev?.city || '',
+        // Africa/Lagos end (endDate when set, else the start). Deleted events → 0.
+        endMs: ev ? lagosTs(ev.endDate || ev.date) : 0,
       };
     });
+
+  const nowTs = Date.now();
+  const isLive = (r: {endMs: number}) => r.endMs > 0 && r.endMs >= nowTs;
+  // Upcoming = the event hasn't ended yet, NEAREST DATE FIRST (Africa/Lagos).
+  const upcomingTickets = registeredTickets.filter(isLive).sort((a, b) => a.endMs - b.endMs);
+  // Past = the event's end date has passed (incl. deleted events), most recent first.
+  const pastTickets = registeredTickets.filter(r => !isLive(r)).sort((a, b) => b.endMs - a.endMs);
   const activeCount = tickets.filter(t => t.status === 'active').length;
   const usedCount = tickets.filter(t => t.status === 'used').length;
   const paidOrders = pastOrders.filter(o => o.status === 'paid');
+
+  /** Human-readable refund progress for a cancelled/refunded ticket. */
+  const refundProgress = (item: any): {label: string; tone: string} | null => {
+    const st = item?.refund?.status;
+    if (item.status === 'refunded') return {label: 'Refunded — completed', tone: 'text-green-500'};
+    if (st === 'completed') return {label: 'Refund completed', tone: 'text-green-500'};
+    if (st === 'approved') return {label: 'Refund approved — processing', tone: 'text-green-500'};
+    if (st === 'requested') return {label: 'Cancellation under review', tone: 'text-yellow-500'};
+    if (st === 'declined') return {label: 'Cancellation declined — ticket valid', tone: 'text-muted-foreground'};
+    if (item.status === 'cancelled') return {label: 'Cancelled — awaiting review', tone: 'text-yellow-500'};
+    return null;
+  };
+
+  // ---- Attendee ticket cancellation (refund workflow) ---------------------
+  const [cancelItem, setCancelItem] = useState<any>(null);
+  const [cancelCheck, setCancelCheck] = useState<any>(null);
+  const [cancelNote, setCancelNote] = useState('');
+  const [cancelBusy, setCancelBusy] = useState<'check' | 'submit' | null>(null);
+
+  const refreshTickets = () => {
+    if (profile?.email) getTicketsForEmail(profile.email).then(setTickets).catch(() => undefined);
+  };
+
+  /** Step 1: ask the server whether this ticket may be cancelled right now. */
+  const openCancel = (item: any) => {
+    setCancelItem(item);
+    setCancelCheck(null);
+    setCancelNote('');
+    setCancelBusy('check');
+    apiFetch('/api/refunds', {
+      method: 'POST',
+      body: JSON.stringify({action: 'eligibility', ticketId: item.ticketId}),
+    })
+      .then((r) => r.json())
+      .then((d) => setCancelCheck(d))
+      .catch(() => setCancelCheck({eligible: false, reason: 'Could not check eligibility. Please try again.'}))
+      .finally(() => setCancelBusy(null));
+  };
+
+  /** Step 2: submit the cancellation (server re-checks everything). */
+  const submitCancel = async () => {
+    if (!cancelItem) return;
+    setCancelBusy('submit');
+    try {
+      const res = await apiFetch('/api/refunds', {
+        method: 'POST',
+        body: JSON.stringify({action: 'request', ticketId: cancelItem.ticketId, note: cancelNote}),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || data?.error) throw new Error(data?.error || 'Could not submit your cancellation.');
+      const title = cancelItem.title;
+      setCancelItem(null);
+      setCancelCheck(null);
+      setCancelNote('');
+      refreshTickets();
+      toast({
+        title: 'Cancellation Requested',
+        description: `Your ticket for "${title}" is now under review. We'll notify you once it's decided.`,
+      });
+    } catch (err) {
+      toast({
+        variant: 'destructive',
+        title: 'Could Not Cancel',
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
+    }
+    setCancelBusy(null);
+  };
 
   return (
     <div className="p-4 pb-16 md:p-8 md:pb-16 lg:p-12 lg:pb-16 space-y-8 md:space-y-12 max-w-5xl mx-auto">
@@ -286,38 +388,76 @@ export default function AttendeeDashboard() {
               <p className="text-muted-foreground font-medium">No upcoming tickets yet.</p>
               <Link href="/discover" className="inline-block mt-4 text-primary font-bold text-sm">Browse events →</Link>
             </div>
-          ) : upcomingTickets.map((event) => (
-            <TicketCard 
-              key={event.ticketId} 
-              event={event} 
-              mounted={mounted} 
-              onTransfer={() => { setTransferTicket(event); setIsTransferOpen(true); }} 
-              onView={() => { setViewTicket(event); setIsViewOpen(true); }}
-              onDownload={() => { setViewTicket(event); setIsViewOpen(true); setTimeout(() => window.print(), 400); }}
-            />
-          ))}
+          ) : (
+            upcomingTickets.map((event) =>
+              event.status === 'cancelled' || event.status === 'refunded' ? (
+                /* Cancelled events stay visible with their refund progress. */
+                <CancelledTicketRow key={event.ticketId} item={event} progress={refundProgress(event)} />
+              ) : (
+                <TicketCard
+                  key={event.ticketId}
+                  event={event}
+                  mounted={mounted}
+                  onTransfer={() => { setTransferTicket(event); setIsTransferOpen(true); }}
+                  onView={() => { setViewTicket(event); setIsViewOpen(true); }}
+                  onDownload={() => { setViewTicket(event); setIsViewOpen(true); setTimeout(() => window.print(), 400); }}
+                />
+              )
+            )
+          )}
         </TabsContent>
 
         <TabsContent value="past" className="pt-12">
-          {paidOrders.length === 0 ? (
+          {pastTickets.length === 0 ? (
             <div className="text-center py-24 bg-card/20 rounded-[3rem] border border-dashed border-border/50">
               <History className="w-16 h-16 text-muted-foreground mx-auto mb-6 opacity-10" />
-              <p className="text-muted-foreground font-medium">No past events recorded yet.</p>
+              <p className="text-muted-foreground font-medium">No past events yet — they'll appear here once their end date passes.</p>
             </div>
           ) : (
             <div className="space-y-4">
-              {paidOrders.map((order) => (
-                <div key={order.id} className="bg-card border border-border p-5 rounded-2xl flex items-center justify-between text-left">
-                  <div>
-                    <p className="font-bold">{order.eventTitle}</p>
-                    <p className="text-xs text-muted-foreground font-mono">{order.id}</p>
+              {pastTickets.map((item) => {
+                const order = pastOrders.find(o => o.id === item.orderId);
+                const progress = refundProgress(item);
+                const cancelled = item.status === 'cancelled' || item.status === 'refunded';
+                const statusLabel = cancelled
+                  ? item.status === 'refunded' ? 'Refunded' : 'Cancelled'
+                  : item.status === 'used' ? 'Attended' : 'Expired';
+                return (
+                  <div
+                    key={item.ticketId}
+                    className={`bg-card border p-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-left ${
+                      cancelled ? 'border-red-500/30' : 'border-border'
+                    }`}
+                  >
+                    <div className="space-y-1">
+                      <p className="font-bold">{item.title}</p>
+                      <p className="text-xs text-muted-foreground flex items-center gap-2">
+                        <Calendar className="w-3.5 h-3.5" />
+                        {formatEventDate(item.date)}
+                        {item.venue !== '—' && <span className="opacity-60">· {item.venue}</span>}
+                      </p>
+                      <p className="text-[10px] font-mono uppercase text-muted-foreground/60">{item.code}</p>
+                    </div>
+                    <div className="text-right space-y-1">
+                      <p className="font-bold text-primary">
+                        {order
+                          ? order.currency === 'USD'
+                            ? `$${order.unitPrice.toFixed(2)}`
+                            : `₦${order.unitPrice.toLocaleString()}`
+                          : '—'}
+                      </p>
+                      <p
+                        className={`text-[10px] font-black uppercase tracking-widest ${
+                          cancelled ? 'text-red-500' : item.status === 'used' ? 'text-green-500' : 'text-muted-foreground'
+                        }`}
+                      >
+                        {statusLabel}
+                      </p>
+                      {progress && <p className={`text-[11px] font-bold ${progress.tone}`}>{progress.label}</p>}
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <p className="font-bold text-primary">{order.currency === 'USD' ? `$${order.amount.toFixed(2)}` : `₦${order.amount.toLocaleString()}`}</p>
-                    <p className="text-[10px] text-muted-foreground">{order.paidAt ? new Date(order.paidAt).toLocaleDateString('en-NG', {dateStyle: 'medium'}) : ''}</p>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           )}
         </TabsContent>
@@ -426,7 +566,14 @@ export default function AttendeeDashboard() {
                 <div className="flex flex-col gap-1 mt-2">
                   <p className="text-muted-foreground text-xs flex items-center gap-1.5 font-medium">
                     <Calendar className="w-3 h-3 text-primary" /> 
-                    {mounted ? new Date(viewTicket?.date).toLocaleString('en-NG', { dateStyle: 'medium', timeStyle: 'short' }) : '...'}
+                    {mounted
+                      ? `${formatEventDateTime(viewTicket?.date, { dateStyle: 'medium', timeStyle: 'short' })}${
+                          viewTicket?.endDate &&
+                          String(viewTicket.endDate).slice(0, 10) !== String(viewTicket?.date || '').slice(0, 10)
+                            ? ` — ${formatEventDateTime(viewTicket?.endDate, { dateStyle: 'medium', timeStyle: 'short' })}`
+                            : ''
+                        } (Africa/Lagos)`
+                      : '...'}
                   </p>
                   <p className="text-muted-foreground text-xs flex items-center gap-1.5 font-medium">
                     <MapPin className="w-3 h-3 text-accent" /> {viewTicket?.venue}, {viewTicket?.city}
@@ -438,7 +585,136 @@ export default function AttendeeDashboard() {
             <Button onClick={() => window.print()} className="w-full rounded-full no-print font-bold shadow-lg shadow-primary/20">
               <Download className="w-4 h-4 mr-2" /> Download Ticket (PDF)
             </Button>
+
+            {/* Refund policy + cancellation entry point for this ticket. */}
+            <div className="pt-3 space-y-3 text-center">
+              <p className="text-[11px] text-muted-foreground leading-relaxed">
+                Refund policy:{' '}
+                <span className={viewTicket?.refundable ? 'text-green-500 font-bold' : 'font-bold'}>
+                  {viewTicket?.refundable ? 'Refundable' : 'Non-refundable'}
+                </span>
+                {viewTicket?.refundable && viewTicket?.refundDeadline
+                  ? ` · cancel until ${describeDeadline(viewTicket.refundDeadline, viewTicket.refundCutoffHours)}`
+                  : ''}
+              </p>
+              {viewTicket?.status === 'active' && (
+                <Button
+                  variant="outline"
+                  className="w-full rounded-full font-bold border-red-500/40 text-red-500 hover:bg-red-500/10 gap-2"
+                  onClick={() => { setIsViewOpen(false); openCancel(viewTicket); }}
+                >
+                  <Ban className="w-4 h-4" /> Cancel Ticket
+                </Button>
+              )}
+            </div>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Attendee ticket-cancellation / refund workflow dialog */}
+      <Dialog
+        open={!!cancelItem}
+        onOpenChange={(open) => {
+          if (!open) {
+            setCancelItem(null);
+            setCancelCheck(null);
+            setCancelNote('');
+          }
+        }}
+      >
+        <DialogContent className="bg-card border-border sm:rounded-[2rem] p-8 max-w-md w-[94vw] sm:w-full">
+          <DialogHeader className="text-left">
+            <DialogTitle className="font-headline text-2xl flex items-center gap-3">
+              <Ban className="w-5 h-5 text-red-500" /> Cancel Ticket
+            </DialogTitle>
+            <DialogDescription>
+              {cancelItem ? `Request cancellation of your ticket for "${cancelItem.title}".` : ''}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 text-left">
+            {cancelBusy === 'check' || !cancelCheck ? (
+              <div className="py-8 text-center">
+                <Loader2 className="w-6 h-6 animate-spin text-primary mx-auto" />
+                <p className="text-sm text-muted-foreground mt-3">Checking refund eligibility…</p>
+              </div>
+            ) : cancelCheck.eligible ? (
+              <>
+                <div className="rounded-xl border border-green-500/30 bg-green-500/5 p-4 space-y-1.5">
+                  <p className="text-sm font-bold text-green-500 flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4" /> Eligible for a refund
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    Refundable amount:{' '}
+                    <strong>
+                      {cancelCheck.currency === 'USD'
+                        ? `$${Number(cancelCheck.amount || 0).toFixed(2)}`
+                        : `₦${Number(cancelCheck.amount || 0).toLocaleString()}`}
+                    </strong>
+                  </p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Cancellation window:{' '}
+                    <strong>{describeDeadline(cancelCheck.deadline, cancelItem.refundCutoffHours)}</strong>
+                  </p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    Once submitted, this ticket is invalid for entry while our team reviews the request.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="cancel-reason">Reason (optional)</Label>
+                  <Textarea
+                    id="cancel-reason"
+                    placeholder="Why are you cancelling?"
+                    className="min-h-[70px]"
+                    value={cancelNote}
+                    onChange={(e) => setCancelNote(e.target.value)}
+                    maxLength={500}
+                  />
+                </div>
+              </>
+            ) : (
+              <div className="rounded-xl border border-red-500/30 bg-red-500/5 p-4 space-y-2">
+                <p className="text-sm font-bold text-red-500 flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4" /> Not eligible for a refund
+                </p>
+                <p className="text-xs text-muted-foreground leading-relaxed">
+                  {cancelCheck.reason || 'This ticket cannot be cancelled.'}
+                </p>
+                {cancelCheck.code === 'non_refundable' && (
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    The organizer set this event&apos;s tickets as <strong>non-refundable</strong>. That policy was
+                    shown to you before purchase and applies for the life of the ticket.
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+          <DialogFooter className="flex-row gap-3">
+            <Button
+              variant="outline"
+              className="flex-1 rounded-full font-bold"
+              onClick={() => {
+                setCancelItem(null);
+                setCancelCheck(null);
+                setCancelNote('');
+              }}
+            >
+              {cancelCheck?.eligible ? 'Keep My Ticket' : 'Close'}
+            </Button>
+            {cancelCheck?.eligible && (
+              <Button
+                className="flex-1 rounded-full font-bold bg-red-500 hover:bg-red-600 text-white"
+                onClick={submitCancel}
+                disabled={cancelBusy === 'submit'}
+              >
+                {cancelBusy === 'submit' ? (
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                ) : (
+                  <Ban className="w-4 h-4 mr-2" />
+                )}
+                Request Cancellation
+              </Button>
+            )}
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
@@ -490,7 +766,7 @@ function TicketCard({ event, mounted, offline, onTransfer, onView, onDownload }:
             <div className="space-y-1">
               <span className="text-[10px] uppercase font-black opacity-60">Schedule</span>
               <div className="flex items-center gap-2 text-sm font-bold">
-                <Calendar className="w-4 h-4 text-primary" /> {mounted ? new Date(event.date).toLocaleDateString() : '...'}
+                <Calendar className="w-4 h-4 text-primary" /> {mounted ? formatEventDate(event.date) : '...'}
               </div>
             </div>
             <div className="space-y-1">
@@ -508,6 +784,41 @@ function TicketCard({ event, mounted, offline, onTransfer, onView, onDownload }:
           <Button variant="outline" size="icon" className="w-11 h-11 rounded-full" onClick={onDownload}><Download className="w-4 h-4" /></Button>
           <Button variant="outline" size="icon" className="w-11 h-11 rounded-full" onClick={onTransfer}><Share2 className="w-4 h-4" /></Button>
         </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Cancelled / refunded ticket — kept visible in Upcoming & Past with a clear
+ * status and live refund progress instead of being hidden.
+ */
+function CancelledTicketRow({ item, progress }: { item: any; progress: { label: string; tone: string } | null }) {
+  const isRefunded = item.status === 'refunded';
+  return (
+    <div className="bg-card border border-red-500/30 p-5 rounded-[1.75rem] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-left opacity-95">
+      <div className="flex items-center gap-4">
+        <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center shrink-0">
+          <Ban className="w-6 h-6 text-red-500" />
+        </div>
+        <div className="space-y-1">
+          <p className="font-bold">{item.title}</p>
+          <p className="text-xs text-muted-foreground">
+            {formatEventDate(item.date)}
+            {item.venue && item.venue !== '—' ? ` · ${item.venue}` : ''}
+          </p>
+          {progress && <p className={`text-[11px] font-bold ${progress.tone}`}>{progress.label}</p>}
+        </div>
+      </div>
+      <div className="flex items-center gap-3">
+        <span className="text-[10px] font-mono uppercase text-muted-foreground/60">{item.code}</span>
+        <span
+          className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full ${
+            isRefunded ? 'bg-green-500/10 text-green-500' : 'bg-red-500/10 text-red-500'
+          }`}
+        >
+          {isRefunded ? 'Refunded' : 'Cancelled'}
+        </span>
       </div>
     </div>
   );

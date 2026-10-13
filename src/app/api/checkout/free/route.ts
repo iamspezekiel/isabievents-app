@@ -1,6 +1,7 @@
 import {NextResponse} from 'next/server';
 import {sendPaymentConfirmationEmail} from '@/lib/email';
 import {notifyByEmail} from '@/lib/notifications';
+import {refundDeadlineFor} from '@/lib/timezone';
 
 export const runtime = 'nodejs';
 
@@ -10,6 +11,8 @@ interface FreeCheckoutBody {
   quantity?: number;
   buyer: {name: string; email: string; phone?: string};
   buyerUid?: string;
+  /** Ticket type purchased — drives the per-tier refund policy snapshot. */
+  tierName?: string;
 }
 
 /**
@@ -50,6 +53,20 @@ export async function POST(req: Request) {
 
     const orderId = `ord_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
     const nowIso = new Date().toISOString();
+
+    // Refund-policy snapshot: tier override wins, then the event policy.
+    // Legacy events without a policy are treated as non-refundable.
+    const tiers = (event as {tiers?: {name: string; price: number; refundable?: boolean}[]}).tiers || [];
+    const tier = tiers.find((t) => t.name === (body.tierName || ''));
+    const refundable =
+      tier && typeof tier.refundable === 'boolean'
+        ? tier.refundable
+        : (event as {refundPolicy?: string}).refundPolicy === 'refundable';
+    const refundCutoffHours = refundable
+      ? Math.max(0, Number((event as {refundCutoffHours?: number}).refundCutoffHours) || 0)
+      : 0;
+    const refundDeadline = refundable ? refundDeadlineFor(event.date, refundCutoffHours) : '';
+
     const order = {
       id: orderId,
       eventId,
@@ -64,6 +81,10 @@ export async function POST(req: Request) {
       paymentMethod: 'free',
       buyer: {name: buyer.name, email: buyer.email, phone: buyer.phone},
       buyerUid: body.buyerUid,
+      tierName: body.tierName || '',
+      refundable,
+      refundCutoffHours,
+      refundDeadline,
     };
 
     await db.createOrder(order);

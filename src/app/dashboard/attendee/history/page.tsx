@@ -30,6 +30,7 @@ import { useAuth } from '@/components/auth-provider';
 import { useEvents } from '@/hooks/use-events';
 import { apiFetch } from '@/lib/api-fetch';
 import type { EventDoc, OrderDoc } from '@/lib/db-types';
+import { formatEventDateTime } from '@/lib/timezone';
 
 export default function OrderHistoryPage() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -74,7 +75,13 @@ export default function OrderHistoryPage() {
         event: o.eventTitle,
         date: ts ? new Date(ts).toLocaleDateString('en-NG', {dateStyle: 'medium'}) : '—',
         amount: o.currency === 'USD' ? `$${o.amount.toFixed(2)}` : `₦${o.amount.toLocaleString()}`,
-        status: o.status === 'paid' ? 'Success' : 'Refunded',
+        // Full refund / partial refund / clean success — payment history stays intact.
+        status:
+          o.status === 'refunded'
+            ? 'Refunded'
+            : (o.refundedTickets?.length || 0) > 0
+              ? 'Part Refunded'
+              : 'Success',
         eventId: o.eventId,
       };
     });
@@ -165,7 +172,14 @@ export default function OrderHistoryPage() {
                 <div className="flex flex-col gap-1 mt-2">
                   <p className="text-muted-foreground text-xs flex items-center gap-1.5 font-medium">
                     <Calendar className="w-3.5 h-3.5 text-primary" /> 
-                    {mounted ? new Date(viewTicket?.date).toLocaleString('en-NG', { dateStyle: 'medium', timeStyle: 'short' }) : '...'}
+                    {mounted
+                      ? `${formatEventDateTime(viewTicket?.date, { dateStyle: 'medium', timeStyle: 'short' })}${
+                          viewTicket?.endDate &&
+                          String(viewTicket.endDate).slice(0, 10) !== String(viewTicket?.date || '').slice(0, 10)
+                            ? ` — ${formatEventDateTime(viewTicket?.endDate, { dateStyle: 'medium', timeStyle: 'short' })}`
+                            : ''
+                        } (Africa/Lagos)`
+                      : '...'}
                   </p>
                   <p className="text-muted-foreground text-xs flex items-center gap-1.5 font-medium">
                     <MapPin className="w-3.5 h-3.5 text-accent" /> {viewTicket?.venue}, {viewTicket?.city}
@@ -205,7 +219,11 @@ function OrderRow({ id, event, date, amount, status, onView }: any) {
             <div className="font-black text-primary text-base md:text-lg leading-tight">{amount}</div>
             <Badge variant="secondary" className={cn(
               "text-[9px] md:text-[10px] font-bold uppercase tracking-widest border-none h-5",
-              status === 'Success' ? 'bg-green-500/10 text-green-600' : 'bg-secondary text-muted-foreground'
+              status === 'Success'
+                ? 'bg-green-500/10 text-green-600'
+                : status === 'Refunded' || status === 'Part Refunded'
+                  ? 'bg-red-500/10 text-red-500'
+                  : 'bg-secondary text-muted-foreground'
             )}>{status}</Badge>
          </div>
          <div className="flex items-center gap-1">

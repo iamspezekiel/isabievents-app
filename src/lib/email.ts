@@ -654,3 +654,38 @@ export async function sendHostMessageEmail(opts: {
     text: `${opts.senderName} (${opts.senderEmail}) about "${opts.eventTitle}": ${opts.message}`,
   });
 }
+
+/**
+ * Sent to the attendee when an admin decides their refund/cancellation
+ * (approved → processing, declined → ticket restored, completed → money back).
+ */
+export async function sendRefundStatusEmail(opts: {
+  to: string;
+  name?: string;
+  eventTitle: string;
+  status: 'approved' | 'declined' | 'completed';
+  amount: number;
+  currency: 'NGN' | 'USD';
+  note?: string;
+  orderId?: string;
+}): Promise<boolean> {
+  const money = opts.currency === 'USD' ? `$${opts.amount.toFixed(2)}` : `₦${opts.amount.toLocaleString()}`;
+  const title =
+    opts.status === 'approved'
+      ? 'Your refund was approved'
+      : opts.status === 'declined'
+        ? 'Your cancellation was declined'
+        : 'Your refund is complete';
+  const body =
+    opts.status === 'approved'
+      ? `${p(`Hi${opts.name ? ` ${escapeHtml(opts.name)}` : ''},`)}${p(`Good news — your cancellation for <strong>${escapeHtml(opts.eventTitle)}</strong> was approved. We're processing your <strong>${money}</strong> refund now; it will appear on your original payment method.`)}${opts.orderId ? p(`<strong>Order:</strong> ${escapeHtml(opts.orderId)}`) : ''}`
+      : opts.status === 'declined'
+        ? `${p(`Hi${opts.name ? ` ${escapeHtml(opts.name)}` : ''},`)}${p(`Your cancellation request for <strong>${escapeHtml(opts.eventTitle)}</strong> was declined, so your ticket remains <strong>valid for entry</strong>.`)}${opts.note ? p(`<strong>Reason:</strong> ${escapeHtml(opts.note)}`) : ''}`
+        : `${p(`Hi${opts.name ? ` ${escapeHtml(opts.name)}` : ''},`)}${p(`Your <strong>${money}</strong> refund for <strong>${escapeHtml(opts.eventTitle)}</strong> has been completed. Thank you for your patience.`)}${opts.orderId ? p(`<strong>Order:</strong> ${escapeHtml(opts.orderId)}`) : ''}`;
+  return send({
+    to: opts.to,
+    subject: `IsabiEvents: ${title} — ${opts.eventTitle}`,
+    html: layout(title, body),
+    text: `${title} — ${opts.eventTitle} (${money}).`,
+  });
+}
