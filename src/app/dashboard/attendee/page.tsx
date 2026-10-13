@@ -86,10 +86,7 @@ export default function AttendeeDashboard() {
   const [mounted, setMounted] = useState(false);
   const [recommendations, setRecommendations] = useState<any[]>([]);
   const [loadingRecs, setLoadingRecs] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [isOfflineReady, setIsOfflineReady] = useState(false);
-  const [showOfflineBanner, setShowOfflineBanner] = useState(true);
-  
+
   // Transfer state
   const [isTransferOpen, setIsTransferOpen] = useState(false);
   const [transferTicket, setTransferTicket] = useState<any>(null);
@@ -112,10 +109,6 @@ export default function AttendeeDashboard() {
 
   useEffect(() => {
     setMounted(true);
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('isabi_offline_tickets');
-      if (saved) setIsOfflineReady(true);
-    }
     // Saved favorites come fresh from the database.
     getFavorites()
       .then((ids) => {
@@ -154,18 +147,6 @@ export default function AttendeeDashboard() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [events, pastOrders, favIds, profile?.city]);
-
-  const handleSyncOffline = async () => {
-    setIsSyncing(true);
-    await new Promise(r => setTimeout(r, 2000));
-    localStorage.setItem('isabi_offline_tickets', JSON.stringify(tickets.slice(0, 3)));
-    setIsSyncing(false);
-    setIsOfflineReady(true);
-    toast({
-      title: "Offline Access Enabled",
-      description: "Your tickets have been encrypted and stored on this device.",
-    });
-  };
 
   const fetchRecommendations = async (eventsList: EventDoc[]) => {
     setLoadingRecs(true);
@@ -276,42 +257,6 @@ export default function AttendeeDashboard() {
 
   return (
     <div className="p-4 pb-16 md:p-8 md:pb-16 lg:p-12 lg:pb-16 space-y-8 md:space-y-12 max-w-5xl mx-auto">
-      {showOfflineBanner && (
-        <div className={cn(
-          "relative p-4 px-6 rounded-3xl border flex flex-col md:flex-row items-center justify-between gap-4 transition-all duration-500",
-          isOfflineReady ? "bg-green-500/5 border-green-500/20" : "bg-primary/5 border-primary/20"
-        )}>
-          <div className="flex items-center gap-4 text-left">
-            <div className={cn(
-              "w-10 h-10 rounded-xl flex items-center justify-center shrink-0",
-              isOfflineReady ? "bg-green-500/10 text-green-500" : "bg-primary/10 text-primary"
-            )}>
-              {isOfflineReady ? <Cloud className="w-5 h-5" /> : <CloudOff className="w-5 h-5" />}
-            </div>
-            <div className="space-y-0.5 pr-8 md:pr-0">
-              <p className="text-sm font-bold">{isOfflineReady ? "Offline Access Enabled" : "Data-Saving Offline Access"}</p>
-              <p className="text-[10px] md:text-xs text-muted-foreground leading-tight">
-                Sync your tickets now to ensure they work even if your network connection is poor at the venue.
-              </p>
-            </div>
-          </div>
-          <div className="flex items-center gap-3 w-full md:w-auto">
-            <Button 
-              size="sm" 
-              onClick={handleSyncOffline} 
-              disabled={isSyncing}
-              variant={isOfflineReady ? "outline" : "default"}
-              className={cn("rounded-full h-10 px-6 font-bold gap-2 flex-1 md:flex-none", isOfflineReady && "border-green-500/20 text-green-600")}
-            >
-              {isSyncing ? <RefreshCw className="w-4 h-4 animate-spin" /> : isOfflineReady ? "Update Sync" : "Sync for Offline"}
-            </Button>
-            <Button variant="ghost" size="icon" className="rounded-full h-8 w-8" onClick={() => setShowOfflineBanner(false)}>
-              <X className="w-4 h-4" />
-            </Button>
-          </div>
-        </div>
-      )}
-
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-1 text-left">
           <h1 className="font-headline text-2xl md:text-4xl tracking-tighter">Hi, {profile?.name || profile?.email?.split('@')[0] || 'there'} 👋</h1>
@@ -346,7 +291,6 @@ export default function AttendeeDashboard() {
               key={event.ticketId} 
               event={event} 
               mounted={mounted} 
-              offline={isOfflineReady} 
               onTransfer={() => { setTransferTicket(event); setIsTransferOpen(true); }} 
               onView={() => { setViewTicket(event); setIsViewOpen(true); }}
               onDownload={() => { setViewTicket(event); setIsViewOpen(true); setTimeout(() => window.print(), 400); }}

@@ -2,34 +2,11 @@
 
 /**
  * Event favorites — SAVED TO THE DATABASE (`favorites/{uid}` via
- * /api/favorites), never to localStorage. Every read goes straight to
- * Firestore, so a favorite saved on one device shows up on every device. The
- * old browser-local list is migrated into the database on first read and the
- * local copy is then deleted.
+ * /api/favorites), never in the browser. Every read goes straight to
+ * Firestore, so a favorite saved on one device shows up on every device.
+ * This module performs no localStorage/sessionStorage access whatsoever.
  */
 import {apiFetch} from '@/lib/api-fetch';
-
-const LEGACY_KEY = 'isabi_favorites';
-
-function readLegacyIds(): string[] {
-  if (typeof window === 'undefined') return [];
-  try {
-    const raw = localStorage.getItem(LEGACY_KEY);
-    const parsed = raw ? JSON.parse(raw) : [];
-    return Array.isArray(parsed) ? parsed.filter((x) => typeof x === 'string') : [];
-  } catch {
-    return [];
-  }
-}
-
-function dropLegacyIds() {
-  if (typeof window === 'undefined') return;
-  try {
-    localStorage.removeItem(LEGACY_KEY);
-  } catch {
-    /* ignore */
-  }
-}
 
 /** POSTs an update and returns the caller's full, fresh favorites list. */
 async function save(body: Record<string, unknown>): Promise<string[]> {
@@ -51,16 +28,7 @@ export async function getFavorites(): Promise<string[]> {
     const res = await apiFetch('/api/favorites');
     const data = await res.json().catch(() => ({}));
     if (!res.ok || data?.error) throw new Error(String(data?.error || 'Failed to load favorites.'));
-    let ids = Array.isArray(data.favorites) ? (data.favorites as string[]) : [];
-
-    // One-time migration: push the legacy device-local list into the database
-    // (only when we actually reached the database), then delete the local copy.
-    const legacy = readLegacyIds();
-    if (legacy.length) {
-      ids = await save({ids: legacy});
-      dropLegacyIds();
-    }
-    return ids;
+    return Array.isArray(data.favorites) ? (data.favorites as string[]) : [];
   } catch {
     return [];
   }

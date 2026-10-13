@@ -21,7 +21,7 @@ import {useAuth} from '@/components/auth-provider';
 import {apiFetch} from '@/lib/api-fetch';
 
 export function ProfileCard() {
-  const {profile} = useAuth();
+  const {profile, refreshProfile} = useAuth();
   const {toast} = useToast();
   const [name, setName] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
@@ -56,6 +56,8 @@ export function ProfileCard() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || data?.error) throw new Error(data?.error || 'Could not save your changes.');
+      // Re-read from the database so the saved values show immediately.
+      await refreshProfile();
       toast({title: 'Profile Saved', description: 'Your information has been updated.'});
     } catch (err) {
       toast({

@@ -39,7 +39,7 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 export default function OrganizerSettingsPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const { profile, signOut } = useAuth();
+  const { profile, signOut, refreshProfile } = useAuth();
   const isVerified = !!(profile as {verified?: boolean})?.verified;
   const [whatsapp, setWhatsapp] = useState('');
   const [brandName, setBrandName] = useState('');
@@ -109,6 +109,9 @@ export default function OrganizerSettingsPage() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || data?.error) throw new Error(data?.error || 'Could not save your changes.');
+      // Re-read the profile from Firestore so the brand name is visible
+      // everywhere (header, events, settings) immediately — not after reload.
+      await refreshProfile();
       toast({title: 'Profile Saved', description: 'Your brand profile has been updated.'});
     } catch (err) {
       toast({

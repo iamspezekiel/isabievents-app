@@ -62,12 +62,12 @@ interface AuthContextValue {
   /** Google Sign-In popup (requires the Google provider in Firebase Console). */
   signInWithGoogle: () => Promise<AuthProfile>;
   signOut: () => Promise<void>;
+  /** Re-reads the profile from Firestore — call after a settings save so the
+   *  UI shows the new values immediately (no reload needed). */
+  refreshProfile: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
-
-/** Legacy demo-session storage keys — purged on boot so no fake session survives. */
-const LEGACY_STORAGE_KEYS = ['isabi_user_role', 'isabi_logged_in', 'isabi_profile'];
 
 /**
  * Primary super-admin account. Always resolves to the `admin` role so a login
@@ -79,16 +79,6 @@ export const PRIMARY_ADMIN_EMAIL = 'isabideveloper@gmail.com';
 
 function isAdminEmail(email: string | null | undefined): boolean {
   return Boolean(email) && email!.trim().toLowerCase() === PRIMARY_ADMIN_EMAIL;
-}
-
-/** Remove any localStorage session left behind by the old demo mode. */
-function purgeLegacyDemoSession() {
-  if (typeof window === 'undefined') return;
-  try {
-    for (const key of LEGACY_STORAGE_KEYS) localStorage.removeItem(key);
-  } catch {
-    /* storage blocked — ignore */
-  }
 }
 
 async function loadProfileFromFirestore(firebaseUser: User): Promise<AuthProfile> {
@@ -103,7 +93,11 @@ async function loadProfileFromFirestore(firebaseUser: User): Promise<AuthProfile
     if (snap.exists()) {
       const data = snap.data();
       role = (data.role as Role) || 'attendee';
-      name = name || data.name || '';
+      // The Firestore profile document is the source of truth — a brand name
+      // saved in Account Settings must win over the Auth displayName captured
+      // at signup, otherwise the saved value appears to "not stick".
+      const firestoreName = typeof data.name === 'string' ? data.name.trim() : '';
+      name = firestoreName || name;
       extra = {
         whatsapp: typeof data.whatsapp === 'string' ? data.whatsapp : '',
         city: typeof data.city === 'string' ? data.city : '',
@@ -128,12 +122,9 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
   const [profile, setProfile] = useState<AuthProfile | null>(null);
 
   useEffect(() => {
-    // Purge leftover demo-session keys on boot — auth state comes from
-    // Firebase + Firestore only, never from a local cache.
-    purgeLegacyDemoSession();
-
     if (!isFirebaseConfigured || !auth) {
       // No Firebase config → auth is disabled. No fake profile is invented.
+      // Auth state never comes from browser storage (localStorage is unused).
       setProfile(null);
       setUser(null);
       setLoading(false);
@@ -225,11 +216,15 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
 
     // First Google sign-in: create the profile doc with a default role.
     let role: Role = isAdminEmail(cred.user.email) ? 'admin' : 'attendee';
-    const name = cred.user.displayName || '';
+    let name = cred.user.displayName || '';
     try {
       const snap = await getDoc(doc(db!, 'users', cred.user.uid));
       if (snap.exists()) {
-        role = (snap.data().role as Role) || 'attendee';
+        const data = snap.data();
+        role = (data.role as Role) || 'attendee';
+        // Saved profile name beats the Google display name (see loadProfileFromFirestore).
+        const firestoreName = typeof data.name === 'string' ? data.name.trim() : '';
+        name = firestoreName || name;
       } else {
         await setDoc(doc(db!, 'users', cred.user.uid), {
           name,
@@ -275,6 +270,17 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
     setProfile(null);
   }, []);
 
+  const refreshProfile = useCallback(async () => {
+    const current = auth?.currentUser;
+    if (!current) return;
+    try {
+      const next = await loadProfileFromFirestore(current);
+      setProfile(next);
+    } catch (err) {
+      console.warn('[auth] profile refresh failed:', err);
+    }
+  }, []);
+
   const value = useMemo<AuthContextValue>(
     () => ({
       loading,
@@ -285,8 +291,9 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
       signUp,
       signInWithGoogle,
       signOut,
+      refreshProfile,
     }),
-    [loading, user, profile, signIn, signUp, signInWithGoogle, signOut]
+    [loading, user, profile, signIn, signUp, signInWithGoogle, signOut, refreshProfile]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

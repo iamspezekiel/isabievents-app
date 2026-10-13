@@ -24,7 +24,7 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { AuthGuard } from '@/components/auth-guard';
 import { useAuth } from '@/components/auth-provider';
 
-export function SidebarLink({ icon: Icon, label, active, href = "#", onClick }: any) {
+function SidebarLink({ icon: Icon, label, active, href = "#", onClick }: any) {
   return (
     <Link 
       href={href} 

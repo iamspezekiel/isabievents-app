@@ -2,9 +2,9 @@
 
 /**
  * Cookie consent banner — shown on a visitor's first session until they pick
- * "Essential Only" or "Accept All". The decision is persisted (localStorage +
- * first-party cookie) and can be reopened any time from the footer's
- * "Cookie Settings" link.
+ * "Essential Only" or "Accept All". The decision is persisted in a
+ * first-party cookie only (never localStorage) and can be reopened any time
+ * from the footer's "Cookie Settings" link.
  */
 import React, {useEffect, useState} from 'react';
 import Link from 'next/link';

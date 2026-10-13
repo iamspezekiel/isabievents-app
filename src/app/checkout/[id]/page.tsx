@@ -289,9 +289,6 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
       }
 
       // Real hosted Bachs checkout — redirect the browser.
-      try {
-        sessionStorage.setItem('bachs_checkout_id', data.checkoutId || '');
-      } catch { /* ignore */ }
       window.location.href = data.checkoutUrl;
       return; // keep loading spinner until navigation takes over
     } catch (err) {

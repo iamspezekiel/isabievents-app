@@ -41,7 +41,7 @@ const WhatsAppIcon = ({ className }: { className?: string }) => (
 export default function AttendeeSettingsPage() {
   const router = useRouter();
   const { toast } = useToast();
-  const { signOut, profile } = useAuth();
+  const { signOut, profile, refreshProfile } = useAuth();
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -104,6 +104,9 @@ export default function AttendeeSettingsPage() {
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || data?.error) throw new Error(data?.error || 'Could not save your changes.');
+      // Pull the saved values back from the database so the form and header
+      // reflect them immediately.
+      await refreshProfile();
       toast({
         title: "Settings Saved",
         description: "Your profile information has been updated successfully.",

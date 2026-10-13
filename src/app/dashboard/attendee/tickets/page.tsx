@@ -18,7 +18,6 @@ import Link from 'next/link';
 
 export default function TicketGalleryPage() {
   const [mounted, setMounted] = useState(false);
-  const [isOfflineReady, setIsOfflineReady] = useState(false);
   const { profile } = useAuth();
   const { events } = useEvents({includeHidden: true});
   const [tickets, setTickets] = useState<TicketDoc[]>([]);
@@ -29,10 +28,6 @@ export default function TicketGalleryPage() {
 
   useEffect(() => {
     setMounted(true);
-    if (typeof window !== 'undefined') {
-      const saved = localStorage.getItem('isabi_offline_tickets');
-      if (saved) setIsOfflineReady(true);
-    }
   }, []);
 
   useEffect(() => {
@@ -118,17 +113,6 @@ export default function TicketGalleryPage() {
               </Link>
               <div className="flex items-center gap-3">
                 <h1 className="font-headline text-2xl">My Digital Wallet</h1>
-                {isOfflineReady ? (
-                  <Badge className="bg-green-500/10 text-green-500 border-green-500/20 gap-1 hidden sm:flex">
-                    <Cloud className="w-3 h-3" />
-                    <span className="text-[10px] font-black">OFFLINE READY</span>
-                  </Badge>
-                ) : (
-                  <Badge variant="outline" className="text-muted-foreground border-dashed gap-1 hidden sm:flex">
-                    <CloudOff className="w-3 h-3" />
-                    <span className="text-[10px] font-black">SYNC PENDING</span>
-                  </Badge>
-                )}
               </div>
             </div>
             <div className="relative w-full md:w-96">
@@ -153,7 +137,6 @@ export default function TicketGalleryPage() {
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
                     <div className="text-[10px] uppercase font-black tracking-widest text-primary">{event.status === 'used' ? 'Used Entry' : 'Confirmed Access'}</div>
-                    {isOfflineReady && <ShieldCheck className="w-3 h-3 text-green-500" title="Available offline" />}
                   </div>
                   <h3 className="font-headline text-lg line-clamp-1">{event.title}</h3>
                 </div>
