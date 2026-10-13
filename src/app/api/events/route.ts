@@ -27,7 +27,7 @@ interface EventBody {
   price?: number | string;
   inventory?: number | string;
   tags?: string[];
-  tiers?: {name?: string; price?: number; refundable?: boolean}[];
+  tiers?: {name?: string; price?: number; refundable?: boolean; benefits?: string[]}[];
   /** Last day of a multi-day event (Lagos wall-clock). Empty = single day. */
   endDate?: string;
   /** 'refundable' | 'non_refundable' — chosen before sales open. */
@@ -59,24 +59,33 @@ function sanitizeTicketing(body: EventBody): {error?: string; ticketMode: 'inter
   return {ticketMode: 'external', ticketUrl: url};
 }
 
-/** Sanitizes organizer-defined ticket types (name + price + refund override). */
-function sanitizeTiers(input: unknown): {name: string; price: number; refundable?: boolean}[] {
+/** Sanitizes organizer-defined ticket types (name + price + exclusive benefits + refund override). */
+function sanitizeTiers(input: unknown): {name: string; price: number; refundable?: boolean; benefits?: string[]}[] {
   if (!Array.isArray(input)) return [];
   return input
     .slice(0, 12)
     .map((raw) => {
-      const row = (raw || {}) as {name?: unknown; price?: unknown; refundable?: unknown};
+      const row = (raw || {}) as {name?: unknown; price?: unknown; refundable?: unknown; benefits?: unknown};
       const name = String(row.name ?? '').trim().slice(0, 60);
       const price = Number(row.price);
       if (!name || !Number.isFinite(price) || price < 0) return null;
+      // Per-ticket perks (VIP access, complimentary meals, merch, priority
+      // seating, meet-and-greet, …) shown on the event page for comparison.
+      const benefits = Array.isArray(row.benefits)
+        ? row.benefits
+            .map((b) => String(b ?? '').trim().slice(0, 80))
+            .filter(Boolean)
+            .slice(0, 10)
+        : [];
       return {
         name,
         price: Math.round(price),
         // Tri-state: undefined = follow the event-level policy.
         ...(typeof row.refundable === 'boolean' ? {refundable: row.refundable} : {}),
+        ...(benefits.length ? {benefits} : {}),
       };
     })
-    .filter((r): r is {name: string; price: number; refundable?: boolean} => r !== null);
+    .filter((r): r is {name: string; price: number; refundable?: boolean; benefits?: string[]} => r !== null);
 }
 
 /**

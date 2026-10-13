@@ -23,7 +23,7 @@ export interface EventDoc {
   description: string;
   summary?: string;
   policies?: string;
-  tiers?: {name: string; price: number; refundable?: boolean}[];
+  tiers?: {name: string; price: number; refundable?: boolean; benefits?: string[]}[];
   /**
    * Refund policy the organizer chose BEFORE sales open:
    *  - 'refundable'     → tickets may be cancelled until the deadline below

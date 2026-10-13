@@ -34,6 +34,18 @@ import { invalidateEventsCache } from '@/hooks/use-events';
 import { toRichHtml } from '@/lib/rich-text';
 import { apiFetch } from '@/lib/api-fetch';
 
+/** Quick-add perk suggestions — organizers can also type their own benefits. */
+const TIER_BENEFIT_SUGGESTIONS = [
+  'VIP access',
+  'Complimentary meal',
+  'Free drink',
+  'Exclusive merch',
+  'Priority seating',
+  'Meet & greet',
+  'VIP lounge',
+  'Early entry',
+];
+
 function CreateEventForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -79,9 +91,34 @@ function CreateEventForm() {
   // Ticket types & prices (at least one required). Refundability is a single
   // event-level setting (the Refund Policy block in step 3) — every ticket
   // type follows that policy, and sold tickets keep their purchase snapshot.
-  const [tiers, setTiers] = useState<{name: string; price: string}[]>([
-    {name: 'General Admission', price: ''},
+  // `benefits` are exclusive perks shown on the event page to compare tiers.
+  const [tiers, setTiers] = useState<{name: string; price: string; benefits: string[]}[]>([
+    {name: 'General Admission', price: '', benefits: []},
   ]);
+
+  // Per-tier drafts for the "add benefit" inputs (keyed by tier index).
+  const [benefitDrafts, setBenefitDrafts] = useState<Record<number, string>>({});
+
+  const addTierBenefit = (i: number, text?: string) => {
+    const value = (text ?? benefitDrafts[i] ?? '').trim();
+    if (!value) return;
+    setTiers((prev) =>
+      prev.map((t, idx) =>
+        idx === i && !(t.benefits || []).includes(value) && (t.benefits || []).length < 10
+          ? {...t, benefits: [...(t.benefits || []), value]}
+          : t
+      )
+    );
+    if (text === undefined) setBenefitDrafts((prev) => ({...prev, [i]: ''}));
+  };
+
+  const removeTierBenefit = (i: number, bIdx: number) => {
+    setTiers((prev) =>
+      prev.map((t, idx) =>
+        idx === i ? {...t, benefits: (t.benefits || []).filter((_, bi) => bi !== bIdx)} : t
+      )
+    );
+  };
 
   // Cover image (uploaded to Cloudflare R2 via /api/upload)
   const [coverImage, setCoverImage] = useState('');
@@ -156,21 +193,22 @@ function CreateEventForm() {
         });
         setCoverImage(event.image || '');
         setFeatures(Array.isArray(event.tags) ? event.tags : []);
-        const evTiers = (event as {tiers?: {name?: string; price?: number}[]}).tiers;
+        const evTiers = (event as {tiers?: {name?: string; price?: number; benefits?: string[]}[]}).tiers;
         if (Array.isArray(evTiers) && evTiers.length) {
           setTiers(
             evTiers.map((t) => ({
               name: String(t.name || 'General Admission'),
               price: String(t.price ?? 0),
+              benefits: Array.isArray(t.benefits) ? t.benefits.map((b) => String(b)) : [],
             }))
           );
         } else if ((event.price?.max ?? 0) > (event.price?.min ?? 0)) {
           setTiers([
-            {name: 'Standard Access', price: String(event.price?.min ?? 0)},
-            {name: 'VIP Experience', price: String(event.price?.max ?? 0)},
+            {name: 'Standard Access', price: String(event.price?.min ?? 0), benefits: []},
+            {name: 'VIP Experience', price: String(event.price?.max ?? 0), benefits: []},
           ]);
         } else {
-          setTiers([{name: 'General Admission', price: String(event.price?.min ?? 0)}]);
+          setTiers([{name: 'General Admission', price: String(event.price?.min ?? 0), benefits: []}]);
         }
       })
       .catch(() => undefined);
@@ -267,10 +305,14 @@ function CreateEventForm() {
     setSubmitting(true);
     try {
       const validTiers = tiers
-        .map((t) => ({
-          name: t.name.trim(),
-          price: Number(t.price) || 0,
-        }))
+        .map((t) => {
+          const benefits = (t.benefits || []).map((b) => b.trim()).filter(Boolean).slice(0, 10);
+          return {
+            name: t.name.trim(),
+            price: Number(t.price) || 0,
+            ...(benefits.length ? {benefits} : {}),
+          };
+        })
         .filter((t) => t.name);
       if (!validTiers.length) {
         throw new Error('Add at least one ticket type with a name.');
@@ -722,39 +764,107 @@ function CreateEventForm() {
                     <div className="space-y-3">
                       <Label>Ticket Types &amp; Prices (₦)</Label>
                       {tiers.map((tier, i) => (
-                        <div key={i} className="flex flex-wrap sm:flex-nowrap items-center gap-2">
-                          <Input
-                            placeholder="e.g. Regular, VIP, Table for 5"
-                            value={tier.name}
-                            onChange={(e) =>
-                              setTiers(tiers.map((t, idx) => (idx === i ? {...t, name: e.target.value} : t)))
-                            }
-                            className="h-11 w-full sm:w-auto sm:flex-1"
-                            aria-label={`Ticket type ${i + 1} name`}
-                          />
-                          <Input
-                            type="number"
-                            min={0}
-                            placeholder="Price"
-                            value={tier.price}
-                            onChange={(e) =>
-                              setTiers(tiers.map((t, idx) => (idx === i ? {...t, price: e.target.value} : t)))
-                            }
-                            className="h-11 flex-1 sm:flex-none sm:w-24"
-                            aria-label={`Ticket type ${i + 1} price`}
-                          />
-                          {tiers.length > 1 && (
-                            <Button
-                              type="button"
-                              variant="ghost"
-                              size="icon"
-                              className="h-11 w-11 shrink-0 text-muted-foreground hover:text-red-500"
-                              onClick={() => setTiers(tiers.filter((_, idx) => idx !== i))}
-                              aria-label="Remove ticket type"
-                            >
-                              ×
-                            </Button>
-                          )}
+                        <div key={i} className="rounded-xl border border-border bg-card p-3 space-y-3">
+                          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
+                            <Input
+                              placeholder="e.g. Regular, VIP, Table for 5"
+                              value={tier.name}
+                              onChange={(e) =>
+                                setTiers(tiers.map((t, idx) => (idx === i ? {...t, name: e.target.value} : t)))
+                              }
+                              className="h-11 w-full sm:w-auto sm:flex-1"
+                              aria-label={`Ticket type ${i + 1} name`}
+                            />
+                            <Input
+                              type="number"
+                              min={0}
+                              placeholder="Price"
+                              value={tier.price}
+                              onChange={(e) =>
+                                setTiers(tiers.map((t, idx) => (idx === i ? {...t, price: e.target.value} : t)))
+                              }
+                              className="h-11 flex-1 sm:flex-none sm:w-24"
+                              aria-label={`Ticket type ${i + 1} price`}
+                            />
+                            {tiers.length > 1 && (
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                size="icon"
+                                className="h-11 w-11 shrink-0 text-muted-foreground hover:text-red-500"
+                                onClick={() => setTiers(tiers.filter((_, idx) => idx !== i))}
+                                aria-label="Remove ticket type"
+                              >
+                                ×
+                              </Button>
+                            )}
+                          </div>
+
+                          {/* Exclusive benefits for this ticket type (VIP access,
+                              complimentary meals, merch, priority seating,
+                              meet-and-greet…) — shown on the event page so
+                              attendees can compare tiers before buying. */}
+                          <div className="space-y-2">
+                            {(tier.benefits || []).length > 0 && (
+                              <div className="flex flex-wrap gap-1.5">
+                                {tier.benefits.map((benefit, bIdx) => (
+                                  <span
+                                    key={`${benefit}-${bIdx}`}
+                                    className="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2.5 py-1 text-xs font-bold"
+                                  >
+                                    {benefit}
+                                    <button
+                                      type="button"
+                                      onClick={() => removeTierBenefit(i, bIdx)}
+                                      aria-label={`Remove ${benefit}`}
+                                      className="hover:text-red-500 font-bold"
+                                    >
+                                      ×
+                                    </button>
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                            <div className="flex flex-wrap sm:flex-nowrap gap-2">
+                              <Input
+                                value={benefitDrafts[i] ?? ''}
+                                onChange={(e) => setBenefitDrafts({...benefitDrafts, [i]: e.target.value})}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    addTierBenefit(i);
+                                  }
+                                }}
+                                placeholder="Add a benefit (e.g. VIP lounge access)"
+                                maxLength={80}
+                                className="h-10 flex-1 text-sm"
+                                aria-label={`Benefits for ticket type ${i + 1}`}
+                              />
+                              <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                className="h-10 rounded-full px-4 font-bold shrink-0"
+                                onClick={() => addTierBenefit(i)}
+                              >
+                                Add Benefit
+                              </Button>
+                            </div>
+                            {(tier.benefits || []).length === 0 && (
+                              <div className="flex flex-wrap gap-1.5">
+                                {TIER_BENEFIT_SUGGESTIONS.map((s) => (
+                                  <button
+                                    key={s}
+                                    type="button"
+                                    onClick={() => addTierBenefit(i, s)}
+                                    className="rounded-full border border-dashed border-border px-2.5 py-1 text-xs text-muted-foreground hover:border-primary/40 hover:text-primary transition-colors"
+                                  >
+                                    + {s}
+                                  </button>
+                                ))}
+                              </div>
+                            )}
+                          </div>
                         </div>
                       ))}
                       <Button
@@ -762,7 +872,7 @@ function CreateEventForm() {
                         variant="outline"
                         size="sm"
                         className="rounded-full font-bold gap-2"
-                        onClick={() => setTiers([...tiers, {name: '', price: ''}])}
+                        onClick={() => setTiers([...tiers, {name: '', price: '', benefits: []}])}
                       >
                         + Add Ticket Type
                       </Button>

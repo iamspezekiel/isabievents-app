@@ -305,9 +305,10 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
   }
 
   // Ticket types: organizer-defined tiers, with a sensible fallback for older
-  // events that only have a single min/max price.
-  const rawTiers = (event as unknown as {tiers?: {name: string; price: number; refundable?: boolean}[]}).tiers;
-  const tiers: {name: string; price: number; refundable?: boolean}[] =
+  // events that only have a single min/max price. `benefits` are the
+  // organizer-defined exclusive perks shown so attendees can compare tiers.
+  const rawTiers = (event as unknown as {tiers?: {name: string; price: number; refundable?: boolean; benefits?: string[]}[]}).tiers;
+  const tiers: {name: string; price: number; refundable?: boolean; benefits?: string[]}[] =
     Array.isArray(rawTiers) && rawTiers.length
       ? rawTiers
       : event.price.min === event.price.max
@@ -411,7 +412,13 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
                     key={tier.name}
                     name={tier.name}
                     price={tier.price}
-                    perks={tier.price === 0 ? ['Free Entry', 'Gate Entry'] : ['Gate Entry', 'Standard Admission']}
+                    perks={
+                      Array.isArray(tier.benefits) && tier.benefits.length
+                        ? tier.benefits
+                        : tier.price === 0
+                          ? ['Free Entry', 'Gate Entry']
+                          : ['Gate Entry', 'Standard Admission']
+                    }
                     available={true}
                     external={isExternal}
                     refundable={typeof tier.refundable === 'boolean' ? tier.refundable : eventRefundable}
