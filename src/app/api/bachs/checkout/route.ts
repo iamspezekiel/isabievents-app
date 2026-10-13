@@ -59,6 +59,18 @@ export async function POST(req: Request) {
   if (!eventId || !eventTitle || !buyer?.email || !buyer?.name) {
     return NextResponse.json({error: 'Missing required checkout fields.'}, {status: 400});
   }
+
+  // External-ticketed events are sold on the organizer's own platform — never
+  // create an IsabiEvents checkout session for them.
+  try {
+    const db = await import('@/lib/db');
+    const event = await db.getEvent(eventId);
+    if (event && (event as {ticketMode?: string}).ticketMode === 'external') {
+      return NextResponse.json({error: 'This event is sold on the organizer’s external ticketing page.'}, {status: 400});
+    }
+  } catch {
+    /* a lookup failure must never block a legitimate checkout */
+  }
   const qty = Math.max(1, Math.min(20, Math.floor(Number(quantity) || 1)));
   const price = Math.max(0, Number(unitPrice) || 0);
   const amount = price * qty;

@@ -30,6 +30,12 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
 
   // Find the real event by slug or ID (backward compatibility).
   const event = events.find(e => e.slug === id || e.id === id) ?? null;
+
+  // External ticketing: the event is listed on IsabiEvents, but registration
+  // and payment happen on the organizer's platform (Luma, Eventbrite, Meetup
+  // or their own website) — "Get Tickets" sends visitors straight there.
+  const isExternal = event?.ticketMode === 'external' && !!event?.ticketUrl;
+  const externalUrl = event?.ticketUrl || '';
   
   const [faqs, setFaqs] = useState<any[]>([]);
   const [loadingFaqs, setLoadingFaqs] = useState(true);
@@ -364,12 +370,18 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
                     price={tier.price}
                     perks={tier.price === 0 ? ['Free Entry', 'Gate Entry'] : ['Gate Entry', 'Standard Admission']}
                     available={true}
+                    external={isExternal}
                     isSelected={selectedTier === tier.name}
                     quantity={quantity}
                     onSelect={() => handleTierSelect(tier.name, tier.price)}
                     onQuantityChange={setQuantity}
                   />
                 ))}
+                {isExternal && (
+                  <p className="text-xs text-muted-foreground text-center pt-2">
+                    Ticket types are shown for reference — purchase is completed on the organizer&apos;s ticketing page.
+                  </p>
+                )}
               </TabsContent>
 
               <TabsContent value="info" className="pt-8">
@@ -461,13 +473,33 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
                     <span className="text-3xl font-black text-primary">
                       {selectedTier ? `₦${(tierPrice * quantity).toLocaleString()}` : `₦${event.price.min.toLocaleString()}`}
                     </span>
+                    {isExternal && (
+                      <span className="mt-3 inline-flex items-center gap-1.5 text-[10px] font-black uppercase tracking-widest text-accent bg-accent/10 px-3 py-1 rounded-full">
+                        <ExternalLink className="w-3 h-3" /> Sold on external platform
+                      </span>
+                    )}
                   </div>
-                  
-                  <Link href={selectedTier ? `/checkout/${event.slug}?tier=${encodeURIComponent(selectedTier)}&qty=${quantity}` : `/checkout/${event.slug}`}>
-                    <Button size="lg" className="w-full rounded-full shadow-lg shadow-primary/20 font-bold">
-                      {selectedTier ? 'Proceed to Checkout' : 'Get Tickets Now'}
-                    </Button>
-                  </Link>
+
+                  {isExternal ? (
+                    <>
+                      {/* Listed here, sold elsewhere: continue to the
+                          organizer's original event/ticketing page. */}
+                      <a href={externalUrl} target="_blank" rel="noopener noreferrer" className="block no-underline">
+                        <Button size="lg" className="w-full rounded-full shadow-lg shadow-primary/20 font-bold gap-2">
+                          Get Tickets <ExternalLink className="w-4 h-4" />
+                        </Button>
+                      </a>
+                      <p className="text-xs text-muted-foreground text-center mt-3 leading-relaxed">
+                        You&apos;ll continue to the organizer&apos;s ticketing page to complete registration or payment.
+                      </p>
+                    </>
+                  ) : (
+                    <Link href={selectedTier ? `/checkout/${event.slug}?tier=${encodeURIComponent(selectedTier)}&qty=${quantity}` : `/checkout/${event.slug}`}>
+                      <Button size="lg" className="w-full rounded-full shadow-lg shadow-primary/20 font-bold">
+                        {selectedTier ? 'Proceed to Checkout' : 'Get Tickets Now'}
+                      </Button>
+                    </Link>
+                  )}
 
                   <div className="grid grid-cols-2 gap-3 mt-4">
                     <Button variant="outline" className="rounded-full font-bold h-11" onClick={handleBookmark}>
@@ -697,7 +729,7 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
   );
 }
 
-function TicketTier({ name, price, perks, available, isSelected, quantity, onSelect, onQuantityChange }: any) {
+function TicketTier({ name, price, perks, available, isSelected, quantity, onSelect, onQuantityChange, external }: any) {
   return (
     <div className={`p-6 border rounded-2xl transition-all duration-300 ${
       available 
@@ -715,7 +747,7 @@ function TicketTier({ name, price, perks, available, isSelected, quantity, onSel
           </div>
         </div>
         <div className="text-right">
-          <span className="text-xl font-bold text-primary">₦{price.toLocaleString()}</span>
+          <span className="text-xl font-bold text-primary">{price === 0 ? 'Free' : `₦${price.toLocaleString()}`}</span>
         </div>
       </div>
       <ul className="space-y-2 mb-6">
@@ -725,6 +757,12 @@ function TicketTier({ name, price, perks, available, isSelected, quantity, onSel
           </li>
         ))}
       </ul>
+      {external ? (
+        /* Sold on the organizer's platform — no inline selection/checkout. */
+        <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest flex items-center gap-2">
+          <ExternalLink className="w-3.5 h-3.5 text-primary" /> Buy on the organizer&apos;s ticketing page
+        </p>
+      ) : (
       <div className="flex items-center gap-4">
         <Button 
           variant={available ? "secondary" : "ghost"} 
@@ -748,6 +786,7 @@ function TicketTier({ name, price, perks, available, isSelected, quantity, onSel
           </div>
         )}
       </div>
+      )}
     </div>
   );
 }

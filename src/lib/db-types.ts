@@ -21,6 +21,15 @@ export interface EventDoc {
   summary?: string;
   policies?: string;
   tiers?: {name: string; price: number}[];
+  /**
+   * Where "Get Tickets" sends visitors:
+   *  - 'internal' (default): sell directly on IsabiEvents via Bachs checkout.
+   *  - 'external': the event is listed here, but registration/payment happens
+   *    on the organizer's own platform (Luma, Eventbrite, Meetup, their site…).
+   */
+  ticketMode?: 'internal' | 'external';
+  /** Original event/registration URL used when ticketMode === 'external'. */
+  ticketUrl?: string;
   organizerUid?: string;
   organizerEmail?: string;
   price: {min: number; max: number};

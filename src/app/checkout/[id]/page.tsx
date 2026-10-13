@@ -21,7 +21,8 @@ import {
   Info,
   UserPlus,
   Eye,
-  EyeOff
+  EyeOff,
+  ExternalLink
 } from 'lucide-react';
 import { useEvents } from '@/hooks/use-events';
 import { useAuth } from '@/components/auth-provider';
@@ -330,6 +331,42 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
             <Link href="/discover" className="text-primary font-bold">Back to Discover</Link>
           </>
         )}
+      </div>
+    );
+  }
+
+  // External ticketing: this event is listed on IsabiEvents but sold on the
+  // organizer's platform (Luma / Eventbrite / Meetup / their website), so the
+  // IsabiEvents checkout must never run — send the visitor onward instead.
+  if (event.ticketMode === 'external' && event.ticketUrl) {
+    let host = 'the organizer’s website';
+    try {
+      host = new URL(event.ticketUrl).hostname.replace(/^www\./, '');
+    } catch {
+      /* keep the generic label for a malformed stored URL */
+    }
+    return (
+      <div className="min-h-screen bg-background flex flex-col items-center justify-center gap-6 px-4 text-center pt-32 pb-20">
+        <Card className="w-full max-w-lg border-border bg-card rounded-[2rem] shadow-2xl">
+          <CardContent className="p-8 md:p-10 space-y-5 text-center">
+            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto">
+              <ExternalLink className="w-7 h-7 text-primary" />
+            </div>
+            <h1 className="font-headline text-2xl">Tickets are sold elsewhere</h1>
+            <p className="text-muted-foreground text-sm leading-relaxed">
+              &ldquo;{event.title}&rdquo; is listed on IsabiEvents, but registration and payment are completed on
+              the organizer&apos;s ticketing page ({host}).
+            </p>
+            <a href={event.ticketUrl} target="_blank" rel="noopener noreferrer" className="block no-underline">
+              <Button size="lg" className="w-full rounded-full font-bold gap-2 shadow-lg shadow-primary/20">
+                Continue To Payment <ArrowRight className="w-5 h-5" />
+              </Button>
+            </a>
+            <Link href={`/events/${event.slug || event.id}`} className="text-sm text-primary font-bold inline-block">
+              Back to event details
+            </Link>
+          </CardContent>
+        </Card>
       </div>
     );
   }

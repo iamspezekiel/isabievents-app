@@ -41,6 +41,9 @@ export async function POST(req: Request) {
     // Server-side trust: only truly-free events skip payment.
     const event = await db.getEvent(eventId);
     if (!event) return NextResponse.json({error: 'Event not found.'}, {status: 404});
+    if ((event as {ticketMode?: string}).ticketMode === 'external') {
+      return NextResponse.json({error: 'This event is sold on the organizer’s external ticketing page.'}, {status: 400});
+    }
     if (Number(event.price?.min ?? 0) > 0) {
       return NextResponse.json({error: 'This event is not free — payment is required.'}, {status: 400});
     }

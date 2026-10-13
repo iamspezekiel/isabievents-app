@@ -16,6 +16,8 @@ import {
   CheckCircle2,
   AlertCircle,
   Video,
+  Ticket,
+  ExternalLink,
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -59,6 +61,10 @@ function CreateEventForm() {
     time: '',
     price: '',
     capacity: '',
+    // Where buyers complete their purchase: on IsabiEvents, or on the
+    // organizer's own/existing listing (Luma, Eventbrite, Meetup, website).
+    ticketMode: 'internal' as string,
+    ticketUrl: '',
   });
 
   const [features, setFeatures] = useState<string[]>([]);
@@ -105,7 +111,7 @@ function CreateEventForm() {
     getEvent(eventId)
       .then((event) => {
         if (!event || !alive) return;
-        const extra = event as {summary?: string; policies?: string; state?: string; mode?: string; virtualLink?: string};
+        const extra = event as {summary?: string; policies?: string; state?: string; mode?: string; virtualLink?: string; ticketMode?: string; ticketUrl?: string};
         const [datePart, timePart] = String(event.date || '').split('T');
         setFormData({
           name: event.title,
@@ -122,6 +128,8 @@ function CreateEventForm() {
           time: (timePart || '').substring(0, 5),
           price: String(event.price?.min ?? 0),
           capacity: event.inventory ? String(event.inventory) : '',
+          ticketMode: extra.ticketMode === 'external' ? 'external' : 'internal',
+          ticketUrl: extra.ticketUrl || '',
         });
         setCoverImage(event.image || '');
         setFeatures(Array.isArray(event.tags) ? event.tags : []);
@@ -212,6 +220,14 @@ function CreateEventForm() {
       });
       return;
     }
+    if (formData.ticketMode === 'external' && !/^https?:\/\/[^\s/]+\.[^\s]+/i.test(formData.ticketUrl.trim())) {
+      toast({
+        variant: "destructive",
+        title: "Ticket link required",
+        description: "Add the full link (https://…) to your event page on Luma, Eventbrite, Meetup or your own website.",
+      });
+      return;
+    }
     setSubmitting(true);
     try {
       const validTiers = tiers
@@ -235,6 +251,8 @@ function CreateEventForm() {
         policies: formData.policies.trim(),
         price: Math.min(...validTiers.map((t) => t.price)),
         tiers: validTiers,
+        ticketMode: formData.ticketMode === 'external' ? 'external' : 'internal',
+        ticketUrl: formData.ticketMode === 'external' ? formData.ticketUrl.trim() : '',
         inventory: Number(formData.capacity) || 0,
         tags: features,
       };
@@ -544,6 +562,52 @@ function CreateEventForm() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-3">
+                      <Label>Where should visitors get tickets?</Label>
+                      <div className="grid sm:grid-cols-2 gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setFormData({...formData, ticketMode: 'internal'})}
+                          className={`p-4 rounded-xl border-2 text-left transition-all ${formData.ticketMode !== 'external' ? 'border-primary bg-primary/5' : 'border-border hover:bg-secondary'}`}
+                        >
+                          <div className="flex items-center gap-2 font-bold">
+                            <Ticket className="w-4 h-4 text-primary" /> Sell on IsabiEvents
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Visitors pay here — tickets and QR codes are issued instantly.
+                          </p>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setFormData({...formData, ticketMode: 'external'})}
+                          className={`p-4 rounded-xl border-2 text-left transition-all ${formData.ticketMode === 'external' ? 'border-primary bg-primary/5' : 'border-border hover:bg-secondary'}`}
+                        >
+                          <div className="flex items-center gap-2 font-bold">
+                            <ExternalLink className="w-4 h-4 text-primary" /> External ticketing page
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-1">
+                            Already listed on Luma, Eventbrite, Meetup or your own website? We display the event and send visitors to you.
+                          </p>
+                        </button>
+                      </div>
+                      {formData.ticketMode === 'external' && (
+                        <div className="space-y-2">
+                          <Label htmlFor="ticketUrl">Original event link</Label>
+                          <Input
+                            id="ticketUrl"
+                            type="url"
+                            placeholder="https://lu.ma/… · https://eventbrite.com/… · your website"
+                            className="h-11"
+                            value={formData.ticketUrl}
+                            onChange={(e) => setFormData({...formData, ticketUrl: e.target.value})}
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            &ldquo;Get Tickets&rdquo; on your event page opens this link so visitors register or pay with you.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+
+                    <div className="space-y-3">
                       <Label>Ticket Types &amp; Prices (₦)</Label>
                       {tiers.map((tier, i) => (
                         <div key={i} className="flex items-center gap-2">
@@ -591,7 +655,9 @@ function CreateEventForm() {
                         + Add Ticket Type
                       </Button>
                       <p className="text-xs text-muted-foreground">
-                        Each type becomes a selectable ticket on your event page. Use 0 for free entry.
+                        {formData.ticketMode === 'external'
+                          ? 'Shown on your event page for reference — visitors complete payment on your external ticketing page.'
+                          : 'Each type becomes a selectable ticket on your event page. Use 0 for free entry.'}
                       </p>
                     </div>
                     <div className="space-y-2">

@@ -27,6 +27,29 @@ interface EventBody {
   inventory?: number | string;
   tags?: string[];
   tiers?: {name?: string; price?: number}[];
+  /** 'internal' = sell on IsabiEvents, 'external' = link out to ticketUrl. */
+  ticketMode?: string;
+  /** Original registration URL for external-ticketed events. */
+  ticketUrl?: string;
+}
+
+/**
+ * Validates the ticketing destination chosen by the organizer. Internal
+ * events need nothing; external events must provide a real http(s) link to
+ * the original listing (Luma / Eventbrite / Meetup / their own website).
+ */
+function sanitizeTicketing(body: EventBody): {error?: string; ticketMode: 'internal' | 'external'; ticketUrl: string} {
+  const mode = body.ticketMode === 'external' ? 'external' : 'internal';
+  if (mode === 'internal') return {ticketMode: 'internal', ticketUrl: ''};
+  const url = String(body.ticketUrl || '').trim().slice(0, 500);
+  if (!/^https?:\/\/[^\s/]+\.[^\s]+/i.test(url)) {
+    return {
+      error: 'Add the full link (https://…) to your event page on Luma, Eventbrite, Meetup or your own website.',
+      ticketMode: 'external',
+      ticketUrl: '',
+    };
+  }
+  return {ticketMode: 'external', ticketUrl: url};
 }
 
 /** Sanitizes organizer-defined ticket types (name + price) from the client. */
@@ -66,6 +89,10 @@ export async function POST(req: Request) {
     if (!title || !date || (!isVirtual && !venue)) {
       return NextResponse.json({error: isVirtual ? 'Title and date are required.' : 'Title, venue and date are required.'}, {status: 400});
     }
+    // Ticketing destination: sell on IsabiEvents vs. link out to the
+    // organizer's existing listing (Luma / Eventbrite / Meetup / own site).
+    const ticketing = sanitizeTicketing(body);
+    if (ticketing.error) return NextResponse.json({error: ticketing.error}, {status: 400});
 
     const profileSnap = await db.collection('users').doc(uid).get();
     const profile = (profileSnap.exists ? profileSnap.data() : {}) as {
@@ -111,6 +138,8 @@ export async function POST(req: Request) {
       policies: (body.policies || '').trim(),
       price: {min: price, max: priceMax},
       ...(tiers.length ? {tiers} : {}),
+      ticketMode: ticketing.ticketMode,
+      ticketUrl: ticketing.ticketUrl,
       inventory: Number(body.inventory) || 0,
       tags: Array.isArray(body.tags) ? body.tags : [],
       createdAt: nowIso,
@@ -226,6 +255,12 @@ export async function PATCH(req: Request) {
     }
     if (body.inventory !== undefined) patch.inventory = Number(body.inventory) || 0;
     if (Array.isArray(body.tags)) patch.tags = body.tags;
+    if (body.ticketMode !== undefined) {
+      const ticketing = sanitizeTicketing(body);
+      if (ticketing.error) return NextResponse.json({error: ticketing.error}, {status: 400});
+      patch.ticketMode = ticketing.ticketMode;
+      patch.ticketUrl = ticketing.ticketUrl;
+    }
 
     await ref.update(patch);
     return NextResponse.json({ok: true, id});
