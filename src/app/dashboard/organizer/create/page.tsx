@@ -76,10 +76,11 @@ function CreateEventForm() {
   const [features, setFeatures] = useState<string[]>([]);
   const [currentFeature, setCurrentFeature] = useState('');
 
-  // Ticket types & prices (at least one required). `refundable` is a tri-state:
-  // 'default' follows the event policy; the other two override it per tier.
-  const [tiers, setTiers] = useState<{name: string; price: string; refundable: string}[]>([
-    {name: 'General Admission', price: '', refundable: 'default'},
+  // Ticket types & prices (at least one required). Refundability is a single
+  // event-level setting (the Refund Policy block in step 3) — every ticket
+  // type follows that policy, and sold tickets keep their purchase snapshot.
+  const [tiers, setTiers] = useState<{name: string; price: string}[]>([
+    {name: 'General Admission', price: ''},
   ]);
 
   // Cover image (uploaded to Cloudflare R2 via /api/upload)
@@ -155,22 +156,21 @@ function CreateEventForm() {
         });
         setCoverImage(event.image || '');
         setFeatures(Array.isArray(event.tags) ? event.tags : []);
-        const evTiers = (event as {tiers?: {name?: string; price?: number; refundable?: boolean}[]}).tiers;
+        const evTiers = (event as {tiers?: {name?: string; price?: number}[]}).tiers;
         if (Array.isArray(evTiers) && evTiers.length) {
           setTiers(
             evTiers.map((t) => ({
               name: String(t.name || 'General Admission'),
               price: String(t.price ?? 0),
-              refundable: t.refundable === true ? 'refundable' : t.refundable === false ? 'non_refundable' : 'default',
             }))
           );
         } else if ((event.price?.max ?? 0) > (event.price?.min ?? 0)) {
           setTiers([
-            {name: 'Standard Access', price: String(event.price?.min ?? 0), refundable: 'default'},
-            {name: 'VIP Experience', price: String(event.price?.max ?? 0), refundable: 'default'},
+            {name: 'Standard Access', price: String(event.price?.min ?? 0)},
+            {name: 'VIP Experience', price: String(event.price?.max ?? 0)},
           ]);
         } else {
-          setTiers([{name: 'General Admission', price: String(event.price?.min ?? 0), refundable: 'default'}]);
+          setTiers([{name: 'General Admission', price: String(event.price?.min ?? 0)}]);
         }
       })
       .catch(() => undefined);
@@ -270,8 +270,6 @@ function CreateEventForm() {
         .map((t) => ({
           name: t.name.trim(),
           price: Number(t.price) || 0,
-          // Tri-state per tier: undefined = follow the event-level policy.
-          ...(t.refundable === 'refundable' ? {refundable: true} : t.refundable === 'non_refundable' ? {refundable: false} : {}),
         }))
         .filter((t) => t.name);
       if (!validTiers.length) {
@@ -333,20 +331,20 @@ function CreateEventForm() {
 
   return (
     <div className="min-h-screen bg-background pb-20 pt-0">
-      <header className="border-b border-border bg-card sticky top-0 z-50">
-        <div className="container mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <Button variant="ghost" size="icon" onClick={() => router.back()}>
+      <header className="border-b border-border bg-card sticky top-16 md:top-0 z-50">
+        <div className="container mx-auto px-4 h-16 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2 md:gap-4 min-w-0">
+            <Button variant="ghost" size="icon" onClick={() => router.back()} className="shrink-0">
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <h1 className="font-headline text-xl md:text-2xl tracking-tighter">
+            <h1 className="font-headline text-lg md:text-2xl tracking-tighter truncate">
               {isEdit ? 'Edit Event' : 'Create New Event'}
             </h1>
           </div>
-          <div className="flex items-center gap-4">
-            <div className="hidden md:flex gap-1">
+          <div className="flex items-center gap-4 shrink-0">
+            <div className="flex gap-1" aria-label={`Step ${step} of 3`}>
               {[1, 2, 3].map(i => (
-                <div key={i} className={`h-1.5 w-8 rounded-full transition-colors ${step >= i ? 'bg-primary' : 'bg-secondary'}`} />
+                <div key={i} className={`h-1.5 w-5 md:w-8 rounded-full transition-colors ${step >= i ? 'bg-primary' : 'bg-secondary'}`} />
               ))}
             </div>
           </div>
@@ -516,7 +514,7 @@ function CreateEventForm() {
             </section>
 
             <div className="pt-8 flex justify-end">
-              <Button onClick={() => setStep(2)} className="rounded-full px-8 gap-2 font-bold h-11">
+              <Button onClick={() => setStep(2)} className="w-full sm:w-auto rounded-full px-8 gap-2 font-bold h-11">
                 Continue to Content <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
@@ -601,10 +599,10 @@ function CreateEventForm() {
               </div>
             </section>
 
-            <div className="pt-8 flex justify-between">
-              <Button variant="ghost" onClick={() => setStep(1)} className="rounded-full px-8 font-bold h-11">Back</Button>
-              <Button onClick={() => setStep(3)} className="rounded-full px-8 gap-2 font-bold h-11">
-                Pricing & Capacity <ChevronRight className="w-4 h-4" />
+            <div className="pt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
+              <Button variant="ghost" onClick={() => setStep(1)} className="w-full sm:w-auto rounded-full px-8 font-bold h-11">Back</Button>
+              <Button onClick={() => setStep(3)} className="w-full sm:w-auto rounded-full px-8 gap-2 font-bold h-11">
+                Pricing &amp; Capacity <ChevronRight className="w-4 h-4" />
               </Button>
             </div>
           </div>
@@ -618,7 +616,8 @@ function CreateEventForm() {
                 <p className="text-muted-foreground">Finalize your event logistics before going live.</p>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-8 text-left">
+              {/* Ticketing spans the full content width (mobile-friendly single column). */}
+              <div className="grid gap-8 text-left">
                 <Card className="bg-card border-border">
                   <CardHeader>
                     <CardTitle className="text-lg font-bold">Ticketing</CardTitle>
@@ -723,14 +722,14 @@ function CreateEventForm() {
                     <div className="space-y-3">
                       <Label>Ticket Types &amp; Prices (₦)</Label>
                       {tiers.map((tier, i) => (
-                        <div key={i} className="flex items-center gap-2">
+                        <div key={i} className="flex flex-wrap sm:flex-nowrap items-center gap-2">
                           <Input
                             placeholder="e.g. Regular, VIP, Table for 5"
                             value={tier.name}
                             onChange={(e) =>
                               setTiers(tiers.map((t, idx) => (idx === i ? {...t, name: e.target.value} : t)))
                             }
-                            className="h-11 flex-1"
+                            className="h-11 w-full sm:w-auto sm:flex-1"
                             aria-label={`Ticket type ${i + 1} name`}
                           />
                           <Input
@@ -741,30 +740,15 @@ function CreateEventForm() {
                             onChange={(e) =>
                               setTiers(tiers.map((t, idx) => (idx === i ? {...t, price: e.target.value} : t)))
                             }
-                            className="h-11 w-24"
+                            className="h-11 flex-1 sm:flex-none sm:w-24"
                             aria-label={`Ticket type ${i + 1} price`}
                           />
-                          <Select
-                            value={tier.refundable}
-                            onValueChange={(v) =>
-                              setTiers(tiers.map((t, idx) => (idx === i ? {...t, refundable: v} : t)))
-                            }
-                          >
-                            <SelectTrigger className="h-11 w-40 text-xs" aria-label={`Ticket type ${i + 1} refunds`}>
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="default">Refunds: event policy</SelectItem>
-                              <SelectItem value="refundable">Refundable</SelectItem>
-                              <SelectItem value="non_refundable">Non-refundable</SelectItem>
-                            </SelectContent>
-                          </Select>
                           {tiers.length > 1 && (
                             <Button
                               type="button"
                               variant="ghost"
                               size="icon"
-                              className="h-11 w-11 text-muted-foreground hover:text-red-500"
+                              className="h-11 w-11 shrink-0 text-muted-foreground hover:text-red-500"
                               onClick={() => setTiers(tiers.filter((_, idx) => idx !== i))}
                               aria-label="Remove ticket type"
                             >
@@ -778,14 +762,14 @@ function CreateEventForm() {
                         variant="outline"
                         size="sm"
                         className="rounded-full font-bold gap-2"
-                        onClick={() => setTiers([...tiers, {name: '', price: '', refundable: 'default'}])}
+                        onClick={() => setTiers([...tiers, {name: '', price: ''}])}
                       >
                         + Add Ticket Type
                       </Button>
                       <p className="text-xs text-muted-foreground">
                         {formData.ticketMode === 'external'
                           ? 'Shown on your event page for reference — visitors complete payment on your external ticketing page.'
-                          : 'Each type becomes a selectable ticket on your event page. Use 0 for free entry.'}
+                          : 'Each type becomes a selectable ticket on your event page. Use 0 for free entry. All ticket types follow the event-level Refund Policy above.'}
                       </p>
                     </div>
                     <div className="space-y-2">
@@ -853,9 +837,9 @@ function CreateEventForm() {
               </Card>
             </section>
 
-            <div className="pt-8 flex justify-between">
-              <Button variant="ghost" onClick={() => setStep(2)} className="rounded-full px-8 font-bold h-11">Back</Button>
-              <Button onClick={handleSubmit} disabled={submitting} className="rounded-full px-12 h-11 font-bold gap-2 shadow-xl shadow-primary/20">
+            <div className="pt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-between">
+              <Button variant="ghost" onClick={() => setStep(2)} className="w-full sm:w-auto rounded-full px-8 font-bold h-11">Back</Button>
+              <Button onClick={handleSubmit} disabled={submitting} className="w-full sm:w-auto rounded-full px-12 h-11 font-bold gap-2 shadow-xl shadow-primary/20">
                 {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : isEdit ? 'Save Changes' : 'Launch Event'}
                 {!submitting && <CheckCircle2 className="w-5 h-5" />}
               </Button>

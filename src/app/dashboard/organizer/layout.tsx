@@ -106,7 +106,7 @@ export default function OrganizerLayout({ children }: { children: React.ReactNod
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 pt-16 md:pt-0 overflow-x-hidden">
+      <main className="flex-1 pt-16 md:pt-0 overflow-x-clip">
         {children}
       </main>
     </div>

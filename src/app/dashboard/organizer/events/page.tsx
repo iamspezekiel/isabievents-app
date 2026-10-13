@@ -178,7 +178,7 @@ export default function MyEventsPage() {
                 <div className="relative w-full sm:w-48 aspect-video sm:aspect-square">
                   <img src={event.image} alt="" className="object-cover w-full h-full" />
                 </div>
-                <div className="flex-1 p-6 flex flex-col justify-between text-left">
+                <div className="flex-1 p-4 sm:p-6 flex flex-col justify-between text-left">
                   <div className="flex justify-between items-start">
                     <div className="space-y-1">
                       <Badge className="bg-primary/10 text-primary border-none uppercase text-[10px] font-black">{event.category}</Badge>

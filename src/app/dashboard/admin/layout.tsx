@@ -112,7 +112,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </header>
 
       {/* Main Content Area */}
-      <main className="flex-1 pt-16 md:pt-0 overflow-x-hidden">
+      <main className="flex-1 pt-16 md:pt-0 overflow-x-clip">
         {children}
       </main>
     </div>
