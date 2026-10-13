@@ -17,6 +17,7 @@ import {
   AlertCircle,
   Video,
   Ticket,
+  Trash2,
   ExternalLink,
 } from 'lucide-react';
 import { Button } from "@/components/ui/button";
@@ -119,6 +120,20 @@ function CreateEventForm() {
       )
     );
   };
+
+  // Live summary for the Ticket Types section (unnamed tiers don't count).
+  const namedTiers = tiers.filter((t) => t.name.trim());
+  const tierPrices = namedTiers.map((t) => Number(t.price) || 0);
+  const minTierPrice = tierPrices.length ? Math.min(...tierPrices) : 0;
+  const maxTierPrice = tierPrices.length ? Math.max(...tierPrices) : 0;
+  const naira = (n: number) => `₦${n.toLocaleString()}`;
+  const tierRangeLabel = !namedTiers.length
+    ? ''
+    : minTierPrice === maxTierPrice
+      ? minTierPrice === 0
+        ? 'all free'
+        : `${naira(minTierPrice)} each`
+      : `${minTierPrice === 0 ? 'Free' : naira(minTierPrice)} – ${naira(maxTierPrice)}`;
 
   // Cover image (uploaded to Cloudflare R2 via /api/upload)
   const [coverImage, setCoverImage] = useState('');
@@ -762,49 +777,129 @@ function CreateEventForm() {
                     </div>
 
                     <div className="space-y-3">
-                      <Label>Ticket Types &amp; Prices (₦)</Label>
-                      {tiers.map((tier, i) => (
-                        <div key={i} className="rounded-xl border border-border bg-card p-3 space-y-3">
-                          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2">
-                            <Input
-                              placeholder="e.g. Regular, VIP, Table for 5"
-                              value={tier.name}
-                              onChange={(e) =>
-                                setTiers(tiers.map((t, idx) => (idx === i ? {...t, name: e.target.value} : t)))
-                              }
-                              className="h-11 w-full sm:w-auto sm:flex-1"
-                              aria-label={`Ticket type ${i + 1} name`}
-                            />
-                            <Input
-                              type="number"
-                              min={0}
-                              placeholder="Price"
-                              value={tier.price}
-                              onChange={(e) =>
-                                setTiers(tiers.map((t, idx) => (idx === i ? {...t, price: e.target.value} : t)))
-                              }
-                              className="h-11 flex-1 sm:flex-none sm:w-24"
-                              aria-label={`Ticket type ${i + 1} price`}
-                            />
-                            {tiers.length > 1 && (
-                              <Button
-                                type="button"
-                                variant="ghost"
-                                size="icon"
-                                className="h-11 w-11 shrink-0 text-muted-foreground hover:text-red-500"
-                                onClick={() => setTiers(tiers.filter((_, idx) => idx !== i))}
-                                aria-label="Remove ticket type"
-                              >
-                                ×
-                              </Button>
-                            )}
+                      <div className="space-y-1.5">
+                        <Label>Ticket Types &amp; Prices (₦)</Label>
+                        <p className="text-xs text-muted-foreground">
+                          {formData.ticketMode === 'external'
+                            ? 'Shown on your event page for reference — visitors complete payment on your external ticketing page.'
+                            : 'Each type becomes a selectable ticket on your event page. All ticket types follow the event-level Refund Policy above.'}
+                        </p>
+                      </div>
+                      {tiers.map((tier, i) => {
+                        const benefitCount = (tier.benefits || []).length;
+                        const isFree = tier.price !== '' && Number(tier.price) === 0;
+                        const normalized = tier.name.trim().toLowerCase();
+                        const duplicateName =
+                          !!normalized && tiers.some((t, idx) => idx !== i && t.name.trim().toLowerCase() === normalized);
+                        return (
+                        <div key={i} className="rounded-xl border border-border bg-card overflow-hidden">
+                          {/* Tier header: live name, free flag, perk count, remove */}
+                          <div className="flex items-center justify-between gap-2 border-b border-border bg-secondary/40 px-4 py-2.5">
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-black flex items-center justify-center shrink-0">
+                                {i + 1}
+                              </span>
+                              <span className="text-xs font-black uppercase tracking-widest text-muted-foreground truncate">
+                                {tier.name.trim() || `Ticket Type ${i + 1}`}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1.5 shrink-0">
+                              {isFree && (
+                                <span className="rounded-full bg-green-500/10 text-green-500 px-2 py-0.5 text-[10px] font-black uppercase tracking-widest">
+                                  Free
+                                </span>
+                              )}
+                              {benefitCount > 0 && (
+                                <span className="rounded-full bg-primary/10 text-primary px-2 py-0.5 text-[10px] font-black uppercase tracking-widest flex items-center gap-1">
+                                  <Sparkles className="w-3 h-3" /> {benefitCount} {benefitCount === 1 ? 'Perk' : 'Perks'}
+                                </span>
+                              )}
+                              {tiers.length > 1 && (
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 text-muted-foreground hover:text-red-500"
+                                  onClick={() => setTiers(tiers.filter((_, idx) => idx !== i))}
+                                  aria-label={`Remove ticket type ${i + 1}`}
+                                  title="Remove ticket type"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </Button>
+                              )}
+                            </div>
                           </div>
+
+                          <div className="p-4 space-y-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-[1fr_11rem] gap-3">
+                              <div className="space-y-1.5">
+                                <Label htmlFor={`tier-name-${i}`} className="text-xs uppercase tracking-widest text-muted-foreground/70">
+                                  Name
+                                </Label>
+                                <Input
+                                  id={`tier-name-${i}`}
+                                  placeholder="e.g. Regular, VIP, Table for 5"
+                                  value={tier.name}
+                                  onChange={(e) =>
+                                    setTiers(tiers.map((t, idx) => (idx === i ? {...t, name: e.target.value} : t)))
+                                  }
+                                  className={`h-11 ${duplicateName ? 'border-red-500/60 focus-visible:ring-red-500/30' : ''}`}
+                                  aria-label={`Ticket type ${i + 1} name`}
+                                />
+                                {duplicateName && (
+                                  <p className="text-xs text-red-500">
+                                    Ticket type names must be unique — attendees select by name.
+                                  </p>
+                                )}
+                              </div>
+                              <div className="space-y-1.5">
+                                <Label htmlFor={`tier-price-${i}`} className="text-xs uppercase tracking-widest text-muted-foreground/70">
+                                  Price
+                                </Label>
+                                <div className="relative">
+                                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm font-bold text-muted-foreground pointer-events-none">
+                                    ₦
+                                  </span>
+                                  <Input
+                                    id={`tier-price-${i}`}
+                                    type="number"
+                                    min={0}
+                                    placeholder="0"
+                                    value={tier.price}
+                                    onChange={(e) =>
+                                      setTiers(tiers.map((t, idx) => (idx === i ? {...t, price: e.target.value} : t)))
+                                    }
+                                    className="h-11 pl-7"
+                                    aria-label={`Ticket type ${i + 1} price`}
+                                  />
+                                </div>
+                                <button
+                                  type="button"
+                                  onClick={() =>
+                                    setTiers(
+                                      tiers.map((t, idx) => (idx === i ? {...t, price: isFree ? '' : '0'} : t))
+                                    )
+                                  }
+                                  className={`text-xs font-bold rounded-full px-3 py-1 border transition-colors ${
+                                    isFree
+                                      ? 'border-green-500/40 bg-green-500/10 text-green-500'
+                                      : 'border-border text-muted-foreground hover:border-primary/40 hover:text-primary'
+                                  }`}
+                                  aria-pressed={isFree}
+                                >
+                                  {isFree ? 'Free ✓' : 'Mark as free'}
+                                </button>
+                              </div>
+                            </div>
 
                           {/* Exclusive benefits for this ticket type (VIP access,
                               complimentary meals, merch, priority seating,
                               meet-and-greet…) — shown on the event page so
                               attendees can compare tiers before buying. */}
                           <div className="space-y-2">
+                            <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/70 flex items-center gap-1.5">
+                              <Sparkles className="w-3 h-3 text-primary" /> Benefits (optional)
+                            </span>
                             {(tier.benefits || []).length > 0 && (
                               <div className="flex flex-wrap gap-1.5">
                                 {tier.benefits.map((benefit, bIdx) => (
@@ -865,22 +960,22 @@ function CreateEventForm() {
                               </div>
                             )}
                           </div>
+                          </div>
                         </div>
-                      ))}
-                      <Button
+                        );
+                      })}
+                      <button
                         type="button"
-                        variant="outline"
-                        size="sm"
-                        className="rounded-full font-bold gap-2"
                         onClick={() => setTiers([...tiers, {name: '', price: '', benefits: []}])}
+                        className="w-full rounded-xl border-2 border-dashed border-border py-3.5 text-sm font-bold text-muted-foreground hover:border-primary/50 hover:text-primary hover:bg-primary/5 transition-colors flex items-center justify-center gap-2"
                       >
-                        + Add Ticket Type
-                      </Button>
-                      <p className="text-xs text-muted-foreground">
-                        {formData.ticketMode === 'external'
-                          ? 'Shown on your event page for reference — visitors complete payment on your external ticketing page.'
-                          : 'Each type becomes a selectable ticket on your event page. Use 0 for free entry. All ticket types follow the event-level Refund Policy above.'}
-                      </p>
+                        <Plus className="w-4 h-4" /> Add Ticket Type
+                      </button>
+                      {namedTiers.length > 0 && (
+                        <p className="text-xs text-muted-foreground pt-1">
+                          {namedTiers.length} ticket type{namedTiers.length === 1 ? '' : 's'} · {tierRangeLabel}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="capacity">Total Capacity</Label>
