@@ -252,13 +252,21 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
     }
   };
 
-  const handleBookmark = () => {
+  const handleBookmark = async () => {
     if (!event) return;
-    const added = toggleFavorite(event.id);
-    toast({
-      title: added ? "Saved to Favorites" : "Removed from Favorites",
-      description: added ? "This event has been added to your saved list." : "This event was removed from your favorites."
-    });
+    try {
+      const added = await toggleFavorite(event.id);
+      toast({
+        title: added ? "Saved to Favorites" : "Removed from Favorites",
+        description: added ? "This event has been added to your saved list." : "This event was removed from your favorites."
+      });
+    } catch (err) {
+      toast({
+        variant: 'destructive',
+        title: 'Could Not Save',
+        description: err instanceof Error ? err.message : 'Please try again.'
+      });
+    }
   };
 
   const handleShare = () => {

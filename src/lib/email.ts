@@ -2,13 +2,14 @@
  * Transactional email (SMTP via nodemailer) — server only.
  *
  * Configuration resolution (per field):
- *   1. Firestore `settings/smtp` — editable + testable from the admin dashboard
+ *   1. Firestore `settings/smtp` — editable + testable from the admin
+ *      dashboard, re-read from the database on EVERY send (no config cache),
+ *      so a saved change applies immediately.
  *   2. Environment (.env): SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS,
  *      SMTP_FROM, ADMIN_EMAIL
  *
  * When nothing is configured every send is a logged no-op, so the app never
- * breaks. Dashboard changes take effect within ~60s or immediately after
- * invalidateSmtpCache().
+ * breaks.
  */
 import nodemailer, {type Transporter} from 'nodemailer';
 
@@ -34,21 +35,25 @@ const envConfig = (): SmtpConfig => ({
   adminEmail: process.env.ADMIN_EMAIL || 'isabideveloper@gmail.com',
 });
 
-const CONFIG_TTL = 60_000;
-let cachedConfig: {at: number; cfg: SmtpConfig} | null = null;
 let transporter: Transporter | null = null;
 let transporterSig = '';
 
-/** Drop the cached config (called after the admin saves new SMTP settings). */
+/**
+ * Reset the SMTP transport. The config itself is re-read from Firestore on
+ * every send (no config cache), so this only rebuilds the connection when an
+ * admin changes credentials. Kept for the admin "purge-cache" action.
+ */
 export function invalidateSmtpCache() {
-  cachedConfig = null;
   transporter = null;
   transporterSig = '';
 }
 
-/** Merged effective config: Firestore settings/smtp overrides env per field. */
+/**
+ * Merged effective config — ALWAYS read fresh from Firestore
+ * (`settings/smtp`) so an admin save takes effect on the very next email;
+ * env vars fill in any field the document leaves unset.
+ */
 export async function resolveSmtpConfig(): Promise<SmtpConfig> {
-  if (cachedConfig && Date.now() - cachedConfig.at < CONFIG_TTL) return cachedConfig.cfg;
   const base = envConfig();
   let stored: Partial<SmtpConfig> = {};
   try {
@@ -79,7 +84,6 @@ export async function resolveSmtpConfig(): Promise<SmtpConfig> {
     from: stored.from || base.from,
     adminEmail: stored.adminEmail || base.adminEmail,
   };
-  cachedConfig = {at: Date.now(), cfg};
   return cfg;
 }
 

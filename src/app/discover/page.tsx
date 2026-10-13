@@ -85,14 +85,22 @@ function DiscoverContent() {
 
   const trendingEvents = events.slice(0, 5);
 
-  const handleBookmark = (e: React.MouseEvent, id: string) => {
+  const handleBookmark = async (e: React.MouseEvent, id: string) => {
     e.preventDefault();
     e.stopPropagation();
-    const added = toggleFavorite(id);
-    toast({
-      title: added ? "Saved to Favorites" : "Removed from Favorites",
-      description: added ? "You can find it in your saved list." : "This event was removed from your favorites."
-    });
+    try {
+      const added = await toggleFavorite(id);
+      toast({
+        title: added ? "Saved to Favorites" : "Removed from Favorites",
+        description: added ? "You can find it in your saved list." : "This event was removed from your favorites."
+      });
+    } catch (err) {
+      toast({
+        variant: 'destructive',
+        title: 'Could Not Save',
+        description: err instanceof Error ? err.message : 'Please try again.'
+      });
+    }
   };
 
   const handleShare = (e: React.MouseEvent, slug: string) => {

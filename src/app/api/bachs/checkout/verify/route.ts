@@ -18,7 +18,12 @@ export async function GET(req: Request) {
   }
 
   if (!isBachsConfigured()) {
-    return NextResponse.json({demo: true, status: 'paid'});
+    // Never report a fake "paid" status — without the gateway there is no
+    // session to verify, so the caller must see an error instead of success.
+    return NextResponse.json(
+      {error: 'Payment gateway is not configured.', status: 'unavailable'},
+      {status: 503}
+    );
   }
 
   try {

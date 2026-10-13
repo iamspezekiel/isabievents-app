@@ -8,7 +8,8 @@
  *  - Money format:     decimal string at currency precision ("5000.00") + ISO 4217
  *
  * Set BACHS_API_KEY in the environment to enable real checkouts; without it
- * the checkout route falls back to the built-in demo flow.
+ * the checkout route returns a 503 error — there is no demo/fake payment
+ * fallback.
  */
 
 export type BachsCurrency = 'NGN' | 'USD';

@@ -3,8 +3,8 @@
  * Creates a pending order in Firestore and a hosted Bachs checkout session,
  * then returns the hosted checkout URL for redirect.
  *
- * Falls back to `{demo: true}` when BACHS_API_KEY is not configured so the
- * built-in demo payment flow keeps working.
+ * Real payments only: when BACHS_API_KEY is missing the route returns a 503
+ * error — it never fabricates an order, a session or a "paid" status.
  */
 import {NextResponse} from 'next/server';
 import {createCheckoutSession, isBachsConfigured, type BachsCurrency} from '@/lib/bachs';
@@ -76,13 +76,11 @@ export async function POST(req: Request) {
   const amount = price * qty;
 
   if (!isBachsConfigured()) {
-    return NextResponse.json({
-      demo: true,
-      message: 'BACHS_API_KEY not configured — use the demo payment flow.',
-      orderId: `demo_${Date.now()}`,
-      amount,
-      currency,
-    });
+    // Real payments only — never fabricate an order or a checkout session.
+    return NextResponse.json(
+      {error: 'Payment gateway is not configured. Contact support@isabi.cloud.'},
+      {status: 503}
+    );
   }
 
   try {

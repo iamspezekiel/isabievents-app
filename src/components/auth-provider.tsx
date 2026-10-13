@@ -1,9 +1,10 @@
 'use client';
 
 /**
- * Global auth state backed by Firebase Auth when configured, with a
- * localStorage-based demo fallback so the prototype keeps working without a
- * Firebase project.
+ * Global auth state backed exclusively by Firebase Auth + the Firestore
+ * `users/{uid}` profile document. There is no demo/mock or localStorage
+ * session fallback: when Firebase is not configured, auth is simply disabled
+ * (profile stays null) instead of replaying stale or fake data.
  */
 import React, {createContext, useCallback, useContext, useEffect, useMemo, useState} from 'react';
 import type {User} from 'firebase/auth';
@@ -51,9 +52,9 @@ export interface AuthProfile {
 interface AuthContextValue {
   /** True while the initial auth state is being resolved. */
   loading: boolean;
-  /** Firebase user (null in demo mode). */
+  /** Firebase user (null when signed out). */
   user: User | null;
-  /** Normalized profile including role — available in both modes. */
+  /** Normalized profile from Firestore (null when signed out / auth disabled). */
   profile: AuthProfile | null;
   isFirebaseMode: boolean;
   signIn: (email: string, password: string) => Promise<AuthProfile>;
@@ -65,9 +66,8 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-const ROLE_KEY = 'isabi_user_role';
-const LOGGED_IN_KEY = 'isabi_logged_in';
-const PROFILE_KEY = 'isabi_profile';
+/** Legacy demo-session storage keys — purged on boot so no fake session survives. */
+const LEGACY_STORAGE_KEYS = ['isabi_user_role', 'isabi_logged_in', 'isabi_profile'];
 
 /**
  * Primary super-admin account. Always resolves to the `admin` role so a login
@@ -81,28 +81,13 @@ function isAdminEmail(email: string | null | undefined): boolean {
   return Boolean(email) && email!.trim().toLowerCase() === PRIMARY_ADMIN_EMAIL;
 }
 
-function readStoredProfile(): AuthProfile | null {
-  if (typeof window === 'undefined') return null;
-  try {
-    const raw = localStorage.getItem(PROFILE_KEY);
-    if (raw) return JSON.parse(raw) as AuthProfile;
-  } catch {
-    /* corrupted storage — ignore */
-  }
-  // Legacy demo session cleanup: only the cached profile is trusted.
-  return null;
-}
-
-function storeProfile(profile: AuthProfile | null) {
+/** Remove any localStorage session left behind by the old demo mode. */
+function purgeLegacyDemoSession() {
   if (typeof window === 'undefined') return;
-  if (profile) {
-    localStorage.setItem(LOGGED_IN_KEY, 'true');
-    localStorage.setItem(ROLE_KEY, profile.role);
-    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
-  } else {
-    localStorage.removeItem(LOGGED_IN_KEY);
-    localStorage.removeItem(ROLE_KEY);
-    localStorage.removeItem(PROFILE_KEY);
+  try {
+    for (const key of LEGACY_STORAGE_KEYS) localStorage.removeItem(key);
+  } catch {
+    /* storage blocked — ignore */
   }
 }
 
@@ -143,9 +128,14 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
   const [profile, setProfile] = useState<AuthProfile | null>(null);
 
   useEffect(() => {
+    // Purge leftover demo-session keys on boot — auth state comes from
+    // Firebase + Firestore only, never from a local cache.
+    purgeLegacyDemoSession();
+
     if (!isFirebaseConfigured || !auth) {
-      // Demo mode: hydrate from localStorage.
-      setProfile(readStoredProfile());
+      // No Firebase config → auth is disabled. No fake profile is invented.
+      setProfile(null);
+      setUser(null);
       setLoading(false);
       return;
     }
@@ -153,12 +143,11 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser);
       if (firebaseUser) {
+        // Profile always comes fresh from the Firestore users doc.
         const next = await loadProfileFromFirestore(firebaseUser);
         setProfile(next);
-        storeProfile(next);
       } else {
         setProfile(null);
-        storeProfile(null);
       }
       setLoading(false);
     });
@@ -172,7 +161,6 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
       const next = await loadProfileFromFirestore(cred.user);
       setProfile(next);
       setUser(cred.user);
-      storeProfile(next);
       return next;
     }
 
@@ -218,7 +206,6 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
         const next: AuthProfile = {uid: cred.user.uid, name, email, role};
         setProfile(next);
         setUser(cred.user);
-        storeProfile(next);
         return next;
       }
 
@@ -273,7 +260,6 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
     };
     setProfile(next);
     setUser(cred.user);
-    storeProfile(next);
     return next;
   }, []);
 
@@ -287,7 +273,6 @@ export function AuthProvider({children}: {children: React.ReactNode}) {
     }
     setUser(null);
     setProfile(null);
-    storeProfile(null);
   }, []);
 
   const value = useMemo<AuthContextValue>(

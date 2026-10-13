@@ -140,7 +140,7 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
         try {
           const res = await fetch(`/api/bachs/checkout/verify?session_id=${encodeURIComponent(sessionId)}`);
           const data = await res.json();
-          if (data.paid || data.demo) {
+          if (res.ok && data.paid) {
             setStep(3);
             toast({ title: 'Payment Successful!', description: 'Your tickets have been generated and sent to your email.' });
           } else {

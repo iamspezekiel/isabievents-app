@@ -24,17 +24,31 @@ export default function FavoritesPage() {
   const { toast } = useToast();
 
   useEffect(() => {
-    setFavIds(getFavorites());
+    // Favorites live in the database — read them fresh on every visit.
+    let alive = true;
+    getFavorites()
+      .then((ids) => { if (alive) setFavIds(ids); })
+      .catch(() => undefined);
+    return () => { alive = false; };
   }, []);
 
   const favorites: EventDoc[] = events.filter(e => favIds.includes(e.id));
 
-  const handleRemove = (e: React.MouseEvent, id: string, title: string) => {
+  const handleRemove = async (e: React.MouseEvent, id: string, title: string) => {
     // Prevent the card link from firing when clicking the remove button
     e.preventDefault();
     e.stopPropagation();
-    
-    removeFavorite(id);
+
+    try {
+      await removeFavorite(id);
+    } catch (err) {
+      toast({
+        variant: 'destructive',
+        title: 'Could Not Remove',
+        description: err instanceof Error ? err.message : 'Please try again.',
+      });
+      return;
+    }
     setFavIds(prev => prev.filter(x => x !== id));
     
     toast({

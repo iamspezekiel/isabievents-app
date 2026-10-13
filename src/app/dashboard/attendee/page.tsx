@@ -106,6 +106,8 @@ export default function AttendeeDashboard() {
   const [tickets, setTickets] = useState<TicketDoc[]>([]);
   const [pastOrders, setPastOrders] = useState<OrderDoc[]>([]);
   const [savedCount, setSavedCount] = useState(0);
+  // Favorites are stored in the database (favorites/{uid}) — never locally.
+  const [favIds, setFavIds] = useState<string[]>([]);
   const recsRunRef = React.useRef(false);
 
   useEffect(() => {
@@ -113,8 +115,14 @@ export default function AttendeeDashboard() {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('isabi_offline_tickets');
       if (saved) setIsOfflineReady(true);
-      setSavedCount(getFavorites().length);
     }
+    // Saved favorites come fresh from the database.
+    getFavorites()
+      .then((ids) => {
+        setFavIds(ids);
+        setSavedCount(ids.length);
+      })
+      .catch(() => undefined);
     if (profile?.email) {
       getTicketsForEmail(profile.email).then(setTickets).catch(() => undefined);
       // Orders come from the API (Admin SDK) — the client query needed a
@@ -136,7 +144,7 @@ export default function AttendeeDashboard() {
     setRecommendations(
       rankEvents(events, {
         pastTitles: pastOrders.filter((o) => o.status === 'paid').map((o) => o.eventTitle),
-        savedIds: typeof window !== 'undefined' ? getFavorites() : [],
+        savedIds: favIds,
         city: profile?.city,
       }).slice(0, 6)
     );
@@ -145,7 +153,7 @@ export default function AttendeeDashboard() {
       fetchRecommendations(events);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [events, pastOrders, profile?.city]);
+  }, [events, pastOrders, favIds, profile?.city]);
 
   const handleSyncOffline = async () => {
     setIsSyncing(true);
@@ -181,7 +189,7 @@ export default function AttendeeDashboard() {
           /* no order history */
         }
       }
-      const saved = typeof window !== 'undefined' ? getFavorites() : [];
+      const saved = favIds;
       const savedTitles = eventsList.filter((e) => saved.includes(e.id)).map((e) => e.title);
       const pastCategories = eventsList
         .filter((e) => past.includes(e.title))
