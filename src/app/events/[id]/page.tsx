@@ -382,7 +382,7 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
                 <TabsTrigger value="faq" className="rounded-full flex-1">FAQs</TabsTrigger>
               </TabsList>
               
-              <TabsContent value="tickets" className="pt-8 space-y-4">
+              <TabsContent value="tickets" id="tickets" className="pt-8 space-y-4">
                 {/* Refund policy — shown before any ticket can be selected. */}
                 {!isExternal && (
                   <div
@@ -552,12 +552,32 @@ export default function EventDetailsPage(props: { params: Promise<{ id: string }
                         You&apos;ll continue to the organizer&apos;s ticketing page to complete registration or payment.
                       </p>
                     </>
-                  ) : (
-                    <Link href={selectedTier ? `/checkout/${event.slug}?tier=${encodeURIComponent(selectedTier)}&qty=${quantity}` : `/checkout/${event.slug}`}>
+                  ) : selectedTier ? (
+                    <Link
+                      href={`/checkout/${event.slug || event.id}?tier=${encodeURIComponent(selectedTier)}&qty=${quantity}`}
+                      className="no-underline"
+                    >
                       <Button size="lg" className="w-full rounded-full shadow-lg shadow-primary/20 font-bold">
-                        {selectedTier ? 'Proceed to Checkout' : 'Get Tickets Now'}
+                        Proceed to Checkout
                       </Button>
                     </Link>
+                  ) : (
+                    /* No tier chosen yet: never send the attendee to checkout
+                       with an implicit (cheapest / possibly free) ticket —
+                       take them to the ticket list to pick one. */
+                    <Button
+                      size="lg"
+                      className="w-full rounded-full shadow-lg shadow-primary/20 font-bold"
+                      onClick={() => {
+                        document.getElementById('tickets')?.scrollIntoView({behavior: 'smooth', block: 'start'});
+                        toast({
+                          title: 'Choose a ticket type',
+                          description: 'Select the ticket type you want, then continue to checkout.',
+                        });
+                      }}
+                    >
+                      Select a Ticket Type
+                    </Button>
                   )}
 
                   <div className="grid grid-cols-2 gap-3 mt-4">

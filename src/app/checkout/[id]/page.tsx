@@ -9,6 +9,7 @@ import {
   Wallet, 
   Landmark, 
   Loader2, 
+  ArrowLeft,
   ArrowRight, 
   Coins, 
   Zap, 
@@ -94,6 +95,20 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
   const totalUsd = (totalNaira / NGN_TO_USD_RATE).toFixed(2);
   const totalToCharge = currency === 'USD' ? Number(totalUsd) : totalNaira;
 
+  // Require an explicit ticket-type choice. Landing on checkout with no `tier`
+  // (a deep link, or back-navigation after cancelling) must never silently
+  // default to the cheapest tier — which could be a free ticket. Send the
+  // attendee to the event's ticket selection instead.
+  useEffect(() => {
+    if (typeof window === 'undefined' || eventsLoading || !event) return;
+    if (event.ticketMode === 'external' && event.ticketUrl) return;
+    const qs = new URLSearchParams(window.location.search);
+    if (qs.has('tier') || qs.has('session_id') || qs.has('status')) return;
+    toast({ title: 'Choose a ticket type', description: 'Select the ticket type you want, then continue to checkout.' });
+    router.replace(`/events/${encodeURIComponent(event.slug || event.id)}#tickets`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eventsLoading, event?.id]);
+
   // Already signed in? Skip the login/signup step entirely.
   useEffect(() => {
     if (!authLoading && profile) {
@@ -132,9 +147,10 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
     const status = qs.get('status');
 
     if (status === 'cancelled') {
-      toast({ variant: 'destructive', title: 'Payment Cancelled', description: 'You can try again whenever you are ready.' });
-      window.history.replaceState({}, '', window.location.pathname);
-      setStep(2);
+      // Back out to the event's ticket selection so the attendee can pick
+      // again — nothing was charged and no order or ticket is created here.
+      toast({ variant: 'destructive', title: 'Payment Cancelled', description: 'No charge was made. Pick your ticket type to try again.' });
+      router.replace(`/events/${encodeURIComponent(id)}#tickets`);
       return;
     }
 
@@ -367,6 +383,12 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
   return (
     <div className="min-h-screen bg-background text-foreground pt-48 pb-12">
       <div className="container mx-auto px-4 max-w-4xl">
+        <Link
+          href={`/events/${event.slug || event.id}#tickets`}
+          className="inline-flex items-center gap-1.5 mb-6 text-xs font-bold text-muted-foreground hover:text-primary no-underline"
+        >
+          <ArrowLeft className="w-3.5 h-3.5" /> Change ticket type
+        </Link>
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
           {/* Main Checkout Section */}
           <div className="lg:col-span-3 text-left">
