@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { Users, Ticket, DollarSign, Calendar, Loader2, Focus } from 'lucide-react';
+import { Users, Ticket, DollarSign, Loader2, Focus, Percent, Wallet } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,7 @@ export default function AnalyticsPage() {
   const focusId = searchParams.get('id');
   const { profile } = useAuth();
   const { events: allEvents } = useEvents({includeHidden: true});
-  const [stats, setStats] = useState<Record<string, {sold: number; revenueNgn: number}>>({});
+  const [stats, setStats] = useState<Record<string, {sold: number; grossNgn: number; feeNgn: number; netNgn: number}>>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -44,12 +44,14 @@ export default function AnalyticsPage() {
     .filter(isMine)
     .filter((e) => !focusId || e.id === focusId);
   const totalSold = myEvents.reduce((s, e) => s + (stats[e.id]?.sold || 0), 0);
-  const totalRevenue = myEvents.reduce((s, e) => s + (stats[e.id]?.revenueNgn || 0), 0);
+  const totalGross = myEvents.reduce((s, e) => s + (stats[e.id]?.grossNgn || 0), 0);
+  const totalFees = myEvents.reduce((s, e) => s + (stats[e.id]?.feeNgn || 0), 0);
+  const totalNet = myEvents.reduce((s, e) => s + (stats[e.id]?.netNgn || 0), 0);
 
   const chartData = myEvents
     .map((e) => ({
       name: (e.title || '').length > 14 ? (e.title || '').slice(0, 14) + '…' : e.title,
-      value: stats[e.id]?.revenueNgn || 0,
+      value: stats[e.id]?.grossNgn || 0,
     }))
     .filter((d) => d.value > 0);
 
@@ -74,18 +76,7 @@ export default function AnalyticsPage() {
           )}
         </header>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <Card className="bg-card border-border">
-            <CardContent className="p-8 text-left space-y-4">
-              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
-                 <Calendar className="w-5 h-5 text-primary" />
-              </div>
-              <div>
-                <div className="text-3xl font-black">{myEvents.length}</div>
-                <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mt-1">Events Listed</div>
-              </div>
-            </CardContent>
-          </Card>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card className="bg-card border-border">
             <CardContent className="p-8 text-left space-y-4">
               <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
@@ -103,8 +94,30 @@ export default function AnalyticsPage() {
                  <DollarSign className="w-5 h-5 text-primary" />
               </div>
               <div>
-                <div className="text-3xl font-black break-all">{loading ? '…' : `₦${totalRevenue.toLocaleString()}`}</div>
+                <div className="text-3xl font-black break-all">{loading ? '…' : `₦${totalGross.toLocaleString()}`}</div>
                 <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mt-1">Gross Revenue</div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-card border-border">
+            <CardContent className="p-8 text-left space-y-4">
+              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                 <Percent className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <div className="text-3xl font-black break-all">{loading ? '…' : `₦${totalFees.toLocaleString()}`}</div>
+                <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mt-1">Platform Fees</div>
+              </div>
+            </CardContent>
+          </Card>
+          <Card className="bg-card border-border">
+            <CardContent className="p-8 text-left space-y-4">
+              <div className="w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center">
+                 <Wallet className="w-5 h-5 text-primary" />
+              </div>
+              <div>
+                <div className="text-3xl font-black break-all">{loading ? '…' : `₦${totalNet.toLocaleString()}`}</div>
+                <div className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest mt-1">Net Earnings</div>
               </div>
             </CardContent>
           </Card>

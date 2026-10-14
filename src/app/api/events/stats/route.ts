@@ -1,14 +1,17 @@
 import {NextResponse} from 'next/server';
 import {requireOperator, isResponse} from '@/lib/admin-auth';
 import {admin} from '@/lib/server-admin';
+import {getPlatformFeePercent} from '@/lib/fees';
+import {orderFinancials} from '@/lib/finance';
+import type {OrderDoc} from '@/lib/db-types';
 
 export const runtime = 'nodejs';
 
-const NGN_PER_USD = 1550;
-
 /**
- * GET /api/events/stats — per-event sold/revenue for organizer dashboards.
- * body-free; requires an authenticated staff/vendor/organizer/admin.
+ * GET /api/events/stats — per-event sold count and money split (gross /
+ * platform fee / organizer net) for the organizer dashboards. Uses the same
+ * finance helper as the admin console and the withdrawal balance, so every
+ * surface reports identical figures.
  */
 export async function GET(req: Request) {
   const uid = await requireOperator(req);
@@ -18,15 +21,22 @@ export async function GET(req: Request) {
   if (!db) return NextResponse.json({error: 'Server credentials missing.'}, {status: 503});
 
   try {
+    const feePercent = await getPlatformFeePercent();
     const snap = await db.collection('orders').where('status', '==', 'paid').get();
-    const stats: Record<string, {sold: number; revenueNgn: number}> = {};
+    const stats: Record<
+      string,
+      {sold: number; grossNgn: number; feeNgn: number; netNgn: number; revenueNgn: number}
+    > = {};
     for (const doc of snap.docs) {
-      const o = doc.data() as {eventId?: string; quantity?: number; amount?: number; currency?: string};
+      const o = doc.data() as OrderDoc;
       if (!o.eventId) continue;
-      const ngn = (o.amount || 0) * (o.currency === 'USD' ? NGN_PER_USD : 1);
-      const entry = stats[o.eventId] || {sold: 0, revenueNgn: 0};
-      entry.sold += o.quantity || 0;
-      entry.revenueNgn += ngn;
+      const fin = orderFinancials(o, feePercent);
+      const entry = stats[o.eventId] || {sold: 0, grossNgn: 0, feeNgn: 0, netNgn: 0, revenueNgn: 0};
+      entry.sold += Number(o.quantity) || 0;
+      entry.grossNgn += fin.grossNgn;
+      entry.feeNgn += fin.feeNgn;
+      entry.netNgn += fin.netNgn;
+      entry.revenueNgn = entry.grossNgn; // legacy alias
       stats[o.eventId] = entry;
     }
     return NextResponse.json({stats});

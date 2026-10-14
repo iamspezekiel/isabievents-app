@@ -9,6 +9,7 @@
 import {NextResponse} from 'next/server';
 import {createCheckoutSession, isBachsConfigured, type BachsCurrency} from '@/lib/bachs';
 import {refundDeadlineFor} from '@/lib/timezone';
+import {NGN_PER_USD} from '@/lib/finance';
 import type {OrderDoc} from '@/lib/db';
 
 export const runtime = 'nodejs';
@@ -71,6 +72,9 @@ export async function POST(req: Request) {
     endDate?: string;
     refundPolicy?: string;
     refundCutoffHours?: number;
+    organizerUid?: string;
+    organizerEmail?: string;
+    price?: {min: number; max: number};
     tiers?: {name: string; price: number; refundable?: boolean}[];
   };
   let eventDoc: EventShape | null = null;
@@ -94,8 +98,20 @@ export async function POST(req: Request) {
   const refundCutoffHours = refundable ? Math.max(0, Number(eventDoc?.refundCutoffHours) || 0) : 0;
   const refundDeadline = refundable ? refundDeadlineFor(eventDoc?.date, refundCutoffHours) : '';
   const qty = Math.max(1, Math.min(20, Math.floor(Number(quantity) || 1)));
-  const price = Math.max(0, Number(unitPrice) || 0);
-  const amount = price * qty;
+
+  // Server-authoritative unit price: the selected tier's price when it exists,
+  // otherwise the event's minimum price. Event prices are stored in NGN, so a
+  // USD charge is converted. The client value is only a fallback for legacy
+  // events that store no price at all — a buyer can never underpay.
+  const tierPrice = eventDoc?.tiers?.find((t) => t.name === (body.tierName || ''))?.price;
+  const hasEventPrice = typeof tierPrice === 'number' || typeof eventDoc?.price?.min === 'number';
+  const eventPriceNgn = typeof tierPrice === 'number' ? tierPrice : Number(eventDoc?.price?.min) || 0;
+  const price = hasEventPrice
+    ? currency === 'USD'
+      ? Math.round((eventPriceNgn / NGN_PER_USD) * 100) / 100
+      : Math.max(0, eventPriceNgn)
+    : Math.max(0, Number(unitPrice) || 0);
+  const amount = Math.round(price * qty * 100) / 100;
 
   if (!isBachsConfigured()) {
     // Real payments only — never fabricate an order or a checkout session.
@@ -132,6 +148,10 @@ export async function POST(req: Request) {
       paymentMethodTypes: corridors,
     });
 
+    // Platform-fee snapshot for this sale (immutable, like the refund snapshot).
+    const {getPlatformFeePercent, feeOf} = await import('@/lib/fees');
+    const split = feeOf(amount, await getPlatformFeePercent());
+
     const order: Omit<OrderDoc, 'createdAt'> = {
       id: orderId,
       eventId,
@@ -151,6 +171,12 @@ export async function POST(req: Request) {
       refundable,
       refundCutoffHours,
       refundDeadline,
+      // Fee / organizer snapshot — drives net earnings + withdrawal balances.
+      ...(eventDoc?.organizerUid ? {organizerUid: eventDoc.organizerUid} : {}),
+      ...(eventDoc?.organizerEmail ? {organizerEmail: eventDoc.organizerEmail} : {}),
+      feePercent: split.feePercent,
+      feeAmount: split.feeAmount,
+      netAmount: split.netAmount,
     };
 
     // Lazy-load the Firestore layer so a module-load problem can never take

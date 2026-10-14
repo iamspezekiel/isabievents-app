@@ -161,6 +161,25 @@ export async function updateOrder(orderId: string, patch: Partial<OrderDoc>): Pr
   }
 }
 
+/** Read a single order by document id. */
+export async function getOrderById(orderId: string): Promise<OrderDoc | null> {
+  try {
+    const adminDb = getAdminDb();
+    if (adminDb) {
+      const snap = await adminDb.collection('orders').doc(orderId).get();
+      return snap.exists ? ({id: snap.id, ...snap.data()} as OrderDoc) : null;
+    }
+    if (isFirebaseConfigured && db) {
+      const cdb = db as unknown as ClientFirestore;
+      const snap = await cdb.collection('orders').doc(orderId).get();
+      return snap.exists ? ({id: snap.id, ...snap.data()} as OrderDoc) : null;
+    }
+  } catch (err) {
+    console.warn('[db] getOrderById failed:', err);
+  }
+  return null;
+}
+
 /** Look up an order by its Bachs checkout id (webhook fulfilment). */
 export async function findOrderByCheckoutId(checkoutId: string): Promise<OrderDoc | null> {
   try {

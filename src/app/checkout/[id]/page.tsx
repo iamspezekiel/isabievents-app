@@ -8,7 +8,6 @@ import {
   CreditCard, 
   Wallet, 
   Landmark, 
-  CheckCircle2, 
   Loader2, 
   ArrowRight, 
   Coins, 
@@ -122,7 +121,10 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
     }).catch(() => undefined);
   };
 
-  // Handle return from the hosted Bachs checkout (success_url / cancel_url).
+  // Return from the hosted Bachs checkout: hand off to the confirmation page,
+  // which verifies the payment (and reconciles fulfilment) before it ever shows
+  // success. Cancellations return to the payment step. Nothing here asserts a
+  // completed purchase.
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const qs = new URLSearchParams(window.location.search);
@@ -131,31 +133,13 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
 
     if (status === 'cancelled') {
       toast({ variant: 'destructive', title: 'Payment Cancelled', description: 'You can try again whenever you are ready.' });
+      window.history.replaceState({}, '', window.location.pathname);
       setStep(2);
       return;
     }
 
     if (sessionId) {
-      (async () => {
-        setLoading(true);
-        try {
-          const res = await fetch(`/api/bachs/checkout/verify?session_id=${encodeURIComponent(sessionId)}`);
-          const data = await res.json();
-          if (res.ok && data.paid) {
-            setStep(3);
-            toast({ title: 'Payment Successful!', description: 'Your tickets have been generated and sent to your email.' });
-          } else {
-            setStep(2);
-            toast({ variant: 'destructive', title: 'Payment Not Confirmed', description: `Session status: ${data.status || 'unknown'}. You can retry the payment.` });
-          }
-        } catch {
-          setStep(2);
-          toast({ variant: 'destructive', title: 'Verification Failed', description: 'Could not confirm your payment. Your ticket will appear once the payment settles.' });
-        }
-        setLoading(false);
-        // Clean the URL so refreshes don't re-verify.
-        window.history.replaceState({}, '', window.location.pathname);
-      })();
+      router.replace(`/checkout/success?session_id=${encodeURIComponent(sessionId)}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -256,10 +240,9 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
         });
         const fdata = await fres.json().catch(() => ({}));
         if (!fres.ok || !fdata.ok) throw new Error(fdata.error || 'Could not complete free checkout.');
-        setStep(3);
-        toast({title: 'All Set!', description: 'Your free tickets have been generated and sent to your email.'});
-        setLoading(false);
-        return;
+        // Tickets are issued synchronously on this path — hand off to confirmation.
+        router.push(`/checkout/success?orderId=${encodeURIComponent(String(fdata.orderId || ''))}`);
+        return; // keep the spinner until navigation takes over
       }
       const res = await fetch('/api/bachs/checkout', {
         method: 'POST',
@@ -715,26 +698,6 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
                       Rate: 1 USD ≈ ₦{NGN_TO_USD_RATE.toLocaleString()}
                     </p>
                   )}
-                </div>
-              </div>
-            )}
-
-            {step === 3 && (
-              <div className="py-12 space-y-6 animate-in zoom-in-95 duration-500 text-center">
-                <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center mb-6 mx-auto border-4 border-primary/20">
-                  <CheckCircle2 className="w-12 h-12 text-primary" />
-                </div>
-                <h1 className="font-headline">Payment Confirmed!</h1>
-                <p className="text-muted-foreground max-md mx-auto leading-relaxed">
-                  Thank you for your purchase. Your secure QR code ticket is now available in your digital wallet.
-                </p>
-                <div className="pt-10 flex flex-col sm:flex-row justify-center gap-4">
-                  <Button onClick={() => router.push('/dashboard/attendee')} variant="outline" className="rounded-full px-10 border-2 h-11 font-bold">
-                    Go to Wallet
-                  </Button>
-                  <Button onClick={() => router.push('/')} className="rounded-full px-10 shadow-xl shadow-primary/20 h-11 font-bold">
-                    Back to Home
-                  </Button>
                 </div>
               </div>
             )}

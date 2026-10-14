@@ -10,6 +10,7 @@ import {
   DollarSign, 
   CheckCircle2, 
   Activity,
+  TrendingUp,
   AlertTriangle,
   Info
 } from 'lucide-react';
@@ -24,12 +25,15 @@ import { apiFetch } from '@/lib/api-fetch';
 import { useToast } from "@/hooks/use-toast";
 
 interface Stats {
+  grossNgn: number;
+  feeNgn: number;
+  netNgn: number;
   revenueNgn: number;
   users: number;
   events: number;
   paidOrders: number;
   pendingHosts: number;
-  series: {name: string; revenue: number}[];
+  series: {name: string; gross: number; fee: number; net: number; revenue: number}[];
 }
 
 export default function AdminDashboard() {
@@ -106,8 +110,10 @@ export default function AdminDashboard() {
       </header>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <AdminStatCard label="Total Revenue" value={`₦${(stats?.revenueNgn ?? 0).toLocaleString()}`} icon={DollarSign} trend={`${stats?.paidOrders ?? 0} paid orders`} color="primary" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <AdminStatCard label="Gross GTV" value={`₦${(stats?.grossNgn ?? 0).toLocaleString()}`} icon={DollarSign} trend={`${stats?.paidOrders ?? 0} paid orders`} color="primary" />
+        <AdminStatCard label="Platform Fees" value={`₦${(stats?.feeNgn ?? 0).toLocaleString()}`} icon={Activity} trend="Platform revenue" color="primary" />
+        <AdminStatCard label="Organizer Net" value={`₦${(stats?.netNgn ?? 0).toLocaleString()}`} icon={TrendingUp} trend="Payable to organizers" color="accent" />
         <AdminStatCard label="Active Users" value={(stats?.users ?? 0).toLocaleString()} icon={Users} trend="Registered accounts" color="accent" />
         <AdminStatCard label="Live Events" value={(stats?.events ?? 0).toLocaleString()} icon={Ticket} trend="Listed on platform" color="primary" />
         <AdminStatCard label="Hosts Pending" value={(stats?.pendingHosts ?? 0).toLocaleString()} icon={ShieldCheck} trend={stats?.pendingHosts ? 'Action Required' : 'All clear'} color={stats?.pendingHosts ? 'destructive' : 'primary'} />

@@ -67,6 +67,11 @@ export async function POST(req: Request) {
       : 0;
     const refundDeadline = refundable ? refundDeadlineFor(event.date, refundCutoffHours) : '';
 
+    // Free tickets carry no fee, but still snapshot the organizer + fee rate so
+    // every order has the same shape for analytics and withdrawal scoping.
+    const {getPlatformFeePercent, feeOf} = await import('@/lib/fees');
+    const split = feeOf(0, await getPlatformFeePercent());
+
     const order = {
       id: orderId,
       eventId,
@@ -85,6 +90,11 @@ export async function POST(req: Request) {
       refundable,
       refundCutoffHours,
       refundDeadline,
+      organizerUid: event.organizerUid || '',
+      organizerEmail: event.organizerEmail || '',
+      feePercent: split.feePercent,
+      feeAmount: split.feeAmount,
+      netAmount: split.netAmount,
     };
 
     await db.createOrder(order);

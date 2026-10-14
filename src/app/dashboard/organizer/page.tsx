@@ -37,7 +37,7 @@ export default function OrganizerDashboard() {
   const { toast } = useToast();
   const { profile } = useAuth();
   const { events: allEvents, refetch, error: eventsError } = useEvents({includeHidden: true});
-  const [stats, setStats] = useState<Record<string, {sold: number; revenueNgn: number}>>({});
+  const [stats, setStats] = useState<Record<string, {sold: number; grossNgn: number; feeNgn: number; netNgn: number}>>({});
   const [statsLoaded, setStatsLoaded] = useState(false);
   const [payoutBalance, setPayoutBalance] = useState<{ngn: number; usd: number} | null>(null);
 
@@ -79,14 +79,16 @@ export default function OrganizerDashboard() {
     .filter((e) => lagosTs(e.endDate || e.date) >= now)
     .sort((a, b) => lagosTs(a.endDate || a.date) - lagosTs(b.endDate || b.date));
 
-  const totalRevenue = myEvents.reduce((sum, e) => sum + (stats[e.id]?.revenueNgn || 0), 0);
+  const totalGross = myEvents.reduce((sum, e) => sum + (stats[e.id]?.grossNgn || 0), 0);
+  const totalFees = myEvents.reduce((sum, e) => sum + (stats[e.id]?.feeNgn || 0), 0);
+  const totalNet = myEvents.reduce((sum, e) => sum + (stats[e.id]?.netNgn || 0), 0);
   const totalSold = myEvents.reduce((sum, e) => sum + (stats[e.id]?.sold || 0), 0);
 
   // Revenue chart: one bar per event (real paid-order revenue).
   const chartData = myEvents
     .map((e) => ({
       day: (e.title || '').length > 12 ? (e.title || '').slice(0, 12) + '…' : e.title,
-      sales: stats[e.id]?.revenueNgn || 0,
+      sales: stats[e.id]?.grossNgn || 0,
     }))
     .filter((d) => d.sales > 0)
     .slice(0, 7);
@@ -145,8 +147,10 @@ export default function OrganizerDashboard() {
         </div>
       </header>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        <AnalyticCard label="Total Revenue" value={`₦${totalRevenue.toLocaleString()}`} icon={DollarSign} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+        <AnalyticCard label="Gross Sales" value={`₦${totalGross.toLocaleString()}`} icon={DollarSign} />
+        <AnalyticCard label="Platform Fees" value={`₦${totalFees.toLocaleString()}`} icon={TrendingUp} />
+        <AnalyticCard label="Net Earnings" value={`₦${totalNet.toLocaleString()}`} icon={Wallet} />
         <AnalyticCard label="Tickets Sold" value={totalSold.toLocaleString()} icon={Ticket} />
         <AnalyticCard label="Upcoming Events" value={upcoming.length.toLocaleString()} icon={Calendar} />
         <AnalyticCard label="Events Listed" value={myEvents.length.toLocaleString()} icon={TrendingUp} />
@@ -207,7 +211,7 @@ export default function OrganizerDashboard() {
               </div>
             </div>
             <p className="text-xs text-muted-foreground/80">
-              Withdraw to your bank (NGN) or crypto wallet (USD). Requests up to your available balance are reviewed by our team — no KYC required.
+              Your available balance is net earnings — gross ticket sales minus platform fees and any refunds. Withdraw to your bank (NGN) or crypto wallet (USD); requests are reviewed by our team. No KYC required.
             </p>
             <Link href="/dashboard/organizer/payouts" className="no-underline block">
               <Button className="w-full text-primary-foreground font-bold h-11 rounded-full gap-2">
@@ -238,7 +242,7 @@ export default function OrganizerDashboard() {
                  title={event.title}
                  sold={stats[event.id]?.sold || 0}
                  total={event.inventory || 0}
-                 revenue={stats[event.id]?.revenueNgn || 0}
+                 revenue={stats[event.id]?.grossNgn || 0}
                />
              ))}
            </div>

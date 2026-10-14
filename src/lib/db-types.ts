@@ -74,6 +74,16 @@ export interface OrderDoc {
   /** Tickets refunded against this order — the payment record is never deleted. */
   refundedTickets?: string[];
   refundedAmount?: number;
+  /** Organizer who owns the event — drives withdrawal balance scoping. */
+  organizerUid?: string;
+  organizerEmail?: string;
+  /** Platform fee snapshot captured at purchase (immutable). */
+  feePercent?: number;
+  feeAmount?: number;
+  /** amount − feeAmount — the organizer's earnings for this order. */
+  netAmount?: number;
+  /** Bachs payment id, recorded when the order is fulfilled. */
+  paymentId?: string;
   paidAt?: string;
   createdAt?: unknown;
 }

@@ -11,8 +11,7 @@
  */
 import {NextResponse} from 'next/server';
 import {verifyBachsSignature} from '@/lib/bachs';
-import {sendPaymentConfirmationEmail} from '@/lib/email';
-import {notifyByEmail} from '@/lib/notifications';
+import {fulfilPaidOrder} from '@/lib/fulfilment';
 
 export const runtime = 'nodejs';
 
@@ -106,41 +105,14 @@ export async function POST(req: Request) {
       const checkoutId = extractCheckoutId(event.data);
       if (checkoutId && db.isDbConfigured()) {
         const order = await db.findOrderByCheckoutId(checkoutId);
-        if (order && order.status !== 'paid') {
-          await db.updateOrder(order.id, {
-            status: 'paid',
-            paidAt: new Date().toISOString(),
-          });
-          await db.issueTicketsForOrder({...order, status: 'paid'});
-          console.log(`[webhook] order ${order.id} fulfilled for ${checkoutId}`);
-
-          // Email the buyer their tickets + alert the admin (no-op without SMTP).
-          const tickets = Array.from(
-            {length: order.quantity},
-            (_, i) => `TKT-${order.id.toUpperCase().slice(0, 8)}-${i + 1}`
+        if (order) {
+          const rawPaymentId = (event.data as {payment_id?: unknown})?.payment_id;
+          const paymentId = typeof rawPaymentId === 'string' ? rawPaymentId : undefined;
+          // Atomic + idempotent: only ever issues tickets / emails once.
+          const result = await fulfilPaidOrder(order, paymentId);
+          console.log(
+            `[webhook] order ${order.id} ${result.fulfilled ? 'fulfilled' : 'already paid'} for ${checkoutId}`
           );
-          try {
-            await sendPaymentConfirmationEmail({
-              name: order.buyer.name,
-              email: order.buyer.email,
-              eventTitle: order.eventTitle,
-              quantity: order.quantity,
-              amount: order.amount,
-              currency: order.currency,
-              orderId: order.id,
-              tickets,
-            });
-          } catch (err) {
-            console.warn('[webhook] payment email failed:', err);
-          }
-
-          // Dashboard notification for the buyer (fire-and-forget).
-          notifyByEmail(order.buyer.email, {
-            title: 'Payment confirmed',
-            body: `Your payment for "${order.eventTitle}" is confirmed — ${order.quantity} ticket${order.quantity === 1 ? '' : 's'} are now in your wallet.`,
-            type: 'success',
-            href: '/dashboard/attendee',
-          }).catch(() => undefined);
         }
       }
     } else if (type === 'collection.failed' || type === 'checkout.expired') {
