@@ -318,6 +318,34 @@ export async function sendPaymentConfirmationEmail(opts: {
   return sent;
 }
 
+/**
+ * Sent to the recipient of a transferred ticket — carries the ticket code so
+ * they can find it in their wallet (and, if needed, show it without signing in).
+ */
+export async function sendTicketTransferEmail(opts: {
+  to: string;
+  recipientName?: string;
+  senderEmail: string;
+  eventTitle: string;
+  ticketCode: string;
+}): Promise<boolean> {
+  const base = process.env.APP_BASE_URL || 'https://events.isabi.cloud';
+  const who = opts.recipientName ? `, ${escapeHtml(opts.recipientName)}` : '';
+  return send({
+    to: opts.to,
+    subject: `🎟️ A ticket for ${opts.eventTitle} was transferred to you`,
+    html: layout(
+      'A ticket is now yours',
+      p(`Hi${who}!`) +
+        p(`<strong>${escapeHtml(opts.senderEmail)}</strong> transferred a ticket for <strong>${escapeHtml(opts.eventTitle)}</strong> to you on IsabiEvents. It is already in your wallet — just show this code at the gate.`) +
+        `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 16px;"><tr><td style="padding:10px 14px;border:1px dashed #c9c9d8;border-radius:8px;font-family:monospace;font-size:13px;color:#16161d;">${escapeHtml(opts.ticketCode)}</td></tr></table>` +
+        `<a href="${base}/dashboard/attendee" style="display:inline-block;background:${PRIMARY};color:#fff;padding:12px 28px;border-radius:999px;font-weight:bold;text-decoration:none;">Open My Tickets</a>` +
+        p('The organizer\'s refund policy for this ticket still applies. If you were not expecting this transfer you can safely ignore this email.'),
+    ),
+    text: `${opts.senderEmail} transferred a ticket for ${opts.eventTitle} to you. Code: ${opts.ticketCode}. View it at ${base}/dashboard/attendee`,
+  });
+}
+
 /** Contact-us form → forwarded to the admin inbox. */
 export async function sendContactEmail(opts: {name: string; email: string; subject?: string; message: string}): Promise<boolean> {
   return send({
