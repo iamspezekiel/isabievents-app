@@ -1,6 +1,6 @@
 /**
  * Transfers ownership of the 7 real (public-record) events to
- * isabiwp.ng@gmail.com — organizerUid/organizerEmail/name on each doc.
+ * isabievents@gmail.com — organizerUid/organizerEmail/name on each doc.
  * Creates the account (organizer role) if it does not exist yet and
  * prints the generated temporary password.
  *
@@ -17,7 +17,7 @@ import {initializeApp, cert, getApps} from 'firebase-admin/app';
 import {getAuth} from 'firebase-admin/auth';
 import {getFirestore} from 'firebase-admin/firestore';
 
-const OWNER_EMAIL = 'isabiwp.ng@gmail.com';
+const OWNER_EMAIL = 'isabievents@gmail.com';
 
 async function main() {
   const key = process.env.FIREBASE_SERVICE_ACCOUNT_KEY;
