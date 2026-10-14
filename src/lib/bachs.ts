@@ -41,6 +41,8 @@ export interface CreateCheckoutSessionParams {
   cancelUrl: string;
   /** Restrict payment corridors; defaults to NGN/USD card + NGN bank transfer. */
   paymentMethodTypes?: string[];
+  /** Opaque key/values echoed back in webhooks (e.g. our order id). */
+  metadata?: Record<string, string>;
 }
 
 export interface CreateCheckoutSessionResult {
@@ -62,6 +64,7 @@ export async function createCheckoutSession(
     customer: params.customer,
     success_url: params.successUrl,
     cancel_url: params.cancelUrl,
+    ...(params.metadata ? {metadata: params.metadata} : {}),
     payment_method_types:
       params.paymentMethodTypes ??
       (params.currency === 'USD'

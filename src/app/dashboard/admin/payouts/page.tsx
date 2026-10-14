@@ -36,6 +36,8 @@ interface WithdrawalRow {
   accountName?: string;
   network?: string;
   walletAddress?: string;
+  processingFee?: number;
+  netAmount?: number;
   status: 'pending' | 'approved' | 'rejected';
   note?: string;
   createdAt: string;
@@ -112,7 +114,7 @@ export default function AdminPayoutsPage() {
       toast({
         title: status === 'approved' ? 'Request Approved' : 'Request Declined',
         description: status === 'approved'
-          ? 'Marked as approved — the organizer has been emailed. Remember to send the payout manually.'
+          ? 'Marked as approved — the organizer has been emailed. Remember to send the net amount shown (the processing fee is already deducted).'
           : 'The organizer has been emailed with the outcome.',
       });
     } catch (err) {
@@ -195,11 +197,18 @@ export default function AdminPayoutsPage() {
               <CardContent className="p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-4 text-left">
                 <div className="space-y-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-3">
-                    <span className="font-black text-xl break-all">{money(w.amount, w.currency)}</span>
+                    <span className="font-black text-xl break-all">{money(typeof w.netAmount === 'number' ? w.netAmount : w.amount, w.currency)}</span>
                     <StatusBadge status={w.status} />
                     <span className="text-xs text-muted-foreground font-bold">Ref {w.id}</span>
                   </div>
                   <div className="font-bold text-sm break-words">{w.organizerName} · {w.organizerEmail}</div>
+                  {typeof w.netAmount === 'number' && (
+                    <div className="text-xs text-muted-foreground break-words">
+                      Requested {money(w.amount, w.currency)}
+                      {typeof w.processingFee === 'number' ? ` · processing fee ${money(w.processingFee, w.currency)}` : ''} —{' '}
+                      <strong className="text-foreground">send {money(w.netAmount, w.currency)}</strong>
+                    </div>
+                  )}
                   <div className="text-xs text-muted-foreground flex items-center gap-1.5 break-words">
                     {w.method === 'bank' ? <Landmark className="w-3.5 h-3.5 shrink-0" /> : <Bitcoin className="w-3.5 h-3.5 shrink-0" />}
                     <span className="break-all">{destination(w)}</span>

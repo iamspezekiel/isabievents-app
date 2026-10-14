@@ -35,6 +35,10 @@ interface WithdrawalDoc {
   accountName?: string;
   network?: string;
   walletAddress?: string;
+  /** Fixed processing fee deducted from this payout (in the payout currency). */
+  processingFee?: number;
+  /** amount − processingFee — the amount actually sent to the organizer. */
+  netAmount?: number;
   status: 'pending' | 'approved' | 'rejected';
   note?: string;
   createdAt: string;
@@ -44,6 +48,12 @@ interface WithdrawalDoc {
 }
 
 const round2 = (n: number) => Math.round((n + Number.EPSILON) * 100) / 100;
+
+/** Fixed processing fee charged on every organizer payout, in NGN. */
+const WITHDRAWAL_FEE_NGN = 100;
+/** The same fee expressed in the payout's currency (USD is converted). */
+const withdrawalFee = (currency: 'NGN' | 'USD') =>
+  currency === 'USD' ? round2(WITHDRAWAL_FEE_NGN / NGN_PER_USD) : WITHDRAWAL_FEE_NGN;
 
 /** Organizer NET earnings (fee- and refund-adjusted) for their own events. */
 function netEarnings(orders: OrderDoc[], myEventIds: Set<string>, feePercent: number): {ngn: number; usd: number} {
@@ -137,6 +147,8 @@ export async function GET(req: Request) {
       balance,
       role,
       ngPerUsd: NGN_PER_USD,
+      // Processing fee per currency, so the UI can display it consistently.
+      fees: {ngn: WITHDRAWAL_FEE_NGN, usd: withdrawalFee('USD')},
     });
   } catch (err) {
     return NextResponse.json(
@@ -170,6 +182,21 @@ export async function POST(req: Request) {
       return NextResponse.json({error: 'Enter a valid amount greater than zero.'}, {status: 400});
     }
 
+    // Every payout carries a fixed processing fee; the organizer receives
+    // `amount` minus that fee.
+    const processingFee = withdrawalFee(currency);
+    const netAmount = round2(amount - processingFee);
+    if (netAmount <= 0) {
+      return NextResponse.json(
+        {
+          error: `Amount must be greater than the ${
+            currency === 'USD' ? `$${processingFee.toFixed(2)}` : `₦${processingFee}`
+          } processing fee.`,
+        },
+        {status: 400}
+      );
+    }
+
     const bankName = (body.bankName || '').trim();
     const accountNumber = (body.accountNumber || '').trim();
     const accountName = (body.accountName || '').trim();
@@ -182,6 +209,8 @@ export async function POST(req: Request) {
       currency,
       method: currency === 'NGN' ? 'bank' : 'crypto',
       ...(currency === 'NGN' ? {bankName, accountNumber, accountName} : {network, walletAddress}),
+      processingFee,
+      netAmount,
       status: 'pending',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -305,13 +334,21 @@ export async function PATCH(req: Request) {
 
     // In-app notification for the organizer's dashboard.
     if (existing.uid) {
-      const amountStr = `${existing.currency === 'USD' ? '$' : '₦'}${Number(existing.amount || 0).toLocaleString()}`;
+      const symbol = existing.currency === 'USD' ? '$' : '₦';
+      const fee = typeof existing.processingFee === 'number' ? existing.processingFee : withdrawalFee(existing.currency);
+      const net =
+        typeof existing.netAmount === 'number'
+          ? existing.netAmount
+          : Math.max(0, Number(existing.amount || 0) - fee);
+      const amountStr = `${symbol}${Number(existing.amount || 0).toLocaleString()}`;
+      const netStr = `${symbol}${net.toLocaleString()}`;
+      const feeStr = `${symbol}${fee.toLocaleString()}`;
       createNotification({
         userId: existing.uid,
         title: status === 'approved' ? 'Payout approved' : 'Payout declined',
         body:
           status === 'approved'
-            ? `Your ${amountStr} withdrawal request has been approved and is being processed.`
+            ? `Your ${amountStr} withdrawal was approved — ${netStr} will be sent after the ${feeStr} processing fee.`
             : `Your ${amountStr} withdrawal request was declined.${note ? ` Reason: ${note}` : ''}`,
         type: status === 'approved' ? 'success' : 'warning',
         href: '/dashboard/organizer/payouts',

@@ -126,22 +126,26 @@ export async function getEvent(idOrSlug: string): Promise<EventDoc | null> {
   return null;
 }
 
-/** Create (or replace) an order document. Used by the Bachs checkout API. */
+/**
+ * Create (or replace) an order document. Used by the checkout APIs.
+ *
+ * Throws when the write cannot be performed: an order that is not persisted
+ * can never be fulfilled by the webhook, so callers must treat a failure as
+ * fatal instead of sending the buyer to the gateway.
+ */
 export async function createOrder(order: Omit<OrderDoc, 'createdAt'>): Promise<void> {
-  try {
-    const adminDb = getAdminDb();
-    const data = stripUndefined({...order, createdAt: now()});
-    if (adminDb) {
-      await adminDb.collection('orders').doc(order.id).set(data);
-      return;
-    }
-    if (isFirebaseConfigured && db) {
-      const cdb = db as unknown as ClientFirestore;
-      await cdb.collection('orders').doc(order.id).set(data);
-    }
-  } catch (err) {
-    console.warn('[db] createOrder failed:', err);
+  const data = stripUndefined({...order, createdAt: now()});
+  const adminDb = getAdminDb();
+  if (adminDb) {
+    await adminDb.collection('orders').doc(order.id).set(data);
+    return;
   }
+  if (isFirebaseConfigured && db) {
+    const cdb = db as unknown as ClientFirestore;
+    await cdb.collection('orders').doc(order.id).set(data);
+    return;
+  }
+  throw new Error('Database not configured — order could not be persisted.');
 }
 
 /** Update partial fields on an order. */

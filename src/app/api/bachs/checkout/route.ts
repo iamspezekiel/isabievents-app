@@ -30,21 +30,19 @@ interface CheckoutRequestBody {
 }
 
 /**
- * Maps the UI payment method to Bachs payment corridors and forces the
- * currency each corridor can charge (bank = NGN, crypto = USD).
+ * Maps the UI payment method to Bachs payment corridors. The method fully
+ * determines the currency: card + bank transfer are Nigerian naira (NGN) only,
+ * cryptocurrency is USD only.
  */
-function resolveCorridor(method: string | undefined, currency: BachsCurrency): {corridors: string[]; currency: BachsCurrency} {
+function resolveCorridor(method: string | undefined): {corridors: string[]; currency: BachsCurrency} {
   switch (method) {
-    case 'bank':
-      return {corridors: ['NGN_BANK_TRANSFER'], currency: 'NGN'};
     case 'crypto':
       return {corridors: ['CRYPTO'], currency: 'USD'};
+    case 'bank':
+      return {corridors: ['NGN_BANK_TRANSFER'], currency: 'NGN'};
     case 'card':
     default:
-      return {
-        corridors: currency === 'USD' ? ['USD_CARD'] : ['NGN_CARD'],
-        currency,
-      };
+      return {corridors: ['NGN_CARD'], currency: 'NGN'};
   }
 }
 
@@ -57,8 +55,9 @@ export async function POST(req: Request) {
   }
 
   const {eventId, eventSlug, eventTitle, quantity, unitPrice, buyer} = body;
-  const requestedCurrency: BachsCurrency = body.currency === 'USD' ? 'USD' : 'NGN';
-  const {corridors, currency} = resolveCorridor(body.paymentMethod, requestedCurrency);
+  // The payment method determines the currency (card/bank = NGN, crypto = USD);
+  // the client-supplied currency is ignored so a corridor can never mismatch.
+  const {corridors, currency} = resolveCorridor(body.paymentMethod);
 
   if (!eventId || !eventTitle || !buyer?.email || !buyer?.name) {
     return NextResponse.json({error: 'Missing required checkout fields.'}, {status: 400});
@@ -146,6 +145,9 @@ export async function POST(req: Request) {
       successUrl,
       cancelUrl,
       paymentMethodTypes: corridors,
+      // Echoed back in webhooks so fulfilment can be correlated even when the
+      // checkout id is missing from the payload.
+      metadata: {orderId},
     });
 
     // Platform-fee snapshot for this sale (immutable, like the refund snapshot).
@@ -179,15 +181,21 @@ export async function POST(req: Request) {
       netAmount: split.netAmount,
     };
 
-    // Lazy-load the Firestore layer so a module-load problem can never take
-    // down checkout creation itself (and surfaces a clear error if it exists).
+    // Persist the order BEFORE returning the gateway URL. Fulfilment looks the
+    // order up by checkout id, so a missing or failed write must block checkout
+    // rather than leave a paid payment that can never generate tickets.
+    const db = await import('@/lib/db');
+    if (!db.isDbConfigured()) {
+      return NextResponse.json(
+        {error: 'Order storage is not configured. Contact support@isabi.cloud.'},
+        {status: 503}
+      );
+    }
     try {
-      const db = await import('@/lib/db');
-      if (db.isDbConfigured()) {
-        await db.createOrder(order);
-      }
+      await db.createOrder(order);
     } catch (err) {
-      console.error('[api/bachs/checkout] order persistence unavailable:', err);
+      console.error('[api/bachs/checkout] failed to persist order:', err);
+      return NextResponse.json({error: 'Could not create your order. Please try again.'}, {status: 502});
     }
 
     return NextResponse.json({

@@ -383,9 +383,29 @@ export interface WithdrawalEmailData {
   accountName?: string;
   network?: string;
   walletAddress?: string;
+  /** Fixed processing fee deducted from this payout (payout currency). */
+  processingFee?: number;
+  /** Amount actually sent to the organizer (amount − processingFee). */
+  netAmount?: number;
   status?: string;
   note?: string;
 }
+
+/** Fee + net breakdown for a payout (falls back to 0 fee for legacy rows). */
+const payoutBreakdown = (w: WithdrawalEmailData) => {
+  const symbol = w.currency === 'USD' ? '$' : '₦';
+  const amount = Number(w.amount) || 0;
+  const fee = typeof w.processingFee === 'number' ? w.processingFee : 0;
+  const net = typeof w.netAmount === 'number' ? w.netAmount : Math.max(0, amount - fee);
+  return {symbol, amount, fee, net};
+};
+
+const withdrawalFeeLine = (w: WithdrawalEmailData) => {
+  const {symbol, fee, net} = payoutBreakdown(w);
+  return p(
+    `Amount requested: <strong>${symbol}${Number(w.amount || 0).toLocaleString()}</strong> · Processing fee: <strong>${symbol}${fee.toLocaleString()}</strong> · <strong>Net payout: ${symbol}${net.toLocaleString()}</strong>`
+  );
+};
 
 const withdrawalDestination = (w: WithdrawalEmailData) =>
   w.currency === 'NGN'
@@ -407,7 +427,8 @@ export async function sendWithdrawalRequestEmails(w: WithdrawalEmailData): Promi
       'New withdrawal request',
       p(`<strong>${escapeHtml(w.organizerName)}</strong> (${escapeHtml(w.organizerEmail)}) requested a withdrawal of <strong>${money(w.amount, w.currency)}</strong>.`) +
         p(`Destination: ${withdrawalDestination(w)}`) +
-        p(`Reference: <code>${escapeHtml(w.id)}</code> — status <strong>pending</strong>. Transfers are manual: approve only after sending the funds.`) +
+        withdrawalFeeLine(w) +
+        p(`Reference: <code>${escapeHtml(w.id)}</code> — status <strong>pending</strong>. Transfers are manual: approve and send the <strong>net payout</strong> shown above.`) +
         `<a href="${base}/dashboard/admin/payouts" style="display:inline-block;background:${PRIMARY};color:#fff;padding:12px 28px;border-radius:999px;font-weight:bold;text-decoration:none;">Review Request</a>`
     ),
     text: `Withdrawal request ${w.id}: ${w.organizerName} requested ${money(w.amount, w.currency)} (${w.currency === 'NGN' ? `bank ${w.bankName} ${w.accountNumber}` : `crypto ${w.network} ${w.walletAddress}`}). Review at ${base}/dashboard/admin/payouts`,
@@ -420,6 +441,7 @@ export async function sendWithdrawalRequestEmails(w: WithdrawalEmailData): Promi
       'Withdrawal request received',
       p(`Your request to withdraw <strong>${money(w.amount, w.currency)}</strong> is now under review by the IsabiEvents team.`) +
         p(`Destination: ${withdrawalDestination(w)}`) +
+        withdrawalFeeLine(w) +
         p(`Reference: <code>${escapeHtml(w.id)}</code>. NGN bank transfers and USD crypto payouts are processed manually — you'll get another email the moment it's approved or declined.`) +
         `<a href="${base}/dashboard/organizer/payouts" style="display:inline-block;background:${PRIMARY};color:#fff;padding:12px 28px;border-radius:999px;font-weight:bold;text-decoration:none;">View Payout Status</a>`
     ),
@@ -431,10 +453,11 @@ export async function sendWithdrawalRequestEmails(w: WithdrawalEmailData): Promi
 export async function sendWithdrawalStatusEmail(w: WithdrawalEmailData): Promise<boolean> {
   const approved = w.status === 'approved';
   const base = process.env.APP_BASE_URL || 'https://events.isabi.cloud';
+  const {symbol, net} = payoutBreakdown(w);
   return send({
     to: w.organizerEmail,
     subject: approved
-      ? `✅ Your ${w.currency} withdrawal was approved — ${money(w.amount, w.currency)} on the way`
+      ? `✅ Your ${w.currency} withdrawal was approved — ${symbol}${net.toLocaleString()} on the way`
       : `⚠️ Your ${w.currency} withdrawal was declined — ${money(w.amount, w.currency)}`,
     html: layout(
       approved ? 'Withdrawal approved' : 'Withdrawal declined',
@@ -449,11 +472,12 @@ export async function sendWithdrawalStatusEmail(w: WithdrawalEmailData): Promise
               w.note ? ` Reason: <strong>${escapeHtml(w.note)}</strong>.` : ''
             } You can submit a new request from your payouts page.`
       ) +
+        (approved ? withdrawalFeeLine(w) : '') +
         p(`Destination: ${withdrawalDestination(w)} — reference <code>${escapeHtml(w.id)}</code>.`) +
         `<a href="${base}/dashboard/organizer/payouts" style="display:inline-block;background:${PRIMARY};color:#fff;padding:12px 28px;border-radius:999px;font-weight:bold;text-decoration:none;">Open Payouts</a>`
     ),
     text: approved
-      ? `Your ${money(w.amount, w.currency)} withdrawal (${w.id}) was approved and queued for payment.`
+      ? `Your ${money(w.amount, w.currency)} withdrawal (${w.id}) was approved — ${symbol}${net.toLocaleString()} will be sent after the processing fee.`
       : `Your ${money(w.amount, w.currency)} withdrawal (${w.id}) was declined.${w.note ? ` Reason: ${w.note}` : ''}`,
   });
 }

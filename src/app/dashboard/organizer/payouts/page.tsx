@@ -56,6 +56,8 @@ interface WithdrawalRow {
   accountName?: string;
   network?: string;
   walletAddress?: string;
+  processingFee?: number;
+  netAmount?: number;
   status: 'pending' | 'approved' | 'rejected';
   note?: string;
   createdAt: string;
@@ -96,6 +98,8 @@ export default function OrganizerPayoutsPage() {
   const [loading, setLoading] = useState(true);
   const [requests, setRequests] = useState<WithdrawalRow[]>([]);
   const [balance, setBalance] = useState({ngn: 0, usd: 0});
+  // Fixed processing fee per currency, supplied by the server.
+  const [fees, setFees] = useState({ngn: 100, usd: 0.06});
 
   const [currency, setCurrency] = useState<'NGN' | 'USD'>('NGN');
   const [amount, setAmount] = useState('');
@@ -113,6 +117,7 @@ export default function OrganizerPayoutsPage() {
       .then((d) => {
         if (Array.isArray(d?.requests)) setRequests(d.requests as WithdrawalRow[]);
         if (d?.balance) setBalance(d.balance);
+        if (d?.fees) setFees({ngn: Number(d.fees.ngn ?? 100), usd: Number(d.fees.usd ?? 0)});
         if (d?.error) toast({variant: 'destructive', title: 'Could not load payouts', description: d.error});
       })
       .catch(() => undefined)
@@ -192,13 +197,17 @@ export default function OrganizerPayoutsPage() {
   const pendingCount = requests.filter((r) => r.status === 'pending').length;
   const availableAmt = currency === 'USD' ? balance.usd : balance.ngn;
   const amountOverBalance = Number(amount) > availableAmt + 0.001;
+  const feeAmt = currency === 'USD' ? fees.usd : fees.ngn;
+  const netToReceive = Math.max(0, Number(amount || 0) - feeAmt);
+  const amountTooSmall = Number(amount) > 0 && netToReceive <= 0;
+  const fmt = (v: number) => (currency === 'USD' ? `$${v.toFixed(2)}` : `₦${v.toLocaleString()}`);
 
   return (
     <div className="p-4 pb-16 md:p-12 md:pb-16 space-y-8">
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 text-left">
         <div className="space-y-1">
           <h1 className="font-headline text-2xl md:text-4xl">Payouts</h1>
-          <p className="text-muted-foreground">Withdraw your sales funds — NGN by bank transfer, USD by crypto. Every request is reviewed manually by our team.</p>
+          <p className="text-muted-foreground">Withdraw your sales funds — NGN by bank transfer, USD by crypto. A fixed processing fee applies to every payout, and each request is reviewed manually by our team.</p>
         </div>
       </header>
 
@@ -281,8 +290,18 @@ export default function OrganizerPayoutsPage() {
                   required
                 />
                 <p className={`text-xs ${amountOverBalance ? 'text-red-500 font-bold' : 'text-muted-foreground'}`}>
-                  Available: {currency === 'USD' ? `$${availableAmt.toLocaleString()}` : `₦${availableAmt.toLocaleString()}`} — requests are capped at your balance.
+                  Available: {fmt(availableAmt)} — requests are capped at your balance.
                 </p>
+                <div className="flex items-center justify-between text-xs rounded-lg bg-secondary/40 px-3 py-2">
+                  <span className="text-muted-foreground">Processing fee</span>
+                  <span className="font-bold">{fmt(feeAmt)}</span>
+                </div>
+                {Number(amount) > 0 && (
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-muted-foreground">You receive</span>
+                    <span className={`font-black ${amountTooSmall ? 'text-red-500' : 'text-foreground'}`}>{fmt(netToReceive)}</span>
+                  </div>
+                )}
               </div>
 
               {currency === 'NGN' ? (
@@ -372,14 +391,20 @@ export default function OrganizerPayoutsPage() {
               <div className="flex items-start gap-2 text-xs text-muted-foreground bg-secondary/30 rounded-xl p-3">
                 <Info className="w-4 h-4 shrink-0 mt-0.5" />
                 <span>
-                  Payouts are processed <strong className="text-foreground">manually</strong> by the IsabiEvents team.
-                  You&apos;ll receive an email as soon as your request is approved or declined.
+                  A fixed <strong className="text-foreground">{fmt(feeAmt)}</strong> processing fee applies to every payout
+                  (deducted from the amount you request). Payouts are processed{' '}
+                  <strong className="text-foreground">manually</strong> by the IsabiEvents team — you&apos;ll receive an email
+                  as soon as your request is approved or declined.
                 </span>
               </div>
 
-              <Button type="submit" className="w-full rounded-xl h-11 font-bold gap-2" disabled={submitting || amountOverBalance}>
+              <Button type="submit" className="w-full rounded-xl h-11 font-bold gap-2" disabled={submitting || amountOverBalance || amountTooSmall}>
                 {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <ArrowDownToLine className="w-4 h-4" />}
-                {amountOverBalance ? 'Amount Exceeds Available Balance' : 'Submit Request'}
+                {amountOverBalance
+                  ? 'Amount Exceeds Available Balance'
+                  : amountTooSmall
+                    ? `Amount Must Exceed the ${fmt(feeAmt)} Fee`
+                    : 'Submit Request'}
               </Button>
             </form>
           </CardContent>
@@ -417,6 +442,12 @@ export default function OrganizerPayoutsPage() {
                       <span className="break-all">{destination(w)}</span>
                     </div>
                     <div>{new Date(w.createdAt).toLocaleString('en-NG', {dateStyle: 'medium', timeStyle: 'short'})} · Ref {w.id}</div>
+                    {typeof w.netAmount === 'number' && (
+                      <div>
+                        You receive <strong className="text-foreground">{money(w.netAmount, w.currency)}</strong>
+                        {typeof w.processingFee === 'number' ? ` (after ${money(w.processingFee, w.currency)} processing fee)` : ''}
+                      </div>
+                    )}
                     {w.status === 'rejected' && w.note && (
                       <div className="text-red-500 font-medium">Reason: {w.note}</div>
                     )}

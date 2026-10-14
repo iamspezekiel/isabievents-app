@@ -121,11 +121,10 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
     }
   }, [authLoading, profile]);
 
-  // Card supports NGN + USD; bank transfer is NGN-only; crypto is USD-only.
+  // Card payments are NGN-only, bank transfer is NGN-only, crypto is USD-only.
   const handleSelectMethod = (method: 'card' | 'bank' | 'crypto') => {
     setPaymentMethod(method);
-    if (method === 'bank') setCurrency('NGN');
-    if (method === 'crypto') setCurrency('USD');
+    setCurrency(method === 'crypto' ? 'USD' : 'NGN');
   };
 
   const fireWelcomeEmail = (name: string, email: string, method: string) => {
@@ -655,7 +654,7 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
                   <button
                     type="button"
                     onClick={() => setCurrency('USD')}
-                    disabled={paymentMethod === 'bank'}
+                    disabled={paymentMethod !== 'crypto'}
                     className={`py-2.5 rounded-xl text-sm font-black transition-all disabled:opacity-40 disabled:cursor-not-allowed ${currency === 'USD' ? 'bg-primary text-white shadow-lg shadow-primary/20' : 'text-muted-foreground hover:text-foreground'}`}
                   >
                     $ USD
@@ -667,7 +666,7 @@ export default function CheckoutPage(props: { params: Promise<{ id: string }> })
                     id="card"
                     label="Card Payment"
                     icon={CreditCard}
-                    description={currency === 'USD' ? 'Visa, Mastercard, Verve on USD' : 'Visa, Mastercard, Verve on NGN'}
+                    description="Visa, Mastercard, Verve — NGN only"
                   />
                   <PaymentOption id="bank" label="Bank Transfer" icon={Landmark} description="Nigerian bank transfer (NGN)" />
                   <PaymentOption 

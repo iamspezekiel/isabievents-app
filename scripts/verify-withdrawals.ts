@@ -32,6 +32,7 @@ const app = initializeApp(
 interface WithdrawalsResponse {
   requests?: unknown[];
   balance?: {ngn: number; usd: number};
+  fees?: {ngn: number; usd: number};
   error?: string;
 }
 interface WithdrawalAction {
@@ -56,13 +57,27 @@ const check = (name: string, ok: boolean, detail = '') =>
   // 1. GET list + balance
   const list = (await (await call('/api/withdrawals')).json()) as WithdrawalsResponse;
   check('GET /api/withdrawals', Array.isArray(list.requests), `balance=${JSON.stringify(list.balance)}`);
+  check('GET /api/withdrawals reports processing fee', typeof list.fees?.ngn === 'number', `fees=${JSON.stringify(list.fees)}`);
 
-  // 2. NGN validation — missing bank details must be refused
+  // 2. NGN validation — missing bank details must be refused (amount above the fee)
   const bad = await call('/api/withdrawals', {
     method: 'POST',
-    body: JSON.stringify({amount: 100, currency: 'NGN'}),
+    body: JSON.stringify({amount: 500, currency: 'NGN'}),
   });
   check('NGN validation rejects missing bank details', bad.status === 400, `status=${bad.status}`);
+
+  // 2b. Below-fee request must be refused (net payout would be <= 0)
+  const tiny = await call('/api/withdrawals', {
+    method: 'POST',
+    body: JSON.stringify({
+      amount: 50,
+      currency: 'NGN',
+      bankName: 'Zenith Bank',
+      accountNumber: '1234567890',
+      accountName: 'Test Organizer',
+    }),
+  });
+  check('below-fee NGN request rejected', tiny.status === 400, `status=${tiny.status}`);
 
   // 3. Over-balance request must be refused (balance is net earnings)
   const ngnBal = Number(list?.balance?.ngn) || 0;
@@ -78,9 +93,9 @@ const check = (name: string, ok: boolean, detail = '') =>
   });
   check('over-balance NGN request rejected', over.status === 400, `status=${over.status} balance=${ngnBal}`);
 
-  // 4. If the account has net earnings, exercise a real request end-to-end
+  // 4. If the account has net earnings above the processing fee, exercise a real request end-to-end
   let created: WithdrawalAction | null = null;
-  if (ngnBal >= 100) {
+  if (ngnBal > 100) {
     created = (await (
       await call('/api/withdrawals', {
         method: 'POST',

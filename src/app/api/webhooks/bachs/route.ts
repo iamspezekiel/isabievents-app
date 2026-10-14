@@ -1,19 +1,34 @@
 /**
- * POST /api/webhooks/bachs — Bachs webhook receiver.
+ * POST /api/webhooks/bachs — Bachs webhook receiver (server of record for
+ * payment fulfilment).
  *
  * Verifies X-Bachs-Signature (HMAC-SHA256 of "{timestamp}.{rawBody}", hex)
- * against BACHS_WEBHOOK_SECRET, deduplicates by event id, and fulfils paid
- * orders: marks the order paid in Firestore and issues QR tickets.
+ * against BACHS_WEBHOOK_SECRET, then fulfils the paid order: it marks the
+ * order paid and issues the attendee's QR tickets.
+ *
+ * Retry-safety:
+ *  - A delivery is only recorded as processed (`status: "done"`) AFTER it has
+ *    been handled successfully, so a retry of a failed delivery is processed
+ *    again instead of being discarded as a duplicate.
+ *  - On failure the handler responds 5xx (instead of 200) so the gateway
+ *    retries; the failure is recorded on the ledger for visibility.
+ *  - Duplicate tickets are impossible: fulfilment is transactional and ticket
+ *    ids are deterministic per order (see `fulfilPaidOrder`).
  *
  * Register this URL in the Bachs Developer Portal → Webhooks:
  *   https://<your-domain>/api/webhooks/bachs
- * Events: checkout.completed, collection.succeeded, collection.failed
+ * Events: checkout.completed, collection.succeeded, collection.failed,
+ *         checkout.expired
  */
 import {NextResponse} from 'next/server';
+import {createHash} from 'crypto';
 import {verifyBachsSignature} from '@/lib/bachs';
 import {fulfilPaidOrder} from '@/lib/fulfilment';
 
 export const runtime = 'nodejs';
+
+const PAID_EVENTS = ['checkout.completed', 'collection.succeeded'];
+const FAILED_EVENTS = ['collection.failed', 'checkout.expired'];
 
 /** Extract a chk_... checkout id from the event payload (lenient parsing). */
 function extractCheckoutId(data: unknown): string | null {
@@ -34,23 +49,27 @@ function extractCheckoutId(data: unknown): string | null {
   return match ? match[0] : null;
 }
 
-type AdminDb = NonNullable<ReturnType<(typeof import('@/lib/firebase-admin'))['getAdminDb']>>;
-
-async function markEventProcessed(eventId: string, adminDb: AdminDb | null): Promise<boolean> {
-  // Returns true if this is a NEW event (false = duplicate delivery).
-  if (adminDb) {
-    try {
-      const ref = adminDb.collection('webhook_events').doc(eventId);
-      const snap = await ref.get();
-      if (snap.exists) return false;
-      await ref.set({processedAt: new Date().toISOString()});
-      return true;
-    } catch (err) {
-      console.warn('[webhook] dedup check failed (continuing):', err);
-      return true;
-    }
+/** Extract our own ord_... order id (from metadata or the payload). */
+function extractOrderId(data: unknown): string | null {
+  if (!data || typeof data !== 'object') return null;
+  const d = data as Record<string, unknown>;
+  const meta = d.metadata && typeof d.metadata === 'object' ? (d.metadata as Record<string, unknown>) : {};
+  const candidates = [meta.orderId, meta.order_id, d.order_id, d.orderId, d.reference];
+  for (const c of candidates) {
+    if (typeof c === 'string' && c.startsWith('ord_')) return c;
   }
-  return true; // no persistence configured — process anyway
+  const m = JSON.stringify(data).match(/ord_[A-Za-z0-9]+/);
+  return m ? m[0] : null;
+}
+
+/**
+ * Stable idempotency key for a delivery. Uses the gateway's event id when
+ * present; otherwise hashes the raw body so retries of the exact same payload
+ * still de-duplicate (a timestamp-based fallback would defeat dedup).
+ */
+function eventKey(event: {id?: string}, rawBody: string): string {
+  if (event.id) return event.id;
+  return `sha256_${createHash('sha256').update(rawBody).digest('hex')}`;
 }
 
 export async function POST(req: Request) {
@@ -77,11 +96,11 @@ export async function POST(req: Request) {
     return NextResponse.json({error: 'Invalid JSON.'}, {status: 400});
   }
 
-  const eventId = event.id || `no_id_${Date.now()}`;
+  const key = eventKey(event, rawBody);
+  const type = event.type || '';
 
   // Lazily load the Firestore-backed modules (firebase-admin is heavy and
-  // historically breaks when bundled for serverless). A load failure now
-  // returns a readable JSON error instead of an opaque 500 page.
+  // historically breaks when bundled for serverless).
   let getAdminDb: (typeof import('@/lib/firebase-admin'))['getAdminDb'];
   let db: typeof import('@/lib/db');
   try {
@@ -93,42 +112,72 @@ export async function POST(req: Request) {
     return NextResponse.json({error: `Server modules failed to load: ${message}`}, {status: 503});
   }
 
-  const isNew = await markEventProcessed(eventId, getAdminDb());
-  if (!isNew) {
-    return NextResponse.json({received: true, duplicate: true});
+  const adminDb = getAdminDb();
+  const ledger = adminDb ? adminDb.collection('webhook_events').doc(key) : null;
+
+  // Only a *successfully handled* delivery is a duplicate.
+  if (ledger) {
+    try {
+      const snap = await ledger.get();
+      if (snap.exists && (snap.data() as {status?: string})?.status === 'done') {
+        return NextResponse.json({received: true, duplicate: true});
+      }
+    } catch (err) {
+      console.warn('[webhook] dedup read failed (continuing):', err);
+    }
   }
 
-  const type = event.type || '';
-
   try {
-    if (type === 'checkout.completed' || type === 'collection.succeeded') {
+    if (PAID_EVENTS.includes(type)) {
+      // A paid event MUST resolve to an order and fulfil it — otherwise we ask
+      // the gateway to retry (the order may simply not be visible yet).
       const checkoutId = extractCheckoutId(event.data);
-      if (checkoutId && db.isDbConfigured()) {
-        const order = await db.findOrderByCheckoutId(checkoutId);
-        if (order) {
-          const rawPaymentId = (event.data as {payment_id?: unknown})?.payment_id;
-          const paymentId = typeof rawPaymentId === 'string' ? rawPaymentId : undefined;
-          // Atomic + idempotent: only ever issues tickets / emails once.
-          const result = await fulfilPaidOrder(order, paymentId);
-          console.log(
-            `[webhook] order ${order.id} ${result.fulfilled ? 'fulfilled' : 'already paid'} for ${checkoutId}`
-          );
-        }
+      const orderId = extractOrderId(event.data);
+      if (!db.isDbConfigured()) throw new Error('Database is not configured.');
+
+      let order = checkoutId ? await db.findOrderByCheckoutId(checkoutId) : null;
+      if (!order && orderId) order = await db.getOrderById(orderId);
+      if (!order) {
+        throw new Error(`No order found for ${checkoutId ? `checkout ${checkoutId}` : `order ${orderId || '(unknown)'}`}`);
       }
-    } else if (type === 'collection.failed' || type === 'checkout.expired') {
+
+      const rawPaymentId = (event.data as {payment_id?: unknown})?.payment_id;
+      const paymentId = typeof rawPaymentId === 'string' ? rawPaymentId : undefined;
+
+      // Atomic + idempotent: issues tickets / sends email exactly once.
+      const result = await fulfilPaidOrder(order, paymentId);
+      console.log(
+        `[webhook] order ${order.id} ${result.fulfilled ? 'fulfilled' : 'already paid'} (${type})`
+      );
+    } else if (FAILED_EVENTS.includes(type)) {
       const checkoutId = extractCheckoutId(event.data);
-      if (checkoutId && db.isDbConfigured()) {
-        const order = await db.findOrderByCheckoutId(checkoutId);
+      const orderId = extractOrderId(event.data);
+      if (db.isDbConfigured()) {
+        let order = checkoutId ? await db.findOrderByCheckoutId(checkoutId) : null;
+        if (!order && orderId) order = await db.getOrderById(orderId);
         if (order && order.status === 'pending') {
           await db.updateOrder(order.id, {status: 'failed'});
+          console.log(`[webhook] order ${order.id} marked failed (${type})`);
         }
       }
     }
     // Other event types are acknowledged and ignored (forward compatible).
-  } catch (err) {
-    console.error('[webhook] fulfilment error:', err);
-    // Still 200: the event was recorded; replay is available from the portal.
-  }
 
-  return NextResponse.json({received: true});
+    if (ledger) {
+      await ledger
+        .set({status: 'done', type, processedAt: new Date().toISOString()}, {merge: true})
+        .catch((err) => console.warn('[webhook] ledger mark-done failed:', err));
+    }
+    return NextResponse.json({received: true});
+  } catch (err) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error('[webhook] fulfilment failed:', message);
+    // Record the failure (do NOT mark done) and ask the gateway to retry.
+    if (ledger) {
+      await ledger
+        .set({status: 'failed', type, lastError: message, attemptedAt: new Date().toISOString()}, {merge: true})
+        .catch(() => undefined);
+    }
+    return NextResponse.json({error: 'Fulfilment failed; retry requested.'}, {status: 500});
+  }
 }
