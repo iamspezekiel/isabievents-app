@@ -4,7 +4,7 @@ import { MetadataRoute } from 'next';
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: 'IsabiEvents',
-    short_name: 'Isabi',
+    short_name: 'IsabiEvents',
     description: "Nigeria's Premier Ticket Marketplace",
     start_url: '/',
     display: 'standalone',

@@ -40,6 +40,7 @@ import { getTicketsForEmail } from '@/lib/client-db';
 import type { EventDoc, OrderDoc, TicketDoc } from '@/lib/db-types';
 import { getFavorites } from '@/lib/favorites';
 import { apiFetch } from '@/lib/api-fetch';
+import { TicketQr } from '@/components/ticket-qr';
 import { lagosTs, formatEventDate, formatEventDateTime, describeDeadline } from '@/lib/timezone';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -537,8 +538,10 @@ export default function AttendeeDashboard() {
             <p className="text-[10px] font-bold uppercase tracking-widest opacity-70">Entry Ticket</p>
           </div>
           <div className="p-6 text-center space-y-6">
+            {/* Real, scannable QR of the ticket code — a plain icon here would
+                leave the gate scanner with nothing to decode. */}
             <div className="p-4 bg-white rounded-2xl shadow-xl inline-block">
-               <QrCode className="w-64 h-64 text-black transition-all" />
+               <TicketQr value={viewTicket?.code} size={256} />
             </div>
             
             <div className="space-y-4">

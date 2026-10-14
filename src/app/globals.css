@@ -151,7 +151,7 @@
   }
 
   /* Target the QR code specifically in print */
-  div[role="dialog"] .lucide-qr-code {
+  div[role="dialog"] [data-ticket-qr] {
     width: 12cm !important;
     height: 12cm !important;
     margin: 1cm auto !important;

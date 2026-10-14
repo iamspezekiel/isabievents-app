@@ -15,6 +15,7 @@ import { getTicketsForEmail } from '@/lib/client-db';
 import { useToast } from "@/hooks/use-toast";
 import type { EventDoc, TicketDoc } from '@/lib/db-types';
 import { formatEventDate, formatEventDateTime } from '@/lib/timezone';
+import { TicketQr } from '@/components/ticket-qr';
 import Link from 'next/link';
 
 export default function TicketGalleryPage() {
@@ -255,14 +256,8 @@ export default function TicketGalleryPage() {
           {qrTicket && (
             <div className="space-y-4">
               <div className="bg-white p-4 rounded-2xl flex items-center justify-center">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=8&data=${encodeURIComponent(qrTicket.code)}`}
-                  alt={`QR code for ticket ${qrTicket.code}`}
-                  width={260}
-                  height={260}
-                  className="rounded-lg"
-                />
+                {/* Locally encoded so the code still renders offline. */}
+                <TicketQr value={qrTicket.code} size={260} className="rounded-lg" />
               </div>
               <div className="flex items-center justify-between gap-3 bg-secondary/40 rounded-xl px-4 py-3">
                 <span className="font-mono font-bold text-sm break-all">{qrTicket.code}</span>
