@@ -110,8 +110,8 @@ const EMAIL_BASE = (process.env.APP_BASE_URL || 'https://events.isabi.cloud').re
 
 /**
  * Shared branded HTML email wrapper (email-safe tables). Full-width layout on a
- * light background; the header shows the app logo (the hosted favicon mark + the
- * IsabiEvents wordmark). No primary-color header band.
+ * light background; the header shows the app logo (the hosted IsabiEvents mark
+ * + the IsabiEvents wordmark). No primary-color header band.
  */
 function layout(title: string, bodyHtml: string): string {
   return `<!DOCTYPE html>
@@ -129,10 +129,10 @@ function layout(title: string, bodyHtml: string): string {
       <td align="center">
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:100%;background:#ffffff;border-collapse:collapse;">
 
-                    <!-- Header: light background + app logo (favicon mark + IsabiEvents wordmark) -->
+                    <!-- Header: light background + app logo (brand mark + IsabiEvents wordmark) -->
           <tr>
             <td align="left" valign="middle" style="background:#ffffff;padding:20px 32px;border-bottom:1px solid #ececf3;">
-              <img src="${EMAIL_BASE}/favicon.ico" width="34" height="34" alt="" style="display:inline-block;vertical-align:middle;border:0;outline:none;text-decoration:none;" />
+              <img src="${EMAIL_BASE}/logo.png" width="36" height="36" alt="IsabiEvents" style="display:inline-block;vertical-align:middle;border:0;outline:none;text-decoration:none;border-radius:10px;" />
               <span style="display:inline-block;vertical-align:middle;margin-left:10px;font-size:23px;line-height:1;font-weight:800;color:#16161d;letter-spacing:-0.02em;font-family:-apple-system,'Segoe UI',Arial,sans-serif;">IsabiEvents</span>
             </td>
           </tr>
