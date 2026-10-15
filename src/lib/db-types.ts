@@ -96,6 +96,12 @@ export interface TicketDoc {
   eventId: string;
   eventTitle: string;
   holderName: string;
+  /**
+   * Owning buyer's email, ALWAYS stored normalized (lowercase + trimmed) via
+   * `normalizeEmail()` — see @/lib/emails. Wallet lookups query this field with
+   * an equality match and the `tickets` security rule compares it to the
+   * lowercased account email, so mixed case would make the ticket unfindable.
+   */
   buyerEmail: string;
   buyerUid?: string;
   code: string; // QR payload, e.g. TKT-<orderId short>

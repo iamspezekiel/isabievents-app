@@ -4,6 +4,7 @@ import {admin} from '@/lib/server-admin';
 import {createNotification, notifyByEmail, notifyUsers, userIdsByRole} from '@/lib/notifications';
 import {sendRefundStatusEmail} from '@/lib/email';
 import {isBeforeDeadline, refundDeadlineFor} from '@/lib/timezone';
+import {normalizeEmail} from '@/lib/emails';
 
 export const runtime = 'nodejs';
 
@@ -153,7 +154,10 @@ async function checkEligibility(
 async function callerEmail(db: FirebaseFirestore.Firestore, uid: string): Promise<string> {
   try {
     const snap = await db.collection('users').doc(uid).get();
-    return snap.exists ? String((snap.data() as {email?: string}).email || '') : '';
+    // Normalized so it matches the normalized `buyerEmail` stored on tickets
+    // and refunds (see @/lib/emails) — a mixed-case profile email would
+    // otherwise hide the caller's own refund requests.
+    return snap.exists ? normalizeEmail((snap.data() as {email?: string}).email) : '';
   } catch {
     return '';
   }
@@ -249,7 +253,8 @@ export async function POST(req: Request) {
       eventTitle: ticket.eventTitle || 'Event',
       tierName: ticket.tierName || '',
       holderName: ticket.holderName || '',
-      buyerEmail: ticket.buyerEmail || email,
+      // Normalized on write so the owner's own-list query always finds it.
+      buyerEmail: normalizeEmail(ticket.buyerEmail || email),
       buyerUid: uid,
       amount: eligibility.amount || 0,
       currency: eligibility.currency || 'NGN',

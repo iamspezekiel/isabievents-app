@@ -21,6 +21,7 @@
  */
 import {db, isFirebaseConfigured} from '@/lib/firebase';
 import {getAdminDb} from '@/lib/firebase-admin';
+import {normalizeEmail} from '@/lib/emails';
 
 // Shared document types (pure types — see ./db-types, also re-exported here).
 import type {OrderStatus, EventDoc, OrderDoc, TicketDoc} from './db-types';
@@ -222,7 +223,9 @@ export async function issueTicketsForOrder(order: OrderDoc): Promise<void> {
         eventId: order.eventId,
         eventTitle: order.eventTitle,
         holderName: order.buyer.name,
-        buyerEmail: order.buyer.email,
+        // Normalized on write: lookups and the Firestore read rule both compare
+        // against the lowercased account email (see @/lib/emails).
+        buyerEmail: normalizeEmail(order.buyer.email),
         buyerUid: order.buyerUid || '',
         tierName: order.tierName || '',
         // Immutable refund snapshot — eligibility is decided at purchase time,
@@ -247,14 +250,16 @@ export async function issueTicketsForOrder(order: OrderDoc): Promise<void> {
 
 /** All tickets purchased by a given buyer email (attendee wallet). */
 export async function getTicketsForEmail(email: string): Promise<TicketDoc[]> {
+  const owner = normalizeEmail(email);
+  if (!owner) return [];
   try {
     const adminDb = getAdminDb();
     const snap = adminDb
-      ? ((await adminDb.collection('tickets').where('buyerEmail', '==', email).get()) as unknown as Snap)
+      ? ((await adminDb.collection('tickets').where('buyerEmail', '==', owner).get()) as unknown as Snap)
       : isFirebaseConfigured && db
         ? ((await (db as unknown as ClientFirestore)
             .collection('tickets')
-            .where('buyerEmail', '==', email)
+            .where('buyerEmail', '==', owner)
             .get()) as unknown as Snap)
         : null;
     if (!snap) return [];

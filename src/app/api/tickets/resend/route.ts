@@ -1,6 +1,7 @@
 import {NextResponse} from 'next/server';
 import {admin} from '@/lib/server-admin';
 import {sendPaymentConfirmationEmail} from '@/lib/email';
+import {normalizeEmail} from '@/lib/emails';
 
 export const runtime = 'nodejs';
 
@@ -17,12 +18,14 @@ export async function POST(req: Request) {
 
   try {
     const body = (await req.json()) as {email?: string};
-    const email = (body.email || '').trim().toLowerCase();
+    const email = normalizeEmail(body.email);
     if (!email || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
       return NextResponse.json({error: 'Enter a valid email address.'}, {status: 400});
     }
 
     // Find every ticket for this buyer (single-field query — no index needed).
+    // `buyerEmail` is stored normalized, so this matches regardless of the case
+    // the buyer typed at checkout or entered here.
     const snap = await db.collection('tickets').where('buyerEmail', '==', email).limit(100).get();
     if (snap.empty) {
       return NextResponse.json(

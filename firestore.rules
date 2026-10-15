@@ -38,6 +38,12 @@ service cloud.firestore {
     }
 
     // Tickets: readable by the owning buyer only; writes are server-only.
+    //
+    // IMPORTANT: this comparison is case-sensitive, and `request.auth.token.email`
+    // is always lowercased by Firebase Auth. `buyerEmail` must therefore be
+    // STORED normalized (see src/lib/emails.ts) — a ticket saved as
+    // "Ada@Example.com" would be invisible to its own owner. Run
+    // `npm run backfill:tickets` once to normalize pre-existing documents.
     match /tickets/{ticketId} {
       allow read: if request.auth != null
                   && request.auth.token.email == resource.data.buyerEmail;

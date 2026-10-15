@@ -12,6 +12,7 @@
  * results when Firebase is not configured.
  */
 import {db, isFirebaseConfigured} from '@/lib/firebase';
+import {normalizeEmail} from '@/lib/emails';
 import {
   collection,
   doc,
@@ -68,10 +69,14 @@ export async function getEvent(idOrSlug: string): Promise<EventDoc | null> {
 
 /** All tickets purchased by a given buyer email (browser). */
 export async function getTicketsForEmail(email: string): Promise<TicketDoc[]> {
+  // Normalized to match how `buyerEmail` is stored — otherwise a buyer who
+  // typed their address in mixed case would load an empty wallet.
+  const owner = normalizeEmail(email);
+  if (!owner) return [];
   try {
     const cdb = client();
     if (!cdb) return [];
-    const snap = await getDocs(query(collection(cdb, 'tickets'), where('buyerEmail', '==', email)));
+    const snap = await getDocs(query(collection(cdb, 'tickets'), where('buyerEmail', '==', owner)));
     if (snap.empty) return [];
     return snap.docs.map((d) => ({id: d.id, ...(d.data() as Omit<TicketDoc, 'id'>)}));
   } catch (err) {

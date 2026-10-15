@@ -2,6 +2,7 @@ import {NextResponse} from 'next/server';
 import {admin} from '@/lib/server-admin';
 import {notifyByEmail} from '@/lib/notifications';
 import {sendTicketTransferEmail} from '@/lib/email';
+import {normalizeEmail} from '@/lib/emails';
 
 export const runtime = 'nodejs';
 
@@ -34,7 +35,7 @@ export async function POST(req: Request) {
     let callerIsAdmin = false;
     try {
       const decoded = await auth.verifyIdToken(token);
-      callerEmail = (decoded.email || '').toLowerCase();
+      callerEmail = normalizeEmail(decoded.email);
       const userSnap = await db.collection('users').doc(decoded.uid).get();
       if (userSnap.exists) {
         const data = userSnap.data() as {role?: string; name?: string};
@@ -48,7 +49,7 @@ export async function POST(req: Request) {
 
     const body = (await req.json()) as {ticketId?: string; toEmail?: string};
     const ticketId = (body.ticketId || '').trim();
-    const toEmail = (body.toEmail || '').trim().toLowerCase();
+    const toEmail = normalizeEmail(body.toEmail);
     if (!ticketId || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(toEmail)) {
       return NextResponse.json({error: 'A valid ticket id and recipient email are required.'}, {status: 400});
     }
@@ -97,6 +98,8 @@ export async function POST(req: Request) {
     const holderName = recipientName || toEmail.split('@')[0];
 
     await ref.update({
+      // Normalized (see @/lib/emails) so the recipient's wallet lookup and the
+      // Firestore read rule both match their lowercased account email.
       buyerEmail: toEmail,
       holderName,
       transferredAt: new Date().toISOString(),
