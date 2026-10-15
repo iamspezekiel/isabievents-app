@@ -87,13 +87,16 @@ export async function getTicketsForEmail(email: string): Promise<TicketDoc[]> {
 
 /** All orders placed by a given email (browser). */
 export async function getOrdersForEmail(email: string): Promise<OrderDoc[]> {
+  // `buyer.email` is stored normalized — match it the same way.
+  const owner = normalizeEmail(email);
+  if (!owner) return [];
   try {
     const cdb = client();
     if (!cdb) return [];
     const snap = await getDocs(
       query(
         collection(cdb, 'orders'),
-        where('buyer.email', '==', email),
+        where('buyer.email', '==', owner),
         orderBy('createdAt', 'desc'),
         limit(100)
       )

@@ -31,6 +31,10 @@ service cloud.firestore {
     }
 
     // Orders: only the buying user (by email) may read; writes are server-only.
+    //
+    // Same case-sensitivity caveat as `tickets` below: `buyer.email` must be
+    // STORED normalized (see src/lib/emails.ts) because the token email is
+    // always lowercased. `npm run backfill:emails` covers orders too.
     match /orders/{orderId} {
       allow read: if request.auth != null
                   && request.auth.token.email == resource.data.buyer.email;
@@ -43,7 +47,7 @@ service cloud.firestore {
     // is always lowercased by Firebase Auth. `buyerEmail` must therefore be
     // STORED normalized (see src/lib/emails.ts) — a ticket saved as
     // "Ada@Example.com" would be invisible to its own owner. Run
-    // `npm run backfill:tickets` once to normalize pre-existing documents.
+    // `npm run backfill:emails` once to normalize pre-existing documents.
     match /tickets/{ticketId} {
       allow read: if request.auth != null
                   && request.auth.token.email == resource.data.buyerEmail;

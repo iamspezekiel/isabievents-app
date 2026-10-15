@@ -135,7 +135,14 @@ export async function getEvent(idOrSlug: string): Promise<EventDoc | null> {
  * fatal instead of sending the buyer to the gateway.
  */
 export async function createOrder(order: Omit<OrderDoc, 'createdAt'>): Promise<void> {
-  const data = stripUndefined({...order, createdAt: now()});
+  const data = stripUndefined({
+    ...order,
+    // Normalized on write: `buyer.email` is matched by an equality query in
+    // Order History and compared by the orders read rule, while Firebase Auth
+    // always reports the account email lowercased (see @/lib/emails).
+    buyer: {...order.buyer, email: normalizeEmail(order.buyer.email)},
+    createdAt: now(),
+  });
   const adminDb = getAdminDb();
   if (adminDb) {
     await adminDb.collection('orders').doc(order.id).set(data);
@@ -272,18 +279,21 @@ export async function getTicketsForEmail(email: string): Promise<TicketDoc[]> {
 
 /** All orders placed by a given email. */
 export async function getOrdersForEmail(email: string): Promise<OrderDoc[]> {
+  // Normalized to match how `buyer.email` is stored.
+  const owner = normalizeEmail(email);
+  if (!owner) return [];
   try {
     const adminDb = getAdminDb();
     const snap = adminDb
       ? ((await adminDb
           .collection('orders')
-          .where('buyer.email', '==', email)
+          .where('buyer.email', '==', owner)
           .orderBy('createdAt', 'desc')
           .get()) as unknown as Snap)
       : isFirebaseConfigured && db
         ? ((await (db as unknown as ClientFirestore)
             .collection('orders')
-            .where('buyer.email', '==', email)
+            .where('buyer.email', '==', owner)
             .orderBy('createdAt', 'desc')
             .get()) as unknown as Snap)
         : null;

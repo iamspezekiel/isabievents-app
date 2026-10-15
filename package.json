@@ -17,7 +17,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit",
     "seed": "tsx scripts/seed.ts",
-    "backfill:tickets": "tsx scripts/backfill-ticket-emails.ts"
+    "backfill:emails": "tsx scripts/backfill-emails.ts"
   },
   "dependencies": {
     "@genkit-ai/google-genai": "^1.28.0",

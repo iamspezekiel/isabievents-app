@@ -9,9 +9,10 @@
  * normalizing at write time, a buyer who typed `Ada@Example.com` could never
  * load the tickets they paid for.
  *
- * Invariant: `tickets.buyerEmail` is stored via `normalizeEmail()`, and every
- * lookup normalizes its input the same way. Legacy mixed-case documents are
- * fixed by `npm run backfill:tickets`.
+ * Invariant: `tickets.buyerEmail`, `refunds.buyerEmail` and `orders.buyer.email`
+ * are all stored via `normalizeEmail()`, and every lookup normalizes its input
+ * the same way. Legacy mixed-case documents are fixed once by
+ * `npm run backfill:emails`.
  */
 export function normalizeEmail(email?: string | null): string {
   return String(email ?? '').trim().toLowerCase();

@@ -1,6 +1,7 @@
 import {NextResponse} from 'next/server';
 import {requireAuth, isResponse} from '@/lib/admin-auth';
 import {admin} from '@/lib/server-admin';
+import {normalizeEmail} from '@/lib/emails';
 
 export const runtime = 'nodejs';
 
@@ -34,6 +35,9 @@ export async function GET(req: Request) {
       const decoded = auth ? await auth.verifyIdToken(uid).catch(() => null) : null;
       email = decoded?.email || '';
     }
+    // Normalized to match how `buyer.email` is written (see @/lib/emails) —
+    // otherwise a mixed-case checkout email returns an empty order history.
+    email = normalizeEmail(email);
     if (!email) return NextResponse.json({orders: []});
 
     const snap = await db.collection('orders').where('buyer.email', '==', email).limit(200).get();
